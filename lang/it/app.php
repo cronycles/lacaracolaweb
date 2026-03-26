@@ -57,6 +57,11 @@ return [
     'booking_dp_hint_checkout'     => 'Seleziona la data di partenza (min. :nights notti)',
     'booking_dp_clear'             => 'Cancella date',
 
+    // --- Flow C: external booking CTA ---
+    'booking_external_title' => 'Prenota direttamente',
+    'booking_external_text'  => 'La disponibilità e la prenotazione sono gestite su una piattaforma esterna. Clicca qui sotto per verificare le date e procedere.',
+    'booking_external_btn'   => 'Verifica disponibilità',
+
     // --- Amenities ---
     'amenity_sea_view'      => 'Vista mare',
     'amenity_garden'        => 'Giardino',

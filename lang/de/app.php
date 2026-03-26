@@ -53,6 +53,11 @@ return [
     'booking_dp_hint_checkout'     => 'Wählen Sie Ihr Abreisedatum (mind. :nights Nächte)',
     'booking_dp_clear'             => 'Daten löschen',
 
+    // --- Flow C: external booking CTA ---
+    'booking_external_title' => 'Direkt buchen',
+    'booking_external_text'  => 'Verfügbarkeit und Buchung werden auf einer externen Plattform verwaltet. Klicken Sie unten, um Daten zu prüfen und fortzufahren.',
+    'booking_external_btn'   => 'Verfügbarkeit prüfen',
+
     'amenity_sea_view'      => 'Meerblick',
     'amenity_garden'        => 'Garten',
     'amenity_balcony'       => 'Balkon',

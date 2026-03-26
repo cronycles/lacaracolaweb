@@ -53,6 +53,11 @@ return [
     'booking_dp_hint_checkout'     => 'Select your departure date (min. :nights nights)',
     'booking_dp_clear'             => 'Clear dates',
 
+    // --- Flow C: external booking CTA ---
+    'booking_external_title' => 'Book directly',
+    'booking_external_text'  => 'Availability and booking are managed on an external platform. Click below to check dates and proceed.',
+    'booking_external_btn'   => 'Check availability',
+
     'amenity_sea_view'      => 'Sea view',
     'amenity_garden'        => 'Garden',
     'amenity_balcony'       => 'Balcony',

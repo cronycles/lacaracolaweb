@@ -321,6 +321,11 @@
                     ✉️ Newsletter
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.settings') }}" @class(['active' => request()->routeIs('admin.settings*')])>
+                    ⚙️ Impostazioni
+                </a>
+            </li>
         </ul>
 
         <div class="admin-sidebar__footer">

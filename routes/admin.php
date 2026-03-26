@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PricingController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 // Admin area — protected by auth middleware
@@ -33,4 +34,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Newsletter subscribers
     Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
     Route::patch('/newsletter/{person}/toggle', [NewsletterController::class, 'toggle'])->name('newsletter.toggle');
+
+    // Settings (booking mode switch)
+    Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');
+    Route::put('/impostazioni', [SettingsController::class, 'update'])->name('settings.update');
 });

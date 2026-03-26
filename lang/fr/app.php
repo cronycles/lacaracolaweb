@@ -52,6 +52,11 @@ return [
     'booking_dp_hint_checkin'      => "Sélectionnez votre date d'arrivée",
     'booking_dp_hint_checkout'     => 'Sélectionnez votre date de départ (min. :nights nuits)',
     'booking_dp_clear'             => 'Effacer les dates',
+
+    // --- Flow C: external booking CTA ---
+    'booking_external_title' => 'Réservez directement',
+    'booking_external_text'  => 'La disponibilité et la réservation sont gérées sur une plateforme externe. Cliquez ci-dessous pour vérifier les dates et continuer.',
+    'booking_external_btn'   => 'Vérifier la disponibilité',
     'error_min_nights'      => 'Le séjour minimum est de :nights nuits.',
 
     'amenity_sea_view'      => 'Vue mer',

@@ -82,7 +82,24 @@
     <div class="container">
         <h2 class="section-title" id="booking-title" style="text-align:center">{{ __('app.booking_title') }}</h2>
 
-        @include('components.booking-form')
+        @if ($bookingMode === 'external' && $bookingExternalUrl)
+            {{-- Flow C: external platform CTA --}}
+            <div class="booking-form" style="text-align:center;padding-block:var(--space-12)">
+                <p style="font-size:1.5rem;margin-bottom:var(--space-4)">🏠</p>
+                <h3 style="font-family:var(--font-serif);font-size:1.35rem;color:var(--color-primary);margin-bottom:var(--space-4)">
+                    {{ __('app.booking_external_title') }}
+                </h3>
+                <p style="color:var(--color-text-muted);max-width:400px;margin-inline:auto;margin-bottom:var(--space-8);line-height:1.7">
+                    {{ __('app.booking_external_text') }}
+                </p>
+                <a href="{{ $bookingExternalUrl }}" target="_blank" rel="noopener noreferrer"
+                   class="btn btn--accent btn--lg">
+                    {{ __('app.booking_external_btn') }}
+                </a>
+            </div>
+        @else
+            @include('components.booking-form')
+        @endif
     </div>
 </section>
 
