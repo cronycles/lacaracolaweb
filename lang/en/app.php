@@ -46,6 +46,13 @@ return [
     'error_checkout_order'  => 'Check-out must be after check-in.',
     'error_server'          => 'An error occurred. Please try again.',
 
+    // --- Date range picker ---
+    'booking_checkin_placeholder'  => 'Select check-in',
+    'booking_checkout_placeholder' => 'Select check-out',
+    'booking_dp_hint_checkin'      => 'Select your arrival date',
+    'booking_dp_hint_checkout'     => 'Select your departure date (min. :nights nights)',
+    'booking_dp_clear'             => 'Clear dates',
+
     'amenity_sea_view'      => 'Sea view',
     'amenity_garden'        => 'Garden',
     'amenity_balcony'       => 'Balcony',

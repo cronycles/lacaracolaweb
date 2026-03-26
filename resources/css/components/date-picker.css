@@ -1,0 +1,263 @@
+/** Date range picker — Booking.com / Airbnb style */
+
+/* ── Container & triggers ────────────────────────────────────────────────── */
+
+.date-picker {
+    position: relative;
+}
+
+.date-picker__triggers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+
+    @media (min-width: 640px) { grid-template-columns: 1fr 1fr; }
+}
+
+.date-picker__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.date-picker__label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+/* Trigger button — styled as an input field */
+.dp-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    cursor: pointer;
+    text-align: left;
+    min-height: 44px;
+    font-family: inherit;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover { border-color: var(--color-primary); }
+
+    &--active,
+    &:focus-visible {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(48, 89, 108, 0.15);
+    }
+
+    &.is-invalid { border-color: #dc2626; }
+
+    &__icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        color: var(--color-text-muted);
+    }
+
+    &__value {
+        font-size: 0.95rem;
+        color: var(--color-text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &--set {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+    }
+}
+
+/* ── Popup ────────────────────────────────────────────────────────────────── */
+
+.dp-popup {
+    position: absolute;
+    left: 0;
+    top: calc(100% + var(--space-2));
+    z-index: 50;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-6);
+    width: 100%;
+
+    @media (min-width: 640px) { width: 640px; }
+}
+
+/* ── Step hint ────────────────────────────────────────────────────────────── */
+
+.dp__hint {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-bottom: var(--space-3);
+    font-style: italic;
+}
+
+/* ── Navigation ───────────────────────────────────────────────────────────── */
+
+.dp__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.dp__nav-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+
+    &:hover {
+        background: var(--color-bg);
+        border-color: var(--color-primary);
+    }
+}
+
+/* ── Months ───────────────────────────────────────────────────────────────── */
+
+.dp__months {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+
+    @media (min-width: 640px) { grid-template-columns: 1fr 1fr; }
+}
+
+.dp__month-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    text-transform: capitalize;
+}
+
+/* ── Day grid ─────────────────────────────────────────────────────────────── */
+
+.dp__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.dp__grid--head { margin-bottom: 2px; }
+
+.dp__head-cell {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    padding-block: var(--space-2);
+    text-transform: uppercase;
+}
+
+/* ── Day cells ────────────────────────────────────────────────────────────── */
+
+.dp__day {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--color-text);
+
+    &--empty { pointer-events: none; }
+
+    &--disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    &:not(.dp__day--disabled):not(.dp__day--empty):not(.dp__day--start):not(.dp__day--end):hover .dp__day-num {
+        background: var(--color-bg);
+        border-radius: 50%;
+    }
+}
+
+/* Circle containing the day number */
+.dp__day-num {
+    position: relative;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+/* Today: bold primary colour */
+.dp__day--today .dp__day-num {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Range bar — spans full cell width (behind the circle) */
+.dp__day--range { background: rgba(48, 89, 108, 0.1); }
+
+/* Start: circle on the right half fades into range colour */
+.dp__day--start {
+    background: linear-gradient(to right, transparent 50%, rgba(48, 89, 108, 0.1) 50%);
+}
+
+/* End: left half fades into range colour */
+.dp__day--end {
+    background: linear-gradient(to left, transparent 50%, rgba(48, 89, 108, 0.1) 50%);
+}
+
+/* Single-day selection (start = end): no bar either side */
+.dp__day--start.dp__day--end { background: transparent; }
+
+/* Filled circle for selected start/end */
+.dp__day--start .dp__day-num,
+.dp__day--end .dp__day-num {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.dp__footer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-start;
+}
+
+.dp__clear {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-family: inherit;
+
+    &:hover { color: var(--color-primary); }
+}

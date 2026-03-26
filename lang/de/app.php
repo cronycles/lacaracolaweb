@@ -46,6 +46,13 @@ return [
     'error_checkout_order'  => 'Das Check-out muss nach dem Check-in liegen.',
     'error_server'          => 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
 
+    // --- Date range picker ---
+    'booking_checkin_placeholder'  => 'Ankunft wählen',
+    'booking_checkout_placeholder' => 'Abfahrt wählen',
+    'booking_dp_hint_checkin'      => 'Wählen Sie Ihr Ankunftsdatum',
+    'booking_dp_hint_checkout'     => 'Wählen Sie Ihr Abreisedatum (mind. :nights Nächte)',
+    'booking_dp_clear'             => 'Daten löschen',
+
     'amenity_sea_view'      => 'Meerblick',
     'amenity_garden'        => 'Garten',
     'amenity_balcony'       => 'Balkon',

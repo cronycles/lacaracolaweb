@@ -45,6 +45,13 @@ return [
     'error_checkin_past'    => "La date d'arrivée ne peut pas être dans le passé.",
     'error_checkout_order'  => "Le départ doit être après l'arrivée.",
     'error_server'          => 'Une erreur est survenue. Veuillez réessayer.',
+
+    // --- Date range picker ---
+    'booking_checkin_placeholder'  => "Sélectionner l'arrivée",
+    'booking_checkout_placeholder' => 'Sélectionner le départ',
+    'booking_dp_hint_checkin'      => "Sélectionnez votre date d'arrivée",
+    'booking_dp_hint_checkout'     => 'Sélectionnez votre date de départ (min. :nights nuits)',
+    'booking_dp_clear'             => 'Effacer les dates',
     'error_min_nights'      => 'Le séjour minimum est de :nights nuits.',
 
     'amenity_sea_view'      => 'Vue mer',

@@ -27,22 +27,37 @@
 
     <h3 class="booking-form__title">{{ __('app.booking_title') }}</h3>
 
-    {{-- Dates row --}}
-    <div class="booking-form__row">
-        <div class="booking-form__group">
-            <label for="checkin">{{ __('app.booking_checkin') }} *</label>
-            <input type="date" id="checkin" name="checkin"
-                   min="{{ date('Y-m-d') }}"
-                   required>
-            <span class="booking-form__field-error" data-error-for="checkin" hidden aria-live="polite"></span>
+    {{-- Date range picker --}}
+    <div class="date-picker" id="date-range-picker"
+         data-locale="{{ app()->getLocale() }}"
+         data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
+         data-hint-checkin="{{ __('app.booking_dp_hint_checkin') }}"
+         data-hint-checkout="{{ __('app.booking_dp_hint_checkout', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
+         data-label-clear="{{ __('app.booking_dp_clear') }}">
+
+        <div class="date-picker__triggers">
+            <div class="date-picker__field">
+                <span class="date-picker__label">{{ __('app.booking_checkin') }} *</span>
+                <button type="button" id="dp-trigger-checkin" class="dp-trigger" aria-haspopup="true">
+                    <span class="dp-trigger__icon" aria-hidden="true">🗓</span>
+                    <span class="dp-trigger__value" data-placeholder="{{ __('app.booking_checkin_placeholder') }}">{{ __('app.booking_checkin_placeholder') }}</span>
+                </button>
+                <input type="hidden" id="checkin" name="checkin">
+                <span class="booking-form__field-error" data-error-for="checkin" hidden aria-live="polite"></span>
+            </div>
+            <div class="date-picker__field">
+                <span class="date-picker__label">{{ __('app.booking_checkout') }} *</span>
+                <button type="button" id="dp-trigger-checkout" class="dp-trigger" aria-haspopup="true">
+                    <span class="dp-trigger__icon" aria-hidden="true">🗓</span>
+                    <span class="dp-trigger__value" data-placeholder="{{ __('app.booking_checkout_placeholder') }}">{{ __('app.booking_checkout_placeholder') }}</span>
+                </button>
+                <input type="hidden" id="checkout" name="checkout">
+                <span class="booking-form__field-error" data-error-for="checkout" hidden aria-live="polite"></span>
+            </div>
         </div>
-        <div class="booking-form__group">
-            <label for="checkout">{{ __('app.booking_checkout') }} *</label>
-            <input type="date" id="checkout" name="checkout"
-                   min="{{ date('Y-m-d', strtotime('+3 days')) }}"
-                   required>
-            <span class="booking-form__field-error" data-error-for="checkout" hidden aria-live="polite"></span>
-        </div>
+
+        {{-- Calendar popup (rendered by JS) --}}
+        <div id="dp-popup" class="dp-popup" hidden role="dialog" aria-label="Calendar"></div>
     </div>
 
     {{-- Guests row --}}
@@ -90,10 +105,13 @@
     </div>
 
     {{-- Newsletter opt-in --}}
-    <label style="display:flex;align-items:center;gap:.5rem;margin-top:1rem;font-size:.9rem;cursor:pointer">
-        <input type="checkbox" name="newsletter" value="1">
-        {{ __('app.booking_newsletter') }}
-    </label>
+    <div class="booking-form__newsletter">
+        <span>{{ __('app.booking_newsletter') }}</span>
+        <label class="toggle" aria-label="{{ __('app.booking_newsletter') }}">
+            <input type="checkbox" name="newsletter" value="1">
+            <span class="toggle__track"><span class="toggle__thumb"></span></span>
+        </label>
+    </div>
 
     {{-- Generic form-level error (network / server errors) --}}
     <span class="booking-form__field-error booking-form__field-error--center"

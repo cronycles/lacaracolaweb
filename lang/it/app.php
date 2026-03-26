@@ -50,6 +50,13 @@ return [
     'error_checkout_order'  => 'Il check-out deve essere successivo al check-in.',
     'error_server'          => 'Si è verificato un errore. Riprova tra qualche istante.',
 
+    // --- Date range picker ---
+    'booking_checkin_placeholder'  => 'Seleziona arrivo',
+    'booking_checkout_placeholder' => 'Seleziona partenza',
+    'booking_dp_hint_checkin'      => 'Seleziona la data di arrivo',
+    'booking_dp_hint_checkout'     => 'Seleziona la data di partenza (min. :nights notti)',
+    'booking_dp_clear'             => 'Cancella date',
+
     // --- Amenities ---
     'amenity_sea_view'      => 'Vista mare',
     'amenity_garden'        => 'Giardino',

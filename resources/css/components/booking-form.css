@@ -90,6 +90,76 @@
     }
 }
 
+/* Newsletter opt-in toggle card */
+.booking-form__newsletter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-6);
+    user-select: none;
+
+    span {
+        font-size: 0.875rem;
+        color: var(--color-text);
+        line-height: 1.4;
+    }
+}
+
+/* Toggle switch */
+.toggle {
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    &__track {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: var(--color-border);
+        position: relative;
+        display: block;
+        transition: background var(--transition-fast);
+    }
+
+    &__thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-white);
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        display: block;
+        transition: transform var(--transition-fast);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    input:checked + .toggle__track {
+        background: var(--color-primary);
+    }
+
+    input:checked + .toggle__track .toggle__thumb {
+        transform: translateX(20px);
+    }
+
+    input:focus-visible + .toggle__track {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
 /* Success state — shown in-place after AJAX submission */
 .booking-form--success {
     text-align: center;

@@ -2,6 +2,7 @@
  * Booking form — AJAX submission with inline validation feedback.
  * No page reload on error or success; errors shown per field, success in-place.
  */
+import { createDateRangePicker } from './date-picker';
 
 interface ValidationErrors {
     [field: string]: string[];
@@ -26,17 +27,21 @@ export function initBookingForm(): void {
     // --- Field error helpers ---
 
     const setFieldError = (fieldName: string, message: string): void => {
-        const span  = form.querySelector<HTMLElement>(`[data-error-for="${fieldName}"]`);
-        const input = form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
-        if (span)  { span.textContent = message; span.hidden = false; }
-        if (input) { input.classList.add('is-invalid'); }
+        const span    = form.querySelector<HTMLElement>(`[data-error-for="${fieldName}"]`);
+        const input   = form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+        const trigger = document.getElementById(`dp-trigger-${fieldName}`);
+        if (span)    { span.textContent = message; span.hidden = false; }
+        if (input)   { input.classList.add('is-invalid'); }
+        if (trigger) { trigger.classList.add('is-invalid'); }
     };
 
     const clearFieldError = (fieldName: string): void => {
-        const span  = form.querySelector<HTMLElement>(`[data-error-for="${fieldName}"]`);
-        const input = form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
-        if (span)  { span.textContent = ''; span.hidden = true; }
-        if (input) { input.classList.remove('is-invalid'); }
+        const span    = form.querySelector<HTMLElement>(`[data-error-for="${fieldName}"]`);
+        const input   = form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+        const trigger = document.getElementById(`dp-trigger-${fieldName}`);
+        if (span)    { span.textContent = ''; span.hidden = true; }
+        if (input)   { input.classList.remove('is-invalid'); }
+        if (trigger) { trigger.classList.remove('is-invalid'); }
     };
 
     const clearAllErrors = (): void => {
@@ -79,6 +84,33 @@ export function initBookingForm(): void {
 
     checkin?.addEventListener('change',  validateDates);
     checkout?.addEventListener('change', validateDates);
+
+    // --- Date range picker integration ---
+
+    const dpContainer = document.getElementById('date-range-picker') as HTMLElement | null;
+    const dpPopup     = document.getElementById('dp-popup') as HTMLElement | null;
+    const dpTriggerCi = document.getElementById('dp-trigger-checkin') as HTMLButtonElement | null;
+    const dpTriggerCo = document.getElementById('dp-trigger-checkout') as HTMLButtonElement | null;
+
+    if (dpContainer && dpPopup && dpTriggerCi && dpTriggerCo && checkin && checkout) {
+        createDateRangePicker({
+            container:       dpContainer,
+            popup:           dpPopup,
+            triggerCheckin:  dpTriggerCi,
+            triggerCheckout: dpTriggerCo,
+            inputCheckin:    checkin,
+            inputCheckout:   checkout,
+            minNights:       MIN_NIGHTS,
+            locale:          dpContainer.dataset['locale'] ?? 'it',
+            hintCheckin:     dpContainer.dataset['hintCheckin']  ?? '',
+            hintCheckout:    dpContainer.dataset['hintCheckout'] ?? '',
+            labelClear:      dpContainer.dataset['labelClear']   ?? 'Clear',
+            onRangeSet: () => {
+                clearFieldError('checkin');
+                clearFieldError('checkout');
+            },
+        });
+    }
 
     // --- Loading state ---
 
