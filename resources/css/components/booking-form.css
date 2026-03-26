@@ -55,6 +55,23 @@
 
     textarea { min-height: 100px; resize: vertical; }
 
+    /* Invalid field — red border + focus ring */
+    input.is-invalid,
+    select.is-invalid,
+    textarea.is-invalid {
+        border-color: #dc2626;
+        &:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+    }
+
+    &__field-error {
+        font-size: 0.8rem;
+        color: #dc2626;
+        margin-top: var(--space-1);
+        display: block;
+
+        &--center { text-align: center; margin-top: var(--space-3); }
+    }
+
     &__note {
         font-size: 0.8rem;
         color: var(--color-text-muted);
@@ -65,5 +82,37 @@
     &__submit {
         width: 100%;
         margin-top: var(--space-4);
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+}
+
+/* Success state — shown in-place after AJAX submission */
+.booking-form--success {
+    text-align: center;
+    padding-block: var(--space-12);
+
+    .booking-form__success-icon {
+        font-size: 3rem;
+        line-height: 1;
+        color: #16a34a;
+        margin-bottom: var(--space-4);
+    }
+
+    h3 {
+        font-family: var(--font-serif);
+        font-size: 1.5rem;
+        color: var(--color-primary);
+        margin-bottom: var(--space-3);
+    }
+
+    p {
+        color: var(--color-text-muted);
+        max-width: 420px;
+        margin-inline: auto;
+        line-height: 1.7;
     }
 }

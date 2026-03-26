@@ -40,11 +40,15 @@ return [
     'booking_message'       => 'Messaggio (opzionale)',
     'booking_newsletter'    => 'Voglio ricevere offerte e novità',
     'booking_submit'        => 'Invia Richiesta',
+    'booking_loading'       => 'Invio in corso…',
     'booking_note'          => 'Non è una prenotazione confermata. Ti risponderemo entro 24 ore.',
     'booking_thanks_title'  => 'Richiesta inviata!',
     'booking_thanks_text'   => 'Grazie per il tuo interesse per La Caracola. Ti contatteremo al più presto per confermare la disponibilità.',
     'booking_min_nights'    => 'Soggiorno minimo :nights notti.',
     'error_min_nights'      => 'Il soggiorno minimo è di :nights notti.',
+    'error_checkin_past'    => 'La data di check-in non può essere nel passato.',
+    'error_checkout_order'  => 'Il check-out deve essere successivo al check-in.',
+    'error_server'          => 'Si è verificato un errore. Riprova tra qualche istante.',
 
     // --- Amenities ---
     'amenity_sea_view'      => 'Vista mare',

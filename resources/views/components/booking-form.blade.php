@@ -1,21 +1,29 @@
 {{-- Booking availability request form component --}}
 {{-- Shared between home page (embedded) and standalone booking page --}}
 
-@if($errors->isNotEmpty())
-    <div class="booking-form__error" style="display:block;color:#dc2626;margin-bottom:1rem;padding:.75rem;background:#fef2f2;border-radius:.5rem">
-        {{ $errors->first() }}
-    </div>
-@endif
+{{-- Success message: hidden by default, shown in-place by JS after successful AJAX submission --}}
+<div id="booking-success" class="booking-form booking-form--success" hidden>
+    <div class="booking-form__success-icon" aria-hidden="true">✓</div>
+    <h3>{{ __('app.booking_thanks_title') }}</h3>
+    <p>{{ __('app.booking_thanks_text') }}</p>
+</div>
 
 <form id="booking-form"
       method="POST"
       action="{{ route('booking.request') }}"
       class="booking-form"
-      data-error-past="{{ __('app.error_min_nights', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
-      data-error-order="Check-out deve essere dopo il check-in."
+      data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
+      data-error-past="{{ __('app.error_checkin_past') }}"
+      data-error-order="{{ __('app.error_checkout_order') }}"
       data-error-min-nights="{{ __('app.error_min_nights', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
+      data-error-server="{{ __('app.error_server') }}"
+      data-label-loading="{{ __('app.booking_loading') }}"
       novalidate>
     @csrf
+
+    {{-- Honeypot: must remain empty — filled only by bots --}}
+    <input type="text" name="website" tabindex="-1" autocomplete="off"
+           style="position:absolute;opacity:0;height:0;width:0;pointer-events:none" aria-hidden="true">
 
     <h3 class="booking-form__title">{{ __('app.booking_title') }}</h3>
 
@@ -24,18 +32,16 @@
         <div class="booking-form__group">
             <label for="checkin">{{ __('app.booking_checkin') }} *</label>
             <input type="date" id="checkin" name="checkin"
-                   value="{{ old('checkin') }}"
                    min="{{ date('Y-m-d') }}"
                    required>
-            @error('checkin') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
+            <span class="booking-form__field-error" data-error-for="checkin" hidden aria-live="polite"></span>
         </div>
         <div class="booking-form__group">
             <label for="checkout">{{ __('app.booking_checkout') }} *</label>
             <input type="date" id="checkout" name="checkout"
-                   value="{{ old('checkout') }}"
                    min="{{ date('Y-m-d', strtotime('+3 days')) }}"
                    required>
-            @error('checkout') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
+            <span class="booking-form__field-error" data-error-for="checkout" hidden aria-live="polite"></span>
         </div>
     </div>
 
@@ -45,7 +51,7 @@
             <label for="adults">{{ __('app.booking_adults') }} *</label>
             <select id="adults" name="adults" required>
                 @foreach (range(1, 6) as $i)
-                    <option value="{{ $i }}" {{ old('adults', 2) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                    <option value="{{ $i }}" {{ $i === 2 ? 'selected' : '' }}>{{ $i }}</option>
                 @endforeach
             </select>
         </div>
@@ -53,7 +59,7 @@
             <label for="children">{{ __('app.booking_children') }}</label>
             <select id="children" name="children">
                 @foreach (range(0, 5) as $i)
-                    <option value="{{ $i }}" {{ old('children', 0) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
                 @endforeach
             </select>
         </div>
@@ -62,35 +68,36 @@
     {{-- Contact info --}}
     <div class="booking-form__group" style="margin-top:.5rem">
         <label for="name">{{ __('app.booking_name') }} *</label>
-        <input type="text" id="name" name="name" value="{{ old('name') }}" required maxlength="100" autocomplete="name">
-        @error('name') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
+        <input type="text" id="name" name="name" required maxlength="100" autocomplete="name">
+        <span class="booking-form__field-error" data-error-for="name" hidden aria-live="polite"></span>
     </div>
 
     <div class="booking-form__row" style="margin-top:.5rem">
         <div class="booking-form__group">
             <label for="email">{{ __('app.booking_email') }} *</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required maxlength="150" autocomplete="email">
-            @error('email') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
+            <input type="email" id="email" name="email" required maxlength="150" autocomplete="email">
+            <span class="booking-form__field-error" data-error-for="email" hidden aria-live="polite"></span>
         </div>
         <div class="booking-form__group">
             <label for="phone">{{ __('app.booking_phone') }}</label>
-            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" maxlength="30" autocomplete="tel">
+            <input type="tel" id="phone" name="phone" maxlength="30" autocomplete="tel">
         </div>
     </div>
 
     <div class="booking-form__group" style="margin-top:.5rem">
         <label for="message">{{ __('app.booking_message') }}</label>
-        <textarea id="message" name="message" maxlength="1000">{{ old('message') }}</textarea>
+        <textarea id="message" name="message" maxlength="1000"></textarea>
     </div>
 
     {{-- Newsletter opt-in --}}
     <label style="display:flex;align-items:center;gap:.5rem;margin-top:1rem;font-size:.9rem;cursor:pointer">
-        <input type="checkbox" name="newsletter" value="1" {{ old('newsletter') ? 'checked' : '' }}>
+        <input type="checkbox" name="newsletter" value="1">
         {{ __('app.booking_newsletter') }}
     </label>
 
-    {{-- Error placeholder (populated by TS) --}}
-    <div class="booking-form__error" style="display:none;color:#dc2626;margin-top:.75rem;font-size:.85rem"></div>
+    {{-- Generic form-level error (network / server errors) --}}
+    <span class="booking-form__field-error booking-form__field-error--center"
+          data-error-for="_form" hidden aria-live="polite"></span>
 
     <button type="submit" class="btn btn--primary booking-form__submit">
         {{ __('app.booking_submit') }}
