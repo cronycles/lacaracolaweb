@@ -1,0 +1,68 @@
+/**
+ * Footer styles
+ */
+
+.footer {
+    background: var(--color-primary-dark);
+    color: rgba(255,255,255,0.85);
+    padding-block: var(--space-12);
+    margin-top: var(--space-16);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+
+        @media (min-width: 768px) {
+            grid-template-columns: 2fr 1fr 1fr;
+        }
+    }
+
+    &__brand {
+        font-family: var(--font-serif);
+        font-size: 1.5rem;
+        color: var(--color-accent);
+        margin-bottom: var(--space-3);
+    }
+
+    &__desc {
+        font-size: 0.9rem;
+        opacity: 0.75;
+        line-height: 1.7;
+    }
+
+    &__heading {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-accent);
+        margin-bottom: var(--space-4);
+    }
+
+    &__links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        a {
+            font-size: 0.9rem;
+            opacity: 0.75;
+            transition: opacity var(--transition-fast);
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__bottom {
+        margin-top: var(--space-8);
+        padding-top: var(--space-6);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.8rem;
+        opacity: 0.5;
+        text-align: center;
+    }
+}

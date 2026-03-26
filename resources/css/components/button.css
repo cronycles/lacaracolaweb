@@ -1,0 +1,83 @@
+/**
+ * Button component
+ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+    min-height: 44px; /* accessibility: min tap target */
+    text-decoration: none;
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    /* Primary */
+    &--primary {
+        background: var(--color-primary);
+        color: var(--color-white);
+        border-color: var(--color-primary);
+
+        &:hover {
+            background: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+            box-shadow: var(--shadow-md);
+        }
+    }
+
+    /* Accent (gold) */
+    &--accent {
+        background: var(--color-accent);
+        color: var(--color-primary-dark);
+        border-color: var(--color-accent);
+
+        &:hover {
+            background: var(--color-accent-light);
+            box-shadow: var(--shadow-md);
+        }
+    }
+
+    /* Outline */
+    &--outline {
+        background: transparent;
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+
+        &:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+    }
+
+    /* Ghost (white, for use on dark/image backgrounds) */
+    &--ghost {
+        background: rgba(255,255,255,0.15);
+        color: var(--color-white);
+        border-color: rgba(255,255,255,0.6);
+        backdrop-filter: blur(4px);
+
+        &:hover {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border-color: var(--color-white);
+        }
+    }
+
+    /* Sizes */
+    &--sm { padding: var(--space-2) var(--space-4); font-size: 0.85rem; }
+    &--lg { padding: var(--space-4) var(--space-8); font-size: 1.05rem; }
+}

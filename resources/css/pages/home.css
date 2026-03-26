@@ -1,0 +1,46 @@
+/** Home page specific styles */
+.home-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-12);
+
+    @media (min-width: 640px) { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 1024px) { grid-template-columns: repeat(4, 1fr); }
+
+    &__item {
+        text-align: center;
+        padding: var(--space-6);
+
+        &-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-3);
+        }
+
+        &-title {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        &-text { font-size: 0.9rem; color: var(--color-text-muted); }
+    }
+}
+
+/* SEO content section — visually secondary but valuable for search engines */
+.seo-section {
+    background: var(--color-bg);
+    padding-block: var(--space-16);
+
+    &__content {
+        max-width: 800px;
+        margin-inline: auto;
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--color-text-muted);
+    }
+
+    h2 { color: var(--color-primary); margin-bottom: var(--space-4); }
+    h3 { color: var(--color-primary); margin-bottom: var(--space-3); margin-top: var(--space-6); }
+    p { margin-bottom: var(--space-4); }
+}

@@ -1,0 +1,28 @@
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+# public/build tracked intentionally — pre-built assets shipped to server (no build pipeline on host)
+# /public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+# vendor/ is intentionally tracked — hosting has no Composer, deploy = file copy
+# /vendor
+# public/build/ is intentionally tracked — pre-built assets shipped to server
+# /public/build
+Homestead.json
+Homestead.yaml
+Thumbs.db

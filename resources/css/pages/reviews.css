@@ -1,0 +1,51 @@
+/** Reviews page */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+
+    @media (min-width: 768px) { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 1024px) { grid-template-columns: repeat(3, 1fr); }
+}
+
+.review-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+
+    &::before {
+        content: '\201C';
+        font-size: 4rem;
+        font-family: var(--font-serif);
+        color: var(--color-accent);
+        position: absolute;
+        top: var(--space-2);
+        left: var(--space-4);
+        line-height: 1;
+        opacity: 0.4;
+    }
+
+    &__stars {
+        color: var(--color-accent);
+        font-size: 1rem;
+        margin-bottom: var(--space-3);
+    }
+
+    &__text {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-4);
+    }
+
+    &__author {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+
+        &-name { font-weight: 600; font-size: 0.9rem; }
+        &-source { font-size: 0.8rem; color: var(--color-text-muted); }
+    }
+}

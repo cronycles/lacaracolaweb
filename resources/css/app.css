@@ -1,0 +1,40 @@
+/**
+ * La Caracola — Main CSS entry point
+ * PostCSS: postcss-import, postcss-nested, autoprefixer
+ */
+
+/* === Design Tokens === */
+@import "./tokens.css";
+
+/* === Base === */
+@import "./base.css";
+
+/* === Layout === */
+@import "./layout/nav.css";
+@import "./layout/footer.css";
+@import "./layout/hero.css";
+
+/* === Components === */
+@import "./components/button.css";
+@import "./components/card.css";
+@import "./components/gallery.css";
+@import "./components/booking-form.css";
+@import "./components/calendar.css";
+
+/* === Pages === */
+@import "./pages/home.css";
+@import "./pages/apartment.css";
+@import "./pages/map.css";
+@import "./pages/experiences.css";
+@import "./pages/reviews.css";
+@import "./pages/rules.css";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}

@@ -1,0 +1,22 @@
+/** Apartment page */
+.apartment-amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+
+    @media (min-width: 768px) { grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 1024px) { grid-template-columns: repeat(4, 1fr); }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3);
+        background: var(--color-bg);
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+
+        &-icon { font-size: 1.2rem; }
+    }
+}

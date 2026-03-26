@@ -1,0 +1,53 @@
+/**
+ * Design tokens — La Caracola brand palette and spacing
+ */
+:root {
+    /* Brand colors */
+    --color-primary:  #30596C;
+    --color-primary-light: #4a7d94;
+    --color-primary-dark:  #1e3d4a;
+    --color-accent:   #c7b772;
+    --color-accent-light: #d9cc98;
+    --color-white:    #ffffff;
+    --color-bg:       #f8f9fa;
+    --color-text:     #1a1a1a;
+    --color-text-muted: #5a6a70;
+    --color-border:   #dde3e6;
+
+    /* Typography */
+    --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+
+    /* Spacing scale */
+    --space-1:  0.25rem;
+    --space-2:  0.5rem;
+    --space-3:  0.75rem;
+    --space-4:  1rem;
+    --space-6:  1.5rem;
+    --space-8:  2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+
+    /* Breakpoints (reference only — use in media queries) */
+    --bp-sm:  640px;
+    --bp-md:  768px;
+    --bp-lg:  1024px;
+    --bp-xl:  1280px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.12);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.16);
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 400ms ease;
+}
