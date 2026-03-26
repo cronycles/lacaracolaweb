@@ -6,7 +6,7 @@
 @push('schema')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@@context": "https://schema.org",
   "@type": "LodgingBusiness",
   "name": "{{ config('apartment.name') }}",
   "description": "@yield('description')",

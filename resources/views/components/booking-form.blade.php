@@ -42,17 +42,17 @@
         <div class="booking-form__group">
             <label for="adults">{{ __('app.booking_adults') }} *</label>
             <select id="adults" name="adults" required>
-                @for($i = 1; $i <= 6; $i++)
+                @foreach (range(1, 6) as $i)
                     <option value="{{ $i }}" {{ old('adults', 2) == $i ? 'selected' : '' }}>{{ $i }}</option>
-                @endfor
+                @endforeach
             </select>
         </div>
         <div class="booking-form__group">
             <label for="children">{{ __('app.booking_children') }}</label>
             <select id="children" name="children">
-                @for($i = 0; $i <= 5; $i++)
+                @foreach (range(0, 5) as $i)
                     <option value="{{ $i }}" {{ old('children', 0) == $i ? 'selected' : '' }}>{{ $i }}</option>
-                @endfor
+                @endforeach
             </select>
         </div>
     </div>
