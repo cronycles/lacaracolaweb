@@ -195,6 +195,15 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'checkin'  => 'check-in',
+        'checkout' => 'check-out',
+        'adults'   => 'adults',
+        'children' => 'children',
+        'name'     => 'name',
+        'email'    => 'email',
+        'phone'    => 'phone',
+        'message'  => 'message',
+    ],
 
 ];

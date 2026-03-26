@@ -14,7 +14,7 @@
             <li><a href="{{ route('map') }}"          class="nav__link @active('map')">{{ __('app.nav_map') }}</a></li>
             <li><a href="{{ route('experiences') }}"  class="nav__link @active('experiences')">{{ __('app.nav_experiences') }}</a></li>
             <li><a href="{{ route('reviews') }}"      class="nav__link @active('reviews')">{{ __('app.nav_reviews') }}</a></li>
-            <li><a href="{{ route('booking.thanks') }}" class="nav__link @active('booking*')">{{ __('app.nav_booking') }}</a></li>
+            <li><a href="{{ route('home') }}#booking" class="nav__link @active('home')">{{ __('app.nav_booking') }}</a></li>
         </ul>
 
         {{-- Language switcher --}}
@@ -42,7 +42,7 @@
     <a href="{{ route('map') }}">{{ __('app.nav_map') }}</a>
     <a href="{{ route('experiences') }}">{{ __('app.nav_experiences') }}</a>
     <a href="{{ route('reviews') }}">{{ __('app.nav_reviews') }}</a>
-    <a href="{{ route('booking.thanks') }}">{{ __('app.nav_booking') }}</a>
+    <a href="{{ route('home') }}#booking">{{ __('app.nav_booking') }}</a>
     <a href="{{ route('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Language buttons inside mobile menu --}}

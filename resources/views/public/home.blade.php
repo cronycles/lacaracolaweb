@@ -86,7 +86,8 @@
     </div>
 </section>
 
-{{-- SEO content (semantic, below fold) --}}
+{{-- SEO content: Italian keywords only — intentionally not translated --}}
+@if(app()->getLocale() === 'it')
 <section class="seo-section" aria-label="Informazioni SEO">
     <div class="container seo-section__content">
         <h2>Appartamento in affitto ad Andora — La Caracola</h2>
@@ -104,5 +105,6 @@
         </p>
     </div>
 </section>
+@endif
 
 @endsection

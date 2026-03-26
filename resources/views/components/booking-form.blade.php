@@ -1,9 +1,9 @@
 {{-- Booking availability request form component --}}
 {{-- Shared between home page (embedded) and standalone booking page --}}
 
-@if(session('errors') && session('errors')->has('checkout'))
+@if($errors->isNotEmpty())
     <div class="booking-form__error" style="display:block;color:#dc2626;margin-bottom:1rem;padding:.75rem;background:#fef2f2;border-radius:.5rem">
-        {{ session('errors')->first('checkout') }}
+        {{ $errors->first() }}
     </div>
 @endif
 
@@ -27,6 +27,7 @@
                    value="{{ old('checkin') }}"
                    min="{{ date('Y-m-d') }}"
                    required>
+            @error('checkin') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
         </div>
         <div class="booking-form__group">
             <label for="checkout">{{ __('app.booking_checkout') }} *</label>
@@ -34,6 +35,7 @@
                    value="{{ old('checkout') }}"
                    min="{{ date('Y-m-d', strtotime('+3 days')) }}"
                    required>
+            @error('checkout') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
         </div>
     </div>
 
@@ -61,12 +63,14 @@
     <div class="booking-form__group" style="margin-top:.5rem">
         <label for="name">{{ __('app.booking_name') }} *</label>
         <input type="text" id="name" name="name" value="{{ old('name') }}" required maxlength="100" autocomplete="name">
+        @error('name') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
     </div>
 
     <div class="booking-form__row" style="margin-top:.5rem">
         <div class="booking-form__group">
             <label for="email">{{ __('app.booking_email') }} *</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}" required maxlength="150" autocomplete="email">
+            @error('email') <span style="color:#dc2626;font-size:.8rem;display:block;margin-top:.2rem">{{ $message }}</span> @enderror
         </div>
         <div class="booking-form__group">
             <label for="phone">{{ __('app.booking_phone') }}</label>

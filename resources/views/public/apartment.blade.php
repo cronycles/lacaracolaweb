@@ -29,19 +29,18 @@
             @endforeach
         </div>
 
-        {{-- Gallery placeholder --}}
+        {{-- Gallery placeholder — replace src with real images when available --}}
         <h2 class="section-title" style="font-size:1.4rem;margin-top:3rem">Galleria</h2>
         <div class="gallery">
-            {{-- Replace with real images --}}
-            @for($i = 1; $i <= 6; $i++)
+            @foreach(range(1, 6) as $i)
             <div class="gallery__item">
-                <img src="{{ asset('images/apartment-' . $i . '.jpg') }}"
+                <img src="https://placehold.co/600x400?text=Foto+{{ $i }}"
                      alt="{{ config('apartment.name') }} — foto {{ $i }}"
                      loading="{{ $i <= 2 ? 'eager' : 'lazy' }}"
                      width="600" height="400">
                 <div class="gallery__overlay" aria-hidden="true">🔍</div>
             </div>
-            @endfor
+            @endforeach
         </div>
 
         {{-- Lightbox --}}

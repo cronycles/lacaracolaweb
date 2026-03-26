@@ -46,11 +46,18 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 2 — Booking Switch e Automazioni Iniziali
+## Fase 2 — Booking Switch, Form UX e Automazioni Iniziali
 
 - [ ] Implementazione Flow C (switch in area privata):
   - modalità richiesta disponibilità (attuale),
   - modalità link esterno configurabile (Airbnb / Booking / Interhome).
+- [ ] **Form richiesta disponibilità — UX completa**:
+  - Invio AJAX (nessun reload di pagina).
+  - Errori inline per campo, summary elegante non invasiva.
+  - Stato loading sul bottone submit + success message in-page.
+  - Messaggi di errore localizzati (IT/EN/FR/DE) e tono uniforme.
+  - Protezione anti-spam (honeypot o Cloudflare Turnstile).
+- [ ] **Sezione SEO home page per lingua** — testo SEO localizzato (IT/EN/FR/DE) al posto del blocco italiano fisso; con URL localizzati corretti e `hreflang`.
 - [ ] Ingestion semiautomatica prenotazioni da testo email incollato.
 - [ ] Migliorie calendario (vista mensile visuale).
 
@@ -67,6 +74,9 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 ---
 
 ## Fase 4 — Crescita Commerciale e Contenuti
+
+- [ ] **URL localizzati per SEO** — es. `/en/apartment`, `/fr/appartement` invece di `/appartamento?lang=fr`. Richiede rotte con prefisso locale e redirect canonici.
+- [ ] Traduzione testi hardcoded in italiano nelle view (`apartment.blade.php`: "posti letto", "Servizi inclusi", "Galleria", ecc.).
 
 - [ ] Espansione contenuti SEO locali multilingua.
 - [ ] Migliorie UX su conversione mobile.
