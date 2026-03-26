@@ -35,10 +35,10 @@
 {{-- Hero with rotating slides --}}
 <section class="hero" aria-label="Hero">
     <div class="hero-slider" aria-hidden="true">
-        {{-- Placeholder slides — replace src with real images --}}
-        <div class="hero-slider__slide active" style="background-image:url('{{ asset('images/hero-1.jpg') }}')"></div>
-        <div class="hero-slider__slide"         style="background-image:url('{{ asset('images/hero-2.jpg') }}')"></div>
-        <div class="hero-slider__slide"         style="background-image:url('{{ asset('images/hero-3.jpg') }}')"></div>
+        @foreach(config('apartment.images.hero') as $i => $heroPath)
+        <div class="hero-slider__slide {{ $i === 0 ? 'active' : '' }}"
+             style="background-image:url('{{ asset($heroPath) }}')"></div>
+        @endforeach
     </div>
 
     <div class="hero__content">

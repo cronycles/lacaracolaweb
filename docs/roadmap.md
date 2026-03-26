@@ -37,12 +37,11 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [x] 45 rotte registrate e validate.
 
 ### Prossimi passi prima del primo deploy
-- [ ] Produzione utente admin iniziale (`php artisan db:seed --class=AdminUserSeeder`).
-- [ ] Impostare `ADMIN_PASSWORD` in `.env`.
-- [ ] Test end-to-end manuale dell'intero flusso (pubblico + admin).
-- [ ] Caricare immagini hero reali in `public/images/`.
-- [ ] Configurare dominio e hosting cPanel.
-- [ ] `vendor/` **NON** ignorato da git (hosting senza Composer — vedere nota deploy sotto).
+- [x] Produzione utente admin iniziale (`php artisan db:seed --class=AdminUserSeeder`).
+- [x] Impostare `ADMIN_PASSWORD` in `.env`.
+- [x] Test end-to-end manuale dell'intero flusso (pubblico + admin).
+- [x] `vendor/` **NON** ignorato da git (hosting senza Composer — vedere nota deploy sotto).
+- [ ] Caricare immagini reali in `public/images/` (path centralizzati in `config/apartment.php` → `images.hero`, `images.gallery`, `images.og`).
 
 ---
 

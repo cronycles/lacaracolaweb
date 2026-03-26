@@ -15,7 +15,7 @@
     <meta property="og:url"         content="{{ url()->current() }}">
     <meta property="og:title"       content="@yield('title', config('apartment.seo.' . app()->getLocale() . '.title'))">
     <meta property="og:description" content="@yield('description', config('apartment.seo.' . app()->getLocale() . '.description'))">
-    <meta property="og:image"       content="@yield('og_image', asset('images/og-default.jpg'))">
+    <meta property="og:image"       content="@yield('og_image', asset(config('apartment.images.og')))">
     <meta property="og:locale"      content="{{ str_replace('-', '_', app()->getLocale()) }}">
 
     {{-- Schema.org JSON-LD for local SEO --}}

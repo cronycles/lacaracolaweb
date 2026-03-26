@@ -94,7 +94,7 @@ app/
       SetLocale   # Browser/session-based locale detection
   Models/         # Person, Booking, AvailabilityBlock, PricingRule
 config/
-  apartment.php   # Stable apartment content (name, address, amenities, rules)
+  apartment.php   # Stable apartment content (name, address, amenities, rules, **images**)
 lang/
   it/ en/ fr/ de/ # Translation files
 resources/
@@ -111,6 +111,26 @@ routes/
 database/
   migrations/     # people, bookings, availability_blocks, pricing_rules
 ```
+
+## Adding / Replacing Images
+
+All image paths are centralised in `config/apartment.php` under the `images` key — **no Blade files need to be touched**.
+
+```php
+'images' => [
+    'hero'    => ['images/hero-1.jpg', 'images/hero-2.jpg', 'images/hero-3.jpg'],
+    'gallery' => ['images/apartment-1.jpg', ..., 'images/apartment-6.jpg'],
+    'og'      => 'images/og-default.jpg',
+],
+```
+
+Steps:
+1. Copy the image files into `public/images/`.
+2. Update the paths in `config/apartment.php` under `images`.
+3. Run `php artisan config:clear` (or `config:cache` in production).
+
+**Gallery smart fallback:** if a file does not exist in `public/`, the gallery automatically shows a `placehold.co` placeholder — no broken images.
+You can freely add or remove items from `images.gallery` and the gallery renders accordingly.
 
 ## Development Phases
 

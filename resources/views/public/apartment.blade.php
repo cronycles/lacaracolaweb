@@ -29,14 +29,15 @@
             @endforeach
         </div>
 
-        {{-- Gallery placeholder — replace src with real images when available --}}
+        {{-- Gallery — paths centralised in config/apartment.php images.gallery --}}
         <h2 class="section-title" style="font-size:1.4rem;margin-top:3rem">Galleria</h2>
         <div class="gallery">
-            @foreach(range(1, 6) as $i)
+            @foreach(config('apartment.images.gallery') as $i => $imgPath)
+            @php $n = $i + 1; $exists = file_exists(public_path($imgPath)); @endphp
             <div class="gallery__item">
-                <img src="https://placehold.co/600x400?text=Foto+{{ $i }}"
-                     alt="{{ config('apartment.name') }} — foto {{ $i }}"
-                     loading="{{ $i <= 2 ? 'eager' : 'lazy' }}"
+                <img src="{{ $exists ? asset($imgPath) : 'https://placehold.co/600x400?text=Foto+' . $n }}"
+                     alt="{{ config('apartment.name') }} — foto {{ $n }}"
+                     loading="{{ $i < 2 ? 'eager' : 'lazy' }}"
                      width="600" height="400">
                 <div class="gallery__overlay" aria-hidden="true">🔍</div>
             </div>
