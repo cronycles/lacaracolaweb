@@ -129,6 +129,14 @@ Steps:
 2. Update the paths in `config/apartment.php` under `images`.
 3. Run `php artisan config:clear` (or `config:cache` in production).
 
+**Recommended dimensions:**
+
+| Key | Count | Recommended size | Notes |
+|-----|-------|-----------------|-------|
+| `hero` | 3 | **1920 × 1080 px** | Full-viewport background, `cover` — wider is better |
+| `gallery` | 6 (adjustable) | **1200 × 800 px** | Masonry layout, free aspect ratio |
+| `og` | 1 | **1200 × 630 px** | Open Graph standard (Facebook, WhatsApp previews) |
+
 **Gallery smart fallback:** if a file does not exist in `public/`, the gallery automatically shows a `placehold.co` placeholder — no broken images.
 You can freely add or remove items from `images.gallery` and the gallery renders accordingly.
 
