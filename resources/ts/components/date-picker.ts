@@ -188,10 +188,15 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
             return btn;
         }
 
-        btn.addEventListener('mouseover', () => {
+        btn.addEventListener('mouseenter', () => {
             if (phase === 'selecting-checkout') {
-                hoverDate = date;
-                render();
+                // Guard: only re-render when the hover date actually changes.
+                // Without this, each render() destroys the button and the browser
+                // fires another mouseenter on the new element → infinite render loop.
+                if (!hoverDate || !isSameDay(hoverDate, date)) {
+                    hoverDate = date;
+                    render();
+                }
             }
         });
         btn.addEventListener('click', (e) => { e.stopPropagation(); onDayClick(date); });
@@ -295,6 +300,14 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
             phase = 'selecting-checkout';
             render();
             syncTriggers();
+        }
+    });
+
+    // Clear hover preview when mouse leaves the calendar
+    opts.popup.addEventListener('mouseleave', () => {
+        if (phase === 'selecting-checkout' && hoverDate !== null) {
+            hoverDate = null;
+            if (!opts.popup.hidden) render();
         }
     });
 
