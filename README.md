@@ -36,6 +36,7 @@ Built with Laravel + MySQL + TypeScript + PostCSS + Vite + ESLint.
 | `docs/roadmap.md` | Development phases and priorities |
 | `docs/content-model.md` | Config vs database decisions, entity schema |
 | `docs/dev-instructions.md` | Developer workflow, links to Copilot instructions |
+| `docs/fase2-checklist-test-manuale.md` | Manual test checklist for completed Phase 2 items |
 
 ## Copilot Instructions (`.github/`)
 

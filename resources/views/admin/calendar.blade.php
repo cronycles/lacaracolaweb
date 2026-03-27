@@ -3,12 +3,167 @@
 @section('title', 'Calendario disponibilità')
 
 @section('content')
+    @php
+        use Carbon\Carbon;
+
+        $months = [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->addMonth()->startOfMonth(),
+            Carbon::now()->addMonths(2)->startOfMonth(),
+        ];
+
+        $bookedDays = [];
+        foreach ($bookings as $bookingItem) {
+            $cursor = Carbon::parse($bookingItem->checkin)->startOfDay();
+            $checkoutDate = Carbon::parse($bookingItem->checkout)->startOfDay();
+
+            while ($cursor->lt($checkoutDate)) {
+                $bookedDays[$cursor->format('Y-m-d')] = true;
+                $cursor->addDay();
+            }
+        }
+
+        $ownerDays = [];
+        $maintenanceDays = [];
+        foreach ($blocks as $blockItem) {
+            $cursor = Carbon::parse($blockItem->start_date)->startOfDay();
+            $blockEnd = Carbon::parse($blockItem->end_date)->startOfDay();
+            $blockType = $blockItem->type ?? $blockItem->reason;
+
+            while ($cursor->lte($blockEnd)) {
+                $dateKey = $cursor->format('Y-m-d');
+                if ($blockType === 'owner') {
+                    $ownerDays[$dateKey] = true;
+                } else {
+                    $maintenanceDays[$dateKey] = true;
+                }
+                $cursor->addDay();
+            }
+        }
+    @endphp
+
+    <style>
+        .cal-grid-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .cal-month {
+            border: 1px solid #dde3e8;
+            border-radius: .5rem;
+            padding: .75rem;
+            background: #fafcfd;
+        }
+        .cal-month__title {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #1e3d4a;
+            margin-bottom: .65rem;
+            text-transform: capitalize;
+        }
+        .cal-month__weekdays,
+        .cal-month__days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: .35rem;
+        }
+        .cal-month__weekdays {
+            margin-bottom: .4rem;
+        }
+        .cal-month__weekday {
+            font-size: .68rem;
+            font-weight: 600;
+            color: #6b7f89;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .cal-day {
+            border: 1px solid #e5eaee;
+            border-radius: .35rem;
+            background: #fff;
+            color: #1a2b34;
+            min-height: 1.9rem;
+            display: grid;
+            place-items: center;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+        .cal-day--blank {
+            border-color: transparent;
+            background: transparent;
+        }
+        .cal-day--booked {
+            background: #30596C;
+            border-color: #30596C;
+            color: #fff;
+        }
+        .cal-day--owner {
+            background: #9333ea;
+            border-color: #9333ea;
+            color: #fff;
+        }
+        .cal-day--maintenance {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: #1a2b34;
+        }
+    </style>
+
     <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
 
         {{-- Left: event list --}}
         <div>
             <div class="a-card">
                 <div class="a-card__title">Prenotazioni attive</div>
+
+                <div class="cal-grid-wrap">
+                    @foreach ($months as $month)
+                        @php
+                            $monthStart = $month->copy();
+                            $daysInMonth = $monthStart->daysInMonth;
+                            $firstWeekDay = $monthStart->dayOfWeekIso;
+                        @endphp
+
+                        <div class="cal-month">
+                            <div class="cal-month__title">{{ $monthStart->translatedFormat('F Y') }}</div>
+
+                            <div class="cal-month__weekdays">
+                                <span class="cal-month__weekday">Lun</span>
+                                <span class="cal-month__weekday">Mar</span>
+                                <span class="cal-month__weekday">Mer</span>
+                                <span class="cal-month__weekday">Gio</span>
+                                <span class="cal-month__weekday">Ven</span>
+                                <span class="cal-month__weekday">Sab</span>
+                                <span class="cal-month__weekday">Dom</span>
+                            </div>
+
+                            <div class="cal-month__days">
+                                @for ($i = 1; $i < $firstWeekDay; $i++)
+                                    <span class="cal-day cal-day--blank" aria-hidden="true"></span>
+                                @endfor
+
+                                @for ($day = 1; $day <= $daysInMonth; $day++)
+                                    @php
+                                        $currentDate = $monthStart->copy()->day($day);
+                                        $dateKey = $currentDate->format('Y-m-d');
+                                        $dayClass = '';
+
+                                        if (isset($ownerDays[$dateKey])) {
+                                            $dayClass = 'cal-day--owner';
+                                        } elseif (isset($maintenanceDays[$dateKey])) {
+                                            $dayClass = 'cal-day--maintenance';
+                                        } elseif (isset($bookedDays[$dateKey])) {
+                                            $dayClass = 'cal-day--booked';
+                                        }
+                                    @endphp
+
+                                    <span class="cal-day {{ $dayClass }}">{{ $day }}</span>
+                                @endfor
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
 
                 {{-- Legend --}}
                 <div class="cal-legend">

@@ -103,25 +103,14 @@
     </div>
 </section>
 
-{{-- SEO content: Italian keywords only — intentionally not translated --}}
-@if(app()->getLocale() === 'it')
-<section class="seo-section" aria-label="Informazioni SEO">
+{{-- SEO text block — localised for all 4 languages --}}
+<section class="seo-section" aria-label="{{ __('app.seo_home_h2') }}">
     <div class="container seo-section__content">
-        <h2>Appartamento in affitto ad Andora — La Caracola</h2>
-        <p>
-            <strong>La Caracola</strong> è un accogliente appartamento per vacanze situato a <strong>Marina di Andora</strong>,
-            nel cuore della <strong>Riviera Ligure di Ponente</strong>, in provincia di Savona.
-            A pochi passi dalla spiaggia, offre soggiorno, cucina, 2 camere da letto matrimoniali e fino a
-            <strong>6 posti letto</strong>, perfetto per famiglie e coppie.
-        </p>
-        <h3>Affitto breve Andora e dintorni</h3>
-        <p>
-            Se stai cercando un <strong>affitto breve ad Andora</strong>, una <strong>casa vacanze sul mare in Liguria</strong>
-            o un <strong>appartamento in affitto vicino ad Alassio</strong>, La Caracola è la scelta ideale.
-            Godetevi la Liguria: borghi medievali, spiagge dorate, ottima cucina e la vicinanza alla Costa Azzurra.
-        </p>
+        <h2>{{ __('app.seo_home_h2') }}</h2>
+        <p>{!! __('app.seo_home_p1') !!}</p>
+        <h3>{{ __('app.seo_home_h3') }}</h3>
+        <p>{!! __('app.seo_home_p2') !!}</p>
     </div>
 </section>
-@endif
 
 @endsection

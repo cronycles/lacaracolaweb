@@ -59,6 +59,12 @@ return [
     'booking_external_btn'   => 'Vérifier la disponibilité',
     'error_min_nights'      => 'Le séjour minimum est de :nights nuits.',
 
+    // --- SEO text blocks (bottom of home page) ---
+    'seo_home_h2' => 'Appartement de vacances à Andora - La Caracola',
+    'seo_home_p1' => '<strong>La Caracola</strong> est un appartement de vacances accueillant situé à <strong>Marina di Andora</strong>, au coeur de la <strong>Riviera ligure de Ponente</strong>. A quelques pas de la plage, il propose un séjour, une cuisine, 2 chambres doubles et jusqu\'à <strong>6 couchages</strong>, parfait pour les familles et les couples.',
+    'seo_home_h3' => 'Location courte durée près d\'Alassio, Ligurie',
+    'seo_home_p2' => 'Si vous cherchez une <strong>location courte durée à Andora</strong>, une <strong>maison de vacances en Ligurie en bord de mer</strong> ou un <strong>appartement près d\'Alassio</strong>, La Caracola est une excellente option.',
+
     'amenity_sea_view'      => 'Vue mer',
     'amenity_garden'        => 'Jardin',
     'amenity_balcony'       => 'Terrasse',

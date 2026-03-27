@@ -58,6 +58,12 @@ return [
     'booking_external_text'  => 'Verfügbarkeit und Buchung werden auf einer externen Plattform verwaltet. Klicken Sie unten, um Daten zu prüfen und fortzufahren.',
     'booking_external_btn'   => 'Verfügbarkeit prüfen',
 
+    // --- SEO text blocks (bottom of home page) ---
+    'seo_home_h2' => 'Ferienwohnung in Andora - La Caracola',
+    'seo_home_p1' => '<strong>La Caracola</strong> ist eine einladende Ferienwohnung in <strong>Marina di Andora</strong>, an der wunderschönen <strong>westlichen ligurischen Riviera</strong>. Nur wenige Schritte vom Strand entfernt bietet sie Wohnzimmer, Küche, 2 Doppelzimmer und bis zu <strong>6 Schlafplätze</strong>, ideal für Paare und Familien.',
+    'seo_home_h3' => 'Kurzzeitvermietung nahe Alassio, Ligurien',
+    'seo_home_p2' => 'Wenn Sie eine <strong>Kurzzeitmiete in Andora</strong>, ein <strong>Ferienhaus am Meer in Ligurien</strong> oder eine <strong>Wohnung nahe Alassio</strong> suchen, ist La Caracola die passende Wahl.',
+
     'amenity_sea_view'      => 'Meerblick',
     'amenity_garden'        => 'Garten',
     'amenity_balcony'       => 'Balkon',

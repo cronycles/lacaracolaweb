@@ -58,6 +58,12 @@ return [
     'booking_external_text'  => 'Availability and booking are managed on an external platform. Click below to check dates and proceed.',
     'booking_external_btn'   => 'Check availability',
 
+    // --- SEO text blocks (bottom of home page) ---
+    'seo_home_h2' => 'Holiday apartment for rent in Andora - La Caracola',
+    'seo_home_p1' => '<strong>La Caracola</strong> is a welcoming holiday apartment in <strong>Marina di Andora</strong>, on the beautiful <strong>Western Ligurian Riviera</strong>. Just steps from the beach, it offers a living room, kitchen, 2 double bedrooms and up to <strong>6 beds</strong>, ideal for couples and families.',
+    'seo_home_h3' => 'Short-term rental near Alassio, Liguria',
+    'seo_home_p2' => 'If you are looking for a <strong>short-term rental in Andora</strong>, a <strong>holiday home in Liguria by the sea</strong> or an <strong>apartment near Alassio</strong>, La Caracola is the right choice for your stay.',
+
     'amenity_sea_view'      => 'Sea view',
     'amenity_garden'        => 'Garden',
     'amenity_balcony'       => 'Balcony',

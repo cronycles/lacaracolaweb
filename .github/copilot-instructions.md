@@ -10,6 +10,7 @@ Before implementing any feature, read the relevant docs:
 - [`docs/roadmap.md`](../docs/roadmap.md) — Development phases and priorities
 - [`docs/content-model.md`](../docs/content-model.md) — What goes in config files vs database
 - [`docs/dev-instructions.md`](../docs/dev-instructions.md) — Developer workflow guide
+- [`docs/fase2-checklist-test-manuale.md`](../docs/fase2-checklist-test-manuale.md) — Checklist test manuale per i task completati della Fase 2
 
 ## Language Rules (strictly enforced)
 - **Code comments**: always in English

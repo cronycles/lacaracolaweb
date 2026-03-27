@@ -62,6 +62,12 @@ return [
     'booking_external_text'  => 'La disponibilità e la prenotazione sono gestite su una piattaforma esterna. Clicca qui sotto per verificare le date e procedere.',
     'booking_external_btn'   => 'Verifica disponibilità',
 
+    // --- SEO text blocks (bottom of home page) ---
+    'seo_home_h2' => 'Appartamento in affitto ad Andora - La Caracola',
+    'seo_home_p1' => '<strong>La Caracola</strong> è un accogliente appartamento per vacanze situato a <strong>Marina di Andora</strong>, nel cuore della <strong>Riviera Ligure di Ponente</strong>, in provincia di Savona. A pochi passi dalla spiaggia, offre soggiorno, cucina, 2 camere da letto matrimoniali e fino a <strong>6 posti letto</strong>, perfetto per famiglie e coppie.',
+    'seo_home_h3' => 'Affitto breve Andora e dintorni',
+    'seo_home_p2' => 'Se stai cercando un <strong>affitto breve ad Andora</strong>, una <strong>casa vacanze sul mare in Liguria</strong> o un <strong>appartamento in affitto vicino ad Alassio</strong>, La Caracola è la scelta ideale. Goditi la Liguria tra borghi, spiagge e ottima cucina.',
+
     // --- Amenities ---
     'amenity_sea_view'      => 'Vista mare',
     'amenity_garden'        => 'Giardino',

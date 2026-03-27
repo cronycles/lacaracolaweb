@@ -18,6 +18,12 @@
     <meta property="og:image"       content="@yield('og_image', asset(config('apartment.images.og')))">
     <meta property="og:locale"      content="{{ str_replace('-', '_', app()->getLocale()) }}">
 
+    {{-- hreflang alternate links for multilingual SEO --}}
+    @foreach (['it', 'en', 'fr', 'de'] as $loc)
+        <link rel="alternate" hreflang="{{ $loc }}" href="{{ url('/') }}?lang={{ $loc }}">
+    @endforeach
+    <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
+
     {{-- Schema.org JSON-LD for local SEO --}}
     @stack('schema')
 
