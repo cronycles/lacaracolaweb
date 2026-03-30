@@ -58,9 +58,11 @@ class BookingEmailParser
     private function detectSource(string $text): string
     {
         $lower = mb_strtolower($text);
-        if (str_contains($lower, 'interhome'))  return 'interhome';
-        if (str_contains($lower, 'airbnb'))     return 'airbnb';
-        if (str_contains($lower, 'booking.com')) return 'booking';
+        if (str_contains($lower, 'interhome'))               return 'interhome';
+        // Interhome property code format: IT1850.726.1
+        if (preg_match('/\b[A-Z]{2}\d{4}\.\d+\.\d+\b/', $text)) return 'interhome';
+        if (str_contains($lower, 'airbnb'))                  return 'airbnb';
+        if (str_contains($lower, 'booking.com'))             return 'booking';
         return 'direct';
     }
 
@@ -143,6 +145,8 @@ class BookingEmailParser
             '/(?:ospite|cliente|titolare|booking name|guest name?|guest|name|nome|prénom et nom|gast)\s*[:\-]\s*([A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+ [A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+)/iu',
             // Greeting: "Caro Mario Rossi," / "Dear John Smith,"
             '/(?:caro|cara|dear|bonjour|lieber?|gentile)\s+([A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+ [A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+)/iu',
+            // Standalone line: exactly two capitalised words (e.g. "Michele Acquistapace")
+            '/^([A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+\s+[A-ZÀ-Ö][a-zA-ZÀ-ÿ\'\-]+)\s*$/mu',
         ];
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $text, $m)) {
