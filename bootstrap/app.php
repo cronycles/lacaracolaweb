@@ -16,9 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Apply locale detection to all web requests
+        // Apply locale detection (from route prefix or session/header) to all web requests
         $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\ResolveLocaleFromRoute::class,
         ]);
 
         // Unauthenticated users on admin routes => redirect to admin login
