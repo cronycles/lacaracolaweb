@@ -62,17 +62,7 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 3 — Parsing Email Interhome Automatico
-
-- [ ] Acquisizione email da mailbox dedicata.
-- [ ] Parsing template prenotazioni Interhome.
-- [ ] Creazione/aggiornamento ospite e soggiorno automatica.
-- [ ] Blocco automatico date nel calendario.
-- [ ] Log errori parser e gestione eccezioni.
-
----
-
-## Fase 4 — Crescita Commerciale e Contenuti
+## Fase 3 — Crescita Commerciale e Contenuti
 
 - [ ] **URL localizzati per SEO** — es. `/en/apartment`, `/fr/appartement` invece di `/appartamento?lang=fr`. Richiede rotte con prefisso locale e redirect canonici.
 - [ ] Traduzione testi hardcoded in italiano nelle view (`apartment.blade.php`: "posti letto", "Servizi inclusi", "Galleria", ecc.).
@@ -81,6 +71,16 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [ ] Migliorie UX su conversione mobile.
 - [ ] Gestione recensioni più evoluta (import da piattaforme).
 - [ ] Dashboard KPI base (tasso occupazione, provenienza prenotazioni).
+
+---
+
+## Fase 4 — Parsing Email Interhome Automatico
+
+- [ ] Acquisizione email da mailbox dedicata.
+- [ ] Parsing template prenotazioni Interhome.
+- [ ] Creazione/aggiornamento ospite e soggiorno automatica.
+- [ ] Blocco automatico date nel calendario.
+- [ ] Log errori parser e gestione eccezioni.
 
 ---
 
