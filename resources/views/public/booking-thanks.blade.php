@@ -11,7 +11,7 @@
         <p class="section-subtitle" style="margin-inline:auto">
             {{ __('app.booking_thanks_text') }}
         </p>
-        <a href="{{ route('home') }}" class="btn btn--primary" style="margin-top:1rem">
+        <a href="{{ route_locale('home') }}" class="btn btn--primary" style="margin-top:1rem">
             ← Torna alla Home
         </a>
     </div>

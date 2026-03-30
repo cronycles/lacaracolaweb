@@ -20,9 +20,9 @@
 
     {{-- hreflang alternate links for multilingual SEO --}}
     @foreach (['it', 'en', 'fr', 'de'] as $loc)
-        <link rel="alternate" hreflang="{{ $loc }}" href="{{ url('/') }}?lang={{ $loc }}">
+        <link rel="alternate" hreflang="{{ $loc }}" href="{{ route_locale('home', [], $loc) }}">
     @endforeach
-    <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
+    <link rel="alternate" hreflang="x-default" href="{{ route_locale('home') }}">
 
     {{-- Schema.org JSON-LD for local SEO --}}
     @stack('schema')

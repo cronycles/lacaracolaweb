@@ -10,7 +10,7 @@
 
 <form id="booking-form"
       method="POST"
-      action="{{ route('booking.request') }}"
+      action="{{ route_locale('booking.request') }}"
       class="booking-form"
       data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
       data-error-past="{{ __('app.error_checkin_past') }}"
