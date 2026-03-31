@@ -219,10 +219,15 @@ Serve solo:
 
 Con deploy copy-only, le migration non vengono eseguite automaticamente.
 
-Puoi scegliere una delle due opzioni:
+**Procedura raccomandata** (verificata in produzione):
 
-1. Eseguire migration manualmente quando hai accesso shell.
-2. Riattivare i task artisan con `CPANEL_RUN_ARTISAN=1`.
+1. Apri cPanel -> Terminal.
+2. Entra nella cartella app: `cd ~/lacaracola-app`
+3. Lancia: `php artisan migrate --force`
+
+> Attenzione: se il `.env` ha `DB_PASSWORD` con caratteri speciali come `#`, la password va racchiusa tra virgolette oppure usare una password senza caratteri speciali per evitare errori di accesso MySQL.
+
+In alternativa, riattiva i task artisan nel deploy automatico con `CPANEL_RUN_ARTISAN=1`.
 
 ## SSL e HTTPS
 
@@ -251,13 +256,28 @@ Controlli minimi:
 Controlla:
 
 - `.env` presente in `/home/lacaraco/lacaracola-app/.env`
-- credenziali MySQL corrette
+- credenziali MySQL corrette (password senza caratteri speciali come `#` nel `.env`)
+- `DB_CONNECTION=mysql` esplicitamente presente nel `.env` (senza questo, Laravel usa SQLite)
 - estensioni PHP abilitate
 - log Laravel in `storage/logs/laravel.log`
 
 ### GitHub Actions fallisce con 401
 
 - token cPanel scaduto o errato
+
+### `Call to undefined function route_locale()`
+
+Succede se `app/helpers.php` (dove è definita la funzione globale) è dentro un file con `namespace`. La funzione deve stare in un file senza namespace. Controlla che `app/helpers.php` non abbia `namespace` in cima e che sia registrato in `composer.json` nella sezione `autoload.files`.
+
+### `NameError: name 'null' is not defined` nel workflow
+
+Errore di parsing JSON nel blocco Python del workflow. Il problema è un conflitto di stdin tra heredoc Python e herestring bash. Soluzione: passare il body JSON via variabile d'ambiente invece di stdin (vedi `deploy.yml` attuale).
+
+### Accesso negato MySQL (`Access denied for user`)
+
+- Verifica che l'utente sia associato al database in cPanel -> MySQL Databases
+- Verifica che la password nel `.env` non contenga caratteri speciali non escapati
+- Il `DB_HOST` deve essere `localhost` (non `127.0.0.1` né hostname remoto su hosting condiviso)
 - `CPANEL_USER` errato
 - `CPANEL_HOST` errato
 

@@ -71,23 +71,53 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [x] Dashboard KPI base (tasso occupazione, provenienza prenotazioni).
 
 
-## Fase 4 — Deploy su Hosting cPanel ← FASE CORRENTE
+## Fase 4 — Deploy su Hosting cPanel ✅ COMPLETATA
 
 > **Nota deploy**: l'hosting non ha Composer. La strategia è:
 > - `vendor/` è versionato in git (non ignorato).
 > - `public/build/` (assets Vite) è versionato in git.
-> - Il deploy consiste nel copiare/pushare i file nella cartella corretta sul server.
-> - Niente pipeline CI/CD complessa in questa fase — copia diretta.
-> - Migrazioni eseguite manualmente via `php artisan migrate` sul server (se la shell è disponibile) o tramite script SQL generato.
+> - Il deploy consiste nel copiare i file con pipeline GitHub Actions → cPanel API.
+> - Script `scripts/deploy.sh` in modalità copy-only (niente artisan/composer sul server).
+> - Migrazioni eseguite manualmente via `php artisan migrate` dal cPanel Terminal.
 
-- [ ] Configurazione `.env` di produzione (MySQL, dominio, mail).
-- [ ] Prima migrazione su DB MySQL di produzione.
-- [ ] Verifica rotte, cache config (`php artisan config:cache`).
+- [x] Configurazione DNS dominio su Cloudflare (tutti i record su DNS only).
+- [x] Configurazione PHP 8.3+ e estensioni su cPanel.
+- [x] Creazione database MySQL `lacaraco_lacaracolaweb` con utente `lacaraco_cronycles`.
+- [x] Repo Git su cPanel (Git Version Control).
+- [x] Token API cPanel creato (`github-deploy`) e secrets GitHub Actions impostati.
+- [x] Pipeline deploy GitHub Actions funzionante (push → deploy automatico su `main`).
+- [x] File `.env` di produzione creato in `/home/lacaraco/lacaracola-app/.env`.
+- [x] Prima migrazione su DB MySQL di produzione via cPanel Terminal.
+- [x] Sito live su `https://lacaracolaandora.com`.
+- [ ] SSL/TLS con Let's Encrypt attivato su cPanel.
+- [ ] Proxy Cloudflare attivato (nuvola arancione) su `@` e `www` dopo SSL ok.
 - [ ] Redirect HTTP→HTTPS e `www` → no-www.
+- [ ] Rotazione chiave SSH `id_rsa_supporthost` (passphrase compromessa in sessione di setup).
+- [ ] Caricamento immagini reali in `public/images/`.
+
+### Bug risolti durante il deploy iniziale
+
+- **YAML syntax error** nel workflow `.github/workflows/deploy.yml` (blocco Python heredoc mal indentato).
+- **Errore `NameError: name 'null'`** nel parsing risposta cPanel: stdin redirect conflitto con heredoc Python — risolto passando `$BODY` via variabile d'ambiente.
+- **`DB_CONNECTION` mancante** nel `.env` produzione: Laravel usava SQLite di default — aggiunto `DB_CONNECTION=mysql`.
+- **`route_locale()` undefined**: funzione globale definita dentro un file con `namespace App\Support` — spostata in `app/helpers.php` senza namespace.
 
 ---
 
-## Fase 5 — Parsing Email Interhome Automatico
+## Fase 5 — Completamento Deploy e Stabilizzazione ← FASE CORRENTE
+
+- [ ] SSL/TLS completato e HTTPS verificato su tutti i path.
+- [ ] Proxy Cloudflare attivato (nuvola arancione) su dominio e `www`.
+- [ ] Redirect HTTP→HTTPS e `www` → no-www verificato.
+- [ ] Login admin funzionante in produzione (seed `AdminUserSeeder` eseguito o utente creato).
+- [ ] Caricamento immagini reali in `public/images/` (path in `config/apartment.php`).
+- [ ] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD).
+- [ ] Rotazione chiave SSH `id_rsa_supporthost`.
+- [ ] Verifica invio email (SMTP produzione configurato in `.env`).
+
+---
+
+## Fase 6 — Parsing Email Interhome Automatico
 
 - [ ] Acquisizione email da mailbox dedicata.
 - [ ] Parsing template prenotazioni Interhome.
