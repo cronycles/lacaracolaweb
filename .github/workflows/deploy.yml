@@ -70,12 +70,11 @@ jobs:
             exit 1
           fi
 
-          python3 - <<'PYCODE' <<<"$BODY"
-          import json
-          import sys
+          DEPLOY_BODY="$BODY" python3 <<'PYCODE'
+          import json, os, sys
 
           try:
-              data = json.load(sys.stdin)
+              data = json.loads(os.environ['DEPLOY_BODY'])
               if data.get('status') == 1:
                   print('Deploy completed successfully')
               else:
