@@ -1,8 +1,7 @@
 # Roadmap di Sviluppo
 
-Ultimo aggiornamento: 2026-03-26
+Ultimo aggiornamento: 2026-03-31
 
----
 
 ## Fase 0 — Fondazioni ✅ COMPLETATA
 
@@ -45,46 +44,34 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 2 — Booking Switch, Form UX e Automazioni Iniziali
+## Fase 2 — Booking Switch, Form UX e Automazioni Iniziali ✅ COMPLETATA
 
-- [ ] Implementazione Flow C (switch in area privata):
-  - modalità richiesta disponibilità (attuale),
+- [x] Implementazione Flow C (switch in area privata):
+  - modalità richiesta disponibilità,
   - modalità link esterno configurabile (Airbnb / Booking / Interhome).
-- [ ] **Form richiesta disponibilità — UX completa**:
-  - Invio AJAX (nessun reload di pagina).
-  - Errori inline per campo, summary elegante non invasiva.
-  - Stato loading sul bottone submit + success message in-page.
-  - Messaggi di errore localizzati (IT/EN/FR/DE) e tono uniforme.
-  - Protezione anti-spam (honeypot o Cloudflare Turnstile).
-- [ ] **Sezione SEO home page per lingua** — testo SEO localizzato (IT/EN/FR/DE) al posto del blocco italiano fisso; con URL localizzati corretti e `hreflang`.
-- [ ] Ingestion semiautomatica prenotazioni da testo email incollato.
-- [ ] Migliorie calendario (vista mensile visuale).
+- [x] **Form richiesta disponibilità — UX completa**:
+  - invio AJAX (nessun reload di pagina),
+  - errori inline per campo,
+  - stato loading sul bottone submit + success message in-page,
+  - messaggi di errore localizzati (IT/EN/FR/DE),
+  - protezione anti-spam honeypot,
+  - date picker visuale e toggle newsletter migliorato.
+- [x] **Sezione SEO home page per lingua**.
+- [x] Ingestion semiautomatica prenotazioni da testo email incollato.
+- [x] Migliorie calendario (vista mensile visuale).
 
----
 
-## Fase 3 — Crescita Commerciale e Contenuti
+## Fase 3 — Crescita Commerciale e Contenuti ✅ COMPLETATA
 
-- [ ] **URL localizzati per SEO** — es. `/en/apartment`, `/fr/appartement` invece di `/appartamento?lang=fr`. Richiede rotte con prefisso locale e redirect canonici.
-- [ ] Traduzione testi hardcoded in italiano nelle view (`apartment.blade.php`: "posti letto", "Servizi inclusi", "Galleria", ecc.).
+- [x] **URL localizzati per SEO** — es. `/en/apartment`, `/fr/appartement` invece di `/appartamento?lang=fr`.
+- [x] Traduzione testi hardcoded in italiano nelle view pubbliche principali.
+- [x] Espansione contenuti SEO locali multilingua.
+- [x] Migliorie UX su conversione mobile.
+- [x] Gestione recensioni più evoluta.
+- [x] Dashboard KPI base (tasso occupazione, provenienza prenotazioni).
 
-- [ ] Espansione contenuti SEO locali multilingua.
-- [ ] Migliorie UX su conversione mobile.
-- [ ] Gestione recensioni più evoluta (import da piattaforme).
-- [ ] Dashboard KPI base (tasso occupazione, provenienza prenotazioni).
 
----
-
-## Fase 4 — Parsing Email Interhome Automatico
-
-- [ ] Acquisizione email da mailbox dedicata.
-- [ ] Parsing template prenotazioni Interhome.
-- [ ] Creazione/aggiornamento ospite e soggiorno automatica.
-- [ ] Blocco automatico date nel calendario.
-- [ ] Log errori parser e gestione eccezioni.
-
----
-
-## Fase 5 — Deploy su Hosting cPanel
+## Fase 4 — Deploy su Hosting cPanel ← FASE CORRENTE
 
 > **Nota deploy**: l'hosting non ha Composer. La strategia è:
 > - `vendor/` è versionato in git (non ignorato).
@@ -97,3 +84,13 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [ ] Prima migrazione su DB MySQL di produzione.
 - [ ] Verifica rotte, cache config (`php artisan config:cache`).
 - [ ] Redirect HTTP→HTTPS e `www` → no-www.
+
+---
+
+## Fase 5 — Parsing Email Interhome Automatico
+
+- [ ] Acquisizione email da mailbox dedicata.
+- [ ] Parsing template prenotazioni Interhome.
+- [ ] Creazione/aggiornamento ospite e soggiorno automatica.
+- [ ] Blocco automatico date nel calendario.
+- [ ] Log errori parser e gestione eccezioni.
