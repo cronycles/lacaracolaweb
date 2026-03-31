@@ -11,6 +11,8 @@ Questa guida descrive il deploy automatico del progetto `lacaracolaweb` su hosti
 - cPanel user: `lacaraco`
 - IP server: `65.108.143.244`
 - Deploy: automatico a ogni push su `main`
+- SSL: attivo via AutoSSL / Let's Encrypt su dominio principale e `www`
+- Cloudflare: proxy attivo su `@` e `www`, record tecnici (`mail`, `cpanel`, `ftp`, `webmail`, `webdisk`, ecc.) lasciati su `DNS only`
 - Database MySQL:
   - DB: `lacaraco_lacaracolaweb`
   - utente: `lacaraco_cronycles`
@@ -169,6 +171,8 @@ CPANEL_USER=lacaraco
 CPANEL_REPOSITORY_ROOT=/home/lacaraco/repositories/lacaracolaweb
 ```
 
+> Nota: il deploy di questo progetto usa i secret `CPANEL_*` e non richiede SSH da GitHub Actions.
+
 ## Come creare il token cPanel
 
 In cPanel:
@@ -227,6 +231,14 @@ Con deploy copy-only, le migration non vengono eseguite automaticamente.
 
 > Attenzione: se il `.env` ha `DB_PASSWORD` con caratteri speciali come `#`, la password va racchiusa tra virgolette oppure usare una password senza caratteri speciali per evitare errori di accesso MySQL.
 
+Per creare l'utente admin iniziale in produzione:
+
+1. Imposta nel `.env`:
+  - `ADMIN_EMAIL=...`
+  - `ADMIN_PASSWORD=...`
+2. Esegui dal cPanel Terminal:
+  - `php artisan db:seed --class=AdminUserSeeder --force`
+
 In alternativa, riattiva i task artisan nel deploy automatico con `CPANEL_RUN_ARTISAN=1`.
 
 ## SSL e HTTPS
@@ -238,6 +250,35 @@ Dopo aver puntato i DNS a SupportHost:
 3. attendi il certificato per `lacaracolaandora.com` e `www.lacaracolaandora.com`
 
 Quando HTTPS funziona correttamente, si puo aggiungere o mantenere il redirect a HTTPS lato hosting.
+
+Configurazione verificata in produzione:
+
+- certificato attivo su `lacaracolaandora.com`
+- certificato attivo su `www.lacaracolaandora.com`
+- redirect `http -> https` attivo
+- redirect `www -> no-www` gestito da `public/.htaccess`
+- proxy Cloudflare riattivato solo dopo la conferma SSL
+
+## SMTP produzione
+
+Configurazione verificata con invio email reale verso la mailbox del dominio:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=mail.lacaracolaandora.com
+MAIL_PORT=465
+MAIL_USERNAME=info@lacaracolaandora.com
+MAIL_PASSWORD=YOUR_MAILBOX_PASSWORD
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=info@lacaracolaandora.com
+MAIL_FROM_NAME="La Caracola"
+```
+
+Test rapido dal cPanel Terminal:
+
+```bash
+php -r "require '/home/lacaraco/lacaracola-app/vendor/autoload.php'; \$app = require '/home/lacaraco/lacaracola-app/bootstrap/app.php'; \$kernel = \$app->make(Illuminate\Contracts\Console\Kernel::class); \$kernel->bootstrap(); Illuminate\Support\Facades\Mail::raw('Test SMTP La Caracola', function (\$message) { \$message->to('info@lacaracolaandora.com')->subject('Test SMTP La Caracola'); }); echo 'MAIL SENT';"
+```
 
 ## Verifiche dopo il deploy
 
@@ -267,7 +308,7 @@ Controlla:
 
 ### `Call to undefined function route_locale()`
 
-Succede se `app/helpers.php` (dove è definita la funzione globale) è dentro un file con `namespace`. La funzione deve stare in un file senza namespace. Controlla che `app/helpers.php` non abbia `namespace` in cima e che sia registrato in `composer.json` nella sezione `autoload.files`.
+Succede se la funzione globale viene definita dentro un file con `namespace`. In questo progetto la funzione deve stare in `app/helpers.php` senza namespace, mentre la classe helper resta in `app/Support/RouteHelper.php`. Controlla anche che `composer.json` registri `app/helpers.php` nella sezione `autoload.files`.
 
 ### `NameError: name 'null' is not defined` nel workflow
 
@@ -278,8 +319,18 @@ Errore di parsing JSON nel blocco Python del workflow. Il problema è un conflit
 - Verifica che l'utente sia associato al database in cPanel -> MySQL Databases
 - Verifica che la password nel `.env` non contenga caratteri speciali non escapati
 - Il `DB_HOST` deve essere `localhost` (non `127.0.0.1` né hostname remoto su hosting condiviso)
-- `CPANEL_USER` errato
-- `CPANEL_HOST` errato
+
+### Il sito usa SQLite invece di MySQL
+
+- Nel `.env` manca `DB_CONNECTION=mysql`
+- Se `DB_CONNECTION` non è valorizzato esplicitamente, Laravel può ricadere sulla configurazione di default
+
+### Rotazione chiavi SSH dopo setup guidato
+
+- Se una chiave privata o passphrase viene condivisa durante una sessione di setup, considerala compromessa
+- Genera una nuova chiave dedicata, importala in cPanel e autorizzala
+- Verifica l'accesso con la nuova chiave
+- Solo dopo il test positivo, rimuovi la chiave vecchia da cPanel e dal computer locale
 
 ### Il deploy aggiorna il repo ma il sito non cambia
 

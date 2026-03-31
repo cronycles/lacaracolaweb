@@ -89,10 +89,10 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [x] File `.env` di produzione creato in `/home/lacaraco/lacaracola-app/.env`.
 - [x] Prima migrazione su DB MySQL di produzione via cPanel Terminal.
 - [x] Sito live su `https://lacaracolaandora.com`.
-- [ ] SSL/TLS con Let's Encrypt attivato su cPanel.
-- [ ] Proxy Cloudflare attivato (nuvola arancione) su `@` e `www` dopo SSL ok.
-- [ ] Redirect HTTP→HTTPS e `www` → no-www.
-- [ ] Rotazione chiave SSH `id_rsa_supporthost` (passphrase compromessa in sessione di setup).
+- [x] SSL/TLS con Let's Encrypt attivato su cPanel.
+- [x] Proxy Cloudflare attivato (nuvola arancione) su `@` e `www` dopo SSL ok.
+- [x] Redirect HTTP→HTTPS e `www` → no-www.
+- [x] Rotazione chiave SSH `id_rsa_supporthost` completata con nuova coppia dedicata.
 - [ ] Caricamento immagini reali in `public/images/`.
 
 ### Bug risolti durante il deploy iniziale
@@ -104,16 +104,16 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 5 — Completamento Deploy e Stabilizzazione ← FASE CORRENTE
+## Fase 5 — Contenuti Finali e QA Produzione ← FASE CORRENTE
 
-- [ ] SSL/TLS completato e HTTPS verificato su tutti i path.
-- [ ] Proxy Cloudflare attivato (nuvola arancione) su dominio e `www`.
-- [ ] Redirect HTTP→HTTPS e `www` → no-www verificato.
-- [ ] Login admin funzionante in produzione (seed `AdminUserSeeder` eseguito o utente creato).
+- [x] SSL/TLS completato e HTTPS verificato sul dominio principale.
+- [x] Proxy Cloudflare attivato (nuvola arancione) su dominio e `www`.
+- [x] Redirect HTTP→HTTPS e `www` → no-www verificato.
+- [x] Login admin funzionante in produzione (seed `AdminUserSeeder` eseguito).
 - [ ] Caricamento immagini reali in `public/images/` (path in `config/apartment.php`).
 - [ ] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD).
-- [ ] Rotazione chiave SSH `id_rsa_supporthost`.
-- [ ] Verifica invio email (SMTP produzione configurato in `.env`).
+- [x] Rotazione chiave SSH `id_rsa_supporthost`.
+- [x] Verifica invio email (SMTP produzione configurato in `.env` e testato).
 
 ---
 
