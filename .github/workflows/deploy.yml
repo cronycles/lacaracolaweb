@@ -1,0 +1,85 @@
+name: Deploy production -> cPanel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'bootstrap/**'
+      - 'config/**'
+      - 'database/**'
+      - 'lang/**'
+      - 'public/**'
+      - 'resources/**'
+      - 'routes/**'
+      - 'tests/**'
+      - 'vendor/**'
+      - 'artisan'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.cpanel.yml'
+      - 'scripts/deploy.sh'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Trigger cPanel Git deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull latest changes in cPanel repository
+        shell: bash
+        run: |
+          RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
+            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update?repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+
+          echo "HTTP: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "HTTP error $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Wait for repository update
+        run: sleep 15
+
+      - name: Run cPanel deployment tasks
+        shell: bash
+        run: |
+          RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
+            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create?repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+
+          echo "HTTP: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "HTTP error $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "$BODY" | python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    if data.get('status') == 1:
+        print('Deploy completed successfully')
+    else:
+        print('Deploy failed:', data)
+        sys.exit(1)
+except Exception as exc:
+    print('Could not parse cPanel response:', exc)
+    sys.exit(1)
+"

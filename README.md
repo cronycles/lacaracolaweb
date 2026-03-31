@@ -36,6 +36,7 @@ Built with Laravel + MySQL + TypeScript + PostCSS + Vite + ESLint.
 | `docs/roadmap.md` | Development phases and priorities |
 | `docs/content-model.md` | Config vs database decisions, entity schema |
 | `docs/dev-instructions.md` | Developer workflow, links to Copilot instructions |
+| `docs/deploy-produzione.md` | Production deploy guide for SupportHost cPanel + Cloudflare |
 | `docs/fase2-checklist-test-manuale.md` | Manual test checklist for completed Phase 2 items |
 
 ## Copilot Instructions (`.github/`)
@@ -145,7 +146,16 @@ You can freely add or remove items from `images.gallery` and the gallery renders
 
 1. **Phase 0** — Documentation and foundations ✅
 2. **Phase 1** — MVP public pages + booking request form + admin area ✅
-3. **Phase 2** — Booking mode switch (form vs external link toggle)
-4. **Phase 3** — Automatic Interhome email parsing
-5. **Phase 4** — SEO content expansion + conversion improvements
-6. **Phase 5** — CI/CD deploy to cPanel hosting
+3. **Phase 2** — Booking switch, form UX and initial automations ✅
+4. **Phase 3** — Growth, multilingual SEO and content expansion ✅
+5. **Phase 4** — Direct deploy to SupportHost cPanel hosting
+6. **Phase 5** — Automatic Interhome email parsing
+
+## Production Deploy
+
+Production deploy is handled by GitHub Actions + cPanel Git deployment.
+
+- Workflow: `.github/workflows/deploy.yml`
+- cPanel entrypoint: `.cpanel.yml`
+- Server-side script: `scripts/deploy.sh`
+- Full guide: `docs/deploy-produzione.md`
