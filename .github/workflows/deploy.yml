@@ -70,16 +70,18 @@ jobs:
             exit 1
           fi
 
-          echo "$BODY" | python3 -c "
-import json, sys
-try:
-    data = json.load(sys.stdin)
-    if data.get('status') == 1:
-        print('Deploy completed successfully')
-    else:
-        print('Deploy failed:', data)
-        sys.exit(1)
-except Exception as exc:
-    print('Could not parse cPanel response:', exc)
-    sys.exit(1)
-"
+          python3 - <<'PYCODE' <<<"$BODY"
+          import json
+          import sys
+
+          try:
+              data = json.load(sys.stdin)
+              if data.get('status') == 1:
+                  print('Deploy completed successfully')
+              else:
+                  print('Deploy failed:', data)
+                  sys.exit(1)
+          except Exception as exc:
+              print('Could not parse cPanel response:', exc)
+              sys.exit(1)
+          PYCODE
