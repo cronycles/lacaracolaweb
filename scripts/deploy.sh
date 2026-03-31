@@ -10,6 +10,7 @@ PHP_BIN_DEFAULT="/opt/cpanel/ea-php84/root/usr/bin/php"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP_DIR="${CPANEL_APP_ROOT:-$HOME/lacaracola-app}"
 WEB_DIR="${CPANEL_WEB_ROOT:-$HOME/public_html}"
+RUN_ARTISAN="${CPANEL_RUN_ARTISAN:-0}"
 
 if [[ -x "$PHP_BIN_DEFAULT" ]]; then
     PHP_BIN="$PHP_BIN_DEFAULT"
@@ -27,6 +28,7 @@ echo "REPO_DIR=$REPO_DIR"
 echo "APP_DIR=$APP_DIR"
 echo "WEB_DIR=$WEB_DIR"
 echo "PHP_BIN=$PHP_BIN"
+echo "RUN_ARTISAN=$RUN_ARTISAN"
 
 echo "=== Step 0: Clean and update repository ==="
 cd "$REPO_DIR"
@@ -91,13 +93,22 @@ require '${APP_DIR}/vendor/autoload.php';
 \$app->handleRequest(Request::capture());
 EOF
 
-echo "=== Step 4: Laravel setup ==="
-cd "$APP_DIR"
-"$PHP_BIN" artisan migrate --force
-"$PHP_BIN" artisan optimize:clear || true
-"$PHP_BIN" artisan config:cache
-"$PHP_BIN" artisan route:cache
-"$PHP_BIN" artisan view:cache
+if [[ "$RUN_ARTISAN" == "1" ]]; then
+    echo "=== Step 4: Laravel setup ==="
+    cd "$APP_DIR"
+
+    if [[ -f "$APP_DIR/artisan" && -f "$APP_DIR/.env" ]]; then
+        "$PHP_BIN" artisan migrate --force
+        "$PHP_BIN" artisan optimize:clear || true
+        "$PHP_BIN" artisan config:cache
+        "$PHP_BIN" artisan route:cache
+        "$PHP_BIN" artisan view:cache
+    else
+        echo "[WARN] Skipping artisan tasks because artisan or .env is missing"
+    fi
+else
+    echo "=== Step 4: Laravel setup skipped (CPANEL_RUN_ARTISAN=$RUN_ARTISAN) ==="
+fi
 
 echo "=== Step 5: Storage symlink and permissions ==="
 rm -rf "$WEB_DIR/storage"

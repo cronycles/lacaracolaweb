@@ -31,7 +31,7 @@ La strategia sicura e usata in questo progetto e:
 
 - `.github/workflows/deploy.yml` — GitHub Actions che chiama le API cPanel
 - `.cpanel.yml` — entrypoint del deploy cPanel
-- `scripts/deploy.sh` — script server-side che aggiorna repo, copia file, esegue migrate/cache/symlink
+- `scripts/deploy.sh` — script server-side che aggiorna repo, copia file e ricrea il symlink storage (modalita default copy-only)
 
 ## Cosa devi fare tu in cPanel / Cloudflare
 
@@ -144,7 +144,13 @@ php artisan key:generate --show
 
 Poi incolla il valore nel file `.env` di produzione.
 
-Se non hai ancora SSH, puoi generarlo in locale e copiarlo nel `.env` di produzione.
+Se non puoi eseguire comandi sul server, puoi generarlo in locale e copiarlo nel `.env` di produzione.
+
+Esempio in locale:
+
+```bash
+php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
+```
 
 ## Segreti GitHub Actions da creare
 
@@ -192,9 +198,15 @@ Una volta fatto:
    - aggiorna il repo server
    - copia l'app fuori da `public_html`
    - copia `public/` dentro `public_html`
-   - esegue `php artisan migrate --force`
-   - esegue cache config/route/view
    - ricrea il symlink `storage`
+
+Per default lo script non esegue comandi artisan (deploy copy-only).
+
+Se in futuro vuoi riattivare migrate/cache nel deploy automatico, imposta la variabile ambiente server:
+
+```bash
+CPANEL_RUN_ARTISAN=1
+```
 
 ## Migrazioni SQL: cosa devi fare davvero
 
@@ -205,11 +217,12 @@ Serve solo:
 - creare il database MySQL vuoto in cPanel
 - configurare correttamente il `.env`
 
-Le migration Laravel verranno eseguite automaticamente dal deploy con:
+Con deploy copy-only, le migration non vengono eseguite automaticamente.
 
-```bash
-php artisan migrate --force
-```
+Puoi scegliere una delle due opzioni:
+
+1. Eseguire migration manualmente quando hai accesso shell.
+2. Riattivare i task artisan con `CPANEL_RUN_ARTISAN=1`.
 
 ## SSL e HTTPS
 
