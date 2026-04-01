@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AvailabilityBlock;
 use App\Models\Booking;
+use App\Models\EmailParseLog;
 use App\Models\Person;
+use App\Services\BookingCreationService;
 use App\Services\BookingEmailParser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -62,41 +63,20 @@ class IngestionController extends Controller
             'notes'        => ['nullable', 'string', 'max:1000'],
         ]);
 
-        // Find existing person by email, or create a new one
-        $person = null;
-        if (!empty($data['email'])) {
-            $person = Person::where('email', $data['email'])->first();
-        }
-        if (!$person) {
-            $person = Person::create([
-                'first_name' => $data['first_name'],
-                'last_name'  => $data['last_name'],
-                'email'      => $data['email'] ?? null,
-                'phone'      => $data['phone'] ?? null,
-            ]);
-        }
-
-        $booking = Booking::create([
-            'person_id'    => $person->id,
-            'checkin'      => $data['checkin'],
-            'checkout'     => $data['checkout'],
-            'adults'       => $data['adults'],
-            'children'     => $data['children'] ?? 0,
-            'babies'       => $data['babies'] ?? 0,
-            'source'       => $data['source'],
-            'external_ref' => $data['external_ref'] ?? null,
-            'notes'        => $data['notes'] ?? null,
-        ]);
-
-        AvailabilityBlock::create([
-            'start_date' => $data['checkin'],
-            'end_date'   => $data['checkout'],
-            'reason'     => 'booked',
-            'booking_id' => $booking->id,
-        ]);
+        $booking = (new BookingCreationService())->createFromParsed($data);
 
         return redirect()
             ->route('admin.bookings.show', $booking)
             ->with('success', 'Prenotazione creata con successo tramite ingestion.');
+    }
+
+    /** Show the automatic email parsing log. */
+    public function emailLog(): View
+    {
+        $logs = EmailParseLog::with('booking.person')
+            ->orderByDesc('created_at')
+            ->paginate(30);
+
+        return view('admin.email-log', compact('logs'));
     }
 }

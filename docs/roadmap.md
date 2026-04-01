@@ -117,10 +117,14 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 6 — Parsing Email Interhome Automatico
+## Fase 6 — Parsing Email Interhome Automatico ✅ COMPLETATA
 
-- [ ] Acquisizione email da mailbox dedicata.
-- [ ] Parsing template prenotazioni Interhome.
-- [ ] Creazione/aggiornamento ospite e soggiorno automatica.
-- [ ] Blocco automatico date nel calendario.
-- [ ] Log errori parser e gestione eccezioni.
+- [x] Acquisizione email da mailbox dedicata (IMAP via `webklex/laravel-imap`).
+- [x] Parsing template prenotazioni Interhome (e Airbnb, Booking, generico).
+- [x] Creazione/aggiornamento ospite e soggiorno automatica (`BookingCreationService`).
+- [x] Blocco automatico date nel calendario (`AvailabilityBlock`).
+- [x] Log errori parser e gestione eccezioni (tabella `email_parse_logs`).
+- [x] Comando artisan `emails:parse-bookings` con opzione `--dry-run`.
+- [x] Scheduling orario via `routes/console.php` (`Schedule::command(...)->hourly()`).
+- [x] Pagina admin "Log email auto" con stato e link alla prenotazione creata.
+- [ ] Configurare variabili `IMAP_*` nel `.env` di produzione e attivare cron in cPanel.
