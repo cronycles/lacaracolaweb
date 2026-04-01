@@ -103,14 +103,14 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 5 — Contenuti Finali e QA Produzione ← FASE CORRENTE
+## Fase 5 — Contenuti Finali e QA Produzione ✅ COMPLETATA
 
 - [x] SSL/TLS completato e HTTPS verificato sul dominio principale.
 - [x] Proxy Cloudflare attivato (nuvola arancione) su dominio e `www`.
 - [x] Redirect HTTP→HTTPS e `www` → no-www verificato.
 - [x] Login admin funzionante in produzione (seed `AdminUserSeeder` eseguito).
-- [ ] Caricamento immagini reali in `public/images/` (path in `config/apartment.php`).
-- [x] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD).
+- [x] Caricamento immagini reali in `public/images/` (path in `config/apartment.php`).
+- [x] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD) — verifica finale manuale eseguita dal proprietario.
 - [x] Rotazione chiave SSH `id_rsa_supporthost`.
 - [x] Verifica invio email (SMTP produzione configurato in `.env` e testato).
 
