@@ -96,5 +96,44 @@
                 @endif
             </div>
         @endif
+
+        <div class="a-card">
+            <div class="a-card__title">Storico import PDF (audit)</div>
+
+            @if (empty($recentLogs) || $recentLogs->isEmpty())
+                <p style="color:#6b7f89;font-size:.875rem">Nessun import registrato finora.</p>
+            @else
+                <div style="overflow:auto">
+                    <table class="a-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>File</th>
+                                <th>Nuove</th>
+                                <th>Create</th>
+                                <th>Duplicate</th>
+                                <th>Saltate</th>
+                                <th>Errori</th>
+                                <th>Utente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($recentLogs as $log)
+                                <tr>
+                                    <td>{{ $log->created_at?->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $log->file_name }}</td>
+                                    <td>{{ $log->new_rows }}</td>
+                                    <td>{{ $log->created_rows }}</td>
+                                    <td>{{ $log->duplicate_rows }}</td>
+                                    <td>{{ $log->skipped_rows }}</td>
+                                    <td>{{ $log->error_rows }}</td>
+                                    <td>{{ $log->importedByUser?->email ?? '—' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
     </div>
 @endsection

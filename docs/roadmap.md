@@ -110,18 +110,18 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [x] Redirect HTTP→HTTPS e `www` → no-www verificato.
 - [x] Login admin funzionante in produzione (seed `AdminUserSeeder` eseguito).
 - [ ] Caricamento immagini reali in `public/images/` (path in `config/apartment.php`).
-- [ ] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD).
+- [x] Test end-to-end completo in produzione (form booking, lang switcher, admin CRUD).
 - [x] Rotazione chiave SSH `id_rsa_supporthost`.
 - [x] Verifica invio email (SMTP produzione configurato in `.env` e testato).
 
 ---
 
-## Fase 6 — Import Prenotazioni PDF Interhome (IN CORSO)
+## Fase 6 — Import Prenotazioni PDF Interhome ✅ COMPLETATA
 
 - [x] Upload manuale PDF in area privata con analisi anteprima (dry-run).
 - [x] Parsing robusto del PDF e normalizzazione righe prenotazione.
 - [x] Import idempotente (solo nuove prenotazioni).
-- [ ] Log import (nuove, duplicate, errori) per audit.
+- [x] Log import (nuove, duplicate, errori) per audit.
 - [x] Disattivazione completa flusso email/IMAP (completata il 2026-04-01).
 
 ---

@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\InterhomePdfImportLog;
 use App\Services\BookingCreationService;
 use App\Services\InterhomePdfBookingParser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Throwable;
 
@@ -21,6 +23,10 @@ class InterhomePdfImportController extends Controller
     {
         return view('admin.interhome-pdf-import', [
             'preview' => $request->session()->get(self::PREVIEW_SESSION_KEY),
+            'recentLogs' => InterhomePdfImportLog::with('importedByUser')
+                ->orderByDesc('created_at')
+                ->limit(15)
+                ->get(),
         ]);
     }
 
@@ -61,7 +67,13 @@ class InterhomePdfImportController extends Controller
 
         $request->session()->put(self::PREVIEW_SESSION_KEY, $preview);
 
-        return view('admin.interhome-pdf-import', compact('preview'));
+        return view('admin.interhome-pdf-import', [
+            'preview' => $preview,
+            'recentLogs' => InterhomePdfImportLog::with('importedByUser')
+                ->orderByDesc('created_at')
+                ->limit(15)
+                ->get(),
+        ]);
     }
 
     public function confirm(Request $request, BookingCreationService $creationService): RedirectResponse
@@ -74,38 +86,74 @@ class InterhomePdfImportController extends Controller
         }
 
         $created = 0;
+        $duplicates = 0;
         $skipped = 0;
+        $errors = 0;
+        $newRows = 0;
+        $errorDetails = [];
 
         foreach ($preview['rows'] as $row) {
             $currentStatus = $this->resolveImportStatus($row);
+            if (($currentStatus['status'] ?? '') === 'duplicate') {
+                $duplicates++;
+                continue;
+            }
+
             if (($currentStatus['status'] ?? '') !== 'new') {
                 $skipped++;
                 continue;
             }
 
-            $creationService->createFromParsed([
-                'first_name' => $row['first_name'],
-                'last_name' => $row['last_name'],
-                'email' => $row['email'] ?: null,
-                'phone' => $row['phone'] ?: null,
-                'checkin' => $row['checkin'],
-                'checkout' => $row['checkout'],
-                'adults' => (int) $row['adults'],
-                'children' => (int) $row['children'],
-                'babies' => (int) $row['babies'],
-                'source' => $row['source'] === 'owner' ? 'owner' : 'interhome',
-                'external_ref' => $row['external_ref'] ?: null,
-                'notes' => 'Imported from Interhome PDF: ' . ($preview['filename'] ?? 'unknown file'),
-            ]);
+            $newRows++;
 
-            $created++;
+            try {
+                $creationService->createFromParsed([
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'email' => $row['email'] ?: null,
+                    'phone' => $row['phone'] ?: null,
+                    'checkin' => $row['checkin'],
+                    'checkout' => $row['checkout'],
+                    'adults' => (int) $row['adults'],
+                    'children' => (int) $row['children'],
+                    'babies' => (int) $row['babies'],
+                    'source' => $row['source'] === 'owner' ? 'owner' : 'interhome',
+                    'external_ref' => $row['external_ref'] ?: null,
+                    'notes' => 'Imported from Interhome PDF: ' . ($preview['filename'] ?? 'unknown file'),
+                ]);
+
+                $created++;
+            } catch (Throwable $exception) {
+                $errors++;
+
+                $errorDetails[] = [
+                    'external_ref' => (string) ($row['external_ref'] ?? ''),
+                    'guest' => trim(((string) ($row['first_name'] ?? '')) . ' ' . ((string) ($row['last_name'] ?? ''))),
+                    'message' => $exception->getMessage(),
+                ];
+            }
         }
+
+        InterhomePdfImportLog::create([
+            'imported_by_user_id' => Auth::id(),
+            'file_name' => (string) ($preview['filename'] ?? 'unknown-file.pdf'),
+            'total_rows' => count($preview['rows'] ?? []),
+            'new_rows' => $newRows,
+            'created_rows' => $created,
+            'duplicate_rows' => $duplicates,
+            'skipped_rows' => $skipped,
+            'error_rows' => $errors,
+            'warnings' => $preview['warnings'] ?? [],
+            'error_details' => $errorDetails,
+        ]);
 
         $request->session()->forget(self::PREVIEW_SESSION_KEY);
 
+        $errorChunk = $errors > 0 ? " Errori: {$errors}." : '';
+
         return redirect()
             ->route('admin.bookings.index')
-            ->with('success', "Import completato. Nuove prenotazioni create: {$created}. Saltate: {$skipped}.");
+            ->with('success', "Import completato. Nuove prenotazioni create: {$created}. Duplicate: {$duplicates}. Saltate: {$skipped}.{$errorChunk}");
     }
 
     /**
