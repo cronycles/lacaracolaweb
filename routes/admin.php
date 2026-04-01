@@ -43,4 +43,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');
     Route::put('/impostazioni', [SettingsController::class, 'update'])->name('settings.update');
 
+    // Account security (password change)
+    Route::get('/impostazioni/sicurezza', [SettingsController::class, 'accountSecurity'])->name('account-security');
+    Route::post('/impostazioni/sicurezza/password', [SettingsController::class, 'updatePassword'])->name('account-security.update-password');
+
 });

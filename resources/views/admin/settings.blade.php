@@ -12,6 +12,13 @@
             </div>
         @endif
 
+        {{-- Quick links card --}}
+        <div style="background:#f3f4f6;border-radius:8px;padding:1rem;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+            <a href="{{ route('admin.account-security') }}" class="btn btn--outline">
+                🔐 Cambia Password
+            </a>
+        </div>
+
         {{-- Booking mode card --}}
         <div class="a-card">
             <div class="a-card__title">Modalità Prenotazione</div>

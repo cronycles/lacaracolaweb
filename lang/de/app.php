@@ -194,6 +194,17 @@ return [
     'footer_contact' => 'Kontakt',
     'footer_legal'   => '© :year La Caracola — Alle Rechte vorbehalten.',
 
+    // --- Admin: Account Security ---
+    'admin_account_title'              => 'Kontosicherheit',
+    'admin_account_subtitle'           => 'Verwalten Sie Ihr Admin-Kontokennwort.',
+    'admin_password_current'           => 'Aktuelles Passwort',
+    'admin_password_new'               => 'Neues Passwort',
+    'admin_password_confirm'           => 'Passwort bestätigen',
+    'admin_password_submit'            => 'Passwort ändern',
+    'admin_password_success'           => 'Passwort erfolgreich geändert. Sie wurden abgemeldet; verwenden Sie Ihr neues Passwort zum Anmelden.',
+    'admin_password_error_current'     => 'Das aktuelle Passwort ist falsch.',
+    'admin_password_error_mismatch'    => 'Die beiden Passwörter stimmen nicht überein.',
+    'admin_password_requirements'      => 'Das neue Passwort muss sich vom vorherigen unterscheiden und mindestens 8 Zeichen enthalten.',
 
     // --- Experiences ---
     'experiences_title'    => 'Erlebnisse und Umgebung',

@@ -12,8 +12,12 @@ return [
     'email'          => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
     'string'         => 'Das Feld :attribute muss eine Zeichenkette sein.',
     'boolean'        => 'Das Feld :attribute ist ungültig.',
+    'confirmed'      => 'Das Feld :attribute stimmt nicht überein.',
+    'current_password' => 'Das Passwort ist falsch.',
+    'password_different' => 'Das neue Passwort kann nicht mit dem vorherigen identisch sein.',
     'min'            => [
         'numeric' => 'Der Mindestwert für :attribute ist :min.',
+        'string'  => 'Das Feld :attribute muss mindestens :min Zeichen enthalten.',
     ],
     'max'            => [
         'numeric' => 'Der Höchstwert für :attribute ist :max.',
@@ -29,5 +33,8 @@ return [
         'email'    => 'E-Mail',
         'phone'    => 'Telefon',
         'message'  => 'Nachricht',
+        'current_password' => 'aktuelles Passwort',
+        'password' => 'Passwort',
+        'password_confirmation' => 'Passwortbestätigung',
     ],
 ];

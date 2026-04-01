@@ -169,6 +169,18 @@ return [
     'reviews_subtitle' => 'Real reviews from Airbnb and Booking.com.',
     'reviews_source'   => 'Via :source',
 
+    // --- Admin: Account Security ---
+    'admin_account_title'              => 'Account Security',
+    'admin_account_subtitle'           => 'Manage your admin account password.',
+    'admin_password_current'           => 'Current Password',
+    'admin_password_new'               => 'New Password',
+    'admin_password_confirm'           => 'Confirm Password',
+    'admin_password_submit'            => 'Change Password',
+    'admin_password_success'           => 'Password changed successfully. You have been logged out; use your new password to sign in.',
+    'admin_password_error_current'     => 'The current password is incorrect.',
+    'admin_password_error_mismatch'    => 'The two passwords do not match.',
+    'admin_password_requirements'      => 'The new password must be different from the previous one and contain at least 8 characters.',
+
     'footer_desc'  => 'Holiday apartment by the sea in Andora, Savona. Liguria, Italy.',
     'footer_links' => 'Quick Links',
     'footer_contact' => 'Contact',

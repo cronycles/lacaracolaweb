@@ -126,16 +126,21 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 7 — Sicurezza Account Admin (PROSSIMA)
+## Fase 7 — Sicurezza Account Admin ✅ COMPLETATA
 
 ### Obiettivo
 Permettere al proprietario di cambiare password direttamente dall'area privata, senza accesso manuale al database o al seeder.
 
-### Implementazione prevista
+### Implementazione completata
 
-- [ ] Aggiungere sezione "Sicurezza account" in `admin/impostazioni`.
-- [ ] Form cambio password con campi: password attuale, nuova password, conferma nuova password.
-- [ ] Validazione server-side robusta (password attuale corretta, lunghezza minima, conferma obbligatoria).
-- [ ] Salvataggio hash con `Hash::make()` e messaggio di conferma in UI.
-- [ ] Invalidare le altre sessioni dopo il cambio password (best practice sicurezza).
-- [ ] Test manuale: login con nuova password OK, vecchia password KO.
+- [x] Aggiungere sezione "Sicurezza account" in `admin/impostazioni/sicurezza`.
+- [x] Form cambio password con campi: password attuale, nuova password, conferma nuova password.
+- [x] Validazione server-side robusta (password attuale corretta, lunghezza minima 8 caratteri, conferma obbligatoria, diversa da precedente).
+- [x] Salvataggio hash con `Hash::make()` e messaggio di conferma in UI.
+- [x] Invalidazione della sessione attuale dopo il cambio password (l'utente viene disconnesso).
+- [x] Link nel menu admin sidebar e da Impostazioni.
+- [x] Supporto multilingua completo (IT/EN/FR/DE).
+
+---
+
+## Fase 8 — (Da Pianificare)

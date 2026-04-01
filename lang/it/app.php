@@ -175,6 +175,18 @@ return [
     'reviews_subtitle' => 'Recensioni reali da Airbnb e Booking.com.',
     'reviews_source'   => 'Via :source',
 
+    // --- Admin: Account Security ---
+    'admin_account_title'              => 'Sicurezza Account',
+    'admin_account_subtitle'           => 'Gestisci la password del tuo account admin.',
+    'admin_password_current'           => 'Password Attuale',
+    'admin_password_new'               => 'Nuova Password',
+    'admin_password_confirm'           => 'Conferma Password',
+    'admin_password_submit'            => 'Cambia Password',
+    'admin_password_success'           => 'Password cambiata con successo. Ti abbiamo disconnesso; usa la nuova password per accedere.',
+    'admin_password_error_current'     => 'La password attuale non è corretta.',
+    'admin_password_error_mismatch'    => 'Le due password non corrispondono.',
+    'admin_password_requirements'      => 'La nuova password deve essere diversa dalla precedente e contenere almeno 8 caratteri.',
+
     // --- Footer ---
     'footer_desc'      => 'Appartamento vacanza sul mare ad Andora, Savona. Liguria, Italia.',
     'footer_links'     => 'Link Utili',

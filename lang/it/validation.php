@@ -12,8 +12,12 @@ return [
     'email'          => 'Inserire un indirizzo email valido.',
     'string'         => 'Il campo :attribute deve essere un testo.',
     'boolean'        => 'Il campo :attribute non è valido.',
+    'confirmed'      => 'Il campo :attribute non corrisponde.',
+    'current_password' => 'La password è incorretta.',
+    'password_different' => 'La nuova password non può essere uguale a quella precedente.',
     'min'            => [
         'numeric' => 'Il valore minimo per :attribute è :min.',
+        'string'  => 'Il campo :attribute deve contenere almeno :min caratteri.',
     ],
     'max'            => [
         'numeric' => 'Il valore massimo per :attribute è :max.',
@@ -29,5 +33,8 @@ return [
         'email'    => 'email',
         'phone'    => 'telefono',
         'message'  => 'messaggio',
+        'current_password' => 'password attuale',
+        'password' => 'password',
+        'password_confirmation' => 'conferma password',
     ],
 ];

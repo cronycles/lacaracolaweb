@@ -331,6 +331,11 @@
                     ⚙️ Impostazioni
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.account-security') }}" @class(['active' => request()->routeIs('admin.account-security*')])>
+                    🔐 Sicurezza Account
+                </a>
+            </li>
         </ul>
 
         <div class="admin-sidebar__footer">
