@@ -34,9 +34,21 @@ class BookingCreationService
     public function createFromParsed(array $data): Booking
     {
         $person = null;
+
         if (!empty($data['email'])) {
             $person = Person::where('email', $data['email'])->first();
         }
+
+        if (!$person && !empty($data['phone'])) {
+            $person = Person::where('phone', $data['phone'])->first();
+        }
+
+        if (!$person) {
+            $person = Person::where('first_name', $data['first_name'])
+                ->where('last_name', $data['last_name'])
+                ->first();
+        }
+
         if (!$person) {
             $person = Person::create([
                 'first_name' => $data['first_name'],
@@ -44,6 +56,15 @@ class BookingCreationService
                 'email'      => $data['email'] ?? null,
                 'phone'      => $data['phone'] ?? null,
             ]);
+        } else {
+            // Enrich existing guest when import brings missing contacts.
+            if (empty($person->email) && !empty($data['email'])) {
+                $person->email = $data['email'];
+            }
+            if (empty($person->phone) && !empty($data['phone'])) {
+                $person->phone = $data['phone'];
+            }
+            $person->save();
         }
 
         $booking = Booking::create([

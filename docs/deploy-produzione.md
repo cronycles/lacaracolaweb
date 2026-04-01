@@ -348,3 +348,10 @@ Il flusso automatico IMAP/email è stato dismesso il 2026-04-01.
 
 La prossima integrazione prevista è l'import da PDF Interhome (manuale in area privata, poi eventuale automazione).
 
+### Utilizzo import PDF manuale (area admin)
+
+1. Apri `admin/prenotazioni/import-pdf`.
+2. Carica il PDF esportato da Interhome.
+3. Verifica l'anteprima dry-run (nuove vs duplicate).
+4. Conferma l'import per creare solo le prenotazioni nuove.
+

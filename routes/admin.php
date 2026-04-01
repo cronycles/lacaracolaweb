@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\PricingController;
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\SettingsController;
@@ -26,6 +27,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Bookings
     Route::resource('prenotazioni', BookingController::class)->names('bookings');
+    Route::get('/prenotazioni/import-pdf', [InterhomePdfImportController::class, 'index'])->name('bookings.import-pdf');
+    Route::post('/prenotazioni/import-pdf/preview', [InterhomePdfImportController::class, 'preview'])->name('bookings.import-pdf.preview');
+    Route::post('/prenotazioni/import-pdf/confirm', [InterhomePdfImportController::class, 'confirm'])->name('bookings.import-pdf.confirm');
 
     // People / guests
     Route::resource('ospiti', PersonController::class)->names('people');

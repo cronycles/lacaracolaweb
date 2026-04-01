@@ -116,13 +116,13 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 6 — Import Prenotazioni PDF Interhome (IN PIANIFICAZIONE)
+## Fase 6 — Import Prenotazioni PDF Interhome (IN CORSO)
 
-- [ ] Upload manuale PDF in area privata con analisi anteprima (dry-run).
-- [ ] Parsing robusto del PDF e normalizzazione righe prenotazione.
-- [ ] Import idempotente (solo nuove prenotazioni).
+- [x] Upload manuale PDF in area privata con analisi anteprima (dry-run).
+- [x] Parsing robusto del PDF e normalizzazione righe prenotazione.
+- [x] Import idempotente (solo nuove prenotazioni).
 - [ ] Log import (nuove, duplicate, errori) per audit.
-- [ ] Disattivazione completa flusso email/IMAP (completata il 2026-04-01).
+- [x] Disattivazione completa flusso email/IMAP (completata il 2026-04-01).
 
 ---
 

@@ -312,6 +312,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.bookings.import-pdf') }}" @class(['active' => request()->routeIs('admin.bookings.import-pdf*')])>
+                    📄 Import PDF
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.people.index') }}" @class(['active' => request()->routeIs('admin.people*')])>
                     👥 Ospiti
                 </a>
