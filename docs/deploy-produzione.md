@@ -338,40 +338,13 @@ Errore di parsing JSON nel blocco Python del workflow. Il problema è un conflit
 - verifica che `.cpanel.yml` sia presente nel repo sul server
 - verifica che il workflow GitHub Actions venga eseguito in verde
 
-## IMAP — Parsing email automatico (Fase 6)
+## Import prenotazioni (stato attuale)
 
-La casella dedicata è `booking@lacaracolaandora.com` (già creata su SupportHost cPanel).
+Il flusso automatico IMAP/email è stato dismesso il 2026-04-01.
 
-### Variabili `.env` da aggiungere in produzione
+- Non configurare variabili `IMAP_*` nel `.env`.
+- Non è richiesto alcun comando `emails:parse-bookings`.
+- Le sezioni admin legate a ingestion email e log email sono state rimosse.
 
-```env
-IMAP_HOST=mail.lacaracolaandora.com
-IMAP_PORT=993
-IMAP_ENCRYPTION=ssl
-IMAP_VALIDATE_CERT=true
-IMAP_USERNAME=booking@lacaracolaandora.com
-IMAP_PASSWORD=YOUR_BOOKING_MAILBOX_PASSWORD
-```
-
-### Cron job in cPanel
-
-In cPanel → **Cron Jobs**, aggiungi:
-
-```
-* * * * * /opt/cpanel/ea-php84/root/usr/bin/php /home/lacaraco/lacaracola-app/artisan schedule:run >> /dev/null 2>&1
-```
-
-Il comando `emails:parse-bookings` verrà eseguito ogni ora automaticamente.
-
-### Test manuale dal cPanel Terminal
-
-```bash
-cd ~/lacaracola-app
-php artisan emails:parse-bookings --dry-run   # parse senza salvare
-php artisan emails:parse-bookings             # esecuzione reale
-```
-
-### Log delle email elaborate
-
-Disponibile nell'area admin → **Log email auto** (`/admin/email-log`).
+La prossima integrazione prevista è l'import da PDF Interhome (manuale in area privata, poi eventuale automazione).
 

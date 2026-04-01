@@ -57,7 +57,6 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
   - protezione anti-spam honeypot,
   - date picker visuale e toggle newsletter migliorato.
 - [x] **Sezione SEO home page per lingua**.
-- [x] Ingestion semiautomatica prenotazioni da testo email incollato.
 - [x] Migliorie calendario (vista mensile visuale).
 
 
@@ -117,17 +116,13 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 
 ---
 
-## Fase 6 — Parsing Email Interhome Automatico ✅ COMPLETATA
+## Fase 6 — Import Prenotazioni PDF Interhome (IN PIANIFICAZIONE)
 
-- [x] Acquisizione email da mailbox dedicata (IMAP via `webklex/laravel-imap`).
-- [x] Parsing template prenotazioni Interhome (e Airbnb, Booking, generico).
-- [x] Creazione/aggiornamento ospite e soggiorno automatica (`BookingCreationService`).
-- [x] Blocco automatico date nel calendario (`AvailabilityBlock`).
-- [x] Log errori parser e gestione eccezioni (tabella `email_parse_logs`).
-- [x] Comando artisan `emails:parse-bookings` con opzione `--dry-run`.
-- [x] Scheduling orario via `routes/console.php` (`Schedule::command(...)->hourly()`).
-- [x] Pagina admin "Log email auto" con stato e link alla prenotazione creata.
-- [x] Variabili `IMAP_*` configurate in produzione (mailbox `booking@lacaracolaandora.com`) e cron cPanel attivo.
+- [ ] Upload manuale PDF in area privata con analisi anteprima (dry-run).
+- [ ] Parsing robusto del PDF e normalizzazione righe prenotazione.
+- [ ] Import idempotente (solo nuove prenotazioni).
+- [ ] Log import (nuove, duplicate, errori) per audit.
+- [ ] Disattivazione completa flusso email/IMAP (completata il 2026-04-01).
 
 ---
 

@@ -35,7 +35,8 @@
 
 ### 2.3 Funzionalita post-MVP
 - Flow C: toggle da area privata tra booking form e link esterno.
-- Parsing automatico email prenotazione Interhome.
+- Import prenotazioni Interhome da PDF (manuale in area privata).
+- Automazione download PDF Interhome (solo se supportata ufficialmente).
 - Blocco date automatico da prenotazioni importate.
 - Cambio password account admin direttamente da area privata (con verifica password attuale).
 - Estensioni CMS contenuti/foto più avanzate.

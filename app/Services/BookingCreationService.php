@@ -9,8 +9,7 @@ use App\Models\Booking;
 use App\Models\Person;
 
 /**
- * Creates a booking (+ person + availability block) from a parsed email array.
- * Used by both IngestionController (manual) and ProcessInboxEmails (automatic).
+ * Creates a booking (+ person + availability block) from normalized imported data.
  */
 class BookingCreationService
 {

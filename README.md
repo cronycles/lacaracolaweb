@@ -149,7 +149,8 @@ You can freely add or remove items from `images.gallery` and the gallery renders
 3. **Phase 2** — Booking switch, form UX and initial automations ✅
 4. **Phase 3** — Growth, multilingual SEO and content expansion ✅
 5. **Phase 4** — Direct deploy to SupportHost cPanel hosting
-6. **Phase 5** — Automatic Interhome email parsing
+6. **Phase 5** — Final production QA and content completion
+7. **Phase 6** — Interhome PDF booking import (planned)
 
 ## Production Deploy
 

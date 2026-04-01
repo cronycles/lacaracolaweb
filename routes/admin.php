@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\Admin\IngestionController;
 use Illuminate\Support\Facades\Route;
 
 // Admin area — protected by auth middleware
@@ -40,11 +39,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');
     Route::put('/impostazioni', [SettingsController::class, 'update'])->name('settings.update');
 
-    // Booking email ingestion (manual)
-    Route::get('/ingestion', [IngestionController::class, 'index'])->name('ingestion');
-    Route::post('/ingestion/parse', [IngestionController::class, 'parse'])->name('ingestion.parse');
-    Route::post('/ingestion/store', [IngestionController::class, 'store'])->name('ingestion.store');
-
-    // Automatic email parsing log
-    Route::get('/email-log', [IngestionController::class, 'emailLog'])->name('email-log');
 });

@@ -322,16 +322,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.ingestion') }}" @class(['active' => request()->routeIs('admin.ingestion*')])>
-                    📧 Ingestion email
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.email-log') }}" @class(['active' => request()->routeIs('admin.email-log*')])>
-                    📬 Log email auto
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('admin.settings') }}" @class(['active' => request()->routeIs('admin.settings*')])>
                     ⚙️ Impostazioni
                 </a>
