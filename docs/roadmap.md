@@ -1,6 +1,6 @@
 # Roadmap di Sviluppo
 
-Ultimo aggiornamento: 2026-03-31
+Ultimo aggiornamento: 2026-04-01
 
 
 ## Fase 0 — Fondazioni ✅ COMPLETATA
@@ -127,4 +127,20 @@ Rilasciare un sito pubblicabile con lead generation indiretta e gestione base op
 - [x] Comando artisan `emails:parse-bookings` con opzione `--dry-run`.
 - [x] Scheduling orario via `routes/console.php` (`Schedule::command(...)->hourly()`).
 - [x] Pagina admin "Log email auto" con stato e link alla prenotazione creata.
-- [ ] Configurare variabili `IMAP_*` nel `.env` di produzione e attivare cron in cPanel.
+- [x] Variabili `IMAP_*` configurate in produzione (mailbox `booking@lacaracolaandora.com`) e cron cPanel attivo.
+
+---
+
+## Fase 7 — Sicurezza Account Admin (PROSSIMA)
+
+### Obiettivo
+Permettere al proprietario di cambiare password direttamente dall'area privata, senza accesso manuale al database o al seeder.
+
+### Implementazione prevista
+
+- [ ] Aggiungere sezione "Sicurezza account" in `admin/impostazioni`.
+- [ ] Form cambio password con campi: password attuale, nuova password, conferma nuova password.
+- [ ] Validazione server-side robusta (password attuale corretta, lunghezza minima, conferma obbligatoria).
+- [ ] Salvataggio hash con `Hash::make()` e messaggio di conferma in UI.
+- [ ] Invalidare le altre sessioni dopo il cambio password (best practice sicurezza).
+- [ ] Test manuale: login con nuova password OK, vecchia password KO.
