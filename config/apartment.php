@@ -22,8 +22,8 @@ return [
         'zip'      => '17051',
         'region'   => 'Liguria',
         'country'  => 'Italy',
-        'lat'      => 43.9552,
-        'lng'      => 8.2533,
+        'lat'      => 43.95255349558721,
+        'lng'      => 8.153381834769661,
     ],
 
     // --- Property specs ---

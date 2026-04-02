@@ -83,6 +83,18 @@
                 background: var(--color-bg);
             }
         }
+
+        &--desktop {
+            display: none;
+
+            @media (min-width: 768px) {
+                display: flex;
+            }
+        }
+
+        &--mobile {
+            display: flex;
+        }
     }
 
     &__burger {
@@ -117,7 +129,6 @@
         }
 
         &__logo-name {
-            font-size: 0.82rem;
             letter-spacing: 0.02em;
             max-width: 58vw;
         }

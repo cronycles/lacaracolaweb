@@ -3,9 +3,6 @@
  * A native "open in maps" link is provided for navigation.
  */
 
-// Coordinates for Via Aurelia 64, 17051 Andora (SV)
-const LAT = 43.9552;
-const LNG = 8.2533;
 const ZOOM = 15;
 
 declare global {
@@ -18,10 +15,18 @@ export function initMap(): void {
     const container = document.getElementById('map');
     if (!container || !window.L) return;
 
+    const lat = Number.parseFloat(container.dataset.lat ?? '');
+    const lng = Number.parseFloat(container.dataset.lng ?? '');
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    const placeName = container.dataset.name ?? 'La Caracola';
+    const placeAddress = container.dataset.address ?? '';
+
     const L = window.L;
 
     const map = L.map(container, {
-        center: [LAT, LNG],
+        center: [lat, lng],
         zoom: ZOOM,
         scrollWheelZoom: false, // Better UX on page scroll
     });
@@ -40,16 +45,16 @@ export function initMap(): void {
         iconAnchor: [16, 32] as [number, number],
     });
 
-    L.marker([LAT, LNG], { icon })
+    L.marker([lat, lng], { icon })
         .addTo(map)
-        .bindPopup('<strong>La Caracola</strong><br>Via Aurelia 64, Andora')
+        .bindPopup(`<strong>${placeName}</strong><br>${placeAddress}`)
         .openPopup();
 
     // "Navigate here" opens the user's preferred maps app
     const navigateBtn = document.querySelector<HTMLAnchorElement>('#map-navigate');
     if (navigateBtn) {
         // Universal deep-link: works with Google Maps, Apple Maps, and others
-        navigateBtn.href = `https://maps.google.com/?q=${LAT},${LNG}`;
+        navigateBtn.href = `https://maps.google.com/?q=${lat},${lng}`;
         navigateBtn.target = '_blank';
         navigateBtn.rel = 'noopener noreferrer';
     }

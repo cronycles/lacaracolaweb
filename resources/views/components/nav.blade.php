@@ -23,7 +23,7 @@
         </ul>
 
         {{-- Language switcher --}}
-        <div class="nav__lang" aria-label="Language">
+        <div class="nav__lang nav__lang--desktop" aria-label="Language">
             @foreach(['it','en','fr','de'] as $locale)
                 <button data-lang="{{ $locale }}"
                         class="{{ app()->getLocale() === $locale ? 'active' : '' }}"
@@ -51,7 +51,7 @@
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Language buttons inside mobile menu --}}
-    <div class="nav__lang" style="margin-top:1rem">
+    <div class="nav__lang nav__lang--mobile" style="margin-top:1rem">
         @foreach(['it','en','fr','de'] as $locale)
             <button data-lang="{{ $locale }}" class="{{ app()->getLocale() === $locale ? 'active' : '' }}">
                 {{ strtoupper($locale) }}

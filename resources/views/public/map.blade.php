@@ -19,7 +19,12 @@
 
         {{-- Interactive map --}}
         <div class="map-container">
-            <div id="map"></div>
+            <div id="map"
+                 data-lat="{{ config('apartment.address.lat') }}"
+                 data-lng="{{ config('apartment.address.lng') }}"
+                 data-name="{{ config('apartment.name') }}"
+                 data-address="{{ config('apartment.address.street') }}, {{ config('apartment.address.city') }}">
+            </div>
         </div>
 
         {{-- Navigate CTA --}}
