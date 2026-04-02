@@ -19,7 +19,7 @@ if (isPrintOnly) {
     console.log(`Local env source: ${localEnvPath}`);
     console.log(`Active env target: ${envPath}`);
     console.log(`Generate app key: ${shouldGenerateKey ? 'yes' : 'no'}`);
-    console.log('Next command: npx concurrently "php artisan serve" "vite"');
+    console.log('Next command: npx concurrently --kill-others-on-fail --names APP,VITE --prefix-colors green,cyan "php artisan serve" "npm run dev -- --host 127.0.0.1 --port 5173"');
     process.exit(0);
 }
 
@@ -75,7 +75,16 @@ function runClearConfigAndStart() {
             process.exit(code ?? 1);
         }
 
-        const startStack = spawn('npx', ['concurrently', 'php artisan serve', 'vite'], {
+        const startStack = spawn('npx', [
+            'concurrently',
+            '--kill-others-on-fail',
+            '--names',
+            'APP,VITE',
+            '--prefix-colors',
+            'green,cyan',
+            'php artisan serve',
+            'npm run dev -- --host 127.0.0.1 --port 5173',
+        ], {
             cwd: projectRoot,
             stdio: 'inherit',
             shell: process.platform === 'win32',

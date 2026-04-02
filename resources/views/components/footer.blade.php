@@ -4,7 +4,14 @@
 
         {{-- Brand column --}}
         <div>
-            <p class="footer__brand">{{ config('apartment.name') }}</p>
+            <p class="footer__brand">
+                <img src="{{ asset('images/brand/logo-symbol-gold.svg') }}"
+                     alt=""
+                     aria-hidden="true"
+                     width="32"
+                     height="32">
+                <span>{{ config('apartment.name') }}</span>
+            </p>
             <p class="footer__desc">{{ __('app.footer_desc') }}</p>
             <p style="margin-top:.75rem;font-size:.85rem;opacity:.6">
                 {{ config('apartment.address.street') }}<br>
