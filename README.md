@@ -101,7 +101,7 @@ What it does:
 - Waits until local port `3307` is reachable before starting Laravel
 - Always recreates `.env` from `.env.prod-local`
 - If `.env.local` does not exist yet, creates it from `.env.example` to keep a local profile file available
-- Clears config cache, then runs `php artisan serve`
+- Clears config cache, then runs `php artisan serve` + `vite` in watch mode
 
 Notes:
 - This workflow is intended for macOS only (`osascript` + Terminal.app)

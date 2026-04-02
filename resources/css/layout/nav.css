@@ -21,6 +21,7 @@
         display: flex;
         align-items: center;
         gap: var(--space-3);
+        min-width: 0;
 
         img {
             height: 36px;
@@ -33,9 +34,13 @@
         font-family: var(--font-brand);
         font-weight: 400;
         color: var(--color-primary);
-        letter-spacing: 0.04em;
+        font-size: clamp(0.9rem, 1.1rem, 1.1rem);
+        letter-spacing: 0.03em;
         white-space: nowrap;
         text-transform: uppercase;
+        max-width: 62vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__links {
@@ -99,6 +104,22 @@
 
         @media (min-width: 768px) {
             display: none;
+        }
+    }
+
+    @media (max-width: 420px) {
+        &__logo {
+            gap: var(--space-2);
+
+            img {
+                height: 30px;
+            }
+        }
+
+        &__logo-name {
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            max-width: 58vw;
         }
     }
 }

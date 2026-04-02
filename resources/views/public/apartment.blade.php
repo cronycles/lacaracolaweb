@@ -46,7 +46,9 @@
 
         {{-- Lightbox --}}
         <div class="lightbox" role="dialog" aria-label="{{ __('app.apartment_gallery_fullscreen') }}" aria-modal="true">
+            <button class="lightbox__nav lightbox__nav--prev" aria-label="{{ __('app.apartment_gallery_prev') }}">‹</button>
             <img src="" alt="">
+            <button class="lightbox__nav lightbox__nav--next" aria-label="{{ __('app.apartment_gallery_next') }}">›</button>
             <button class="lightbox__close" aria-label="{{ __('app.apartment_gallery_close') }}">×</button>
         </div>
     </div>

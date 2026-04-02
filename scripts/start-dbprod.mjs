@@ -45,7 +45,7 @@ const appCommands = [
     'echo "Tunnel is ready. Starting Laravel against production DB."',
     'cp .env.prod-local .env',
     'php artisan config:clear',
-    'php artisan serve',
+    'npx concurrently "php artisan serve" "vite"',
 ].join(' && ');
 
 if (isPrintOnly) {

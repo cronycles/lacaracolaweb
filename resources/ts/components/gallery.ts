@@ -7,12 +7,28 @@ export function initGallery(): void {
     const lightbox = document.querySelector<HTMLElement>('.lightbox');
     const lightboxImg = lightbox?.querySelector<HTMLImageElement>('img');
     const closeBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__close');
+    const prevBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__nav--prev');
+    const nextBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__nav--next');
 
-    if (!lightbox || !lightboxImg) return;
+    if (!lightbox || !lightboxImg || items.length === 0) return;
 
-    const open = (src: string, alt: string): void => {
-        lightboxImg.src = src;
-        lightboxImg.alt = alt;
+    const images = Array.from(items)
+        .map((item) => item.querySelector<HTMLImageElement>('img'))
+        .filter((img): img is HTMLImageElement => img !== null);
+
+    if (images.length === 0) return;
+
+    let currentIndex = 0;
+
+    const render = (index: number): void => {
+        const safeIndex = (index + images.length) % images.length;
+        currentIndex = safeIndex;
+        lightboxImg.src = images[safeIndex].src;
+        lightboxImg.alt = images[safeIndex].alt;
+    };
+
+    const open = (index: number): void => {
+        render(index);
         lightbox.classList.add('open');
         document.body.style.overflow = 'hidden';
     };
@@ -22,20 +38,35 @@ export function initGallery(): void {
         document.body.style.overflow = '';
     };
 
-    items.forEach(item => {
+    const prev = (): void => render(currentIndex - 1);
+    const next = (): void => render(currentIndex + 1);
+
+    items.forEach((item, index) => {
         item.addEventListener('click', () => {
-            const img = item.querySelector<HTMLImageElement>('img');
-            if (img) open(img.src, img.alt);
+            open(index);
         });
     });
 
     closeBtn?.addEventListener('click', close);
+    prevBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        prev();
+    });
+    nextBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        next();
+    });
+
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) close();
     });
 
-    // Close on Escape
+    // Keyboard controls in lightbox
     document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('open')) return;
+
         if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
     });
 }

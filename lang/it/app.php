@@ -95,6 +95,8 @@ return [
     'apartment_cta_subtitle'  => 'Rispondiamo entro 24 ore.',
     'apartment_gallery_fullscreen' => 'Foto a schermo intero',
     'apartment_gallery_close' => 'Chiudi',
+    'apartment_gallery_prev'  => 'Foto precedente',
+    'apartment_gallery_next'  => 'Foto successiva',
 
     // --- House rules ---
     'rules_title'           => 'Regole della Casa',

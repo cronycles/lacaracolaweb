@@ -41,7 +41,7 @@ Dettagli operativi:
 - ricrea sempre `.env` copiando `.env.prod-local`
 - se `.env.local` non esiste ancora, lo crea da `.env.example`
 - esegue `php artisan config:clear`
-- avvia `php artisan serve`
+- avvia `php artisan serve` + `vite` in watch
 
 Ritorno al workflow locale standard:
 

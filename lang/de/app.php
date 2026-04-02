@@ -90,6 +90,8 @@ return [
     'apartment_cta_subtitle'  => 'Wir antworten innerhalb von 24 Stunden.',
     'apartment_gallery_fullscreen' => 'Vollbildansicht',
     'apartment_gallery_close' => 'Schließen',
+    'apartment_gallery_prev'  => 'Vorheriges Foto',
+    'apartment_gallery_next'  => 'Nächstes Foto',
 
     // --- Experiences ---
     'experiences_title'    => 'Erlebnisse & Umgebung',
