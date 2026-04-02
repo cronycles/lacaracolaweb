@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..');
 const envFile = path.join(projectRoot, '.env.prod-local');
-const backupFile = path.join(projectRoot, '.env.backup');
+const localEnvFile = path.join(projectRoot, '.env.local');
 const isPrintOnly = process.argv.includes('--print');
 
 if (process.platform !== 'darwin') {
@@ -32,7 +32,7 @@ const appCommands = [
     'echo "Waiting for SSH tunnel on 127.0.0.1:3307..."',
     'while ! nc -z 127.0.0.1 3307 >/dev/null 2>&1; do sleep 1; done',
     'echo "Tunnel is ready. Starting Laravel against production DB."',
-    `[ -f .env ] && cp .env ${shellQuote(backupFile)}`,
+    `[ -f .env ] && cp .env ${shellQuote(localEnvFile)}`,
     'cp .env.prod-local .env',
     'php artisan config:clear',
     'php artisan serve',
