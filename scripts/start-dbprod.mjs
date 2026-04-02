@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { copyFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -9,6 +9,7 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..');
 const envFile = path.join(projectRoot, '.env.prod-local');
 const localEnvFile = path.join(projectRoot, '.env.local');
+const exampleEnvFile = path.join(projectRoot, '.env.example');
 const isPrintOnly = process.argv.includes('--print');
 
 if (process.platform !== 'darwin') {
@@ -19,6 +20,16 @@ if (process.platform !== 'darwin') {
 if (!existsSync(envFile)) {
     console.error(`Missing required file: ${envFile}`);
     process.exit(1);
+}
+
+if (!existsSync(localEnvFile)) {
+    if (!existsSync(exampleEnvFile)) {
+        console.error(`Missing required bootstrap file: ${exampleEnvFile}`);
+        process.exit(1);
+    }
+
+    copyFileSync(exampleEnvFile, localEnvFile);
+    console.log('Created .env.local from .env.example.');
 }
 
 const tunnelCommand = [
@@ -32,7 +43,6 @@ const appCommands = [
     'echo "Waiting for SSH tunnel on 127.0.0.1:3307..."',
     'while ! nc -z 127.0.0.1 3307 >/dev/null 2>&1; do sleep 1; done',
     'echo "Tunnel is ready. Starting Laravel against production DB."',
-    `[ -f .env ] && cp .env ${shellQuote(localEnvFile)}`,
     'cp .env.prod-local .env',
     'php artisan config:clear',
     'php artisan serve',

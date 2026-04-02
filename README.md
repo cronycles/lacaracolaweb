@@ -74,7 +74,8 @@ php artisan migrate
 npm run start:local
 ```
 
-> `npm run start:local` restores the local `.env` from `.env.local` (or seeds it from `.env` / `.env.example` on first run), clears Laravel config, then runs `php artisan serve` + `vite`.
+> `npm run start:local` always recreates `.env` from `.env.local`, clears Laravel config, then runs `php artisan serve` + `vite`.
+> If `.env.local` does not exist, it is bootstrapped from `.env.example`.
 > Open http://localhost:8000
 
 ### Other commands
@@ -98,14 +99,15 @@ What it does:
 - Opens one Terminal.app window for the SSH tunnel to the production server
 - Opens a second Terminal.app window for the local Laravel app
 - Waits until local port `3307` is reachable before starting Laravel
-- Saves the current local environment into `.env.local`, then copies `.env.prod-local` to `.env`
+- Always recreates `.env` from `.env.prod-local`
+- If `.env.local` does not exist yet, creates it from `.env.example` to keep a local profile file available
 - Clears config cache, then runs `php artisan serve`
 
 Notes:
 - This workflow is intended for macOS only (`osascript` + Terminal.app)
 - The SSH tunnel stays in the foreground by design; keep that terminal open
 - Local MySQL traffic goes through `127.0.0.1:3307` to the remote production database
-- Your normal local environment is preserved in `.env.local`, and `npm run start:local` restores it automatically
+- `npm run start:local` always loads `.env.local` into `.env`
 - Outgoing mail is forced to `MAIL_MAILER=log` in `.env.prod-local` to avoid sending real emails
 - Do **not** run destructive commands such as `php artisan migrate`, `db:seed`, or `migrate:fresh` while connected to production data
 - When you want to go back to normal local development, run `npm run start:local`

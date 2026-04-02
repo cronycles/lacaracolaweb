@@ -37,16 +37,16 @@ Lo script e pensato per macOS e apre due finestre di `Terminal.app`:
 
 Dettagli operativi:
 
-- salva l'ambiente locale corrente in `.env.local`
 - usa il file `.env.prod-local` come sorgente della configurazione temporanea
-- copia `.env.prod-local` su `.env`
+- ricrea sempre `.env` copiando `.env.prod-local`
+- se `.env.local` non esiste ancora, lo crea da `.env.example`
 - esegue `php artisan config:clear`
 - avvia `php artisan serve`
 
 Ritorno al workflow locale standard:
 
-- `npm run start:local` ripristina `.env` a partire da `.env.local`
-- se `.env.local` non esiste ancora, prova a crearlo da `.env`, poi da `.env.example`
+- `npm run start:local` ricrea sempre `.env` a partire da `.env.local`
+- se `.env.local` non esiste ancora, lo crea da `.env.example`
 - dopo il ripristino esegue `php artisan config:clear` e avvia Laravel + Vite
 
 Vincoli e sicurezza:
