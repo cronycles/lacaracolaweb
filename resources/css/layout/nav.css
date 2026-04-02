@@ -32,10 +32,10 @@
     &__logo-name {
         font-family: var(--font-brand);
         font-weight: 400;
-        font-size: 1.1rem;
         color: var(--color-primary);
         letter-spacing: 0.04em;
         white-space: nowrap;
+        text-transform: uppercase;
     }
 
     &__links {

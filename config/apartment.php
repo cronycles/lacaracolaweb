@@ -10,13 +10,13 @@ return [
 
     // --- Branding ---
     'name'    => 'La Caracola',
-    'tagline' => 'Due passi dal mare — Andora, Liguria',
-    'email'   => env('APARTMENT_EMAIL', 'info@lacaracola.it'),
+    'tagline' => 'A due passi dal mare — Andora, Liguria',
+    'email'   => env('APARTMENT_EMAIL', 'info@lacaracolaandora.com'),
     'phone'   => env('APARTMENT_PHONE', ''),
 
     // --- Address ---
     'address' => [
-        'street'   => 'Via Aurelia 64, Edificio A (Eufrosine) int. 3',
+        'street'   => 'Via Aurelia 64',
         'city'     => 'Andora',
         'province' => 'Savona',
         'zip'      => '17051',
@@ -95,7 +95,7 @@ return [
             'images/apartment-6.jpg',
         ],
         // Open Graph / social sharing image
-        'og' => 'images/og-default.jpg',
+        'og' => 'images/og-default.png',
     ],
 
     // --- Home page highlight features (icon + lang key) ---

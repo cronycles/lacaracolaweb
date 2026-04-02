@@ -17,8 +17,8 @@ return [
 
     // --- Hero ---
     'hero_eyebrow'     => 'Marina di Andora, Liguria',
-    'hero_title'       => 'Due Passi dal Mare',
-    'hero_subtitle'    => 'Un appartamento dove il profumo del mare entra dalla finestra. Rilassati, esplora la Riviera Ligure, torna ogni anno.',
+    'hero_title'       => 'A due Passi dal Mare',
+    'hero_subtitle'    => 'Un appartamento dove il profumo del mare entra dalla finestra. Rilassati, esplora la Riviera Ligure e ritorna qui ogni anno.',
     'hero_cta_booking' => 'Verifica Disponibilità',
     'hero_cta_discover'=> 'Scopri l\'Appartamento',
 
@@ -91,7 +91,7 @@ return [
     'apartment_floor_label'   => 'Piano',
     'apartment_amenities_title' => 'Servizi inclusi',
     'apartment_gallery_title' => 'Galleria',
-    'apartment_cta_title'     => 'Interesse? Richiedi la disponibilità',
+    'apartment_cta_title'     => 'Hai voglia? Richiedi la disponibilità',
     'apartment_cta_subtitle'  => 'Rispondiamo entro 24 ore.',
     'apartment_gallery_fullscreen' => 'Foto a schermo intero',
     'apartment_gallery_close' => 'Chiudi',

@@ -16,7 +16,7 @@ return [
 
     'hero_eyebrow'     => 'Marina di Andora, Liguria',
     'hero_title'       => 'Steps from the Sea',
-    'hero_subtitle'    => 'An apartment where the scent of the sea drifts through the windows. Relax, explore the Ligurian Riviera, and come back every year.',
+    'hero_subtitle'    => 'An apartment where the scent of the sea drifts through the windows. Relax, explore the Ligurian Riviera and come back every year.',
     'hero_cta_booking' => 'Check Availability',
     'hero_cta_discover'=> 'Discover the Apartment',
 

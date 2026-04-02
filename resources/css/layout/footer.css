@@ -19,10 +19,11 @@
     }
 
     &__brand {
-        font-family: var(--font-serif);
+        font-family: var(--font-brand);
         font-size: 1.5rem;
         color: var(--color-accent);
         margin-bottom: var(--space-3);
+        text-transform: uppercase;
     }
 
     &__desc {
