@@ -12,6 +12,8 @@ use App\Services\InterhomePdfBookingParser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Throwable;
 
@@ -23,10 +25,7 @@ class InterhomePdfImportController extends Controller
     {
         return view('admin.interhome-pdf-import', [
             'preview' => $request->session()->get(self::PREVIEW_SESSION_KEY),
-            'recentLogs' => InterhomePdfImportLog::with('importedByUser')
-                ->orderByDesc('created_at')
-                ->limit(15)
-                ->get(),
+            'recentLogs' => $this->recentLogs(),
         ]);
     }
 
@@ -69,10 +68,7 @@ class InterhomePdfImportController extends Controller
 
         return view('admin.interhome-pdf-import', [
             'preview' => $preview,
-            'recentLogs' => InterhomePdfImportLog::with('importedByUser')
-                ->orderByDesc('created_at')
-                ->limit(15)
-                ->get(),
+            'recentLogs' => $this->recentLogs(),
         ]);
     }
 
@@ -134,18 +130,20 @@ class InterhomePdfImportController extends Controller
             }
         }
 
-        InterhomePdfImportLog::create([
-            'imported_by_user_id' => Auth::id(),
-            'file_name' => (string) ($preview['filename'] ?? 'unknown-file.pdf'),
-            'total_rows' => count($preview['rows'] ?? []),
-            'new_rows' => $newRows,
-            'created_rows' => $created,
-            'duplicate_rows' => $duplicates,
-            'skipped_rows' => $skipped,
-            'error_rows' => $errors,
-            'warnings' => $preview['warnings'] ?? [],
-            'error_details' => $errorDetails,
-        ]);
+        if ($this->canUseImportLogs()) {
+            InterhomePdfImportLog::create([
+                'imported_by_user_id' => Auth::id(),
+                'file_name' => (string) ($preview['filename'] ?? 'unknown-file.pdf'),
+                'total_rows' => count($preview['rows'] ?? []),
+                'new_rows' => $newRows,
+                'created_rows' => $created,
+                'duplicate_rows' => $duplicates,
+                'skipped_rows' => $skipped,
+                'error_rows' => $errors,
+                'warnings' => $preview['warnings'] ?? [],
+                'error_details' => $errorDetails,
+            ]);
+        }
 
         $request->session()->forget(self::PREVIEW_SESSION_KEY);
 
@@ -187,5 +185,25 @@ class InterhomePdfImportController extends Controller
         }
 
         return ['status' => 'new', 'status_reason' => 'Pronta per import'];
+    }
+
+    private function canUseImportLogs(): bool
+    {
+        return Schema::hasTable('interhome_pdf_import_logs');
+    }
+
+    /**
+     * @return Collection<int, InterhomePdfImportLog>
+     */
+    private function recentLogs(): Collection
+    {
+        if (! $this->canUseImportLogs()) {
+            return collect();
+        }
+
+        return InterhomePdfImportLog::with('importedByUser')
+            ->orderByDesc('created_at')
+            ->limit(15)
+            ->get();
     }
 }
