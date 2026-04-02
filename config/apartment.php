@@ -42,7 +42,6 @@ return [
         ['icon' => '🌿', 'key' => 'amenity_garden'],
         ['icon' => '🪑', 'key' => 'amenity_balcony'],
         ['icon' => '📶', 'key' => 'amenity_wifi'],
-        ['icon' => '❄️',  'key' => 'amenity_ac'],
         ['icon' => '📺', 'key' => 'amenity_tv'],
         ['icon' => '🍳', 'key' => 'amenity_kitchen'],
         ['icon' => '🫙', 'key' => 'amenity_dishwasher'],
