@@ -44,8 +44,8 @@ const appCommands = [
     'while ! nc -z 127.0.0.1 3307 >/dev/null 2>&1; do sleep 1; done',
     'echo "Tunnel is ready. Starting Laravel against production DB."',
     'cp .env.prod-local .env',
-    'php artisan config:clear',
-    'npx concurrently --kill-others-on-fail --names APP,VITE --prefix-colors green,cyan "php artisan serve" "npm run dev -- --host 127.0.0.1 --port 5173"',
+    'php artisan optimize:clear',
+    'npx concurrently --kill-others-on-fail --names APP,VITE --prefix-colors green,cyan "set -a; source .env.prod-local; set +a; php artisan serve --env=prod-local" "npm run dev -- --host 127.0.0.1 --port 5173"',
 ].join(' && ');
 
 if (isPrintOnly) {

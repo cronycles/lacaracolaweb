@@ -13,11 +13,15 @@ use Illuminate\View\View;
 
 class PersonController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         $query = Person::withCount('bookings');
 
-        if ($search = $request->input('q')) {
+        $search = trim((string) $request->input('q', ''));
+        $search = preg_replace('/[\p{C}\p{Z}]+/u', ' ', $search) ?? '';
+        $search = trim($search);
+
+        if ($search !== '') {
             $query->where(function ($q) use ($search): void {
                 $q->where('first_name', 'like', "%{$search}%")
                   ->orWhere('last_name', 'like', "%{$search}%")
@@ -26,6 +30,16 @@ class PersonController extends Controller
         }
 
         $people = $query->orderBy('last_name')->paginate(25)->withQueryString();
+
+        // Prevent false "empty" pages when query string contains an out-of-range page.
+        if ($people->isEmpty() && $people->total() > 0 && $people->currentPage() > 1) {
+            $params = [];
+            if ($search !== '') {
+                $params['q'] = $search;
+            }
+
+            return redirect()->route('admin.people.index', $params);
+        }
 
         return view('admin.people.index', compact('people'));
     }
