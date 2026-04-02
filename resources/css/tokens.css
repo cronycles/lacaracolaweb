@@ -17,6 +17,7 @@
     /* Typography */
     --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
     --font-serif: 'Playfair Display', Georgia, serif;
+    --font-brand: 'Montserrat', system-ui, sans-serif;
 
     /* Spacing scale */
     --space-1:  0.25rem;

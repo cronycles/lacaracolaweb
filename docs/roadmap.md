@@ -143,4 +143,22 @@ Permettere al proprietario di cambiare password direttamente dall'area privata, 
 
 ---
 
-## Fase 8 — (Da Pianificare)
+## Fase 8 — Brand Identity & Logo ✅ COMPLETATA
+
+**Obiettivo:** Integrare l'identità visiva (logo, font brand, favicon) in tutto il sito.
+
+### Task completati
+
+- [x] Esportati loghi in SVG + PNG 3x (wordmark e symbol, palette blu/bianco/oro)
+- [x] Asset copiati in `public/images/brand/` (symbol-blue.svg, symbol-blue@3x.png, wordmark-blue.svg, wordmark-blue@3x.png)
+- [x] Font Montserrat Regular self-hosted in `public/fonts/Montserrat-Regular.ttf`
+- [x] Aggiunto `@font-face` Montserrat in `resources/css/base.css`
+- [x] Aggiunto token CSS `--font-brand` in `resources/css/tokens.css`
+- [x] Navbar aggiornata: symbol SVG (`<img>`) + nome appartamento in `<span>` con Montserrat Regular
+- [x] Favicon aggiunta: SVG (browser moderni) + PNG fallback + apple-touch-icon
+
+### Dettagli tecnici
+
+- Wordmark SVG usa testo reale (non path) → incompatibile con `<img>`; si usa il symbol SVG + testo HTML
+- Font Montserrat servito da `public/fonts/` (non Google Fonts) per privacy e performance
+- H1 home rimane testuale (nessun impatto SEO)

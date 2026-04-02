@@ -2,9 +2,14 @@
 <nav class="nav" aria-label="Main navigation">
     <div class="container nav__inner">
 
-        {{-- Logo --}}
+        {{-- Logo: brand symbol + name --}}
         <a href="{{ route_locale('home') }}" class="nav__logo" aria-label="{{ config('apartment.name') }}">
-            <span>{{ config('apartment.name') }}</span>
+            <img src="{{ asset('images/brand/logo-symbol-blue.svg') }}"
+                 alt=""
+                 aria-hidden="true"
+                 width="54"
+                 height="36">
+            <span class="nav__logo-name">{{ config('apartment.name') }}</span>
         </a>
 
         {{-- Desktop links --}}

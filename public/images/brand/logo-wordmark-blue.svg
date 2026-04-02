@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 145.96 131.71">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #30596c;
+        font-family: Montserrat-Regular, Montserrat;
+        font-size: 18.39px;
+      }
+
+      .cls-2 {
+        letter-spacing: 0em;
+      }
+
+      .cls-3 {
+        stroke-width: 1.7px;
+      }
+
+      .cls-3, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3, .cls-4, .cls-5 {
+        fill: none;
+        stroke: #30596c;
+      }
+
+      .cls-4, .cls-5 {
+        stroke-width: 1.98px;
+      }
+
+      .cls-5 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-6 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-7 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-8 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1" data-name="Capa 1">
+    <g>
+      <g>
+        <path class="cls-5" d="M2.57,4.22c-6.13,34.66,6.84,55.31,18.52,67.65,12.69,13.41,47.13,30.81,81.93,20.3s48.37-47.05,39.15-69.24C132.37-.63,98.14-6.53,84.52,11.7c-12.12,16.22,5.17,25.92,5.17,25.92,0,0,13.32,4.53,15.13-3.81"/>
+        <path class="cls-5" d="M104.82,33.81s36.71-12.29,35.62,24.74"/>
+        <path class="cls-5" d="M101.72,38.07s36.76,3.36,21.2,43.77"/>
+        <path class="cls-5" d="M96.94,39.34s32.76,25.46-2.2,54.83"/>
+        <path class="cls-5" d="M89.69,37.62s11.13,48.21-38.08,52.65"/>
+        <path class="cls-5" d="M82.82,31.85s-22.32,56.87-73.25,24.61"/>
+      </g>
+      <path class="cls-4" d="M102.95,27.35s8.4-16.9,34.4-12.26"/>
+      <circle class="cls-3" cx="98.14" cy="32.65" r="6.68"/>
+    </g>
+    <text class="cls-1" transform="translate(7.21 123.26)"><tspan x="0" y="0">LA </tspan><tspan class="cls-6" x="28.83" y="0">C</tspan><tspan class="cls-2" x="41.54" y="0">AR</tspan><tspan class="cls-8" x="68.02" y="0">A</tspan><tspan class="cls-7" x="81.02" y="0">C</tspan><tspan x="93.42" y="0">OLA</tspan></text>
+  </g>
+</svg>
