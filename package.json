@@ -8,7 +8,8 @@
         "build:fast": "vite build",
         "lint": "eslint resources/ts --ext .ts",
         "lint:fix": "eslint resources/ts --ext .ts --fix",
-        "start": "concurrently \"php artisan serve\" \"vite\""
+        "start": "concurrently \"php artisan serve\" \"vite\"",
+        "start:dbprod": "node scripts/start-dbprod.mjs"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",

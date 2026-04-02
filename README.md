@@ -82,7 +82,30 @@ npm run start
 npm run build      # TypeScript check + production build (minified)
 npm run lint       # ESLint on resources/ts
 npm run lint:fix   # ESLint auto-fix
+npm run start:dbprod  # macOS: open SSH tunnel + local app against production DB
 ```
+
+### Local App Against Production DB
+
+For quick inspection against real production data, the project includes a dedicated macOS launcher:
+
+```bash
+npm run start:dbprod
+```
+
+What it does:
+- Opens one Terminal.app window for the SSH tunnel to the production server
+- Opens a second Terminal.app window for the local Laravel app
+- Waits until local port `3307` is reachable before starting Laravel
+- Copies `.env.prod-local` to `.env`, clears config cache, then runs `php artisan serve`
+
+Notes:
+- This workflow is intended for macOS only (`osascript` + Terminal.app)
+- The SSH tunnel stays in the foreground by design; keep that terminal open
+- Local MySQL traffic goes through `127.0.0.1:3307` to the remote production database
+- Outgoing mail is forced to `MAIL_MAILER=log` in `.env.prod-local` to avoid sending real emails
+- Do **not** run destructive commands such as `php artisan migrate`, `db:seed`, or `migrate:fresh` while connected to production data
+- Restore your normal local environment when finished by copying your previous `.env` back in place and clearing config again
 
 ## Project Structure
 

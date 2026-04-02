@@ -21,3 +21,31 @@ Le regole di progetto sono distribuite in file `.instructions.md` che Copilot ca
 3. Implementare con le convenzioni definite nelle instructions.
 4. Aggiornare docs pertinenti.
 5. Eseguire lint e build prima di committare.
+
+## Avvio locale con database di produzione
+
+Per verifiche rapide su dati reali e aggiornati e disponibile uno script dedicato:
+
+```bash
+npm run start:dbprod
+```
+
+Lo script e pensato per macOS e apre due finestre di `Terminal.app`:
+
+- una finestra mantiene aperto il tunnel SSH verso il server di produzione
+- una seconda finestra avvia Laravel in locale solo dopo che la porta `127.0.0.1:3307` risponde
+
+Dettagli operativi:
+
+- usa il file `.env.prod-local` come sorgente della configurazione locale
+- copia `.env.prod-local` su `.env`
+- esegue `php artisan config:clear`
+- avvia `php artisan serve`
+
+Vincoli e sicurezza:
+
+- non inserire credenziali reali nella documentazione o nei file tracciati da Git
+- usare questo workflow solo per letture, debug e verifiche manuali
+- non eseguire `php artisan migrate`, `db:seed`, `migrate:fresh` o altri comandi distruttivi mentre si punta al DB di produzione
+- il mailer locale deve restare su `log` per evitare invii email reali
+- quando si termina la sessione, ripristinare il proprio `.env` locale e rieseguire `php artisan config:clear`
