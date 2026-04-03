@@ -1,9 +1,17 @@
 /** Home page specific styles */
+.home-highlights {
+    padding-block: var(--space-8);
+
+    @media (min-width: 768px) {
+        padding-block: var(--space-12);
+    }
+}
+
 .home-features {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-6);
-    margin-top: var(--space-12);
+    margin-top: 0;
 
     @media (min-width: 640px) { grid-template-columns: repeat(2, 1fr); }
     @media (min-width: 1024px) { grid-template-columns: repeat(4, 1fr); }

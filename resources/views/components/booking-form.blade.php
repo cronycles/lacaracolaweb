@@ -31,8 +31,6 @@
     <input type="text" name="website" tabindex="-1" autocomplete="off"
            style="position:absolute;opacity:0;height:0;width:0;pointer-events:none" aria-hidden="true">
 
-    <h3 class="booking-form__title">{{ __('app.booking_title') }}</h3>
-
     {{-- Date range picker --}}
     <div class="date-picker" id="date-range-picker"
          data-locale="{{ app()->getLocale() }}"

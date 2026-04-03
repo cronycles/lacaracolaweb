@@ -64,7 +64,7 @@
 </section>
 
 {{-- Feature highlights --}}
-<section class="section" aria-label="Highlights">
+<section class="section home-highlights" aria-label="Highlights">
     <div class="container">
         <div class="home-features">
             @foreach(config('apartment.features') as $feature)
