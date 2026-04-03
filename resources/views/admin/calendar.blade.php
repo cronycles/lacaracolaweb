@@ -66,18 +66,42 @@
                                     @php
                                         $currentDate = $monthStart->copy()->day($day);
                                         $dateKey = $currentDate->format('Y-m-d');
-                                        $dayClass = '';
+                                        $dayClasses = ['cal-day'];
 
-                                        if (isset($ownerDays[$dateKey])) {
-                                            $dayClass = 'cal-day--owner';
-                                        } elseif (isset($maintenanceDays[$dateKey])) {
-                                            $dayClass = 'cal-day--maintenance';
-                                        } elseif (isset($bookedDays[$dateKey])) {
-                                            $dayClass = 'cal-day--booked';
+                                        if (isset($ownerDays[$dateKey]) || isset($ownerArrivalDays[$dateKey]) || isset($ownerDepartureDays[$dateKey])) {
+                                            if (isset($ownerDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--owner';
+                                            }
+                                            if (isset($ownerArrivalDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--owner-arrival';
+                                            }
+                                            if (isset($ownerDepartureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--owner-departure';
+                                            }
+                                        } elseif (isset($maintenanceDays[$dateKey]) || isset($maintenanceArrivalDays[$dateKey]) || isset($maintenanceDepartureDays[$dateKey])) {
+                                            if (isset($maintenanceDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--maintenance';
+                                            }
+                                            if (isset($maintenanceArrivalDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--maintenance-arrival';
+                                            }
+                                            if (isset($maintenanceDepartureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--maintenance-departure';
+                                            }
+                                        } else {
+                                            if (isset($bookedDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--booked';
+                                            }
+                                            if (isset($arrivalDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--arrival';
+                                            }
+                                            if (isset($departureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--departure';
+                                            }
                                         }
                                     @endphp
 
-                                    <span class="cal-day {{ $dayClass }}">{{ $day }}</span>
+                                    <span @class($dayClasses)>{{ $day }}</span>
                                 @endfor
                             </div>
                         </div>

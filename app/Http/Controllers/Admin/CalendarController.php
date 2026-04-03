@@ -40,9 +40,16 @@ class CalendarController extends Controller
         ];
 
         $bookedDays = [];
+        $arrivalDays = [];
+        $departureDays = [];
         foreach ($bookings as $bookingItem) {
-            $cursor = Carbon::parse($bookingItem->checkin)->startOfDay();
+            $checkinDate = Carbon::parse($bookingItem->checkin)->startOfDay();
             $checkoutDate = Carbon::parse($bookingItem->checkout)->startOfDay();
+
+            $arrivalDays[$checkinDate->format('Y-m-d')] = true;
+            $departureDays[$checkoutDate->format('Y-m-d')] = true;
+
+            $cursor = $checkinDate->copy()->addDay();
 
             while ($cursor->lt($checkoutDate)) {
                 $bookedDays[$cursor->format('Y-m-d')] = true;
@@ -51,19 +58,45 @@ class CalendarController extends Controller
         }
 
         $ownerDays = [];
+        $ownerArrivalDays = [];
+        $ownerDepartureDays = [];
         $maintenanceDays = [];
+        $maintenanceArrivalDays = [];
+        $maintenanceDepartureDays = [];
         foreach ($blocks as $blockItem) {
-            $cursor = Carbon::parse($blockItem->start_date)->startOfDay();
+            $blockStart = Carbon::parse($blockItem->start_date)->startOfDay();
             $blockEnd = Carbon::parse($blockItem->end_date)->startOfDay();
             $blockType = $blockItem->type ?? $blockItem->reason;
 
-            while ($cursor->lte($blockEnd)) {
-                $dateKey = $cursor->format('Y-m-d');
-                if ($blockType === 'owner') {
-                    $ownerDays[$dateKey] = true;
-                } else {
-                    $maintenanceDays[$dateKey] = true;
+            if ($blockType === 'owner') {
+                if ($blockStart->equalTo($blockEnd)) {
+                    $ownerDays[$blockStart->format('Y-m-d')] = true;
+                    continue;
                 }
+
+                $ownerArrivalDays[$blockStart->format('Y-m-d')] = true;
+                $ownerDepartureDays[$blockEnd->format('Y-m-d')] = true;
+
+                $cursor = $blockStart->copy()->addDay();
+                while ($cursor->lt($blockEnd)) {
+                    $ownerDays[$cursor->format('Y-m-d')] = true;
+                    $cursor->addDay();
+                }
+
+                continue;
+            }
+
+            if ($blockStart->equalTo($blockEnd)) {
+                $maintenanceDays[$blockStart->format('Y-m-d')] = true;
+                continue;
+            }
+
+            $maintenanceArrivalDays[$blockStart->format('Y-m-d')] = true;
+            $maintenanceDepartureDays[$blockEnd->format('Y-m-d')] = true;
+
+            $cursor = $blockStart->copy()->addDay();
+            while ($cursor->lt($blockEnd)) {
+                $maintenanceDays[$cursor->format('Y-m-d')] = true;
                 $cursor->addDay();
             }
         }
@@ -85,8 +118,14 @@ class CalendarController extends Controller
             'blocks' => $blocks,
             'months' => $months,
             'bookedDays' => $bookedDays,
+            'arrivalDays' => $arrivalDays,
+            'departureDays' => $departureDays,
             'ownerDays' => $ownerDays,
+            'ownerArrivalDays' => $ownerArrivalDays,
+            'ownerDepartureDays' => $ownerDepartureDays,
             'maintenanceDays' => $maintenanceDays,
+            'maintenanceArrivalDays' => $maintenanceArrivalDays,
+            'maintenanceDepartureDays' => $maintenanceDepartureDays,
             'windowCenterMonth' => $centerMonth->format('Y-m'),
             'previousWindowMonth' => $centerMonth->copy()->subMonth()->format('Y-m'),
             'nextWindowMonth' => $centerMonth->copy()->addMonth()->format('Y-m'),
