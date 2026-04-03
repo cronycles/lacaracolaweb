@@ -1,0 +1,226 @@
+/* ========================================
+   Useful Places Page
+   ======================================== */
+
+.places-section {
+  padding: var(--space-8) var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .places-section {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .places-section {
+    padding: var(--space-12) var(--space-10);
+  }
+}
+
+/* Header section */
+.places-header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .places-header {
+    padding: 0 var(--space-6);
+  }
+}
+
+.places-header__title {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary);
+}
+
+.places-header__subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Category section */
+.places-category {
+  margin-bottom: var(--space-14);
+}
+
+.places-category__heading {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: var(--space-8) 0 var(--space-6) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-primary);
+}
+
+.places-category__icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.places-category__description {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5) 0;
+  font-style: italic;
+}
+
+/* Grid layout */
+.places-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-7);
+}
+
+@media (min-width: 640px) {
+  .places-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .places-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-10);
+  }
+}
+
+/* Place card */
+.place-card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.place-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Card header with title and maps link */
+.place-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.place-card__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.place-card__maps-link {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  padding: var(--space-2);
+  margin: calc(var(--space-2) * -1) calc(var(--space-2) * -1) 0 0;
+}
+
+.place-card__maps-link:hover {
+  opacity: 1;
+}
+
+/* Card details (address, distance) */
+.place-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.place-card__detail {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.place-card__detail-icon {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+/* Main content */
+.place-card__content {
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Notes (sidebar info) */
+.place-card__note {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-tertiary);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-2);
+}
+
+.place-card__note p {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* Advice (highlighted tips) */
+.place-card__advice {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 3px solid #ffc107;
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-2);
+}
+
+.place-card__advice p {
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.place-card__advice strong {
+  font-weight: 600;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .place-card {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
+  }
+
+  .place-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .place-card__note {
+    background: rgba(13, 110, 253, 0.1);
+  }
+
+  .place-card__advice {
+    background: rgba(255, 193, 7, 0.15);
+  }
+}

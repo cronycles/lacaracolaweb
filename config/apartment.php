@@ -176,19 +176,42 @@ return [
         ['icon' => '❗', 'title_key' => 'app.rules_warning_title',     'text_key' => 'app.rules_warning_text'],
     ],
 
-    // --- Useful nearby places (supermarkets / restaurants) ---
+    // --- Useful nearby places (supermarkets / restaurants / health / essentials) ---
     'useful_places' => [
         'supermarkets' => [
-            ['name' => 'Conad Andora',    'address' => 'Via Aurelia',         'distance' => '5 min a piedi'],
-            ['name' => 'Esselunga',       'address' => 'Via Aurelia, Albenga','distance' => '15 min in auto'],
-            ['name' => 'CRAI Andora',     'address' => 'Via Roma',            'distance' => '3 min a piedi', 'note_key' => 'places_crai_note'],
+            'icon' => '🛒',
+            'places' => [
+                ['name' => 'Supermercato Crai', 'address' => 'Via Aurelia, 84', 'distance' => '3 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Supermercato+Crai,+Via+Aurelia+84+Andora+Italy', 'note_key' => 'places_crai_note'],
+                ['name' => 'Supermercato Conad', 'address' => 'Via Santa Caterina 9', 'distance' => '5 min in auto', 'maps_url' => 'https://www.google.com/maps/search/Conad,+Via+Santa+Caterina+9+Andora+Italy'],
+                ['name' => 'Mercato Local', 'address' => 'Via Merula, 10', 'distance' => '5 min in auto', 'maps_url' => 'https://www.google.com/maps/search/Mercato+Local,+Via+Merula+10+Andora+Italy'],
+                ['name' => 'Panificio Fabiola', 'address' => 'Via Marco Polo, 25', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Panificio+Fabiola,+Via+Marco+Polo+25+Andora+Italy', 'advice_key' => 'places_panificio_advice'],
+            ],
         ],
         'restaurants' => [
-            ['name' => 'Trattoria La Salsa',   'address' => 'Via Aurelia',         'distance' => '5 min a piedi', 'desc_key' => 'places_salsa_desc'],
-            ['name' => 'Pizzeria Da Mario',    'address' => 'Lungomare Andora',    'distance' => '8 min a piedi', 'desc_key' => 'places_pizza_desc'],
-            ['name' => 'Bar Singlefin',        'address' => 'Lungomare Andora',    'distance' => '5 min a piedi', 'desc_key' => 'places_singlefin_desc'],
-            ['name' => 'Centottanta',          'address' => 'Via Roma',             'distance' => '4 min a piedi', 'desc_key' => 'places_cento90_desc'],
-            ['name' => 'Gelateria del Porto',  'address' => 'Porto Turistico',     'distance' => '10 min a piedi', 'desc_key' => 'places_gelato_desc', 'note_key' => 'places_gelato_note'],
+            'icon' => '🍽️',
+            'places' => [
+                ['name' => 'Spaghetteria Salsa', 'address' => 'Via Aurelia, 80', 'distance' => '1 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Spaghetteria+Salsa,+Via+Aurelia+80+Andora+Italy', 'desc_key' => 'places_salsa_desc'],
+                ['name' => 'Pizzeria Doppio Zero', 'address' => 'Via dei mille, 68', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Pizzeria+Doppio+Zero,+Via+dei+mille+68+Andora+Italy', 'desc_key' => 'places_pizza_desc'],
+                ['name' => 'Single fin', 'address' => 'Via Sant\'Ambrogio, 1', 'distance' => '3 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Single+fin,+Via+Sant+Ambrogio+1+Andora+Italy'],
+                ['name' => 'Cento90', 'address' => 'Via Roma, 33', 'distance' => '10 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Cento90,+Via+Roma+33+Andora+Italy', 'desc_key' => 'places_cento90_desc'],
+                ['name' => 'Gelateria L\'era Glaciale', 'address' => 'Via Aurelia 174', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Gelateria+L\'era+Glaciale,+Via+Aurelia+174+Andora+Italy', 'note_key' => 'places_gelato_note'],
+            ],
+        ],
+        'health' => [
+            'icon' => '💊',
+            'places' => [
+                ['name' => 'Farmacia Borgarello', 'address' => 'Via Clavesana, 51', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Farmacia+Borgarello,+Via+Clavesana+51+Andora+Italy'],
+                ['name' => 'Guardia Medica', 'address' => 'Servizio Medico Turistico', 'maps_url' => 'tel:+39-800-556-688', 'desc_key' => 'places_guardia_medica_desc'],
+                ['name' => 'Emergenze', 'address' => 'Numero Unico Europeo', 'maps_url' => 'tel:112', 'desc_key' => 'places_emergencies_desc'],
+            ],
+        ],
+        'essentials' => [
+            'icon' => '🏦',
+            'places' => [
+                ['name' => 'Bancomat', 'address' => 'Via Doria, 33', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/ATM,+Via+Doria+33+Andora+Italy'],
+                ['name' => 'Ufficio Postale', 'address' => 'Via Aurelia, 132', 'distance' => '10 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Ufficio+Postale,+Via+Aurelia+132+Andora+Italy'],
+                ['name' => 'Stazione Ferroviaria', 'address' => 'Via Santa Caterina, 6', 'distance' => '25 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Stazione+Ferroviaria,+Via+Santa+Caterina+6+Andora+Italy'],
+            ],
         ],
     ],
 

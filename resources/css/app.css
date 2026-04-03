@@ -28,6 +28,8 @@
 @import "./pages/map.css";
 @import "./pages/experiences.css";
 @import "./pages/reviews.css";
+/* Removed the import for useful-places.css */
+/* @import "./pages/useful-places.css"; */
 @import "./pages/rules.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
