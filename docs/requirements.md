@@ -23,13 +23,14 @@
 - Pagina regole della casa (anche per uso QR in appartamento).
 - Pagina useful places (anche per uso QR in appartamento).
 - Modulo richiesta disponibilita (flow B).
-- Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing configurate in area admin e sulle date selezionate.
+- Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing ricorrenti configurate in area admin (periodi mese/giorno validi ogni anno) e sulle date selezionate.
 
 ### 2.2 Area privata (MVP)
 - Accesso proprietario via email/password.
 - Configurazione disponibilita calendario.
-- Configurazione prezzi per periodo.
+- Configurazione prezzi per periodo ricorrente mese/giorno (validita annuale, senza anno).
 - Configurazione soggiorno minimo (default 3 notti).
+- Le notti minime sono un vincolo separato e non fanno parte delle regole prezzo.
 - Gestione dati ospiti e soggiorni associati.
 - Consultazione ospiti per periodo/date.
 - Sezione newsletter (solo consultazione iscritti; invio non implementato).

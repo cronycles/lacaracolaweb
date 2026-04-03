@@ -15,22 +15,16 @@
             <table class="a-table">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Dal</th>
-                        <th>Al</th>
+                        <th>Periodo ricorrente</th>
                         <th>€ / notte</th>
-                        <th>Min. notti</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($rules as $rule)
                         <tr>
-                            <td style="font-weight:600">{{ $rule->name }}</td>
-                            <td>{{ $rule->start_date->format('d/m/Y') }}</td>
-                            <td>{{ $rule->end_date->format('d/m/Y') }}</td>
+                            <td style="font-weight:600">{{ $rule->period_label }}</td>
                             <td>{{ number_format($rule->price_euros, 2, ',', '.') }} €</td>
-                            <td>{{ $rule->min_nights }}</td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.pricing.edit', $rule) }}" class="btn btn--outline btn--sm">Modifica</a>
                                 <form method="POST" action="{{ route('admin.pricing.destroy', $rule) }}"

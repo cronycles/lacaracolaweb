@@ -8,13 +8,16 @@ use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 
 class PricingController extends Controller
 {
     public function index(): View
     {
-        $rules = PricingRule::orderBy('start_date')->get();
+        $rules = PricingRule::orderBy('start_month')
+            ->orderBy('start_day')
+            ->get();
 
         return view('admin.pricing.index', compact('rules'));
     }
@@ -56,12 +59,25 @@ class PricingController extends Controller
     private function validated(Request $request): array
     {
         $data = $request->validate([
-            'name'            => ['required', 'string', 'max:80'],
-            'start_date'      => ['required', 'date'],
-            'end_date'        => ['required', 'date', 'after:start_date'],
+            'start_month'     => ['required', 'integer', 'min:1', 'max:12'],
+            'start_day'       => ['required', 'integer', 'min:1', 'max:31'],
+            'end_month'       => ['required', 'integer', 'min:1', 'max:12'],
+            'end_day'         => ['required', 'integer', 'min:1', 'max:31'],
             'price_per_night' => ['required', 'integer', 'min:1', 'max:99999'],
-            'min_nights'      => ['required', 'integer', 'min:1', 'max:30'],
         ]);
+
+        $errors = new MessageBag();
+        if (! checkdate((int) $data['start_month'], (int) $data['start_day'], 2000)) {
+            $errors->add('start_day', 'Data di inizio non valida.');
+        }
+
+        if (! checkdate((int) $data['end_month'], (int) $data['end_day'], 2000)) {
+            $errors->add('end_day', 'Data di fine non valida.');
+        }
+
+        if ($errors->isNotEmpty()) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors->toArray());
+        }
 
         // Store cents (input is euros)
         $data['price_per_night'] = $data['price_per_night'] * 100;

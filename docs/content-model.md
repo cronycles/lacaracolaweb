@@ -15,7 +15,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 ## 3. Dati in database (MVP)
 - Utente admin.
 - Disponibilita calendario.
-- Regole pricing (per intervallo date).
+- Regole pricing ricorrenti (intervalli mese/giorno validi ogni anno).
 - Soggiorno minimo (global o per regola).
 - Persone/contatti.
 - Ospiti (ruolo di persona come guest).
