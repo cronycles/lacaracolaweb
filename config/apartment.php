@@ -84,8 +84,23 @@ return [
         'checkin_time'  => '15:00',
         // Informational check-out time shown to users/operations.
         'checkout_time' => '10:00',
-        // Deposit percentage for commercial reference.
-        'deposit_pct'   => 30,
+    ],
+
+    // --- House rules: parameter values (used in rule text templates) ---
+    'rules_values' => [
+        // Heating operating hours (in season).
+        'heating_start'       => '07:00',
+        'heating_end'         => '22:00',
+        // Quiet hours: night range.
+        'quiet_night_start'   => '23:00',
+        'quiet_night_end'     => '07:00',
+        // Quiet hours: afternoon range.
+        'quiet_afternoon_start' => '13:30',
+        'quiet_afternoon_end'   => '16:00',
+        // Check-in security deposit in EUR.
+        'checkin_deposit'     => '€200',
+        // Key loss penalty fee in EUR.
+        'key_loss_fee'        => '€150',
     ],
 
     // --- INTERHOME integration ---
@@ -151,11 +166,14 @@ return [
 
     // --- House rules (icon + lang keys for title and body text) ---
     'rules' => [
-        ['icon' => '🗑️', 'title_key' => 'app.rules_trash_title',    'text_key' => 'app.rules_trash_text'],
-        ['icon' => '🌡️', 'title_key' => 'app.rules_heating_title',  'text_key' => 'app.rules_heating_text'],
-        ['icon' => '🌙', 'title_key' => 'app.rules_quiet_title',    'text_key' => 'app.rules_quiet_text'],
-        ['icon' => '🔑', 'title_key' => 'app.rules_checkout_title', 'text_key' => 'app.rules_checkout_text'],
-        ['icon' => '🔐', 'title_key' => 'app.rules_keys_title',     'text_key' => 'app.rules_keys_text'],
+        ['icon' => '🏠', 'title_key' => 'app.rules_respect_title',     'text_key' => 'app.rules_respect_text'],
+        ['icon' => '🗑️', 'title_key' => 'app.rules_trash_title',       'text_key' => 'app.rules_trash_text'],
+        ['icon' => '🌡️', 'title_key' => 'app.rules_heating_title',     'text_key' => 'app.rules_heating_text'],
+        ['icon' => '🌙', 'title_key' => 'app.rules_quiet_title',       'text_key' => 'app.rules_quiet_text'],
+        ['icon' => '🚪', 'title_key' => 'app.rules_checkin_title',     'text_key' => 'app.rules_checkin_text'],
+        ['icon' => '🔑', 'title_key' => 'app.rules_checkout_title',    'text_key' => 'app.rules_checkout_text'],
+        ['icon' => '⚠️', 'title_key' => 'app.rules_keys_title',        'text_key' => 'app.rules_keys_text'],
+        ['icon' => '❗', 'title_key' => 'app.rules_warning_title',     'text_key' => 'app.rules_warning_text'],
     ],
 
     // --- Useful nearby places (supermarkets / restaurants) ---

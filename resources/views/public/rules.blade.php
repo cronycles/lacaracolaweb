@@ -15,8 +15,10 @@
         <div class="rules-list__item">
             <div class="rules-list__item-icon" aria-hidden="true">{{ $rule['icon'] }}</div>
             <div>
-                <p class="rules-list__item-title">{{ __($rule['title_key']) }}</p>
-                <p class="rules-list__item-text">{{ __($rule['text_key']) }}</p>
+                @if(!empty($rule['title_key']))
+                    <p class="rules-list__item-title">{{ __($rule['title_key']) }}</p>
+                @endif
+                <p class="rules-list__item-text">{!! nl2br(__($rule['text_key'], config('apartment.rules_values'))) !!}</p>
             </div>
         </div>
         @endforeach
