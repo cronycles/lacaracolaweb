@@ -40,17 +40,19 @@
                             @endif
 
                             @if(isset($place['desc_key']))
-                                <p class="card__text">{{ __('app.' . $place['desc_key']) }}</p>
+                                <p class="card__text" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--color-bg);border-left:3px solid var(--color-primary-light);border-radius:var(--radius-sm);font-size:.92rem;color:var(--color-text-secondary)">
+                                    ✍️ {{ __('app.' . $place['desc_key']) }}
+                                </p>
                             @endif
 
                             @if(isset($place['note_key']))
-                                <p class="card__text" style="font-style:italic;margin-top:var(--space-3);color:var(--color-text-muted);font-size:.9rem">
+                                <p class="card__text" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--color-bg);border-left:3px solid var(--color-accent);border-radius:var(--radius-sm);font-style:italic;color:var(--color-text-muted);font-size:.9rem">
                                     ℹ️ {{ __('app.' . $place['note_key']) }}
                                 </p>
                             @endif
 
                             @if(isset($place['advice_key']))
-                                <p class="card__text" style="margin-top:var(--space-3);font-size:.9rem;color:var(--color-text-secondary)">
+                                <p class="card__text" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--color-bg);border-left:3px solid var(--color-primary);border-radius:var(--radius-sm);font-size:.9rem;color:var(--color-text-secondary)">
                                     <strong>💡 {{ __('app.places_advice') }}:</strong> {!! __('app.' . $place['advice_key']) !!}
                                 </p>
                             @endif
