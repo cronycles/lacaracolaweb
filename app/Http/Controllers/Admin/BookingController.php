@@ -33,6 +33,8 @@ class BookingController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
+        $person = Person::findOrFail($data['person_id']);
+        $person->autoSubscribeToNewsletter();
 
         $booking = Booking::create($data);
 
@@ -64,6 +66,8 @@ class BookingController extends Controller
     public function update(Request $request, Booking $prenotazioni): RedirectResponse
     {
         $data = $this->validated($request);
+        $person = Person::findOrFail($data['person_id']);
+        $person->autoSubscribeToNewsletter();
         $prenotazioni->update($data);
 
         // Sync the linked availability block dates

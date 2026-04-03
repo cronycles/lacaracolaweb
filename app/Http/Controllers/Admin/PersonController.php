@@ -53,7 +53,10 @@ class PersonController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
+        $newsletterSubscribed = $request->boolean('newsletter_subscribed');
+        unset($data['newsletter_subscribed']);
         $person = Person::create($data);
+        $this->syncNewsletterPreference($person, $newsletterSubscribed);
 
         return redirect()->route('admin.people.show', $person)->with('success', 'Ospite aggiunto.');
     }
@@ -76,7 +79,10 @@ class PersonController extends Controller
     public function update(Request $request, Person $ospiti): RedirectResponse
     {
         $data = $this->validated($request, $ospiti->id);
+        $newsletterSubscribed = $request->boolean('newsletter_subscribed');
+        unset($data['newsletter_subscribed']);
         $ospiti->update($data);
+        $this->syncNewsletterPreference($ospiti, $newsletterSubscribed);
 
         return redirect($this->resolveReturnTo($request, $ospiti))
             ->with('success', 'Ospite aggiornato.');
@@ -137,5 +143,16 @@ class PersonController extends Controller
         }
 
         return $indexUrl;
+    }
+
+    private function syncNewsletterPreference(Person $person, bool $newsletterSubscribed): void
+    {
+        if ($newsletterSubscribed) {
+            $person->subscribeToNewsletter();
+
+            return;
+        }
+
+        $person->unsubscribeFromNewsletter();
     }
 }

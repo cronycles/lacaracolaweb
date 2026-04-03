@@ -41,10 +41,11 @@ class NewsletterController extends Controller
 
     public function toggle(Person $person): RedirectResponse
     {
-        $person->update([
-            'newsletter_subscribed'    => ! $person->newsletter_subscribed,
-            'newsletter_subscribed_at' => ! $person->newsletter_subscribed ? now() : null,
-        ]);
+        if ($person->newsletter_subscribed) {
+            $person->unsubscribeFromNewsletter();
+        } else {
+            $person->subscribeToNewsletter();
+        }
 
         return redirect()->back()->with('success', 'Iscrizione aggiornata.');
     }

@@ -26,6 +26,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Persona: entita anagrafica generale (contatto).
 - Ospite: persona che ha soggiornato almeno una volta.
 - Newsletter: include sia ex ospiti sia iscritti non ospiti, filtrabili.
+- Gli ospiti creati da prenotazioni o import vengono iscritti automaticamente alla newsletter, ma una disiscrizione manuale in admin prevale e non deve essere annullata da prenotazioni future.
 
 ## 5. Query operative chiave
 - Ospiti presenti tra due date.

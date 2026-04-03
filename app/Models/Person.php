@@ -23,12 +23,14 @@ class Person extends Model
         'document_number',
         'newsletter_subscribed',
         'newsletter_subscribed_at',
+        'newsletter_opted_out',
     ];
 
     protected $casts = [
         'birth_date'               => 'date',
         'newsletter_subscribed'    => 'boolean',
         'newsletter_subscribed_at' => 'datetime',
+        'newsletter_opted_out'     => 'boolean',
     ];
 
     /** Full name helper */
@@ -69,6 +71,33 @@ class Person extends Model
             'CH' => '🇨🇭',
             default => null,
         };
+    }
+
+    public function autoSubscribeToNewsletter(): void
+    {
+        if ($this->newsletter_opted_out) {
+            return;
+        }
+
+        $this->subscribeToNewsletter();
+    }
+
+    public function subscribeToNewsletter(): void
+    {
+        $this->forceFill([
+            'newsletter_subscribed' => true,
+            'newsletter_subscribed_at' => $this->newsletter_subscribed_at ?? now(),
+            'newsletter_opted_out' => false,
+        ])->save();
+    }
+
+    public function unsubscribeFromNewsletter(): void
+    {
+        $this->forceFill([
+            'newsletter_subscribed' => false,
+            'newsletter_subscribed_at' => null,
+            'newsletter_opted_out' => true,
+        ])->save();
     }
 
     public function bookings(): HasMany

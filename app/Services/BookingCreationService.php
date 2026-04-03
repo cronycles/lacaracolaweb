@@ -68,6 +68,8 @@ class BookingCreationService
             $person->save();
         }
 
+        $person->autoSubscribeToNewsletter();
+
         $booking = Booking::create([
             'person_id'    => $person->id,
             'checkin'      => $data['checkin'],
