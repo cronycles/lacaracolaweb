@@ -212,6 +212,20 @@ Se in futuro vuoi riattivare migrate/cache nel deploy automatico, imposta la var
 CPANEL_RUN_ARTISAN=1
 ```
 
+### Nota operativa importante
+
+Nel repo, il comportamento di default resta `copy-only`, perche `.cpanel.yml` lancia solo `bash scripts/deploy.sh`.
+
+In produzione, pero, l'ambiente server e attualmente configurato in modo che durante il deploy vengano eseguiti anche i task artisan. In pratica, quando fai push su `main` e parte il deploy cPanel:
+
+- il repo viene aggiornato sul server
+- viene eseguito `scripts/deploy.sh`
+- le migration vengono applicate automaticamente se la variabile server `CPANEL_RUN_ARTISAN=1` e attiva
+
+Quindi, salvo cambio della configurazione server, **in produzione le migration avvengono automaticamente con il push**.
+
+Se un giorno il deploy dovesse tornare `copy-only`, ricontrollare subito la variabile ambiente server `CPANEL_RUN_ARTISAN` prima di lanciare migration manuali non necessarie.
+
 ## Migrazioni SQL: cosa devi fare davvero
 
 In questo setup **non devi generare manualmente file SQL**.
@@ -221,9 +235,11 @@ Serve solo:
 - creare il database MySQL vuoto in cPanel
 - configurare correttamente il `.env`
 
-Con deploy copy-only, le migration non vengono eseguite automaticamente.
+Nel comportamento base del repo, con deploy copy-only, le migration non vengono eseguite automaticamente.
 
-**Procedura raccomandata** (verificata in produzione):
+**Stato attuale della produzione:** considerare le migration automatiche durante il deploy via push, perche il server risulta configurato per eseguire anche i task artisan.
+
+**Procedura manuale di fallback** (solo se il deploy automatico non applica le migration):
 
 1. Apri cPanel -> Terminal.
 2. Entra nella cartella app: `cd ~/lacaracola-app`
