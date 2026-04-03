@@ -3,6 +3,44 @@
 @section('title', 'Calendario disponibilità')
 
 @section('content')
+    @php
+        use Carbon\Carbon;
+
+        $months = [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->addMonth()->startOfMonth(),
+            Carbon::now()->addMonths(2)->startOfMonth(),
+        ];
+
+        $bookedDays = [];
+        foreach ($bookings as $bookingItem) {
+            $cursor = Carbon::parse($bookingItem->checkin)->startOfDay();
+            $checkoutDate = Carbon::parse($bookingItem->checkout)->startOfDay();
+
+            while ($cursor->lt($checkoutDate)) {
+                $bookedDays[$cursor->format('Y-m-d')] = true;
+                $cursor->addDay();
+            }
+        }
+
+        $ownerDays = [];
+        $maintenanceDays = [];
+        foreach ($blocks as $blockItem) {
+            $cursor = Carbon::parse($blockItem->start_date)->startOfDay();
+            $blockEnd = Carbon::parse($blockItem->end_date)->startOfDay();
+            $blockType = $blockItem->type ?? $blockItem->reason;
+
+            while ($cursor->lte($blockEnd)) {
+                $dateKey = $cursor->format('Y-m-d');
+                if ($blockType === 'owner') {
+                    $ownerDays[$dateKey] = true;
+                } else {
+                    $maintenanceDays[$dateKey] = true;
+                }
+                $cursor->addDay();
+            }
+        }
+    @endphp
 
     <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
 
