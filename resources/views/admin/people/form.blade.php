@@ -5,7 +5,7 @@
 @section('content')
     <div style="max-width:680px">
         <div style="margin-bottom:1rem">
-            <a href="{{ route('admin.people.index') }}" class="btn btn--outline btn--sm">← Torna agli ospiti</a>
+            <a href="{{ $returnTo ?? route('admin.people.index') }}" class="btn btn--outline btn--sm">← Torna agli ospiti</a>
         </div>
 
         <div class="a-card">
@@ -17,6 +17,7 @@
                 @if ($person->exists)
                     @method('PUT')
                 @endif
+                <input type="hidden" name="return_to" value="{{ $returnTo ?? route('admin.people.index') }}">
 
                 <div class="form-row">
                     <div class="form-group">
@@ -97,7 +98,7 @@
                     <button type="submit" class="btn btn--primary">
                         {{ $person->exists ? 'Salva modifiche' : 'Crea ospite' }}
                     </button>
-                    <a href="{{ route('admin.people.index') }}" class="btn btn--outline">Annulla</a>
+                    <a href="{{ $returnTo ?? route('admin.people.index') }}" class="btn btn--outline">Annulla</a>
                 </div>
             </form>
         </div>

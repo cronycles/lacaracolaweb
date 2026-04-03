@@ -6,7 +6,7 @@
     <div style="max-width:720px">
         <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
             <a href="{{ route('admin.people.index') }}" class="btn btn--outline btn--sm">← Ospiti</a>
-            <a href="{{ route('admin.people.edit', $person) }}" class="btn btn--primary btn--sm">Modifica</a>
+            <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => route('admin.people.show', $person)]) }}" class="btn btn--primary btn--sm">Modifica</a>
             <a href="{{ route('admin.people.stays', $person) }}" class="btn btn--outline btn--sm">Soggiorni</a>
             <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
                   onsubmit="return confirm('Eliminare questo ospite?')" style="margin-left:auto">

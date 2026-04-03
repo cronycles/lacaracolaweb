@@ -67,7 +67,10 @@ class PersonController extends Controller
 
     public function edit(Person $ospiti): View
     {
-        return view('admin.people.form', ['person' => $ospiti]);
+        return view('admin.people.form', [
+            'person' => $ospiti,
+            'returnTo' => $this->resolveReturnTo(request(), $ospiti),
+        ]);
     }
 
     public function update(Request $request, Person $ospiti): RedirectResponse
@@ -75,7 +78,8 @@ class PersonController extends Controller
         $data = $this->validated($request, $ospiti->id);
         $ospiti->update($data);
 
-        return redirect()->route('admin.people.show', $ospiti)->with('success', 'Ospite aggiornato.');
+        return redirect($this->resolveReturnTo($request, $ospiti))
+            ->with('success', 'Ospite aggiornato.');
     }
 
     public function destroy(Person $ospiti): RedirectResponse
@@ -115,5 +119,23 @@ class PersonController extends Controller
             'document_number' => ['nullable', 'string', 'max:60'],
             'newsletter_subscribed' => ['nullable', 'boolean'],
         ]);
+    }
+
+    private function resolveReturnTo(Request $request, Person $person): string
+    {
+        $returnTo = $request->input('return_to');
+
+        if (! is_string($returnTo) || $returnTo === '') {
+            return route('admin.people.index');
+        }
+
+        $indexUrl = route('admin.people.index');
+        $showUrl = route('admin.people.show', $person);
+
+        if (str_starts_with($returnTo, $indexUrl) || $returnTo === $showUrl) {
+            return $returnTo;
+        }
+
+        return $indexUrl;
     }
 }

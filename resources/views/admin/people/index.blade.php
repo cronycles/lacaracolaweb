@@ -55,7 +55,7 @@
                             </td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.people.show', $person) }}" class="btn btn--outline btn--sm">Vedi</a>
-                                <a href="{{ route('admin.people.edit', $person) }}" class="btn btn--outline btn--sm">Modifica</a>
+                                                                <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => request()->fullUrl()]) }}" class="btn btn--outline btn--sm">Modifica</a>
                                 <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
                                       style="display:inline" onsubmit="return confirm('Eliminare questo ospite?')">
                                     @csrf
