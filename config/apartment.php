@@ -211,6 +211,7 @@ return [
                 ['name' => 'Bancomat', 'address' => 'Via Doria, 33', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/ATM,+Via+Doria+33+Andora+Italy'],
                 ['name' => 'Ufficio Postale', 'address' => 'Via Aurelia, 132', 'distance' => '10 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Ufficio+Postale,+Via+Aurelia+132+Andora+Italy'],
                 ['name' => 'Stazione Ferroviaria', 'address' => 'Via Santa Caterina, 6', 'distance' => '25 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Stazione+Ferroviaria,+Via+Santa+Caterina+6+Andora+Italy'],
+                ['name' => 'Cartolibreria Punto&Virgola', 'address' => 'Via Clavesana, 69', 'distance' => '15 min a piedi', 'maps_url' => 'https://www.google.com/maps/search/Cartolibreria+Punto+e+Virgola,+Via+Clavesana+69+Andora+Italy'],
             ],
         ],
     ],
