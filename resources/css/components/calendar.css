@@ -187,3 +187,38 @@
     border-color: #f59e0b;
     color: #1a2b34;
 }
+
+.cal-window-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.cal-window-nav__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e3d4a;
+}
+
+.cal-window-nav__actions {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cal-window-nav__picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-select--sm {
+    min-width: 170px;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    font-size: 0.75rem;
+}

@@ -3,51 +3,32 @@
 @section('title', 'Calendario disponibilità')
 
 @section('content')
-    @php
-        use Carbon\Carbon;
-
-        $months = [
-            Carbon::now()->startOfMonth(),
-            Carbon::now()->addMonth()->startOfMonth(),
-            Carbon::now()->addMonths(2)->startOfMonth(),
-        ];
-
-        $bookedDays = [];
-        foreach ($bookings as $bookingItem) {
-            $cursor = Carbon::parse($bookingItem->checkin)->startOfDay();
-            $checkoutDate = Carbon::parse($bookingItem->checkout)->startOfDay();
-
-            while ($cursor->lt($checkoutDate)) {
-                $bookedDays[$cursor->format('Y-m-d')] = true;
-                $cursor->addDay();
-            }
-        }
-
-        $ownerDays = [];
-        $maintenanceDays = [];
-        foreach ($blocks as $blockItem) {
-            $cursor = Carbon::parse($blockItem->start_date)->startOfDay();
-            $blockEnd = Carbon::parse($blockItem->end_date)->startOfDay();
-            $blockType = $blockItem->type ?? $blockItem->reason;
-
-            while ($cursor->lte($blockEnd)) {
-                $dateKey = $cursor->format('Y-m-d');
-                if ($blockType === 'owner') {
-                    $ownerDays[$dateKey] = true;
-                } else {
-                    $maintenanceDays[$dateKey] = true;
-                }
-                $cursor->addDay();
-            }
-        }
-    @endphp
-
     <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
 
         {{-- Left: event list --}}
         <div>
             <div class="a-card">
-                <div class="a-card__title">Prenotazioni attive</div>
+                <div class="a-card__title">Eventi nel periodo visualizzato</div>
+
+                <div class="cal-window-nav">
+                    <a href="{{ route('admin.calendar', ['month' => $previousWindowMonth]) }}" class="btn btn--outline btn--sm">← Mese precedente</a>
+                    <div class="cal-window-nav__label">{{ ucfirst($windowLabel) }}</div>
+                    <div class="cal-window-nav__actions">
+                        <form method="GET" action="{{ route('admin.calendar') }}" class="cal-window-nav__picker">
+                            <label for="month" class="sr-only">Vai al mese</label>
+                            <select id="month" name="month" class="form-select form-select--sm">
+                                @foreach ($selectorMonths as $option)
+                                    <option value="{{ $option['value'] }}" @selected($windowStartMonth === $option['value'])>
+                                        {{ $option['label'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn--outline btn--sm">Vai</button>
+                        </form>
+                        <a href="{{ route('admin.calendar') }}" class="btn btn--outline btn--sm">Oggi</a>
+                        <a href="{{ route('admin.calendar', ['month' => $nextWindowMonth]) }}" class="btn btn--outline btn--sm">Mese successivo →</a>
+                    </div>
+                </div>
 
                 <div class="cal-grid-wrap">
                     @foreach ($months as $month)
@@ -105,7 +86,7 @@
                 </div>
 
                 @if ($bookings->isEmpty() && $blocks->isEmpty())
-                    <p style="color:#6b7f89;font-size:.875rem">Nessun evento futuro.</p>
+                    <p style="color:#6b7f89;font-size:.875rem">Nessun evento nel periodo selezionato.</p>
                 @else
                     <ul class="event-list">
                         @foreach ($bookings as $booking)
@@ -150,7 +131,7 @@
                                     </div>
                                 </div>
                                 <div style="flex-shrink:0">
-                                    <form method="POST" action="{{ route('admin.calendar.block.destroy', $block) }}"
+                                    <form method="POST" action="{{ route('admin.calendar.block.destroy', ['block' => $block, 'month' => $windowStartMonth]) }}"
                                           onsubmit="return confirm('Eliminare questo blocco?')">
                                         @csrf
                                         @method('DELETE')
@@ -168,7 +149,7 @@
         <div>
             <div class="a-card">
                 <div class="a-card__title">Aggiungi blocco manuale</div>
-                <form method="POST" action="{{ route('admin.calendar.block') }}">
+                <form method="POST" action="{{ route('admin.calendar.block', ['month' => $windowStartMonth]) }}">
                     @csrf
                     <div class="form-group">
                         <label class="form-label" for="start_date">Dal</label>
