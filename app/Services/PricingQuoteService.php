@@ -16,6 +16,7 @@ class PricingQuoteService
     {
         $checkinDate = Carbon::parse($checkin)->startOfDay();
         $checkoutDate = Carbon::parse($checkout)->startOfDay();
+        $hidePriceFromDate = $this->resolveHidePriceFromDate();
         $nights = (int) $checkinDate->diffInDays($checkoutDate);
 
         if ($nights <= 0) {
@@ -33,6 +34,14 @@ class PricingQuoteService
         $cursor = $checkinDate->copy();
 
         while ($cursor->lt($checkoutDate)) {
+            if ($hidePriceFromDate !== null && $cursor->greaterThanOrEqualTo($hidePriceFromDate)) {
+                return [
+                    'available' => false,
+                    'nights' => $nights,
+                    'stay_cents' => null,
+                ];
+            }
+
             $ruleForNight = $rules
                 ->filter(fn (PricingRule $rule): bool => $this->matchesMonthDayRule($cursor, $rule))
                 ->sortBy(fn (PricingRule $rule): int => $this->ruleSpanInDays($rule))
@@ -80,5 +89,20 @@ class PricingQuoteService
         }
 
         return (int) $start->diffInDays($end) + 1;
+    }
+
+    private function resolveHidePriceFromDate(): ?Carbon
+    {
+        $raw = config('apartment.booking.hide_price_from');
+
+        if (! is_string($raw) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw)) {
+            return null;
+        }
+
+        try {
+            return Carbon::createFromFormat('Y-m-d', $raw)->startOfDay();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }
