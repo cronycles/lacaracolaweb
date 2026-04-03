@@ -56,8 +56,8 @@ return [
     // --- Booking defaults (overridden from admin area) ---
     'booking' => [
         'min_nights'    => 3,
-        'cleaning_fee'  => (int) env('BOOKING_CLEANING_FEE', 100),
-        'hide_price_from' => env('BOOKING_HIDE_PRICE_FROM'),
+        'cleaning_fee'  => 100,
+        'hide_price_from' => 2027-01-01,
         'checkin_time'  => '15:00',
         'checkout_time' => '10:00',
         'deposit_pct'   => 30,
