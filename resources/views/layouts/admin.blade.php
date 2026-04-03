@@ -9,7 +9,7 @@
     <style>
         /* Admin-only layout variables */
         :root {
-            --admin-sidebar-w: 220px;
+            --admin-sidebar-w: 250px;
             --admin-bg: #f4f6f8;
             --admin-sidebar-bg: #1e3d4a;
             --admin-sidebar-text: #c8d8e0;
@@ -43,12 +43,20 @@
 
         .admin-sidebar__brand {
             padding: 1.5rem 1rem;
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 1.2rem;
             color: var(--admin-sidebar-active);
             border-bottom: 1px solid rgba(255,255,255,.1);
             text-decoration: none;
-            display: block;
+            display: inline-flex;
+            align-items: center;
+            text-transform: uppercase;
+            gap: 0.75rem;
+        }
+
+        .admin-sidebar__brand__logo {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
         }
 
         .admin-sidebar__brand span {
@@ -57,7 +65,6 @@
             font-weight: 400;
             color: var(--admin-sidebar-text);
             margin-top: .2rem;
-            text-transform: uppercase;
             letter-spacing: .08em;
         }
 
@@ -286,8 +293,11 @@
     {{-- Sidebar navigation --}}
     <aside class="admin-sidebar">
         <a href="{{ route('admin.dashboard') }}" class="admin-sidebar__brand">
-            La Caracola
-            <span>Pannello di controllo</span>
+            <img src="{{ asset('images/brand/logo-symbol-gold.svg') }}" alt="La Caracola" class="admin-sidebar__brand__logo">
+            <div>
+                La Caracola
+                <span>Pannello di controllo</span>
+            </div>
         </a>
 
         <ul class="admin-nav">
