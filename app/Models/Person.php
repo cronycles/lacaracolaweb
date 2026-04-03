@@ -52,6 +52,25 @@ class Person extends Model
         return "{$this->country_code} - {$countryName}";
     }
 
+    public function getCountryFlagAttribute(): ?string
+    {
+        if (! $this->country_code) {
+            return null;
+        }
+
+        return match ($this->country_code) {
+            'IT' => '🇮🇹',
+            'FR' => '🇫🇷',
+            'DE' => '🇩🇪',
+            'ES' => '🇪🇸',
+            'GB' => '🇬🇧',
+            'IE' => '🇮🇪',
+            'NL' => '🇳🇱',
+            'CH' => '🇨🇭',
+            default => null,
+        };
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);

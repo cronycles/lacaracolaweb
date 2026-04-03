@@ -44,7 +44,15 @@
                             </td>
                             <td>{{ $person->email ?? '—' }}</td>
                             <td>{{ $person->phone ?? '—' }}</td>
-                            <td>{{ $person->country_display ?? '—' }}</td>
+                            <td>
+                                @if ($person->country_flag)
+                                    <span title="{{ $person->country_display }}" aria-label="{{ $person->country_display }}" style="font-size:1.1rem;line-height:1">
+                                        {{ $person->country_flag }}
+                                    </span>
+                                @else
+                                    —
+                                @endif
+                            </td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.people.show', $person) }}" class="btn btn--outline btn--sm">Vedi</a>
                                 <a href="{{ route('admin.people.edit', $person) }}" class="btn btn--outline btn--sm">Modifica</a>
