@@ -43,6 +43,8 @@ return [
     'booking_price_title'   => 'Price estimate',
     'booking_price_loading' => 'Calculating price…',
     'booking_price_unavailable' => 'Price unavailable for all selected nights.',
+    'booking_price_stay'    => 'Stay',
+    'booking_price_cleaning' => 'Cleaning',
     'booking_price_detail'  => ':nights selected nights · estimated total',
     'booking_min_nights'    => 'Minimum stay :nights nights.',
     'error_min_nights'      => 'The minimum stay is :nights nights.',

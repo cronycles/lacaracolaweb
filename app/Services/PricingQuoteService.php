@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class PricingQuoteService
 {
     /**
-     * @return array{available: bool, nights: int, total_cents: int|null}
+    * @return array{available: bool, nights: int, stay_cents: int|null}
      */
     public function calculate(string $checkin, string $checkout): array
     {
@@ -22,7 +22,7 @@ class PricingQuoteService
             return [
                 'available' => false,
                 'nights' => 0,
-                'total_cents' => null,
+                'stay_cents' => null,
             ];
         }
 
@@ -42,7 +42,7 @@ class PricingQuoteService
                 return [
                     'available' => false,
                     'nights' => $nights,
-                    'total_cents' => null,
+                    'stay_cents' => null,
                 ];
             }
 
@@ -53,7 +53,7 @@ class PricingQuoteService
         return [
             'available' => true,
             'nights' => $nights,
-            'total_cents' => $totalCents,
+            'stay_cents' => $totalCents,
         ];
     }
 

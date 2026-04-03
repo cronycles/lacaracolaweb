@@ -16,6 +16,8 @@ interface ApiResponse {
 
 interface QuoteResponse {
     available: boolean;
+    stay_cents?: number;
+    cleaning_cents?: number;
     total_cents?: number;
     nights?: number;
     message: string;
@@ -31,6 +33,7 @@ export function initBookingForm(): void {
     const successEl = document.querySelector<HTMLElement>('#booking-success');
     const priceBox = form.querySelector<HTMLElement>('[data-price-box]');
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
+    const priceBreakdown = form.querySelector<HTMLElement>('[data-price-breakdown]');
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
 
@@ -154,6 +157,14 @@ export function initBookingForm(): void {
                 if (!data.available || typeof data.total_cents !== 'number') {
                     hidePrice();
                     return;
+                }
+
+                if (priceBreakdown) {
+                    const stayLabel = form.dataset['priceStayLabel'] ?? 'Soggiorno';
+                    const cleaningLabel = form.dataset['priceCleaningLabel'] ?? 'Pulizie';
+                    const stayCents = data.stay_cents ?? 0;
+                    const cleaningCents = data.cleaning_cents ?? 0;
+                    priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
                 }
 
                 showPriceMessage(formatCurrency(data.total_cents), data.message);
