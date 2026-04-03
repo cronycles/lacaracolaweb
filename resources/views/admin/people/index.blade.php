@@ -29,8 +29,7 @@
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Telefono</th>
-                        <th>Soggiorni</th>
-                        <th>Newsletter</th>
+                        <th>Paese</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -45,14 +44,7 @@
                             </td>
                             <td>{{ $person->email ?? '—' }}</td>
                             <td>{{ $person->phone ?? '—' }}</td>
-                            <td>{{ $person->bookings_count }}</td>
-                            <td>
-                                @if ($person->newsletter_subscribed)
-                                    <span class="badge badge--booked">✓ Iscritto</span>
-                                @else
-                                    <span style="color:#9ca3af;font-size:.8rem">—</span>
-                                @endif
-                            </td>
+                            <td>{{ $person->country_display ?? '—' }}</td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.people.show', $person) }}" class="btn btn--outline btn--sm">Vedi</a>
                                 <a href="{{ route('admin.people.edit', $person) }}" class="btn btn--outline btn--sm">Modifica</a>

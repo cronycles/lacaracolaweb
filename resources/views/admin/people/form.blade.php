@@ -57,9 +57,14 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="country_code">Paese (codice ISO)</label>
-                        <input type="text" id="country_code" name="country_code" class="form-input"
-                               value="{{ old('country_code', $person->country_code) }}" maxlength="3"
-                               placeholder="IT / DE / FR …">
+                        <select id="country_code" name="country_code" class="form-input">
+                            <option value="">Seleziona un paese</option>
+                            @foreach (config('apartment.guest_countries', []) as $countryCode => $countryName)
+                                <option value="{{ $countryCode }}" @selected(old('country_code', $person->country_code) === $countryCode)>
+                                    {{ $countryCode }} - {{ $countryName }}
+                                </option>
+                            @endforeach
+                        </select>
                         @error('country_code') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>

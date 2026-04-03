@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <th>Paese</th>
-                        <td>{{ $person->country_code ?? '—' }}</td>
+                        <td>{{ $person->country_display ?? '—' }}</td>
                     </tr>
                     <tr>
                         <th>Documento</th>

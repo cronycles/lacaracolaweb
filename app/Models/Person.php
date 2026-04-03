@@ -37,6 +37,21 @@ class Person extends Model
         return "{$this->first_name} {$this->last_name}";
     }
 
+    public function getCountryDisplayAttribute(): ?string
+    {
+        if (! $this->country_code) {
+            return null;
+        }
+
+        $countryName = config("apartment.guest_countries.{$this->country_code}");
+
+        if (! is_string($countryName) || $countryName === '') {
+            return $this->country_code;
+        }
+
+        return "{$this->country_code} - {$countryName}";
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);

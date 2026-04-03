@@ -9,13 +9,14 @@ use App\Models\Booking;
 use App\Models\Person;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PersonController extends Controller
 {
     public function index(Request $request): View|RedirectResponse
     {
-        $query = Person::withCount('bookings');
+        $query = Person::query();
 
         $search = trim((string) $request->input('q', ''));
         $search = preg_replace('/[\p{C}\p{Z}]+/u', ' ', $search) ?? '';
@@ -109,7 +110,7 @@ class PersonController extends Controller
             'email'           => ['nullable', 'email', 'max:150', "unique:people,email,{$ignoreId}"],
             'phone'           => ['nullable', 'string', 'max:30'],
             'birth_date'      => ['nullable', 'date'],
-            'country_code'    => ['nullable', 'string', 'max:3'],
+            'country_code'    => ['nullable', 'string', 'max:10', Rule::in(array_keys(config('apartment.guest_countries', [])))],
             'document_type'   => ['nullable', 'string', 'max:30'],
             'document_number' => ['nullable', 'string', 'max:60'],
             'newsletter_subscribed' => ['nullable', 'boolean'],

@@ -9,6 +9,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Testi pagine pubbliche per lingua.
 - Regole della casa.
 - Useful places.
+- Liste stabili usate nei form admin quando devono restare facilmente estendibili senza toccare le view (es. paesi ISO selezionabili per gli ospiti).
 - SEO metadata base per pagina/lingua.
 
 ## 3. Dati in database (MVP)
