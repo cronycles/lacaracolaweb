@@ -42,7 +42,8 @@
                             <th>Check-out</th>
                             <th>Notti</th>
                             <th>Adulti</th>
-                            <th>Bambini</th>
+                            <th>Bambini+Neonati</th>
+                            <th>Animali</th>
                             <th>Origine</th>
                             <th>Rif.</th>
                             <th></th>
@@ -56,6 +57,7 @@
                                 <td>{{ $booking->nights }}</td>
                                 <td>{{ $booking->adults }}</td>
                                 <td>{{ ($booking->children ?? 0) + ($booking->babies ?? 0) }}</td>
+                                <td>{{ $booking->pets ?? 0 }}</td>
                                 <td><span class="badge badge--{{ $booking->source }}">{{ $booking->source }}</span></td>
                                 <td style="font-size:.8rem;color:#6b7f89">{{ $booking->external_ref ?? '—' }}</td>
                                 <td>

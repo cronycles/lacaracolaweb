@@ -113,6 +113,7 @@ class InterhomePdfImportController extends Controller
                     'adults' => (int) $row['adults'],
                     'children' => (int) $row['children'],
                     'babies' => (int) $row['babies'],
+                    'pets' => (int) ($row['pets'] ?? 0),
                     'source' => $row['source'] === 'owner' ? 'owner' : 'interhome',
                     'external_ref' => $row['external_ref'] ?: null,
                     'notes' => 'Imported from Interhome PDF: ' . ($preview['filename'] ?? 'unknown file'),

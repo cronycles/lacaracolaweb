@@ -108,6 +108,9 @@
                                         {{ $booking->checkin->format('d/m/Y') }} → {{ $booking->checkout->format('d/m/Y') }}
                                         · {{ $booking->nights }} notti
                                         · {{ $booking->total_guests }} ospiti
+                                        @if (($booking->pets ?? 0) > 0)
+                                            · {{ $booking->pets }} animali
+                                        @endif
                                     </div>
                                     <div style="margin-top:.25rem">
                                         <span class="badge badge--{{ $booking->source }}">{{ $booking->source }}</span>

@@ -45,7 +45,8 @@
                         <td>{{ $booking->total_guests }}
                             (adulti: {{ $booking->adults }},
                              bambini: {{ $booking->children ?? 0 }},
-                             neonati: {{ $booking->babies ?? 0 }})
+                             neonati: {{ $booking->babies ?? 0 }},
+                             animali: {{ $booking->pets ?? 0 }})
                         </td>
                     </tr>
                     <tr>

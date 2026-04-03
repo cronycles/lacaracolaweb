@@ -20,6 +20,7 @@ class Booking extends Model
         'adults',
         'children',
         'babies',
+        'pets',
         'source',
         'external_ref',
         'notes',
@@ -31,6 +32,7 @@ class Booking extends Model
         'adults'   => 'integer',
         'children' => 'integer',
         'babies'   => 'integer',
+        'pets'     => 'integer',
     ];
 
     public function person(): BelongsTo
@@ -43,10 +45,10 @@ class Booking extends Model
         return $this->hasOne(AvailabilityBlock::class);
     }
 
-    /** Total number of guests */
+    /** Total number of guests including pets */
     public function getTotalGuestsAttribute(): int
     {
-        return $this->adults + $this->children + $this->babies;
+        return $this->adults + $this->children + $this->babies + ($this->pets ?? 0);
     }
 
     /** Number of nights */

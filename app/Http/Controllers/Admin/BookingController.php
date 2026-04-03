@@ -94,6 +94,7 @@ class BookingController extends Controller
             'adults'       => ['required', 'integer', 'min:1', 'max:6'],
             'children'     => ['nullable', 'integer', 'min:0', 'max:6'],
             'babies'       => ['nullable', 'integer', 'min:0', 'max:6'],
+            'pets'         => ['nullable', 'integer', 'min:0', 'max:4'],
             'source'       => ['required', 'in:direct,airbnb,booking,interhome'],
             'external_ref' => ['nullable', 'string', 'max:60'],
             'notes'        => ['nullable', 'string', 'max:1000'],

@@ -69,7 +69,7 @@
                                         <td>{{ $row['first_name'] }} {{ $row['last_name'] }}</td>
                                         <td>{{ \Carbon\Carbon::parse($row['checkin'])->format('d/m/Y') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($row['checkout'])->format('d/m/Y') }}</td>
-                                        <td>{{ $row['adults'] }}A / {{ $row['children'] }}B / {{ $row['babies'] }}N</td>
+                                        <td>{{ $row['adults'] }}A / {{ $row['children'] }}B / {{ $row['babies'] }}N / {{ $row['pets'] ?? 0 }}P</td>
                                         <td>
                                             @if ($row['status'] === 'new')
                                                 <span class="badge" style="background:#dcfce7;color:#166534">Nuova</span>

@@ -75,6 +75,12 @@
                                value="{{ old('babies', $booking->babies ?? 0) }}" min="0" max="6">
                         @error('babies') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pets">Animali domestici</label>
+                        <input type="number" id="pets" name="pets" class="form-input"
+                               value="{{ old('pets', $booking->pets ?? 0) }}" min="0" max="4">
+                        @error('pets') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
                 {{-- Source --}}
