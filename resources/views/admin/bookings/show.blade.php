@@ -41,13 +41,19 @@
                         <td>{{ $booking->nights }}</td>
                     </tr>
                     <tr>
-                        <th>Ospiti totali</th>
+                        <th>Posti letto usati</th>
                         <td>{{ $booking->total_guests }}
                             (adulti: {{ $booking->adults }},
-                             bambini: {{ $booking->children ?? 0 }},
-                             neonati: {{ $booking->babies ?? 0 }},
-                             animali: {{ $booking->pets ?? 0 }})
+                             bambini: {{ $booking->children ?? 0 }})
                         </td>
+                    </tr>
+                    <tr>
+                        <th>Neonati</th>
+                        <td>{{ $booking->babies ?? 0 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Animali</th>
+                        <td>{{ $booking->pets ?? 0 }}</td>
                     </tr>
                     <tr>
                         <th>Origine</th>

@@ -45,10 +45,10 @@ class Booking extends Model
         return $this->hasOne(AvailabilityBlock::class);
     }
 
-    /** Total number of guests including pets */
+    /** Guests occupying bed spaces */
     public function getTotalGuestsAttribute(): int
     {
-        return $this->adults + $this->children + $this->babies + ($this->pets ?? 0);
+        return $this->adults + $this->children;
     }
 
     /** Number of nights */

@@ -107,9 +107,12 @@
                                     <div class="event-item__dates">
                                         {{ $booking->checkin->format('d/m/Y') }} → {{ $booking->checkout->format('d/m/Y') }}
                                         · {{ $booking->nights }} notti
-                                        · {{ $booking->total_guests }} ospiti
+                                        · {{ $booking->total_guests }} posti letto
+                                        @if (($booking->babies ?? 0) > 0)
+                                            · 👶 {{ $booking->babies }}
+                                        @endif
                                         @if (($booking->pets ?? 0) > 0)
-                                            · {{ $booking->pets }} animali
+                                            · 🐾 {{ $booking->pets }}
                                         @endif
                                     </div>
                                     <div style="margin-top:.25rem">

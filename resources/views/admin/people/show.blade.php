@@ -94,7 +94,15 @@
                                 <td>{{ $booking->checkin->format('d/m/Y') }}</td>
                                 <td>{{ $booking->checkout->format('d/m/Y') }}</td>
                                 <td>{{ $booking->nights }}</td>
-                                <td>{{ $booking->total_guests }}</td>
+                                <td>
+                                    {{ $booking->total_guests }}
+                                    @if (($booking->babies ?? 0) > 0)
+                                        <span title="{{ $booking->babies }} neonato/i" aria-label="{{ $booking->babies }} neonato/i" style="font-size:.85em">👶</span>
+                                    @endif
+                                    @if (($booking->pets ?? 0) > 0)
+                                        <span title="{{ $booking->pets }} animale/i" aria-label="{{ $booking->pets }} animale/i" style="font-size:.85em">🐾</span>
+                                    @endif
+                                </td>
                                 <td><span class="badge badge--{{ $booking->source }}">{{ $booking->source }}</span></td>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $booking) }}"
