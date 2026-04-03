@@ -58,6 +58,9 @@ return [
     'booking_dp_hint_checkin'      => 'Wählen Sie Ihr Ankunftsdatum',
     'booking_dp_hint_checkout'     => 'Wählen Sie Ihr Abreisedatum (mind. :nights Nächte)',
     'booking_dp_clear'             => 'Daten löschen',
+    'booking_dp_legend_available'  => 'Verfügbar',
+    'booking_dp_legend_selected'   => 'Ausgewählt',
+    'booking_dp_legend_blocked'    => 'Belegt',
 
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Direkt buchen',

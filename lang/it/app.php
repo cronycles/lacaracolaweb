@@ -62,6 +62,9 @@ return [
     'booking_dp_hint_checkin'      => 'Seleziona la data di arrivo',
     'booking_dp_hint_checkout'     => 'Seleziona la data di partenza (min. :nights notti)',
     'booking_dp_clear'             => 'Cancella date',
+    'booking_dp_legend_available'  => 'Disponibile',
+    'booking_dp_legend_selected'   => 'Selezionato',
+    'booking_dp_legend_blocked'    => 'Occupato',
 
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Prenota direttamente',

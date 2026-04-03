@@ -9,30 +9,48 @@ declare(strict_types=1);
 return [
 
     // --- Branding ---
+    // Public brand name shown across the website.
     'name'    => 'La Caracola',
+    // Short marketing sentence used in hero/meta contexts.
     'tagline' => 'A due passi dal mare — Andora, Liguria',
+    // Contact email shown in public and used for booking requests.
     'email'   => env('APARTMENT_EMAIL', 'info@lacaracolaandora.com'),
+    // Contact phone shown in public pages/footer.
     'phone'   => env('APARTMENT_PHONE', ''),
 
     // --- Address ---
     'address' => [
+        // Street and civic number of the apartment.
         'street'   => 'Via Aurelia 64',
+        // City/locality.
         'city'     => 'Andora',
+        // Province/area code.
         'province' => 'Savona',
+        // Postal code.
         'zip'      => '17051',
+        // Region used in SEO text and schema.
         'region'   => 'Liguria',
+        // Country name used in schema/address blocks.
         'country'  => 'Italy',
+        // Latitude for map pin and schema.org geo data.
         'lat'      => 43.95255349558721,
+        // Longitude for map pin and schema.org geo data.
         'lng'      => 8.153381834769661,
     ],
 
     // --- Property specs ---
     'specs' => [
-        'beds'     => 6,         // max guests
-        'bedrooms' => 2,         // double bedrooms
+        // Max bed places.
+        'beds'     => 6,
+        // Number of bedrooms.
+        'bedrooms' => 2,
+        // Number of bathrooms.
         'bathrooms' => 1,
-        'sqm'      => null,      // to be filled
+        // Total apartment square meters (optional).
+        'sqm'      => null,
+        // Floor number.
         'floor'    => 1,
+        // Whether sea view is available.
         'sea_view' => true,
     ],
 
@@ -55,26 +73,38 @@ return [
 
     // --- Booking defaults (overridden from admin area) ---
     'booking' => [
+        // Global minimum nights for public availability request form.
         'min_nights'    => 3,
+        // Fixed cleaning fee (EUR) added to the stay estimate.
         'cleaning_fee'  => 100,
-        'hide_price_from' => 2027-01-01,
+        // Optional cutoff date (YYYY-MM-DD). If set, prices are hidden from this date onwards.
+        // Examples: null (always show), '2027-01-01' (hide prices for stays on/after 2027-01-01).
+        'hide_price_from' => '2027-01-01',
+        // Informational check-in time shown to users/operations.
         'checkin_time'  => '15:00',
+        // Informational check-out time shown to users/operations.
         'checkout_time' => '10:00',
+        // Deposit percentage for commercial reference.
         'deposit_pct'   => 30,
     ],
 
     // --- INTERHOME integration ---
     'interhome' => [
+        // Official Interhome listing code.
         'code'     => 'IT1850.726.1',
+        // External Interhome URL for Flow C when used.
         'listing'  => env('INTERHOME_LISTING_URL', ''),
     ],
 
     // --- External booking platforms (for badge/link display) ---
     'platforms' => [
+        // Airbnb listing URL (optional).
         'airbnb'  => env('AIRBNB_LISTING_URL', ''),
+        // Booking.com listing URL (optional).
         'booking' => env('BOOKING_LISTING_URL', ''),
     ],
 
+    // Allowed guest countries shown in admin people form (ISO-like code => label).
     'guest_countries' => [
         'IT' => 'Italia',
         'FR' => 'Francia',

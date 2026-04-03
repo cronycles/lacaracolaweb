@@ -192,6 +192,17 @@ export function initBookingForm(): void {
     const dpPopup     = document.getElementById('dp-popup') as HTMLElement | null;
     const dpTriggerCi = document.getElementById('dp-trigger-checkin') as HTMLButtonElement | null;
     const dpTriggerCo = document.getElementById('dp-trigger-checkout') as HTMLButtonElement | null;
+    const unavailableDatesRaw = form.dataset['unavailableDates'] ?? '[]';
+    let unavailableDates = new Set<string>();
+
+    try {
+        const parsed = JSON.parse(unavailableDatesRaw);
+        if (Array.isArray(parsed)) {
+            unavailableDates = new Set(parsed.filter((date): date is string => typeof date === 'string'));
+        }
+    } catch {
+        unavailableDates = new Set<string>();
+    }
 
     if (dpContainer && dpPopup && dpTriggerCi && dpTriggerCo && checkin && checkout) {
         createDateRangePicker({
@@ -206,6 +217,10 @@ export function initBookingForm(): void {
             hintCheckin:     dpContainer.dataset['hintCheckin']  ?? '',
             hintCheckout:    dpContainer.dataset['hintCheckout'] ?? '',
             labelClear:      dpContainer.dataset['labelClear']   ?? 'Clear',
+            legendAvailable: dpContainer.dataset['legendAvailable'] ?? 'Available',
+            legendSelected:  dpContainer.dataset['legendSelected'] ?? 'Selected',
+            legendBlocked:   dpContainer.dataset['legendBlocked'] ?? 'Occupied',
+            unavailableDates,
             onRangeSet: () => {
                 clearFieldError('checkin');
                 clearFieldError('checkout');

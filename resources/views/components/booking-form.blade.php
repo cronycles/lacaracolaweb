@@ -23,6 +23,7 @@
     data-price-loading="{{ __('app.booking_price_loading') }}"
     data-price-stay-label="{{ __('app.booking_price_stay') }}"
     data-price-cleaning-label="{{ __('app.booking_price_cleaning') }}"
+    data-unavailable-dates='@json($unavailableDates ?? [])'
       novalidate>
     @csrf
 
@@ -38,7 +39,10 @@
          data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
          data-hint-checkin="{{ __('app.booking_dp_hint_checkin') }}"
          data-hint-checkout="{{ __('app.booking_dp_hint_checkout', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
-         data-label-clear="{{ __('app.booking_dp_clear') }}">
+            data-label-clear="{{ __('app.booking_dp_clear') }}"
+            data-legend-available="{{ __('app.booking_dp_legend_available') }}"
+            data-legend-selected="{{ __('app.booking_dp_legend_selected') }}"
+            data-legend-blocked="{{ __('app.booking_dp_legend_blocked') }}">
 
         <div class="date-picker__triggers">
             <div class="date-picker__field">

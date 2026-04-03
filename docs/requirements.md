@@ -25,6 +25,7 @@
 - Modulo richiesta disponibilita (flow B).
 - Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing ricorrenti configurate in area admin (periodi mese/giorno validi ogni anno) e sulle date selezionate.
 - Possibilità di configurare una data di cutoff (giorno/mese/anno) da cui in poi il prezzo non viene più mostrato nel form pubblico.
+- Nel calendario date del form pubblico, i giorni già occupati (prenotazioni o blocchi manuali) devono essere visibili e non selezionabili.
 
 ### 2.2 Area privata (MVP)
 - Accesso proprietario via email/password.

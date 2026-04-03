@@ -45,6 +45,10 @@ export interface DateRangePickerOptions {
     hintCheckin: string;
     hintCheckout: string;
     labelClear: string;
+    legendAvailable: string;
+    legendSelected: string;
+    legendBlocked: string;
+    unavailableDates: Set<string>;
     onRangeSet: () => void;
 }
 
@@ -87,6 +91,13 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
         }
         opts.popup.appendChild(months);
 
+        const legend = document.createElement('div');
+        legend.className = 'dp__legend';
+        legend.appendChild(mkLegendItem('dp__legend-dot--available', opts.legendAvailable));
+        legend.appendChild(mkLegendItem('dp__legend-dot--selected', opts.legendSelected));
+        legend.appendChild(mkLegendItem('dp__legend-dot--blocked', opts.legendBlocked));
+        opts.popup.appendChild(legend);
+
         // Clear button (only when a date is selected)
         if (checkin) {
             const footer = document.createElement('div');
@@ -109,6 +120,23 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
         btn.setAttribute('aria-label', ariaLabel);
         btn.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
         return btn;
+    }
+
+    function mkLegendItem(dotClass: string, label: string): HTMLElement {
+        const item = document.createElement('span');
+        item.className = 'dp__legend-item';
+
+        const dot = document.createElement('span');
+        dot.className = `dp__legend-dot ${dotClass}`;
+        dot.setAttribute('aria-hidden', 'true');
+
+        const text = document.createElement('span');
+        text.textContent = label;
+
+        item.appendChild(dot);
+        item.appendChild(text);
+
+        return item;
     }
 
     function renderMonth(monthStart: Date): HTMLElement {
@@ -174,6 +202,12 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
         const isRange  = !!(checkin && rangeEnd && date > checkin && date < rangeEnd);
 
         let disabled = date < today;
+        const isUnavailable = opts.unavailableDates.has(toIsoDate(date));
+        if (isUnavailable) {
+            disabled = true;
+            btn.classList.add('dp__day--blocked');
+        }
+
         if (!disabled && phase === 'selecting-checkout' && checkin) {
             if (date <= checkin || date < addDays(checkin, opts.minNights)) disabled = true;
         }
