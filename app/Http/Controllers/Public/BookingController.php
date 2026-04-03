@@ -5,12 +5,50 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Services\PricingQuoteService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BookingController extends Controller
 {
+    public function quote(Request $request, PricingQuoteService $pricingQuoteService): JsonResponse
+    {
+        $data = $request->validate([
+            'checkin'  => ['required', 'date', 'after_or_equal:today'],
+            'checkout' => ['required', 'date', 'after:checkin'],
+        ]);
+
+        $checkin = new \DateTimeImmutable($data['checkin']);
+        $checkout = new \DateTimeImmutable($data['checkout']);
+        $nights = (int) $checkin->diff($checkout)->days;
+        $minNights = (int) config('apartment.booking.min_nights', 3);
+
+        if ($nights < $minNights) {
+            return response()->json([
+                'available' => false,
+                'message' => __('app.error_min_nights', ['nights' => $minNights]),
+            ]);
+        }
+
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout']);
+
+        if (! $quote['available']) {
+            return response()->json([
+                'available' => false,
+                'message' => __('app.booking_price_unavailable'),
+            ]);
+        }
+
+        return response()->json([
+            'available' => true,
+            'total_cents' => $quote['total_cents'],
+            'nights' => $quote['nights'],
+            'message' => __('app.booking_price_detail', ['nights' => $quote['nights']]),
+        ]);
+    }
+
     /**
      * Handle availability request form submission (flow B).
      * Sends an email notification to the owner and redirects to thank-you page.

@@ -14,6 +14,13 @@ interface ApiResponse {
     message?: string;
 }
 
+interface QuoteResponse {
+    available: boolean;
+    total_cents?: number;
+    nights?: number;
+    message: string;
+}
+
 export function initBookingForm(): void {
     const form = document.querySelector<HTMLFormElement>('#booking-form');
     if (!form) return;
@@ -22,6 +29,9 @@ export function initBookingForm(): void {
     const checkout  = form.querySelector<HTMLInputElement>('[name="checkout"]');
     const submitBtn = form.querySelector<HTMLButtonElement>('[type="submit"]');
     const successEl = document.querySelector<HTMLElement>('#booking-success');
+    const priceBox = form.querySelector<HTMLElement>('[data-price-box]');
+    const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
+    const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
 
     // --- Field error helpers ---
@@ -85,6 +95,86 @@ export function initBookingForm(): void {
     checkin?.addEventListener('change',  validateDates);
     checkout?.addEventListener('change', validateDates);
 
+    const hidePrice = (): void => {
+        if (priceBox) {
+            priceBox.hidden = true;
+        }
+    };
+
+    const showPriceMessage = (value: string, detail: string): void => {
+        if (!priceBox || !priceValue || !priceDetail) return;
+
+        priceBox.hidden = false;
+        priceValue.textContent = value;
+        priceDetail.textContent = detail;
+    };
+
+    const formatCurrency = (totalCents: number): string => {
+        const locale = form.dataset['locale'] ?? 'it-IT';
+
+        return new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency: 'EUR',
+            maximumFractionDigits: 2,
+        }).format(totalCents / 100);
+    };
+
+    const fetchPriceQuote = (): void => {
+        if (!checkin?.value || !checkout?.value || !validateDates()) {
+            hidePrice();
+            return;
+        }
+
+        const quoteUrl = form.dataset['quoteUrl'];
+        if (!quoteUrl) {
+            hidePrice();
+            return;
+        }
+
+        const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
+        const payload = new FormData();
+        payload.append('checkin', checkin.value);
+        payload.append('checkout', checkout.value);
+
+        fetch(quoteUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: payload,
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    hidePrice();
+                    return;
+                }
+
+                const data = await response.json() as QuoteResponse;
+                if (!data.available || typeof data.total_cents !== 'number') {
+                    hidePrice();
+                    return;
+                }
+
+                showPriceMessage(formatCurrency(data.total_cents), data.message);
+            })
+            .catch(() => {
+                hidePrice();
+            });
+    };
+
+    let quoteTimer: number | null = null;
+    const scheduleQuote = (): void => {
+        if (quoteTimer !== null) {
+            window.clearTimeout(quoteTimer);
+        }
+
+        quoteTimer = window.setTimeout(fetchPriceQuote, 200);
+    };
+
+    checkin?.addEventListener('change', scheduleQuote);
+    checkout?.addEventListener('change', scheduleQuote);
+
     // --- Date range picker integration ---
 
     const dpContainer = document.getElementById('date-range-picker') as HTMLElement | null;
@@ -108,6 +198,7 @@ export function initBookingForm(): void {
             onRangeSet: () => {
                 clearFieldError('checkin');
                 clearFieldError('checkout');
+                scheduleQuote();
             },
         });
     }

@@ -109,6 +109,35 @@
     }
 }
 
+.booking-form__price {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 22%, white);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-primary) 5%, white);
+}
+
+.booking-form__price-title {
+    margin: 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+}
+
+.booking-form__price-value {
+    margin: var(--space-1) 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--color-primary);
+}
+
+.booking-form__price-detail {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
 /* Toggle switch */
 .toggle {
     flex-shrink: 0;

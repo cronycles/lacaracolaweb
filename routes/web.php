@@ -41,6 +41,7 @@ foreach ($locales as $locale) {
 
         // Booking availability request (flow B)
         Route::post('/' . $slug['availability'], [BookingController::class, 'requestAvailability'])->name('booking.request');
+        Route::post('/' . $slug['availability'] . '/quote', [BookingController::class, 'quote'])->name('booking.quote');
         Route::get('/' . $slug['thanks'], [BookingController::class, 'thanks'])->name('booking.thanks');
     });
 }

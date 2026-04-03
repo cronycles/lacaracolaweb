@@ -23,6 +23,7 @@
 - Pagina regole della casa (anche per uso QR in appartamento).
 - Pagina useful places (anche per uso QR in appartamento).
 - Modulo richiesta disponibilita (flow B).
+- Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing configurate in area admin e sulle date selezionate.
 
 ### 2.2 Area privata (MVP)
 - Accesso proprietario via email/password.

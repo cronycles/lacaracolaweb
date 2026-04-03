@@ -12,12 +12,15 @@
       method="POST"
       action="{{ route_locale('booking.request') }}"
       class="booking-form"
+    data-quote-url="{{ route_locale('booking.quote') }}"
+    data-locale="{{ app()->getLocale() }}"
       data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
       data-error-past="{{ __('app.error_checkin_past') }}"
       data-error-order="{{ __('app.error_checkout_order') }}"
       data-error-min-nights="{{ __('app.error_min_nights', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
       data-error-server="{{ __('app.error_server') }}"
       data-label-loading="{{ __('app.booking_loading') }}"
+    data-price-loading="{{ __('app.booking_price_loading') }}"
       novalidate>
     @csrf
 
@@ -58,6 +61,12 @@
 
         {{-- Calendar popup (rendered by JS) --}}
         <div id="dp-popup" class="dp-popup" hidden role="dialog" aria-label="Calendar"></div>
+    </div>
+
+    <div class="booking-form__price" data-price-box hidden aria-live="polite">
+        <p class="booking-form__price-title">{{ __('app.booking_price_title') }}</p>
+        <p class="booking-form__price-value" data-price-value>—</p>
+        <p class="booking-form__price-detail" data-price-detail></p>
     </div>
 
     {{-- Guests row --}}
