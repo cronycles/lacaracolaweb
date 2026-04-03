@@ -16,8 +16,9 @@ class CalendarController extends Controller
 {
     public function index(Request $request): View
     {
-        $windowStart = $this->resolveWindowStart($request->query('month'));
-        $windowEnd = $windowStart->copy()->addMonths(2)->endOfMonth();
+        $centerMonth = $this->resolveCenterMonth($request->query('month'));
+        $windowStart = $centerMonth->copy()->subMonth()->startOfMonth();
+        $windowEnd = $centerMonth->copy()->addMonth()->endOfMonth();
 
         // Load bookings and manual blocks overlapping the visible 3-month window
         $bookings = Booking::with('person')
@@ -67,7 +68,7 @@ class CalendarController extends Controller
             }
         }
 
-        [$selectorStart, $selectorEnd] = $this->resolveSelectorBounds($windowStart);
+        [$selectorStart, $selectorEnd] = $this->resolveSelectorBounds($centerMonth);
         $selectorMonths = [];
         $cursor = $selectorStart->copy();
 
@@ -86,9 +87,9 @@ class CalendarController extends Controller
             'bookedDays' => $bookedDays,
             'ownerDays' => $ownerDays,
             'maintenanceDays' => $maintenanceDays,
-            'windowStartMonth' => $windowStart->format('Y-m'),
-            'previousWindowMonth' => $windowStart->copy()->subMonth()->format('Y-m'),
-            'nextWindowMonth' => $windowStart->copy()->addMonth()->format('Y-m'),
+            'windowCenterMonth' => $centerMonth->format('Y-m'),
+            'previousWindowMonth' => $centerMonth->copy()->subMonth()->format('Y-m'),
+            'nextWindowMonth' => $centerMonth->copy()->addMonth()->format('Y-m'),
             'selectorMonths' => $selectorMonths,
             'windowLabel' => sprintf(
                 '%s - %s',
@@ -129,7 +130,7 @@ class CalendarController extends Controller
             ->with('success', 'Blocco rimosso.');
     }
 
-    private function resolveWindowStart(mixed $monthQuery): Carbon
+    private function resolveCenterMonth(mixed $monthQuery): Carbon
     {
         $normalized = $this->normalizeMonthQuery($monthQuery);
 
@@ -157,7 +158,7 @@ class CalendarController extends Controller
     /**
      * @return array{0: Carbon, 1: Carbon}
      */
-    private function resolveSelectorBounds(Carbon $windowStart): array
+    private function resolveSelectorBounds(Carbon $centerMonth): array
     {
         $minBooking = Booking::query()->min('checkin');
         $maxBooking = Booking::query()->max('checkout');
@@ -184,13 +185,12 @@ class CalendarController extends Controller
             ? Carbon::parse($maxDateRaw)->startOfMonth()->addMonths(1)
             : $defaultEnd;
 
-        if ($windowStart->lt($start)) {
-            $start = $windowStart->copy();
+        if ($centerMonth->lt($start)) {
+            $start = $centerMonth->copy();
         }
 
-        $windowTail = $windowStart->copy()->addMonths(2);
-        if ($windowTail->gt($end)) {
-            $end = $windowTail;
+        if ($centerMonth->gt($end)) {
+            $end = $centerMonth->copy();
         }
 
         return [$start, $end];

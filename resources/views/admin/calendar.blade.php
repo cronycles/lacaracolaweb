@@ -18,7 +18,7 @@
                             <label for="month" class="sr-only">Vai al mese</label>
                             <select id="month" name="month" class="form-select form-select--sm">
                                 @foreach ($selectorMonths as $option)
-                                    <option value="{{ $option['value'] }}" @selected($windowStartMonth === $option['value'])>
+                                    <option value="{{ $option['value'] }}" @selected($windowCenterMonth === $option['value'])>
                                         {{ $option['label'] }}
                                     </option>
                                 @endforeach
@@ -131,7 +131,7 @@
                                     </div>
                                 </div>
                                 <div style="flex-shrink:0">
-                                    <form method="POST" action="{{ route('admin.calendar.block.destroy', ['block' => $block, 'month' => $windowStartMonth]) }}"
+                                    <form method="POST" action="{{ route('admin.calendar.block.destroy', ['block' => $block, 'month' => $windowCenterMonth]) }}"
                                           onsubmit="return confirm('Eliminare questo blocco?')">
                                         @csrf
                                         @method('DELETE')
@@ -149,7 +149,7 @@
         <div>
             <div class="a-card">
                 <div class="a-card__title">Aggiungi blocco manuale</div>
-                <form method="POST" action="{{ route('admin.calendar.block', ['month' => $windowStartMonth]) }}">
+                <form method="POST" action="{{ route('admin.calendar.block', ['month' => $windowCenterMonth]) }}">
                     @csrf
                     <div class="form-group">
                         <label class="form-label" for="start_date">Dal</label>
