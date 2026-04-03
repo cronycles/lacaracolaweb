@@ -1,12 +1,16 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-BeREaPZR.css",
+    "file": "assets/app-BZSGrqk6.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
     "names": [
       "app.css"
     ]
+  },
+  "resources/fonts/Montserrat/Montserrat-VariableFont_wght.ttf": {
+    "file": "assets/Montserrat-VariableFont_wght-DcaoeaBt.ttf",
+    "src": "resources/fonts/Montserrat/Montserrat-VariableFont_wght.ttf"
   },
   "resources/ts/app.ts": {
     "file": "assets/app-BhRnbJsr.js",
