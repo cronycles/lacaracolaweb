@@ -189,36 +189,99 @@
 }
 
 .cal-window-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
     gap: 0.75rem;
+    border: 1px solid #dde3e8;
+    border-radius: 0.6rem;
+    background: #f7fafc;
+    padding: 0.75rem;
     margin-bottom: 1rem;
-    flex-wrap: wrap;
+}
+
+.cal-window-nav__primary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cal-window-nav__btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.6rem;
+}
+
+.cal-window-nav__label-wrap {
+    text-align: center;
+}
+
+.cal-window-nav__label-kicker {
+    display: block;
+    font-size: 0.68rem;
+    color: #6b7f89;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.15rem;
 }
 
 .cal-window-nav__label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #1e3d4a;
 }
 
 .cal-window-nav__actions {
-    display: inline-flex;
-    gap: 0.5rem;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 0.75rem;
     flex-wrap: wrap;
 }
 
 .cal-window-nav__picker {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cal-window-nav__picker-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5f6b;
 }
 
 .form-select--sm {
-    min-width: 170px;
+    min-width: 190px;
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
     font-size: 0.75rem;
+}
+
+.cal-window-nav__today {
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .cal-window-nav__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cal-window-nav__picker {
+        width: 100%;
+    }
+
+    .form-select--sm {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .cal-window-nav__today {
+        width: 100%;
+        justify-content: center;
+    }
 }
