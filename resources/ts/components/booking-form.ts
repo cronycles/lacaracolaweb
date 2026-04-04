@@ -36,7 +36,6 @@ export function initBookingForm(): void {
     const successEl = document.querySelector<HTMLElement>('#booking-success');
     const priceBox = form.querySelector<HTMLElement>('[data-price-box]');
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
-    const priceBreakdown = form.querySelector<HTMLElement>('[data-price-breakdown]');
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
 
@@ -160,23 +159,6 @@ export function initBookingForm(): void {
                 if (!data.available || typeof data.total_cents !== 'number') {
                     hidePrice();
                     return;
-                }
-
-                if (priceBreakdown) {
-                    const stayLabel = form.dataset['priceStayLabel'] ?? 'Soggiorno';
-                    const discountLabel = form.dataset['priceDiscountLabel'] ?? 'Sconto soggiorno';
-                    const cleaningLabel = form.dataset['priceCleaningLabel'] ?? 'Pulizie';
-                    const stayCents = data.stay_cents ?? 0;
-                    const discountCents = data.discount_cents ?? 0;
-                    const discountPercent = data.discount_percent ?? 0;
-                    const discountedStayCents = data.discounted_stay_cents ?? stayCents;
-                    const cleaningCents = data.cleaning_cents ?? 0;
-
-                    if (discountCents > 0 && discountPercent > 0) {
-                        priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${discountLabel} (${discountPercent}%): -${formatCurrency(discountCents)} · ${stayLabel}: ${formatCurrency(discountedStayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
-                    } else {
-                        priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
-                    }
                 }
 
                 showPriceMessage(formatCurrency(data.total_cents), data.message);

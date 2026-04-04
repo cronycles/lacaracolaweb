@@ -71,7 +71,6 @@
     <div class="booking-form__price" data-price-box hidden aria-live="polite">
         <p class="booking-form__price-title">{{ __('app.booking_price_title') }}</p>
         <p class="booking-form__price-value" data-price-value>—</p>
-        <p class="booking-form__price-breakdown" data-price-breakdown></p>
         <p class="booking-form__price-detail" data-price-detail></p>
     </div>
 

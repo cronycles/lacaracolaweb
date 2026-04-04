@@ -25,6 +25,9 @@
 - Modulo richiesta disponibilita (flow B).
 - Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing ricorrenti configurate in area admin (periodi mese/giorno validi ogni anno) e sulle date selezionate.
 - Possibilita di configurare sconti progressivi per numero di notti (es. 4, 5, 7+), applicati al solo costo soggiorno e non alla pulizia.
+- Nel form pubblico la stima deve mostrare all'utente solo il totale (con notti selezionate), senza dettaglio interno di sconto/pulizie.
+- In area privata (pagina prezzi) deve essere disponibile una simulazione prezzo con dettaglio completo: soggiorno base, sconto applicato, soggiorno scontato, pulizie e totale.
+- La simulazione privata usa lo stesso date picker della home e si aggiorna automaticamente alla selezione dell'intervallo, senza pulsante di calcolo.
 - Possibilità di configurare una data di cutoff (giorno/mese/anno) da cui in poi il prezzo non viene più mostrato nel form pubblico.
 - Nel calendario date del form pubblico, i giorni già occupati (prenotazioni o blocchi manuali) devono essere visibili e non selezionabili.
 

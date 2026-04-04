@@ -77,9 +77,11 @@ class PricingQuoteService
             ->first();
 
         $discountPercent = $discountRule?->discount_percent ?? 0;
-        $discountCents = $discountPercent > 0
+        $discountCentsRaw = $discountPercent > 0
             ? (int) round(($totalCents * $discountPercent) / 100)
             : 0;
+
+        $discountCents = $this->roundToTenCents($discountCentsRaw);
 
         $discountedStayCents = max(0, $totalCents - $discountCents);
 
@@ -91,6 +93,19 @@ class PricingQuoteService
             'discount_cents' => $discountCents,
             'discounted_stay_cents' => $discountedStayCents,
         ];
+    }
+
+    private function roundToTenCents(int $cents): int
+    {
+        $lastDigit = abs($cents) % 10;
+
+        if ($lastDigit <= 5) {
+            return $cents - ($cents >= 0 ? $lastDigit : -$lastDigit);
+        }
+
+        $delta = 10 - $lastDigit;
+
+        return $cents + ($cents >= 0 ? $delta : -$delta);
     }
 
     private function matchesMonthDayRule(Carbon $date, PricingRule $rule): bool

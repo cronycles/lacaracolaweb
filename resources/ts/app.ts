@@ -8,6 +8,7 @@ import { initMobileNav } from '@/components/mobile-nav';
 import { initLangSwitcher } from '@/components/lang-switcher';
 import { initGallery } from '@/components/gallery';
 import { initBookingForm } from '@/components/booking-form';
+import { initPricingSimulator } from '@/components/pricing-simulator';
 import { initMap } from '@/components/map';
 
 // Run after DOM is ready
@@ -17,5 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroSlider();
     initGallery();
     initBookingForm();
+    initPricingSimulator();
     initMap();
 });

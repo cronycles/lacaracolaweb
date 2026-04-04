@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
+use App\Services\PricingQuoteService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
@@ -53,6 +55,53 @@ class PricingController extends Controller
         $prezzi->delete();
 
         return redirect()->route('admin.pricing.index')->with('success', 'Regola eliminata.');
+    }
+
+    public function simulate(Request $request, PricingQuoteService $pricingQuoteService): JsonResponse
+    {
+        $data = $request->validate([
+            'checkin' => ['required', 'date'],
+            'checkout' => ['required', 'date', 'after:checkin'],
+        ]);
+
+        $checkin = new \DateTimeImmutable($data['checkin']);
+        $checkout = new \DateTimeImmutable($data['checkout']);
+        $nights = (int) $checkin->diff($checkout)->days;
+        $minNights = (int) config('apartment.booking.min_nights', 3);
+
+        if ($nights < $minNights) {
+            return response()->json([
+                'available' => false,
+                'message' => __('app.error_min_nights', ['nights' => $minNights]),
+            ]);
+        }
+
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout']);
+
+        if (! $quote['available']) {
+            return response()->json([
+                'available' => false,
+                'message' => __('app.booking_price_unavailable'),
+            ]);
+        }
+
+        $stayCents = (int) ($quote['stay_cents'] ?? 0);
+        $discountPercent = (int) ($quote['discount_percent'] ?? 0);
+        $discountCents = (int) ($quote['discount_cents'] ?? 0);
+        $discountedStayCents = (int) ($quote['discounted_stay_cents'] ?? $stayCents);
+        $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
+        $totalCents = $discountedStayCents + $cleaningCents;
+
+        return response()->json([
+            'available' => true,
+            'nights' => $nights,
+            'stay_cents' => $stayCents,
+            'discount_percent' => $discountPercent,
+            'discount_cents' => $discountCents,
+            'discounted_stay_cents' => $discountedStayCents,
+            'cleaning_cents' => $cleaningCents,
+            'total_cents' => $totalCents,
+        ]);
     }
 
     /** Shared validation for store/update */

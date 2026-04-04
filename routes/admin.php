@@ -24,6 +24,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/blocchi/{block}', [CalendarController::class, 'destroyBlock'])->name('calendar.block.destroy');
 
     // Pricing rules
+    Route::post('/prezzi/simulazione', [PricingController::class, 'simulate'])->name('pricing.simulate');
     Route::resource('prezzi', PricingController::class)->names('pricing');
     Route::resource('sconti-soggiorno', StayDiscountRuleController::class)
         ->parameters(['sconti-soggiorno' => 'stay_discount_rule'])
