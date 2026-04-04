@@ -88,6 +88,11 @@ return [
     'amenity_mosquito_nets' => 'Moskitonetze',
     'amenity_bathroom'      => 'Komplettes Badezimmer',
     'amenity_sofa_bed'      => 'Schlafsofa',
+    'amenity_washing_machine' => 'Waschmaschine',
+    'amenity_surface_100sqm' => 'Wohnfläche 100 m²',
+    'amenity_pets_allowed' => 'Haustiere erlaubt',
+    'amenity_private_parking_on_request' => 'Privatparkplatz (auf Anfrage)',
+    'amenity_non_smoking_rooms' => 'Nichtraucherzimmer',
 
     // --- Apartment page ---
     'apartment_beds_label'    => 'Schlafplätze',

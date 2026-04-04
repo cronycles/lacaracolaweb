@@ -89,6 +89,11 @@ return [
     'amenity_mosquito_nets' => 'Moustiquaires',
     'amenity_bathroom'      => 'Salle de bain complète',
     'amenity_sofa_bed'      => 'Lit canapé',
+    'amenity_washing_machine' => 'Lave-linge',
+    'amenity_surface_100sqm' => 'Surface 100 m²',
+    'amenity_pets_allowed' => 'Animaux admis',
+    'amenity_private_parking_on_request' => 'Parking privé (sur demande)',
+    'amenity_non_smoking_rooms' => 'Chambres non-fumeurs',
 
     // --- Apartment page ---
     'apartment_beds_label'    => 'couchages',

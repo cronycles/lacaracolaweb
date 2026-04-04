@@ -69,6 +69,11 @@ return [
         ['icon' => '🫧', 'key' => 'amenity_mosquito_nets'],
         ['icon' => '🛁', 'key' => 'amenity_bathroom'],
         ['icon' => '🛏️', 'key' => 'amenity_sofa_bed'],
+        ['icon' => '🧺', 'key' => 'amenity_washing_machine'],
+        ['icon' => '📐', 'key' => 'amenity_surface_100sqm'],
+        ['icon' => '🐕', 'key' => 'amenity_pets_allowed'],
+        ['icon' => '🅿️', 'key' => 'amenity_private_parking_on_request'],
+        ['icon' => '🚭', 'key' => 'amenity_non_smoking_rooms'],
     ],
 
     // --- Booking defaults (overridden from admin area) ---
