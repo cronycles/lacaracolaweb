@@ -36,6 +36,7 @@
 - Configurazione disponibilita calendario.
 - Configurazione prezzi per periodo ricorrente mese/giorno (validita annuale, senza anno).
 - Configurazione sconti soggiorno per durata (scaglioni notti con percentuale).
+- Possibilita in area admin di applicare variazioni prezzo in bulk a tutte le regole (aumento o diminuzione di un importo fisso €/notte).
 - Configurazione soggiorno minimo (default 3 notti).
 - Le notti minime sono un vincolo separato e non fanno parte delle regole prezzo.
 - Gestione dati ospiti e soggiorni associati.

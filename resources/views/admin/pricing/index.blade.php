@@ -54,6 +54,30 @@
         </div>
     </div>
 
+    <div class="a-card" style="max-width:900px">
+        <div class="a-card__title">Modifica prezzi in bulk</div>
+        <form method="POST" action="{{ route('admin.pricing.bulk-adjust') }}"
+              onsubmit="return confirm('Applicare questa variazione a TUTTE le regole prezzo?')"
+              style="display:grid;grid-template-columns:1fr 1fr auto;gap:.75rem;align-items:end">
+            @csrf
+            <div class="form-group" style="margin:0">
+                <label class="form-label" for="bulk-operation">Operazione</label>
+                <select id="bulk-operation" name="operation" class="form-select" required>
+                    <option value="add" @selected(old('operation') === 'add')>Aumenta tutti i prezzi</option>
+                    <option value="subtract" @selected(old('operation') === 'subtract')>Diminuisci tutti i prezzi</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin:0">
+                <label class="form-label" for="bulk-amount">Importo (€ / notte)</label>
+                <input type="number" id="bulk-amount" name="amount_eur" class="form-input"
+                       min="1" step="1" max="99999" value="{{ old('amount_eur', 5) }}" required>
+            </div>
+
+            <button type="submit" class="btn btn--accent">Applica a tutte</button>
+        </form>
+    </div>
+
     <div class="a-card">
         @if ($rules->isEmpty())
             <p style="color:#6b7f89;font-size:.875rem">Nessuna regola di prezzo configurata.</p>

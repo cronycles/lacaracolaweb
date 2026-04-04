@@ -25,6 +25,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Pricing rules
     Route::post('/prezzi/simulazione', [PricingController::class, 'simulate'])->name('pricing.simulate');
+    Route::post('/prezzi/variazione-bulk', [PricingController::class, 'bulkAdjust'])->name('pricing.bulk-adjust');
     Route::resource('prezzi', PricingController::class)->names('pricing');
     Route::resource('sconti-soggiorno', StayDiscountRuleController::class)
         ->parameters(['sconti-soggiorno' => 'stay_discount_rule'])

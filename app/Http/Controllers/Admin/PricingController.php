@@ -10,6 +10,7 @@ use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 
@@ -55,6 +56,38 @@ class PricingController extends Controller
         $prezzi->delete();
 
         return redirect()->route('admin.pricing.index')->with('success', 'Regola eliminata.');
+    }
+
+    public function bulkAdjust(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'operation' => ['required', 'in:add,subtract'],
+            'amount_eur' => ['required', 'integer', 'min:1', 'max:99999'],
+        ]);
+
+        $deltaCents = ((int) $data['amount_eur']) * 100;
+        if ($data['operation'] === 'subtract') {
+            $deltaCents *= -1;
+        }
+
+        $rulesCount = PricingRule::count();
+        if ($rulesCount === 0) {
+            return redirect()->route('admin.pricing.index')->with('error', 'Nessuna regola prezzo da aggiornare.');
+        }
+
+        $minCurrent = (int) PricingRule::min('price_per_night');
+        if (($minCurrent + $deltaCents) <= 0) {
+            return redirect()->route('admin.pricing.index')->with('error', 'Operazione non valida: almeno una regola andrebbe a 0€ o meno.');
+        }
+
+        PricingRule::query()->update([
+            'price_per_night' => DB::raw('price_per_night + (' . $deltaCents . ')'),
+        ]);
+
+        $verb = $deltaCents > 0 ? 'aumentati' : 'ridotti';
+        $amount = number_format(abs($deltaCents) / 100, 0, ',', '.');
+
+        return redirect()->route('admin.pricing.index')->with('success', "Prezzi {$verb} in bulk di {$amount}€ per notte su tutte le regole.");
     }
 
     public function simulate(Request $request, PricingQuoteService $pricingQuoteService): JsonResponse
