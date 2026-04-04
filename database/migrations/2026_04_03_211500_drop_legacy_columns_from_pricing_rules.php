@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            DB::statement('DROP INDEX IF EXISTS pricing_rules_start_date_end_date_index');
+        } elseif (Schema::hasColumn('pricing_rules', 'start_date') && Schema::hasColumn('pricing_rules', 'end_date')) {
+            Schema::table('pricing_rules', function (Blueprint $table): void {
+                $table->dropIndex('pricing_rules_start_date_end_date_index');
+            });
+        }
+
         Schema::table('pricing_rules', function (Blueprint $table): void {
             if (Schema::hasColumn('pricing_rules', 'name')) {
                 $table->dropColumn('name');
