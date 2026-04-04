@@ -72,7 +72,12 @@
 
         {{-- Bookings --}}
         <div class="a-card">
-            <div class="a-card__title">Soggiorni ({{ $person->bookings->count() }})</div>
+            <div class="a-card__title">Soggiorni attivi ({{ $person->bookings->whereNull('canceled_at')->count() }})</div>
+            @if ($person->bookings->whereNotNull('canceled_at')->count() > 0)
+                <p style="font-size:.8rem;color:#6b7f89;margin-bottom:.75rem">
+                    Storico totale: {{ $person->bookings->count() }} (incluse {{ $person->bookings->whereNotNull('canceled_at')->count() }} cancellate)
+                </p>
+            @endif
 
             @if ($person->bookings->isEmpty())
                 <p style="color:#6b7f89;font-size:.875rem">Nessun soggiorno registrato.</p>
@@ -80,6 +85,7 @@
                 <table class="a-table">
                     <thead>
                         <tr>
+                            <th>Stato</th>
                             <th>Check-in</th>
                             <th>Check-out</th>
                             <th>Notti</th>
@@ -90,7 +96,14 @@
                     </thead>
                     <tbody>
                         @foreach ($person->bookings->sortByDesc('checkin') as $booking)
-                            <tr>
+                            <tr @if($booking->isCanceled()) style="opacity:.72" @endif>
+                                <td>
+                                    @if($booking->isCanceled())
+                                        <span class="badge badge--canceled">cancellata</span>
+                                    @else
+                                        <span class="badge badge--booked">attiva</span>
+                                    @endif
+                                </td>
                                 <td>{{ $booking->checkin->format('d/m/Y') }}</td>
                                 <td>{{ $booking->checkout->format('d/m/Y') }}</td>
                                 <td>{{ $booking->nights }}</td>
