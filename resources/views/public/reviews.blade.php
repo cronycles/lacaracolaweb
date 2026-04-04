@@ -16,45 +16,15 @@
             <div class="review-card">
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">
-                    "Appartamento perfetto, pulito e a due passi dalla spiaggia. Il balcone con vista mare
-                    è semplicemente meraviglioso. Torneremo senz'altro!"
+                    "Beautiful, bright and comfortable apartment in excellent location well served with shops, market, restaurants and bars, facing the sea and in the center of Andora in a quiet and safe place. Large and clean apartment, fully equipped with all comfort with a balcony and garden available. The reserved parking space and pet acceptance are really much appreciated. I highly recommend it for a stay in Andora. A special thanks to S. for her welcome and availability during our stay!"
                 </p>
                 <div class="review-card__author">
                     <div>
-                        <p class="review-card__author-name">Marco R.</p>
-                        <p class="review-card__author-source">{{ __('app.reviews_source', ['source' => 'Airbnb']) }}</p>
+                        <p class="review-card__author-name">Luisella</p>
+                        <p class="review-card__author-source">{{ __('app.reviews_source', ['source' => 'Interhome']) }}</p>
                     </div>
                 </div>
             </div>
-
-            <div class="review-card">
-                <div class="review-card__stars">★★★★★</div>
-                <p class="review-card__text">
-                    "Superb location, everything you need is within walking distance.
-                    The apartment has a lovely sea view and a spacious garden."
-                </p>
-                <div class="review-card__author">
-                    <div>
-                        <p class="review-card__author-name">Sophie L.</p>
-                        <p class="review-card__author-source">{{ __('app.reviews_source', ['source' => 'Booking.com']) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-card__stars">★★★★★</div>
-                <p class="review-card__text">
-                    "Magnifique appartement face à la mer. La terrasse est idéale pour les repas en famille.
-                    Andora est un village adorable, loin du tourisme de masse."
-                </p>
-                <div class="review-card__author">
-                    <div>
-                        <p class="review-card__author-name">Claire D.</p>
-                        <p class="review-card__author-source">{{ __('app.reviews_source', ['source' => 'Airbnb']) }}</p>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>

@@ -67,7 +67,6 @@ return [
     'booking_external_title' => 'Réservez directement',
     'booking_external_text'  => 'La disponibilité et la réservation sont gérées sur une plateforme externe. Cliquez ci-dessous pour vérifier les dates et continuer.',
     'booking_external_btn'   => 'Vérifier la disponibilité',
-    'error_min_nights'      => 'Le séjour minimum est de :nights nuits.',
 
     // --- SEO text blocks (bottom of home page) ---
     'seo_home_h2' => 'Appartement de vacances à Andora - La Caracola',
@@ -88,7 +87,7 @@ return [
     'amenity_microwave'     => 'Micro-ondes',
     'amenity_mosquito_nets' => 'Moustiquaires',
     'amenity_bathroom'      => 'Salle de bain complète',
-    'amenity_sofa_bed'      => 'Lit canapé',
+    'amenity_sofa_bed'      => 'Canapé-lit',
     'amenity_washing_machine' => 'Lave-linge',
     'amenity_surface_100sqm' => 'Surface 100 m²',
     'amenity_pets_allowed' => 'Animaux admis',
@@ -110,8 +109,8 @@ return [
     'apartment_gallery_next'  => 'Photo suivante',
 
     // --- Experiences ---
-    'experiences_title'    => 'Expériences & Environs',
-    'experiences_subtitle' => 'La Riviera Ligure et la Côte d\'Azur à votre portée.',
+    'experiences_title'    => 'Expériences et Environs',
+    'experiences_subtitle' => 'La Ligurie et la Côte d\'Azur à portée de main.',
     'experience_1_time'    => 'À 2 mins',
     'experience_1_title'   => 'Les Plages d\'Andora',
     'experience_1_desc'    => 'Plages de sable et de galets accessibles à pied. Établissements balnéaires et eaux cristallines.',
@@ -143,12 +142,6 @@ return [
     'experiences_seo_p1'   => 'Andora est situé sur la <strong>Riviera Ligure de Ponente</strong>, à mi-chemin entre Savone et la Côte d\'Azur. C\'est la base idéale pour explorer les trésors de la région: villages médiévaux, parcs naturels, plages préservées et villes d\'art comme <strong>Gênes</strong>, <strong>Sanremo</strong> et <strong>Nice</strong>.',
     'experiences_seo_h3'   => 'Escalade sportive en Ligurie',
     'experiences_seo_p2'   => 'La zone de <strong>Finalborgo</strong> et la Val di Ponci sont reconnus internationalement comme un paradis de l\'escalade sportive, avec plus de 1000 voies pour tous les niveaux.',
-    'amenity_coffee'        => 'Cafetière',
-    'amenity_toaster'       => 'Grille-pain',
-    'amenity_microwave'     => 'Micro-ondes',
-    'amenity_mosquito_nets' => 'Moustiquaires',
-    'amenity_bathroom'      => 'Salle de bain complète',
-    'amenity_sofa_bed'      => 'Canapé-lit',
 
     'rules_title'           => 'Règles de la Maison',
     'rules_subtitle'        => 'Pour un séjour agréable et respectueux.',
@@ -198,11 +191,8 @@ return [
     'map_plane'           => 'En Avion',
     'map_plane_text'      => 'Aéroport de Gênes (GOA) ou Nice (NCE), tous deux à ~1h30.',
 
-    'experiences_title'    => 'Expériences et Alentours',
-    'experiences_subtitle' => 'La Ligurie et la Côte d\'Azur à portée de main.',
-
     'reviews_title'    => 'Ce que Disent nos Hôtes',
-    'reviews_subtitle' => 'Avis réels provenant d\'Airbnb et Booking.com.',
+    'reviews_subtitle' => 'Avis réels.',
     'reviews_source'   => 'Via :source',
 
     'footer_desc'    => 'Appartement de vacances en bord de mer à Andora, Savona. Ligurie, Italie.',
@@ -221,15 +211,6 @@ return [
     'admin_password_error_current'     => 'Le mot de passe actuel est incorrect.',
     'admin_password_error_mismatch'    => 'Les deux mots de passe ne correspondent pas.',
     'admin_password_requirements'      => 'Le nouveau mot de passe doit être différent du précédent et contenir au moins 8 caractères.',
-
-    // --- Experiences ---
-    'experiences_title'    => 'Expériences et Environs',
-    'experiences_subtitle' => "La Ligurie et la Côte d'Azur à portée de main.",
-
-    // --- Reviews ---
-    'reviews_title'    => 'Ce que Disent Nos Hôtes',
-    'reviews_subtitle' => "Avis réels provenant d'Airbnb et Booking.com.",
-    'reviews_source'   => 'Via :source',
 
 ];
 

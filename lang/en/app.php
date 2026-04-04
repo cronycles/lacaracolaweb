@@ -192,11 +192,8 @@ return [
     'map_plane'           => 'By Plane',
     'map_plane_text'      => 'Genoa Airport (GOA) or Nice (NCE), both ~1h30.',
 
-    'experiences_title'    => 'Experiences & Surroundings',
-    'experiences_subtitle' => 'Liguria and the French Riviera within easy reach.',
-
     'reviews_title'    => 'What Our Guests Say',
-    'reviews_subtitle' => 'Real reviews from Airbnb and Booking.com.',
+    'reviews_subtitle' => 'Real reviews.',
     'reviews_source'   => 'Via :source',
 
     // --- Admin: Account Security ---

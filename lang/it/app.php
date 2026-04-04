@@ -201,7 +201,7 @@ return [
 
     // --- Reviews ---
     'reviews_title'    => 'Cosa Dicono i Nostri Ospiti',
-    'reviews_subtitle' => 'Recensioni reali da Airbnb e Booking.com.',
+    'reviews_subtitle' => 'Recensioni reali.',
     'reviews_source'   => 'Via :source',
 
     // --- Admin: Account Security ---

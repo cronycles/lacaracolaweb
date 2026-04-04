@@ -85,8 +85,8 @@ return [
     'amenity_coffee'        => 'Kaffeemaschine',
     'amenity_toaster'       => 'Toaster',
     'amenity_microwave'     => 'Mikrowelle',
-    'amenity_mosquito_nets' => 'Moskitonetze',
-    'amenity_bathroom'      => 'Komplettes Badezimmer',
+    'amenity_mosquito_nets' => 'Fliegengitter',
+    'amenity_bathroom'      => 'Vollständiges Badezimmer',
     'amenity_sofa_bed'      => 'Schlafsofa',
     'amenity_washing_machine' => 'Waschmaschine',
     'amenity_surface_100sqm' => 'Wohnfläche 100 m²',
@@ -109,8 +109,8 @@ return [
     'apartment_gallery_next'  => 'Nächstes Foto',
 
     // --- Experiences ---
-    'experiences_title'    => 'Erlebnisse & Umgebung',
-    'experiences_subtitle' => 'Die Ligurische Riviera und die Côte d\'Azur zum Greifen nah.',
+    'experiences_title'    => 'Erlebnisse und Umgebung',
+    'experiences_subtitle' => 'Ligurien und die Côte d\'Azur zum Greifen nah.',
     'experience_1_time'    => '2 Min. entfernt',
     'experience_1_title'   => 'Strände von Andora',
     'experience_1_desc'    => 'Sand- und Kieselstrände in Gehweite. Strandclubs und kristallklares Wasser.',
@@ -142,11 +142,6 @@ return [
     'experiences_seo_p1'   => 'Andora liegt an der <strong>Westligurischen Riviera</strong>, auf halbem Wege zwischen Savona und der Côte d\'Azur. Es ist die ideale Basis zur Erkundung der Schätze der Region: mittelalterliche Dörfer, Naturschutzgebiete, unberührte Strände und Kunststädte wie <strong>Genua</strong>, <strong>Sanremo</strong> und <strong>Nizza</strong>.',
     'experiences_seo_h3'   => 'Sportklettern in Ligurien',
     'experiences_seo_p2'   => 'Das <strong>Finalborgo</strong>-Gebiet und Val di Ponci sind international als Paradies für Sportklettern bekannt, mit über 1000 Kletterrouten für alle Schwierigkeitsstufen.',
-    'amenity_toaster'       => 'Toaster',
-    'amenity_microwave'     => 'Mikrowelle',
-    'amenity_mosquito_nets' => 'Fliegengitter',
-    'amenity_bathroom'      => 'Vollständiges Badezimmer',
-    'amenity_sofa_bed'      => 'Schlafsofa',
 
     'rules_title'           => 'Hausregeln',
     'rules_subtitle'        => 'Für einen angenehmen und respektvollen Aufenthalt.',
@@ -197,32 +192,16 @@ return [
     'map_plane'           => 'Mit dem Flugzeug',
     'map_plane_text'      => 'Flughafen Genua (GOA) oder Nizza (NCE), beide ca. 1,5 Std.',
 
-    // --- Experiences ---
-    'experiences_title'    => 'Erlebnisse und Umgebung',
-    'experiences_subtitle' => 'Ligurien und die Côte d\'Azur zum Greifen nah.',
-
     // --- Reviews ---
     'reviews_title'    => 'Was Unsere Gäste Sagen',
-    'reviews_subtitle' => 'Echte Bewertungen von Airbnb und Booking.com.',
+    'reviews_subtitle' => 'Echte Bewertungen.',
     'reviews_source'   => 'Über :source',
 
     // --- Footer ---
     'footer_desc'      => 'Ferienwohnung am Meer in Andora, Savona. Ligurien, Italien.',
-    'footer_links'     => 'Nützliche Links',
+    'footer_links'     => 'Schnelllinks',
     'footer_contact'   => 'Kontakt',
     'footer_legal'     => '© :year La Caracola — Alle Rechte vorbehalten.',
-
-    'experiences_title'    => 'Erlebnisse und Umgebung',
-    'experiences_subtitle' => 'Ligurien und die Côte d\'Azur jederzeit erreichbar.',
-
-    'reviews_title'    => 'Was unsere Gäste sagen',
-    'reviews_subtitle' => 'Echte Bewertungen von Airbnb und Booking.com.',
-    'reviews_source'   => 'via :source',
-
-    'footer_desc'    => 'Ferienwohnung am Meer in Andora, Savona. Ligurien, Italien.',
-    'footer_links'   => 'Schnelllinks',
-    'footer_contact' => 'Kontakt',
-    'footer_legal'   => '© :year La Caracola — Alle Rechte vorbehalten.',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Kontosicherheit',
@@ -235,15 +214,6 @@ return [
     'admin_password_error_current'     => 'Das aktuelle Passwort ist falsch.',
     'admin_password_error_mismatch'    => 'Die beiden Passwörter stimmen nicht überein.',
     'admin_password_requirements'      => 'Das neue Passwort muss sich vom vorherigen unterscheiden und mindestens 8 Zeichen enthalten.',
-
-    // --- Experiences ---
-    'experiences_title'    => 'Erlebnisse und Umgebung',
-    'experiences_subtitle' => "Ligurien und die Côte d'Azur zum Greifen nah.",
-
-    // --- Reviews ---
-    'reviews_title'    => 'Was Unsere Gäste Sagen',
-    'reviews_subtitle' => 'Echte Bewertungen von Airbnb und Booking.com.',
-    'reviews_source'   => 'Über :source',
 
 ];
 
