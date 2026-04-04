@@ -24,6 +24,7 @@ class Booking extends Model
         'source',
         'external_ref',
         'notes',
+        'canceled_at',
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class Booking extends Model
         'children' => 'integer',
         'babies'   => 'integer',
         'pets'     => 'integer',
+        'canceled_at' => 'datetime',
     ];
 
     public function person(): BelongsTo
@@ -55,5 +57,10 @@ class Booking extends Model
     public function getNightsAttribute(): int
     {
         return (int) $this->checkin->diffInDays($this->checkout);
+    }
+
+    public function isCanceled(): bool
+    {
+        return $this->canceled_at !== null;
     }
 }

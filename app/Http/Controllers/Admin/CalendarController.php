@@ -43,6 +43,10 @@ class CalendarController extends Controller
         $arrivalDays = [];
         $departureDays = [];
         foreach ($bookings as $bookingItem) {
+            if ($bookingItem->isCanceled()) {
+                continue;
+            }
+
             $checkinDate = Carbon::parse($bookingItem->checkin)->startOfDay();
             $checkoutDate = Carbon::parse($bookingItem->checkout)->startOfDay();
 

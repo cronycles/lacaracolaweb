@@ -121,14 +121,14 @@
                     <ul class="event-list">
                         @foreach ($bookings as $booking)
                             <li class="event-item">
-                                <div class="event-item__bar event-item__bar--booked"></div>
+                                <div class="event-item__bar event-item__bar--{{ $booking->isCanceled() ? 'canceled' : 'booked' }}"></div>
                                 <div style="flex:1">
-                                    <div class="event-item__name">
-                                        <a href="{{ route('admin.bookings.show', $booking) }}" style="color:#30596C;text-decoration:none">
+                                    <div class="event-item__name" @if($booking->isCanceled()) style="color:#9ca3af" @endif>
+                                        <a href="{{ route('admin.bookings.show', $booking) }}" @if($booking->isCanceled()) style="color:#9ca3af;text-decoration:line-through" @else style="color:#30596C;text-decoration:none" @endif>
                                             {{ $booking->person->full_name }}
                                         </a>
                                     </div>
-                                    <div class="event-item__dates">
+                                    <div class="event-item__dates" @if($booking->isCanceled()) style="color:#9ca3af" @endif>
                                         {{ $booking->checkin->format('d/m/Y') }} → {{ $booking->checkout->format('d/m/Y') }}
                                         · {{ $booking->nights }} notti
                                         · {{ $booking->total_guests }} posti letto
@@ -141,13 +141,16 @@
                                     </div>
                                     <div style="margin-top:.25rem">
                                         <span class="badge badge--{{ $booking->source }}">{{ $booking->source }}</span>
+                                        @if($booking->isCanceled())
+                                            <span class="badge badge--canceled">cancellata</span>
+                                        @endif
                                         @if ($booking->external_ref)
                                             <span style="font-size:.75rem;color:#6b7f89;margin-left:.4rem">{{ $booking->external_ref }}</span>
                                         @endif
                                     </div>
                                 </div>
                                 <div style="flex-shrink:0">
-                                    <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--outline btn--sm">Modifica</a>
+                                    <a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn--outline btn--sm">Dettaglio</a>
                                 </div>
                             </li>
                         @endforeach

@@ -89,6 +89,41 @@ class BookingController extends Controller
         return redirect()->route('admin.bookings.index')->with('success', 'Prenotazione eliminata.');
     }
 
+    public function cancel(Booking $prenotazioni): RedirectResponse
+    {
+        if (! $prenotazioni->isCanceled()) {
+            $prenotazioni->update(['canceled_at' => now()]);
+        }
+
+        return redirect()->back()->with('success', 'Prenotazione segnata come cancellata. Giorni liberati.');
+    }
+
+    public function restore(Booking $prenotazioni): RedirectResponse
+    {
+        if ($prenotazioni->isCanceled()) {
+            $hasBookingConflict = Booking::query()
+                ->whereKeyNot($prenotazioni->id)
+                ->whereNull('canceled_at')
+                ->whereDate('checkin', '<', $prenotazioni->checkout)
+                ->whereDate('checkout', '>', $prenotazioni->checkin)
+                ->exists();
+
+            $hasManualBlockConflict = AvailabilityBlock::query()
+                ->whereNull('booking_id')
+                ->whereDate('start_date', '<', $prenotazioni->checkout)
+                ->whereDate('end_date', '>=', $prenotazioni->checkin)
+                ->exists();
+
+            if ($hasBookingConflict || $hasManualBlockConflict) {
+                return redirect()->back()->with('error', 'Ripristino non possibile: il periodo risulta già occupato.');
+            }
+
+            $prenotazioni->update(['canceled_at' => null]);
+        }
+
+        return redirect()->back()->with('success', 'Cancellazione rimossa. Prenotazione di nuovo attiva.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([

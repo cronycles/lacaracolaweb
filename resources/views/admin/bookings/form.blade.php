@@ -4,8 +4,29 @@
 
 @section('content')
     <div style="max-width:680px">
-        <div style="margin-bottom:1rem">
+        <div style="display:flex;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Torna alle prenotazioni</a>
+
+            @if ($booking->exists)
+                <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                    @if($booking->isCanceled())
+                        <span class="badge badge--canceled">Cancellata</span>
+                        <form method="POST" action="{{ route('admin.bookings.restore', $booking) }}">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn--outline btn--sm">Ripristina cancellazione</button>
+                        </form>
+                    @else
+                        <span class="badge badge--booked">Attiva</span>
+                        <form method="POST" action="{{ route('admin.bookings.cancel', $booking) }}"
+                              onsubmit="return confirm('Segnare la prenotazione come cancellata e liberare i giorni?')">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn--accent btn--sm">Segna cancellata</button>
+                        </form>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <div class="a-card">

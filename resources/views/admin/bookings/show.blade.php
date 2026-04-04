@@ -29,6 +29,19 @@
                         </td>
                     </tr>
                     <tr>
+                        <th>Stato</th>
+                        <td>
+                            @if($booking->isCanceled())
+                                <span class="badge badge--canceled">Cancellata</span>
+                                @if($booking->canceled_at)
+                                    <span style="font-size:.8rem;color:#6b7f89;margin-left:.45rem">il {{ $booking->canceled_at->format('d/m/Y H:i') }}</span>
+                                @endif
+                            @else
+                                <span class="badge badge--booked">Attiva</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Check-in</th>
                         <td>{{ $booking->checkin->format('d/m/Y') }}</td>
                     </tr>

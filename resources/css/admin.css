@@ -197,6 +197,7 @@ body {
 .badge--owner     { background: #f3e8ff; color: #6b21a8; }
 .badge--maintenance { background: #fef3c7; color: #92400e; }
 .badge--booked    { background: #dcfce7; color: #166534; }
+.badge--canceled  { background: #fee2e2; color: #991b1b; }
 
 /* Buttons */
 .btn {
@@ -329,6 +330,7 @@ body {
 .event-item__bar--booked { background: #30596C; }
 .event-item__bar--owner  { background: #9333ea; }
 .event-item__bar--maintenance { background: #f59e0b; }
+.event-item__bar--canceled { background: #ef4444; }
 .event-item__dates {
     font-size: .8rem;
     color: #6b7f89;

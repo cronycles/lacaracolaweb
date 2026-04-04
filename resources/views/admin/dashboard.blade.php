@@ -7,7 +7,15 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-card__number">{{ $stats['total_bookings'] }}</div>
-            <div class="stat-card__label">Prenotazioni totali</div>
+            <div class="stat-card__label">Prenotazioni totali (storico)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__number">{{ $stats['active_bookings'] }}</div>
+            <div class="stat-card__label">Prenotazioni attive</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__number">{{ $stats['canceled_bookings'] }}</div>
+            <div class="stat-card__label">Prenotazioni cancellate</div>
         </div>
         <div class="stat-card">
             <div class="stat-card__number">{{ $stats['total_guests'] }}</div>

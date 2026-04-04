@@ -34,6 +34,8 @@
 - Configurazione soggiorno minimo (default 3 notti).
 - Le notti minime sono un vincolo separato e non fanno parte delle regole prezzo.
 - Gestione dati ospiti e soggiorni associati.
+- Possibilita di segnare una prenotazione come cancellata (stato reversibile), mantenendo lo storico visibile in lista/dettaglio/calendario.
+- Le prenotazioni cancellate non devono bloccare la disponibilita: i giorni tornano liberi finche la cancellazione non viene rimossa.
 - Consultazione ospiti per periodo/date.
 - Sezione newsletter (solo consultazione iscritti; invio non implementato).
 

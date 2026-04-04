@@ -19,7 +19,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Soggiorno minimo (global o per regola).
 - Persone/contatti.
 - Ospiti (ruolo di persona come guest).
-- Soggiorni/prenotazioni associate agli ospiti.
+- Soggiorni/prenotazioni associate agli ospiti, con stato annullabile tramite campo `canceled_at` (reversibile, senza perdita storico).
 - Iscritti newsletter (flag e consenso).
 
 ## 4. Distinzione Persona vs Ospite
@@ -32,7 +32,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Ospiti presenti tra due date.
 - Ospiti presenti in mesi specifici (es. marzo-aprile-maggio).
 - Numero soggiorni per ospite.
-- Disponibilita residua per intervallo richiesto.
+- Disponibilita residua per intervallo richiesto (escludendo prenotazioni con `canceled_at` valorizzato).
 
 ## 6. Evoluzioni pianificate
 - Parser email automatico per nuove prenotazioni.

@@ -32,6 +32,7 @@ class HomeController extends Controller
         $windowEnd = now()->addYears(2)->endOfDay();
 
         $bookings = Booking::query()
+            ->whereNull('canceled_at')
             ->whereDate('checkin', '<=', $windowEnd->toDateString())
             ->whereDate('checkout', '>', $today->toDateString())
             ->get(['checkin', 'checkout']);

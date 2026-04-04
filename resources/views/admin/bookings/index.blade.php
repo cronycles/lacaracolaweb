@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>Ospite</th>
+                        <th>Stato</th>
                         <th>Check-in</th>
                         <th>Check-out</th>
                         <th>Notti</th>
@@ -26,12 +27,19 @@
                 </thead>
                 <tbody>
                     @foreach ($bookings as $booking)
-                        <tr>
+                        <tr @if($booking->isCanceled()) style="opacity:.72" @endif>
                             <td>
                                 <a href="{{ route('admin.bookings.show', $booking) }}"
                                    style="color:#30596C;font-weight:600;text-decoration:none">
                                     {{ $booking->person->full_name }}
                                 </a>
+                            </td>
+                            <td>
+                                @if($booking->isCanceled())
+                                    <span class="badge badge--canceled">cancellata</span>
+                                @else
+                                    <span class="badge badge--booked">attiva</span>
+                                @endif
                             </td>
                             <td>{{ $booking->checkin->format('d/m/Y') }}</td>
                             <td>{{ $booking->checkout->format('d/m/Y') }}</td>

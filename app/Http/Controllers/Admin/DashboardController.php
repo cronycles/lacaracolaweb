@@ -15,9 +15,12 @@ class DashboardController extends Controller
     {
         $stats = [
             'total_bookings'  => Booking::count(),
+            'active_bookings' => Booking::whereNull('canceled_at')->count(),
+            'canceled_bookings' => Booking::whereNotNull('canceled_at')->count(),
             'total_guests'    => Person::count(),
             'newsletter_subs' => Person::where('newsletter_subscribed', true)->count(),
-            'upcoming'        => Booking::where('checkin', '>=', today())
+            'upcoming'        => Booking::whereNull('canceled_at')
+                                        ->where('checkin', '>=', today())
                                         ->orderBy('checkin')
                                         ->with('person')
                                         ->take(5)
