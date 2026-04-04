@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\PricingController;
+use App\Http\Controllers\Admin\StayDiscountRuleController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\PersonController;
@@ -24,6 +25,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Pricing rules
     Route::resource('prezzi', PricingController::class)->names('pricing');
+    Route::resource('sconti-soggiorno', StayDiscountRuleController::class)
+        ->parameters(['sconti-soggiorno' => 'stay_discount_rule'])
+        ->names('stay-discounts');
 
     // Bookings
     Route::get('/prenotazioni/import-pdf', [InterhomePdfImportController::class, 'index'])->name('bookings.import-pdf');

@@ -42,12 +42,18 @@ class BookingController extends Controller
         }
 
         $stayCents = (int) ($quote['stay_cents'] ?? 0);
+        $discountPercent = (int) ($quote['discount_percent'] ?? 0);
+        $discountCents = (int) ($quote['discount_cents'] ?? 0);
+        $discountedStayCents = (int) ($quote['discounted_stay_cents'] ?? $stayCents);
         $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
-        $totalCents = $stayCents + $cleaningCents;
+        $totalCents = $discountedStayCents + $cleaningCents;
 
         return response()->json([
             'available' => true,
             'stay_cents' => $stayCents,
+            'discount_percent' => $discountPercent,
+            'discount_cents' => $discountCents,
+            'discounted_stay_cents' => $discountedStayCents,
             'cleaning_cents' => $cleaningCents,
             'total_cents' => $totalCents,
             'nights' => $quote['nights'],

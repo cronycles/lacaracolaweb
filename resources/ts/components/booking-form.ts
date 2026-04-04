@@ -17,6 +17,9 @@ interface ApiResponse {
 interface QuoteResponse {
     available: boolean;
     stay_cents?: number;
+    discount_percent?: number;
+    discount_cents?: number;
+    discounted_stay_cents?: number;
     cleaning_cents?: number;
     total_cents?: number;
     nights?: number;
@@ -161,10 +164,19 @@ export function initBookingForm(): void {
 
                 if (priceBreakdown) {
                     const stayLabel = form.dataset['priceStayLabel'] ?? 'Soggiorno';
+                    const discountLabel = form.dataset['priceDiscountLabel'] ?? 'Sconto soggiorno';
                     const cleaningLabel = form.dataset['priceCleaningLabel'] ?? 'Pulizie';
                     const stayCents = data.stay_cents ?? 0;
+                    const discountCents = data.discount_cents ?? 0;
+                    const discountPercent = data.discount_percent ?? 0;
+                    const discountedStayCents = data.discounted_stay_cents ?? stayCents;
                     const cleaningCents = data.cleaning_cents ?? 0;
-                    priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
+
+                    if (discountCents > 0 && discountPercent > 0) {
+                        priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${discountLabel} (${discountPercent}%): -${formatCurrency(discountCents)} · ${stayLabel}: ${formatCurrency(discountedStayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
+                    } else {
+                        priceBreakdown.textContent = `${stayLabel}: ${formatCurrency(stayCents)} · ${cleaningLabel}: ${formatCurrency(cleaningCents)}`;
+                    }
                 }
 
                 showPriceMessage(formatCurrency(data.total_cents), data.message);

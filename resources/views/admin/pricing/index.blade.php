@@ -3,9 +3,12 @@
 @section('title', 'Regole di prezzo')
 
 @section('content')
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:.75rem;flex-wrap:wrap">
         <h1 style="font-size:1.1rem;font-weight:700">Regole di prezzo</h1>
-        <a href="{{ route('admin.pricing.create') }}" class="btn btn--primary">+ Nuova regola</a>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <a href="{{ route('admin.stay-discounts.index') }}" class="btn btn--outline">Sconti soggiorno</a>
+            <a href="{{ route('admin.pricing.create') }}" class="btn btn--primary">+ Nuova regola</a>
+        </div>
     </div>
 
     <div class="a-card">

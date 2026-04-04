@@ -44,6 +44,7 @@ return [
     'booking_price_loading' => 'Calcul du prix en cours…',
     'booking_price_unavailable' => 'Prix non disponible pour toutes les nuits sélectionnées.',
     'booking_price_stay'    => 'Séjour',
+    'booking_price_discount' => 'Remise séjour',
     'booking_price_cleaning' => 'Ménage',
     'booking_price_detail'  => ':nights nuits sélectionnées · total estimé',
     'booking_min_nights'    => 'Séjour minimum :nights nuits.',

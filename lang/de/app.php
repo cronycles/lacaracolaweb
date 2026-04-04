@@ -44,6 +44,7 @@ return [
     'booking_price_loading' => 'Preis wird berechnet…',
     'booking_price_unavailable' => 'Preis nicht für alle ausgewählten Nächte verfügbar.',
     'booking_price_stay'    => 'Aufenthalt',
+    'booking_price_discount' => 'Aufenthaltsrabatt',
     'booking_price_cleaning' => 'Reinigung',
     'booking_price_detail'  => ':nights ausgewählte Nächte · geschätzte Gesamtsumme',
     'booking_min_nights'    => 'Mindestaufenthalt :nights Nächte.',

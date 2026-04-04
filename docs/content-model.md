@@ -16,6 +16,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Utente admin.
 - Disponibilita calendario.
 - Regole pricing ricorrenti (intervalli mese/giorno validi ogni anno).
+- Regole sconto soggiorno per durata (intervalli notti min/max, percentuale, priorita, stato attivo).
 - Soggiorno minimo (global o per regola).
 - Persone/contatti.
 - Ospiti (ruolo di persona come guest).
@@ -33,6 +34,7 @@ Usare file di configurazione per contenuti stabili e database per dati operativi
 - Ospiti presenti in mesi specifici (es. marzo-aprile-maggio).
 - Numero soggiorni per ospite.
 - Disponibilita residua per intervallo richiesto (escludendo prenotazioni con `canceled_at` valorizzato).
+- Preventivo prezzo: totale soggiorno da regole stagionali + eventuale sconto durata (solo soggiorno) + pulizia fissa.
 
 ## 6. Evoluzioni pianificate
 - Parser email automatico per nuove prenotazioni.

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\PricingRule;
+use App\Models\StayDiscountRule;
 use Carbon\Carbon;
 
 class PricingQuoteService
 {
     /**
-    * @return array{available: bool, nights: int, stay_cents: int|null}
+    * @return array{available: bool, nights: int, stay_cents: int|null, discount_percent: int, discount_cents: int, discounted_stay_cents: int|null}
      */
     public function calculate(string $checkin, string $checkout): array
     {
@@ -24,6 +25,9 @@ class PricingQuoteService
                 'available' => false,
                 'nights' => 0,
                 'stay_cents' => null,
+                'discount_percent' => 0,
+                'discount_cents' => 0,
+                'discounted_stay_cents' => null,
             ];
         }
 
@@ -39,6 +43,9 @@ class PricingQuoteService
                     'available' => false,
                     'nights' => $nights,
                     'stay_cents' => null,
+                    'discount_percent' => 0,
+                    'discount_cents' => 0,
+                    'discounted_stay_cents' => null,
                 ];
             }
 
@@ -52,6 +59,9 @@ class PricingQuoteService
                     'available' => false,
                     'nights' => $nights,
                     'stay_cents' => null,
+                    'discount_percent' => 0,
+                    'discount_cents' => 0,
+                    'discounted_stay_cents' => null,
                 ];
             }
 
@@ -59,10 +69,27 @@ class PricingQuoteService
             $cursor->addDay();
         }
 
+        $discountRule = StayDiscountRule::query()
+            ->active()
+            ->forNights($nights)
+            ->orderBy('priority')
+            ->orderByDesc('min_nights')
+            ->first();
+
+        $discountPercent = $discountRule?->discount_percent ?? 0;
+        $discountCents = $discountPercent > 0
+            ? (int) round(($totalCents * $discountPercent) / 100)
+            : 0;
+
+        $discountedStayCents = max(0, $totalCents - $discountCents);
+
         return [
             'available' => true,
             'nights' => $nights,
             'stay_cents' => $totalCents,
+            'discount_percent' => (int) $discountPercent,
+            'discount_cents' => $discountCents,
+            'discounted_stay_cents' => $discountedStayCents,
         ];
     }
 

@@ -36,6 +36,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.stay-discounts.index') }}" @class(['active' => request()->routeIs('admin.stay-discounts*')])>
+                    🏷️ Sconti soggiorno
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.bookings.index') }}" @class(['active' => request()->routeIs('admin.bookings*')])>
                     🏠 Prenotazioni
                 </a>

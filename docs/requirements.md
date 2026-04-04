@@ -24,6 +24,7 @@
 - Pagina useful places (anche per uso QR in appartamento).
 - Modulo richiesta disponibilita (flow B).
 - Modulo richiesta disponibilita (flow B) con stima prezzo dinamica basata sulle regole pricing ricorrenti configurate in area admin (periodi mese/giorno validi ogni anno) e sulle date selezionate.
+- Possibilita di configurare sconti progressivi per numero di notti (es. 4, 5, 7+), applicati al solo costo soggiorno e non alla pulizia.
 - Possibilità di configurare una data di cutoff (giorno/mese/anno) da cui in poi il prezzo non viene più mostrato nel form pubblico.
 - Nel calendario date del form pubblico, i giorni già occupati (prenotazioni o blocchi manuali) devono essere visibili e non selezionabili.
 
@@ -31,6 +32,7 @@
 - Accesso proprietario via email/password.
 - Configurazione disponibilita calendario.
 - Configurazione prezzi per periodo ricorrente mese/giorno (validita annuale, senza anno).
+- Configurazione sconti soggiorno per durata (scaglioni notti con percentuale).
 - Configurazione soggiorno minimo (default 3 notti).
 - Le notti minime sono un vincolo separato e non fanno parte delle regole prezzo.
 - Gestione dati ospiti e soggiorni associati.

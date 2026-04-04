@@ -48,6 +48,7 @@ return [
     'booking_price_loading' => 'Calcolo prezzo in corso…',
     'booking_price_unavailable' => 'Prezzo non disponibile per tutte le notti selezionate.',
     'booking_price_stay'    => 'Soggiorno',
+    'booking_price_discount' => 'Sconto soggiorno',
     'booking_price_cleaning' => 'Pulizie',
     'booking_price_detail'  => ':nights notti selezionate · totale stimato',
     'booking_min_nights'    => 'Soggiorno minimo :nights notti.',

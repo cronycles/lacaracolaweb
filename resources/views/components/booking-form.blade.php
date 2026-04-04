@@ -22,6 +22,7 @@
       data-label-loading="{{ __('app.booking_loading') }}"
     data-price-loading="{{ __('app.booking_price_loading') }}"
     data-price-stay-label="{{ __('app.booking_price_stay') }}"
+    data-price-discount-label="{{ __('app.booking_price_discount') }}"
     data-price-cleaning-label="{{ __('app.booking_price_cleaning') }}"
     data-unavailable-dates='@json($unavailableDates ?? [])'
       novalidate>
