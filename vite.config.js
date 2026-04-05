@@ -5,7 +5,14 @@ export default defineConfig({
     plugins: [
         laravel({
             // Entry points: main CSS (PostCSS) + main TypeScript
-            input: ['resources/css/app.css', 'resources/ts/app.ts'],
+            input: [
+                'resources/css/app.css',
+                'resources/css/admin.css',
+                'resources/css/components/calendar.css',
+                'resources/css/auth/login.css',
+                'resources/ts/app.ts',
+                'resources/js/app.js',
+            ],
             refresh: [
                 'resources/views/**',
                 'lang/**',

@@ -1,4 +1,13 @@
 {
+  "resources/css/admin.css": {
+    "file": "assets/admin-BU3OLAg3.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true,
+    "name": "admin",
+    "names": [
+      "admin.css"
+    ]
+  },
   "resources/css/app.css": {
     "file": "assets/app-BZSGrqk6.css",
     "src": "resources/css/app.css",
@@ -8,9 +17,33 @@
       "app.css"
     ]
   },
+  "resources/css/auth/login.css": {
+    "file": "assets/login-Dtrzav3L.css",
+    "src": "resources/css/auth/login.css",
+    "isEntry": true,
+    "name": "login",
+    "names": [
+      "login.css"
+    ]
+  },
+  "resources/css/components/calendar.css": {
+    "file": "assets/calendar-BA63EAb2.css",
+    "src": "resources/css/components/calendar.css",
+    "isEntry": true,
+    "name": "calendar",
+    "names": [
+      "calendar.css"
+    ]
+  },
   "resources/fonts/Montserrat/Montserrat-VariableFont_wght.ttf": {
     "file": "assets/Montserrat-VariableFont_wght-DcaoeaBt.ttf",
     "src": "resources/fonts/Montserrat/Montserrat-VariableFont_wght.ttf"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BuG9aa18.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
   },
   "resources/ts/app.ts": {
     "file": "assets/app-DDi2R7r1.js",
