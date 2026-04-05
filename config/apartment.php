@@ -64,6 +64,7 @@ return [
         ['icon' => '🍳', 'key' => 'amenity_kitchen'],
         ['icon' => '🫙', 'key' => 'amenity_dishwasher'],
         ['icon' => '☕', 'key' => 'amenity_coffee'],
+        ['icon' => '🫖', 'key' => 'amenity_kettle'],
         ['icon' => '🥐', 'key' => 'amenity_toaster'],
         ['icon' => '📡', 'key' => 'amenity_microwave'],
         ['icon' => '🫧', 'key' => 'amenity_mosquito_nets'],
