@@ -1,193 +1,118 @@
 # La Caracola Web
 
-Multilingual short-rental website for "La Caracola" apartment in Marina di Andora (Savona, Liguria).
-Built with Laravel + MySQL + TypeScript + PostCSS + Vite + ESLint.
+Multilingual vacation-rental website for La Caracola apartment in Marina di Andora (Savona, Liguria).
 
-## Project Goals
+Production website: https://lacaracolaandora.com
 
-- Showcase the apartment, nearby experiences, and trust elements.
-- Collect indirect booking leads outside major portals (Airbnb, Booking).
-- Provide a private admin area to manage availability, pricing, minimum stay, guests and bookings.
-- Keep the stack fully open source with no paid lock-in.
+If you need full product and architecture details, use the docs index below.
+
+## What This Project Is
+
+- Public website for apartment presentation and booking lead collection.
+- Private admin area to manage bookings, availability, pricing rules, and stay constraints.
+- Multilingual content with Italian fallback.
 
 ## Tech Stack
 
-| Layer        | Technology                             |
-| ------------ | -------------------------------------- |
-| Backend      | PHP 8.2+ / Laravel                     |
-| Database     | MySQL (production), SQLite (local dev) |
-| Frontend JS  | TypeScript                             |
-| Frontend CSS | PostCSS                                |
-| Bundler      | Vite (transpile + minify)              |
-| Linting      | ESLint                                 |
+| Layer    | Technology                         |
+| -------- | ---------------------------------- |
+| Backend  | PHP 8.2+ / Laravel                 |
+| Database | SQLite (local), MySQL (production) |
+| Frontend | TypeScript + PostCSS               |
+| Build    | Vite                               |
+| Quality  | ESLint + TypeScript checks         |
 
-## Language Policy
-
-- Code comments: **English**
-- Documentation in `docs/`: **Italian**
-- This `README.md`: **English**
-- User-facing content: Laravel lang files (`lang/{it,en,fr,de}/`)
-
-## Project Documentation (`docs/`)
-
-| File                                   | Contents                                                    |
-| -------------------------------------- | ----------------------------------------------------------- |
-| `docs/requirements.md`                 | Full product requirements (functional + non-functional)     |
-| `docs/roadmap.md`                      | Development phases and priorities                           |
-| `docs/content-model.md`                | Config vs database decisions, entity schema                 |
-| `docs/dev-instructions.md`             | Developer workflow, links to Copilot instructions           |
-| `docs/deploy-produzione.md`            | Production deploy guide for SupportHost cPanel + Cloudflare |
-| `docs/fase2-checklist-test-manuale.md` | Manual test checklist for completed Phase 2 items           |
-
-## Copilot Instructions (`.github/`)
-
-| File                                                 | Scope                        |
-| ---------------------------------------------------- | ---------------------------- |
-| `.github/copilot-instructions.md`                    | Always-on project standards  |
-| `.github/instructions/laravel.instructions.md`       | PHP/Laravel files            |
-| `.github/instructions/frontend.instructions.md`      | `resources/**` (TS, PostCSS) |
-| `.github/instructions/documentation.instructions.md` | `docs/**`                    |
-
-## Local Development
+## First Local Run (Fast Path)
 
 ### Prerequisites
 
-- PHP 8.2+ with extensions: `openssl`, `pdo_sqlite`, `mbstring`, `fileinfo`, `curl`, `zip`
+- PHP 8.2+ with common Laravel extensions (`openssl`, `pdo_sqlite`, `mbstring`, `fileinfo`, `curl`, `zip`)
 - Composer
-- Node.js 18+ / npm
+- Node.js 18+ and npm
 
-### Setup
+### Setup and Start
 
 ```bash
-# Setup and build
+# Install PHP and Node dependencies, then create production build assets
 npm run restore
 
-# Copy environment file and generate key
+# Create local environment file and app key
 cp .env.example .env
 php artisan key:generate
 
-# Run database migrations (SQLite, no DB server needed locally)
+# Create local SQLite schema
 php artisan migrate
 
-# Start full dev environment (Laravel + Vite hot-reload)
+# Start Laravel + Vite in local mode
 npm run start:local
 ```
 
-> `npm run start:local` always recreates `.env` from `.env.local`, clears Laravel config, then runs `php artisan serve` + `vite`.
-> If `.env.local` does not exist, it is bootstrapped from `.env.example`.
-> Open http://localhost:8000
+Open http://localhost:8000
 
-### Other commands
+Notes:
 
-```bash
-npm run build      # TypeScript check + production build (minified)
-npm run lint       # ESLint on resources/ts
-npm run lint:fix   # ESLint auto-fix
-npm run start:local   # One-command local stack against local DB
-npm run start:dbprod  # macOS: open SSH tunnel + local app against production DB
-```
+- `npm run start:local` rebuilds `.env` from `.env.local` every run.
+- If `.env.local` is missing, it is generated from `.env.example`.
 
-### Local App Against Production DB
+## Run Local App Against Production DB (macOS only)
 
-For quick inspection against real production data, the project includes a dedicated macOS launcher:
+Use this mode only for investigation on real data:
 
 ```bash
 npm run start:dbprod
 ```
 
-What it does:
+Behavior:
 
-- Opens one Terminal.app window for the SSH tunnel to the production server
-- Opens a second Terminal.app window for the local Laravel app
-- Waits until local port `3307` is reachable before starting Laravel
-- Always recreates `.env` from `.env.prod-local`
-- If `.env.local` does not exist yet, creates it from `.env.example` to keep a local profile file available
-- Clears config cache, then runs `php artisan serve` + `vite` in watch mode
+- Opens Terminal.app windows for SSH tunnel and local app startup.
+- Uses `.env.prod-local` to point local app to remote DB through `127.0.0.1:3307`.
+- Forces safe mail mode (`MAIL_MAILER=log`) to avoid sending real emails.
 
-Notes:
+Important safety rules:
 
-- This workflow is intended for macOS only (`osascript` + Terminal.app)
-- The SSH tunnel stays in the foreground by design; keep that terminal open
-- Local MySQL traffic goes through `127.0.0.1:3307` to the remote production database
-- `npm run start:local` always loads `.env.local` into `.env`
-- Outgoing mail is forced to `MAIL_MAILER=log` in `.env.prod-local` to avoid sending real emails
-- Do **not** run destructive commands such as `php artisan migrate`, `db:seed`, or `migrate:fresh` while connected to production data
-- When you want to go back to normal local development, run `npm run start:local`
+- Do not run destructive DB commands in this mode (`migrate`, `migrate:fresh`, `db:seed`, etc.).
+- Keep the SSH tunnel terminal open while working.
+- Switch back to normal local development with `npm run start:local`.
 
-## Project Structure
+## Deploy: How and When It Happens
 
+Deploy is automatic on push to `main`.
+
+Flow:
+
+1. GitHub Actions workflow runs.
+2. cPanel deploy entrypoint is triggered.
+3. Server-side deploy script syncs app and public assets.
+
+Files involved:
+
+- `.github/workflows/deploy.yml`
+- `.cpanel.yml`
+- `scripts/deploy.sh`
+
+Operational details, environment variables, and fallback procedures are documented in `docs/DEPLOY.md`.
+
+## Project Documentation Index
+
+Documentation in `docs/` is in Italian.
+
+- `docs/project-doc.mdc`: agent-first reading order and doc map.
+- `docs/tech-doc.mdc`: cross-project engineering workflow and standards.
+- `docs/business-doc.mdc`: product behavior and business intent.
+- `docs/specific-tech-doc.mdc`: project-specific technical constraints.
+- `docs/specific-tech-backend-doc.mdc`: backend implementation notes.
+- `docs/specific-tech-frontend-doc.mdc`: frontend implementation notes.
+- `docs/specific-tech-images-doc.md`: image workflow and constraints.
+- `docs/specific-data-model.md`: data model details and rules.
+- `docs/DEPLOY.md`: production deploy and hosting operations.
+
+## Useful Commands
+
+```bash
+npm run build      # TypeScript check + production build
+npm run build:fast # Build without TypeScript check
+npm run lint       # ESLint check for resources/ts
+npm run lint:fix   # ESLint auto-fix
+npm run start:local
+npm run start:dbprod
 ```
-app/
-  Http/
-    Controllers/
-      Public/     # Public-facing pages and booking form
-      Admin/      # Private admin area (auth protected)
-    Middleware/
-      SetLocale   # Browser/session-based locale detection
-  Models/         # Person, Booking, AvailabilityBlock, PricingRule
-config/
-  apartment.php   # Stable apartment content (name, address, amenities, rules, **images**)
-lang/
-  it/ en/ fr/ de/ # Translation files
-resources/
-  css/            # PostCSS — tokens, base, layout, components, pages
-  ts/             # TypeScript — hero slider, nav, gallery, booking form, map
-  views/
-    layouts/      # Blade layout (app.blade.php)
-    components/   # Reusable Blade components
-    public/       # Public pages
-    admin/        # Admin area views
-routes/
-  web.php         # Public routes
-  admin.php       # Admin routes (auth middleware)
-database/
-  migrations/     # people, bookings, availability_blocks, pricing_rules
-```
-
-## Adding / Replacing Images
-
-All image paths are centralised in `config/apartment.php` under the `images` key — **no Blade files need to be touched**.
-
-```php
-'images' => [
-    'hero'    => ['images/hero-1.jpg', 'images/hero-2.jpg', 'images/hero-3.jpg'],
-    'gallery' => ['images/apartment-1.jpg', ..., 'images/apartment-6.jpg'],
-    'og'      => 'images/og-default.jpg',
-],
-```
-
-Steps:
-
-1. Copy the image files into `public/images/`.
-2. Update the paths in `config/apartment.php` under `images`.
-3. Run `php artisan config:clear` (or `config:cache` in production).
-
-**Recommended dimensions:**
-
-| Key       | Count          | Recommended size   | Notes                                               |
-| --------- | -------------- | ------------------ | --------------------------------------------------- |
-| `hero`    | 3              | **1920 × 1080 px** | Full-viewport background, `cover` — wider is better |
-| `gallery` | 6 (adjustable) | **1200 × 800 px**  | Masonry layout, free aspect ratio                   |
-| `og`      | 1              | **1200 × 630 px**  | Open Graph standard (Facebook, WhatsApp previews)   |
-
-**Gallery smart fallback:** if a file does not exist in `public/`, the gallery automatically shows a `placehold.co` placeholder — no broken images.
-You can freely add or remove items from `images.gallery` and the gallery renders accordingly.
-
-## Development Phases
-
-1. **Phase 0** — Documentation and foundations ✅
-2. **Phase 1** — MVP public pages + booking request form + admin area ✅
-3. **Phase 2** — Booking switch, form UX and initial automations ✅
-4. **Phase 3** — Growth, multilingual SEO and content expansion ✅
-5. **Phase 4** — Direct deploy to SupportHost cPanel hosting
-6. **Phase 5** — Final production QA and content completion
-7. **Phase 6** — Interhome PDF booking import (planned)
-
-## Production Deploy
-
-Production deploy is handled by GitHub Actions + cPanel Git deployment.
-
-- Workflow: `.github/workflows/deploy.yml`
-- cPanel entrypoint: `.cpanel.yml`
-- Server-side script: `scripts/deploy.sh`
-- Full guide: `docs/deploy-produzione.md`
