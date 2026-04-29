@@ -1,6 +1,6 @@
 # Role
 
-You are an expert frontend architect with extensive experience in React projects applying best practices.
+You are an expert frontend architect with extensive experience in Blade + TypeScript projects applying best practices.
 
 # Task Input
 
@@ -9,6 +9,12 @@ $ARGUMENTS
 # Goal
 
 Obtain a step-by-step plan for a frontend task that is ready to start implementing.
+
+# Agent-first execution
+
+- Execute autonomously and end-to-end for the planning scope.
+- Ask clarifying questions only when a hard blocker prevents producing a valid plan.
+- Do not stop at generic recommendations; produce an implementation-ready plan.
 
 # Process and rules
 
@@ -33,14 +39,14 @@ Follow this template:
 
 ### 2. **Overview**
 
-- Brief description of the feature and frontend architecture principles (component-based architecture, service layer, React patterns)
+- Brief description of the feature and frontend architecture principles (Blade component architecture, progressive enhancement, TypeScript modules)
 
 ### 3. **Architecture Context**
 
 - Components/services involved
 - Files referenced
-- Routing considerations (if applicable)
-- State management approach
+- Route/view considerations (if applicable)
+- Client-side state handling approach (if applicable)
 
 ### 4. **Implementation Steps**
 
@@ -68,10 +74,10 @@ Detailed steps, typically:
 
 Common steps:
 
-- **Step 1**: Update/Create API interaction in `web/src/lib/api.ts` and related domain stores in `web/src/stores/`
-- **Step 2**: Create/Update components in `web/src/components/`
-- **Step 3**: Create/Update pages in `web/src/pages/`
-- **Step 4**: Update routing in `web/src/App.tsx` (if needed)
+- **Step 1**: Update/Create TS modules in `resources/ts/components/` and shared utilities in `resources/ts/utils/` (if needed)
+- **Step 2**: Create/Update Blade components in `resources/views/components/`
+- **Step 3**: Update Blade pages in `resources/views/`
+- **Step 4**: Update locale-aware routes in `routes/web.php` (if needed)
 - **Step 5**: Add/Update tests according to existing project approach
 
 #### **Step N+1: Update Technical Documentation**
@@ -80,13 +86,13 @@ Common steps:
 - **Implementation Steps**:
     1. **Review Changes**: Analyze all code changes made during implementation
     2. **Identify Documentation Files**: Determine which documentation files need updates based on:
-        - API endpoint changes → Update `docs/specific-api-model.yml`
+        - AJAX endpoint/payload changes → Update `docs/specific-tech-frontend-doc.mdc` and `docs/specific-tech-backend-doc.mdc` when applicable
         - UI/UX patterns or component patterns → Update `docs/specific-tech-frontend-doc.mdc`
         - Routing changes → Update routing documentation
         - New dependencies or configuration changes → Update `docs/specific-tech-frontend-doc.mdc`
         - Test patterns or Cypress changes → Update testing documentation
     3. **Update Documentation**: For each affected file:
-        - Update content in English (as per `documentation-standards.mdc`)
+        - Update content in English (as per `docs/tech-doc.mdc`)
         - Maintain consistency with existing documentation structure
         - Ensure proper formatting
     4. **Verify Documentation**:
@@ -112,7 +118,7 @@ Common steps:
 
 - Error state management in components
 - User-friendly error messages
-- API error handling in services
+- AJAX/form error handling in TS modules and controllers
 
 ### 8. **UI/UX Considerations** (if applicable)
 
@@ -135,8 +141,8 @@ Common steps:
 
 - Important reminders and constraints
 - Business rules
-- Language requirements (English only)
-- TypeScript vs JavaScript considerations
+- Language requirements (English only for technical artifacts)
+- TypeScript vs Blade integration considerations
 
 ### 11. **Next Steps After Implementation**
 

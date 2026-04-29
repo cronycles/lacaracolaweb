@@ -1,6 +1,6 @@
 # Code Audit Methodology
 
-This document provides a comprehensive, systematic approach to code quality auditing for TasteSpot.
+This document provides a comprehensive, systematic approach to code quality auditing for La Caracola Web.
 
 ## Phase 0: Pre-Analysis Setup
 
@@ -9,8 +9,8 @@ Before analyzing code, establish the context:
 ### 1. Project Configuration
 
 - **Stack and scopes**:
-    - Backend: Laravel API in `backend/`
-    - Frontend: React + TypeScript app in `web/`
+    - Backend: Laravel monolith in `app/`, `routes/`, `database/`, and `tests/`
+    - Frontend: Blade + TypeScript + Vite in `resources/`
 - **Project docs first**:
     - `docs/project-doc.mdc`
     - `README.md`
@@ -21,10 +21,10 @@ Run existing linting and testing:
 
 ```bash
 # Backend
-cd backend && composer run pint && composer test
+composer run pint && composer test
 
 # Frontend
-cd web && npm run lint && npm run build
+npm run lint && npm run build
 ```
 
 Document existing errors/warnings as baseline.
@@ -46,8 +46,8 @@ Find all code files by type:
 
 For this repository, prioritize:
 
-- `backend/app/**`, `backend/routes/**`, `backend/tests/**`
-- `web/src/**`
+- `app/**`, `routes/**`, `database/**`, `tests/**`
+- `resources/ts/**`, `resources/views/**`, `resources/css/**`
 - `docs/**` when behavior/contracts are changed
 
 ### Organization
@@ -127,9 +127,9 @@ For each file, analyze for the following categories:
 - Inconsistent error types
 - Generic error messages hiding root cause
 
-### Laravel/API Contract Checks
+### Laravel/Endpoint Contract Checks
 
-- Route versioning and endpoint consistency under `/api/v1`
+- Route and endpoint consistency in `routes/web.php` and `routes/admin.php`
 - Correct auth protection on private endpoints
 - Validation failures mapped correctly (422 + errors payload)
 - Not-found/auth exceptions mapped consistently
@@ -221,15 +221,15 @@ For custom implementations, find mature replacements:
 
 ### Common Replacements
 
-| Custom Implementation | Recommended Library                          |
-| --------------------- | -------------------------------------------- |
-| Date manipulation     | date-fns, dayjs                              |
-| HTTP client           | Keep project wrapper in `web/src/lib/api.ts` |
-| Form validation       | zod, yup                                     |
-| State management      | zustand, jotai                               |
-| Deep cloning          | lodash/cloneDeep, structuredClone            |
-| UUID generation       | uuid, nanoid                                 |
-| Retry logic           | p-retry, async-retry                         |
+| Custom Implementation | Recommended Library                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| Date manipulation     | date-fns, dayjs                                                                        |
+| HTTP client           | Reuse existing TypeScript endpoint integration patterns in `resources/ts/components/*` |
+| Form validation       | zod, yup                                                                               |
+| State management      | zustand, jotai                                                                         |
+| Deep cloning          | lodash/cloneDeep, structuredClone                                                      |
+| UUID generation       | uuid, nanoid                                                                           |
+| Retry logic           | p-retry, async-retry                                                                   |
 
 ## Phase 6: Report Generation
 
@@ -316,10 +316,10 @@ Description of the issue and why it matters.
 ### Project Checks
 ```bash
 # Backend quality baseline
-cd backend && composer run pint && composer test
+composer run pint && composer test
 
 # Frontend quality baseline
-cd web && npm run lint && npm run build
+npm run lint && npm run build
 ````
 
 ## Common Pitfalls to Avoid

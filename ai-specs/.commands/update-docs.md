@@ -1,5 +1,11 @@
 Use `docs/project-doc.mdc` to update all documentation impacted by the implemented changes.
 
+Agent-first behavior:
+
+- Execute documentation updates end-to-end for all impacted files.
+- Ask clarifying questions only when impact cannot be determined from available context.
+- Do not stop at listing files; apply the updates and report what changed.
+
 Checklist:
 
 1. Review code changes and identify affected documentation surfaces.

@@ -1,6 +1,6 @@
 # Role
 
-You are an expert software architect with extensive experience in Laravel API projects and clean layered architecture.
+You are an expert software architect with extensive experience in Laravel monolith projects and clean layered architecture.
 
 # Task Input
 
@@ -10,11 +10,17 @@ $ARGUMENTS
 
 Obtain a step-by-step plan for a backend task that is ready to start implementing.
 
+# Agent-first execution
+
+- Execute autonomously and end-to-end for the planning scope.
+- Ask clarifying questions only when a hard blocker prevents producing a valid plan.
+- Do not stop at high-level ideas; produce an implementation-ready plan.
+
 # Process and rules
 
 1. Adopt the role of `ai-specs/.agents/backend-developer.md`.
 2. Analyze the task request mentioned in the input. If the input references local files, read them directly.
-3. Propose a step-by-step backend plan, covering everything in the task and applying best practices from `docs/tech-doc.mdc`, mainly the backend practice in the documentation starting from that document.
+3. Propose a step-by-step backend plan, covering everything in the task and applying best practices from `docs/tech-doc.mdc`, mainly the backend practices linked from that document.
 4. Ensure the plan is implementation-ready so a developer can execute the task end-to-end autonomously.
 5. Do not write code yet; provide only the plan in the output format below.
 6. If later asked to implement, first switch/create a proper feature branch and follow `/develop-backend.md`.
@@ -33,11 +39,11 @@ Follow this template:
 
 ### 2. **Overview**
 
-- Brief description of the feature and architecture principles (Laravel API, clean architecture, JSON contract stability)
+- Brief description of the feature and architecture principles (Laravel monolith, clean architecture, contract stability)
 
 ### 3. **Architecture Context**
 
-- Layers involved (Presentation/API, Application/Services-Actions, Domain/Models, Infrastructure/Persistence)
+- Layers involved (HTTP/Controllers, Application/Services-Actions, Domain/Models, Infrastructure/Persistence)
 - Components/files referenced
 
 ### 4. **Implementation Steps**
@@ -69,7 +75,7 @@ Common steps:
 - **Step 1**: Define/Update request validation
 - **Step 2**: Implement business logic in service/action/model layer
 - **Step 3**: Implement/Update controller method
-- **Step 4**: Add/Update API route under `/api/v1`
+- **Step 4**: Add/Update route in `routes/web.php` or `routes/admin.php`
 - **Step 5**: Write tests (Feature + Unit where applicable: success, validation, auth, ownership, not found, edge/error cases)
 
 Example of a good structure:
@@ -87,11 +93,11 @@ Example of a good structure:
     1. **Review Changes**: Analyze all code changes made during implementation
     2. **Identify Documentation Files**: Determine which documentation files need updates based on:
         - Data model changes → Update `docs/specific-data-model.md` when applicable
-        - API endpoint changes → Update `docs/specific-api-model.yml` when applicable
+        - Endpoint/contract changes → Update `docs/specific-tech-backend-doc.mdc` when applicable
         - Standards/libraries/config changes → Update relevant `*-standards.mdc` files
         - Architecture changes → Update relevant architecture documentation
     3. **Update Documentation**: For each affected file:
-        - Update content in English (as per `documentation-standards.mdc`)
+        - Update content in English (as per `docs/tech-doc.mdc`)
         - Maintain consistency with existing documentation structure
         - Ensure proper formatting
     4. **Verify Documentation**:
@@ -111,10 +117,10 @@ Example of a good structure:
 
 - Post-implementation verification checklist
 
-### 7. **Error Response Format**
+### 7. **Error Handling and Response Format**
 
-- JSON structure
-- HTTP status code mapping
+- HTML redirect/session errors for form flows
+- JSON payload and HTTP status mapping for AJAX endpoints
 
 ### 8. **Partial Update Support** (if applicable)
 

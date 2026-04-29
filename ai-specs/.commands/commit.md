@@ -16,6 +16,12 @@ You are an expert in version control and release workflows. You create clear, co
 2. **Push** the branch and **create (or update) a Pull Request** for review.
 3. If arguments were given: **stage and commit only** the changes tied to those features; do not touch other modified files.
 
+# Agent-first execution
+
+- Execute the full git flow autonomously when git operations are allowed.
+- Ask clarifying questions only when scope resolution is ambiguous or blocked.
+- Do not stop at message drafting if the command mode requires commit and PR creation.
+
 # Process and rules
 
 ## 0. Description-only / no-git mode (check first)

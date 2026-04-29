@@ -1,12 +1,12 @@
 ---
 name: code-auditing
-description: Use this skill when the user asks for a code audit, code review, technical debt analysis, security review, dead code detection, maintainability assessment, or pre-merge quality verification in TasteSpot.
+description: Use this skill when the user asks for a code audit, code review, technical debt analysis, security review, dead code detection, maintainability assessment, or pre-merge quality verification in La Caracola Web.
 version: 1.0.0
 ---
 
 # Code Auditing Skill
 
-Comprehensive methodology for systematic code quality audits in this repository (Laravel API + React/Vite web).
+Comprehensive methodology for systematic code quality audits in this repository (Laravel monolith + Blade + TypeScript/Vite).
 
 ## When to Use
 
@@ -25,11 +25,11 @@ Comprehensive methodology for systematic code quality audits in this repository 
 1. Read project standards and architecture context first:
     - `docs/project-doc.mdc`
     - `README.md`
-2. Identify impacted scope (`backend/`, `web/`, `docs/`, or cross-cutting).
+2. Identify impacted scope (`app/`, `resources/`, `routes/`, `tests/`, `docs/`, or cross-cutting).
 3. Check project tooling/config in impacted scope.
 4. Run baseline quality commands when requested or useful:
-    - Backend (`backend/`): `composer run pint`, `composer test`
-    - Frontend (`web/`): `npm run lint`, `npm run build`
+    - Backend (project root): `composer run pint`, `composer test`
+    - Frontend (project root): `npm run lint`, `npm run build`
 
 ### Phase 1: Discovery
 
@@ -57,7 +57,7 @@ For each file, analyze for:
 For every impacted framework/library:
 
 1. Compare implementation with repository standards in `docs/`.
-2. Validate against current framework conventions (Laravel 13, React 19, Router 7, Zustand).
+2. Validate against current framework conventions (Laravel + Blade + TypeScript + Vite).
 3. Flag deprecated or discouraged patterns.
 
 ### Phase 4: Pattern Detection
@@ -120,9 +120,9 @@ Generate detailed report with:
 - Custom types duplicating official types
 - Missing @types packages
 
-### Laravel/API Correctness
+### Laravel/Endpoint Correctness
 
-- Route protection and `auth:sanctum` usage
+- Route protection and middleware usage
 - Validation and exception mapping consistency
 - Ownership checks for user-scoped resources
 - Eager loading and query efficiency

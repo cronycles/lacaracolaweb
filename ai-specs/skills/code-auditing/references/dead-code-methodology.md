@@ -1,6 +1,6 @@
 # Dead Code Detection Methodology
 
-This document provides guidance on detecting and removing dead code in TasteSpot using automated tools and manual verification.
+This document provides guidance on detecting and removing dead code in La Caracola Web using automated tools and manual verification.
 
 ## Overview
 
@@ -74,13 +74,13 @@ npm install -g knip
 
 ```bash
 # Detection (default output)
-cd web && npx knip
+npx knip
 
 # JSON output for parsing
-cd web && npx knip --reporter json
+npx knip --reporter json
 
 # Fix automatically (use with caution)
-cd web && npx knip --fix
+npx knip --fix
 
 # Specific workspace
 npx knip --workspace packages/core
@@ -117,13 +117,13 @@ Suggested checks:
 
 ```bash
 # Search references for a symbol or file basename
-grep -Rin "SymbolName" backend/app backend/routes backend/tests
+grep -Rin "SymbolName" app routes tests
 
 # Route/controller usage map
-cd backend && php artisan route:list
+php artisan route:list
 
 # Baseline tests after candidate removal
-cd backend && composer test
+composer test
 ```
 
 If dedicated static analysis is available in the project later, integrate it as optional.
@@ -250,10 +250,10 @@ For each flagged item, the agent MUST:
 
 ```bash
 # Web dead code scan
-cd web && npx knip --reporter json
+npx knip --reporter json
 
 # Backend conservative scan (reference-based)
-grep -Rin "CandidateSymbol" backend/app backend/routes backend/tests
+grep -Rin "CandidateSymbol" app routes tests
 ```
 
 ### 2. Parse and Categorize
@@ -286,7 +286,7 @@ Show user:
 
 ```bash
 # Only after user confirms
-cd web && npx knip --fix
+npx knip --fix
 ```
 
 ## Integration with Audits
