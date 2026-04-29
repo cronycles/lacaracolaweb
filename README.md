@@ -54,7 +54,7 @@ Notes:
 - `npm run start:local` rebuilds `.env` from `.env.local` every run.
 - If `.env.local` is missing, it is generated from `.env.example`.
 
-## Run Local App Against Production DB (macOS only)
+## Run Local App Against Production DB (Windows/Linux/macOS)
 
 Use this mode only for investigation on real data:
 
@@ -64,9 +64,40 @@ npm run start:dbprod
 
 Behavior:
 
-- Opens Terminal.app windows for SSH tunnel and local app startup.
+- Starts an SSH tunnel process from Node and waits for local port readiness.
+- Runs Laravel + Vite in the same terminal once tunnel is ready.
 - Uses `.env.prod-local` to point local app to remote DB through `127.0.0.1:3307`.
 - Forces safe mail mode (`MAIL_MAILER=log`) to avoid sending real emails.
+
+Requirements:
+
+- `ssh` command must be available in PATH (OpenSSH client).
+- `.env.prod-local` must exist (it is intentionally gitignored).
+
+Quick start (Windows/Linux/macOS):
+
+1. Create or recover `.env.prod-local` in project root.
+2. Verify SSH availability:
+
+```bash
+ssh -V
+```
+
+3. Start the stack in prod-DB mode:
+
+```bash
+npm run start:dbprod
+```
+
+Optional overrides (when your SSH settings differ):
+
+- `DBPROD_SSH_HOST`
+- `DBPROD_SSH_PORT`
+- `DBPROD_SSH_USER`
+- `DBPROD_SSH_KEY`
+- `DBPROD_TUNNEL_LOCAL_PORT`
+- `DBPROD_TUNNEL_REMOTE_HOST`
+- `DBPROD_TUNNEL_REMOTE_PORT`
 
 Important safety rules:
 
