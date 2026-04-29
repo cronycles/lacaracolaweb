@@ -16,6 +16,11 @@ Obtain a step-by-step plan for a backend task that is ready to start implementin
 - Ask clarifying questions only when a hard blocker prevents producing a valid plan.
 - Do not stop at high-level ideas; produce an implementation-ready plan.
 
+Documentation update rule (MANDATORY):
+
+- Every implementation plan must include a documentation update step for impacted files in `docs/`.
+- Every implementation plan must explicitly include `README.md` review/update when setup, scripts, deployment, behavior, or workflow instructions are impacted.
+
 # Process and rules
 
 1. Adopt the role of `ai-specs/.agents/backend-developer.md`.

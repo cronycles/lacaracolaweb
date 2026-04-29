@@ -6,6 +6,11 @@ Agent-first execution rules:
 - Ask clarifying questions only if a real blocker prevents safe implementation.
 - Do not stop at analysis; implement, verify, and report outcomes.
 
+Documentation update rule (MANDATORY):
+
+- Any significant code, architecture, or feature change must update impacted files in `docs/` in the same change set.
+- Update `README.md` whenever setup, scripts, deployment, behavior, or workflow instructions changed.
+
 Follow these steps:
 
 1. Resolve and read the task request details first (goal, scope, constraints, acceptance criteria).

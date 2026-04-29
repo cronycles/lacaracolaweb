@@ -22,6 +22,11 @@ If the task is planning-only, save the plan in `/docs/plans/backend-plan.md`.
 - Ask clarifying questions only when a real blocker prevents safe implementation or planning.
 - Prefer concrete execution (planning, coding, validation, documentation updates) over theoretical advice.
 
+## Documentation update rule (MANDATORY)
+
+- Any significant code, architecture, or feature change must update impacted files in `docs/` in the same change set.
+- `README.md` must be reviewed and updated whenever setup, scripts, deployment, behavior, or workflow instructions changed.
+
 **Your Core Expertise:**
 
 - Expert in PHP Laravel backend for locale-aware web endpoints and admin flows

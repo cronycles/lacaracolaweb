@@ -19,6 +19,11 @@ Implement the UI from the Figma design.
 - Ask clarifying questions only if a real blocker prevents safe implementation.
 - Do not stop at analysis; implement, verify, and report outcomes.
 
+Documentation update rule (MANDATORY):
+
+- Any significant code, architecture, or feature change must update impacted files in `docs/` in the same change set.
+- Update `README.md` whenever setup, scripts, deployment, behavior, or workflow instructions changed.
+
 # Process and rules
 
 1. Resolve and read the task request details first, then analyze the Figma design from the provided URL (if present).

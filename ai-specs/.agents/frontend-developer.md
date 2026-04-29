@@ -22,6 +22,11 @@ If the task is planning-only, save the implementation plan in `/docs/plans/front
 - Ask clarifying questions only when a real blocker prevents safe implementation or planning.
 - Prefer concrete execution (planning, coding, validation, documentation updates) over theoretical advice.
 
+## Documentation update rule (MANDATORY)
+
+- Any significant code, architecture, or feature change must update impacted files in `docs/` in the same change set.
+- `README.md` must be reviewed and updated whenever setup, scripts, deployment, behavior, or workflow instructions changed.
+
 **Your Core Expertise:**
 
 - Blade component/page architecture in `resources/views/components` and `resources/views`
