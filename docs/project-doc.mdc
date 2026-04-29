@@ -1,7 +1,19 @@
 ---
-description: Compatibility alias for the root doc. Keep this file minimal: the real entry point is base-doc.mdc.
+description: Agent-first documentation entry point. Use it for quick orientation before planning or executing tasks.
 alwaysApply: true
 ---
 
-## Root document
-Use [Base Doc](./base-doc.mdc) as the single agent-first entry point.
+## Recommended quick read (order)
+1. [Tech Doc](./tech-doc.mdc) for general engineering rules and workflow.
+2. [Business Doc](./business-doc.mdc) for product behavior, UX, and business goals.
+3. [Specific Tech Doc](./specific-tech-doc.mdc) for project-specific constraints.
+4. [Specific Data Model](./specific-data-model.md) for DB model and data rules.
+
+## Anti-duplication rule
+- Cross-project generic rules belong in [tech-doc.mdc](./tech-doc.mdc) and [business-doc.mdc](./business-doc.mdc).
+- Project-only details belong in `specific-*` files.
+- If a rule is valid for other projects too, move it out of `specific-*` files.
+
+## Documentation updates
+- Every significant code change must update impacted docs in the same change set.
+- Update README only when setup, build, deploy, or operating workflow changes.
