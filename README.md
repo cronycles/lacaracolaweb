@@ -12,14 +12,14 @@ Built with Laravel + MySQL + TypeScript + PostCSS + Vite + ESLint.
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | PHP 8.2+ / Laravel |
-| Database | MySQL (production), SQLite (local dev) |
-| Frontend JS | TypeScript |
-| Frontend CSS | PostCSS |
-| Bundler | Vite (transpile + minify) |
-| Linting | ESLint |
+| Layer        | Technology                             |
+| ------------ | -------------------------------------- |
+| Backend      | PHP 8.2+ / Laravel                     |
+| Database     | MySQL (production), SQLite (local dev) |
+| Frontend JS  | TypeScript                             |
+| Frontend CSS | PostCSS                                |
+| Bundler      | Vite (transpile + minify)              |
+| Linting      | ESLint                                 |
 
 ## Language Policy
 
@@ -30,38 +30,37 @@ Built with Laravel + MySQL + TypeScript + PostCSS + Vite + ESLint.
 
 ## Project Documentation (`docs/`)
 
-| File | Contents |
-|------|----------|
-| `docs/requirements.md` | Full product requirements (functional + non-functional) |
-| `docs/roadmap.md` | Development phases and priorities |
-| `docs/content-model.md` | Config vs database decisions, entity schema |
-| `docs/dev-instructions.md` | Developer workflow, links to Copilot instructions |
-| `docs/deploy-produzione.md` | Production deploy guide for SupportHost cPanel + Cloudflare |
-| `docs/fase2-checklist-test-manuale.md` | Manual test checklist for completed Phase 2 items |
+| File                                   | Contents                                                    |
+| -------------------------------------- | ----------------------------------------------------------- |
+| `docs/requirements.md`                 | Full product requirements (functional + non-functional)     |
+| `docs/roadmap.md`                      | Development phases and priorities                           |
+| `docs/content-model.md`                | Config vs database decisions, entity schema                 |
+| `docs/dev-instructions.md`             | Developer workflow, links to Copilot instructions           |
+| `docs/deploy-produzione.md`            | Production deploy guide for SupportHost cPanel + Cloudflare |
+| `docs/fase2-checklist-test-manuale.md` | Manual test checklist for completed Phase 2 items           |
 
 ## Copilot Instructions (`.github/`)
 
-| File | Scope |
-|------|-------|
-| `.github/copilot-instructions.md` | Always-on project standards |
-| `.github/instructions/laravel.instructions.md` | PHP/Laravel files |
-| `.github/instructions/frontend.instructions.md` | `resources/**` (TS, PostCSS) |
-| `.github/instructions/documentation.instructions.md` | `docs/**` |
+| File                                                 | Scope                        |
+| ---------------------------------------------------- | ---------------------------- |
+| `.github/copilot-instructions.md`                    | Always-on project standards  |
+| `.github/instructions/laravel.instructions.md`       | PHP/Laravel files            |
+| `.github/instructions/frontend.instructions.md`      | `resources/**` (TS, PostCSS) |
+| `.github/instructions/documentation.instructions.md` | `docs/**`                    |
 
 ## Local Development
 
 ### Prerequisites
+
 - PHP 8.2+ with extensions: `openssl`, `pdo_sqlite`, `mbstring`, `fileinfo`, `curl`, `zip`
 - Composer
 - Node.js 18+ / npm
 
 ### Setup
-```bash
-# Install PHP dependencies
-php /path/to/composer install
 
-# Install Node dependencies
-npm install
+```bash
+# Setup and build
+npm run restore
 
 # Copy environment file and generate key
 cp .env.example .env
@@ -79,6 +78,7 @@ npm run start:local
 > Open http://localhost:8000
 
 ### Other commands
+
 ```bash
 npm run build      # TypeScript check + production build (minified)
 npm run lint       # ESLint on resources/ts
@@ -96,6 +96,7 @@ npm run start:dbprod
 ```
 
 What it does:
+
 - Opens one Terminal.app window for the SSH tunnel to the production server
 - Opens a second Terminal.app window for the local Laravel app
 - Waits until local port `3307` is reachable before starting Laravel
@@ -104,6 +105,7 @@ What it does:
 - Clears config cache, then runs `php artisan serve` + `vite` in watch mode
 
 Notes:
+
 - This workflow is intended for macOS only (`osascript` + Terminal.app)
 - The SSH tunnel stays in the foreground by design; keep that terminal open
 - Local MySQL traffic goes through `127.0.0.1:3307` to the remote production database
@@ -155,17 +157,18 @@ All image paths are centralised in `config/apartment.php` under the `images` key
 ```
 
 Steps:
+
 1. Copy the image files into `public/images/`.
 2. Update the paths in `config/apartment.php` under `images`.
 3. Run `php artisan config:clear` (or `config:cache` in production).
 
 **Recommended dimensions:**
 
-| Key | Count | Recommended size | Notes |
-|-----|-------|-----------------|-------|
-| `hero` | 3 | **1920 × 1080 px** | Full-viewport background, `cover` — wider is better |
-| `gallery` | 6 (adjustable) | **1200 × 800 px** | Masonry layout, free aspect ratio |
-| `og` | 1 | **1200 × 630 px** | Open Graph standard (Facebook, WhatsApp previews) |
+| Key       | Count          | Recommended size   | Notes                                               |
+| --------- | -------------- | ------------------ | --------------------------------------------------- |
+| `hero`    | 3              | **1920 × 1080 px** | Full-viewport background, `cover` — wider is better |
+| `gallery` | 6 (adjustable) | **1200 × 800 px**  | Masonry layout, free aspect ratio                   |
+| `og`      | 1              | **1200 × 630 px**  | Open Graph standard (Facebook, WhatsApp previews)   |
 
 **Gallery smart fallback:** if a file does not exist in `public/`, the gallery automatically shows a `placehold.co` placeholder — no broken images.
 You can freely add or remove items from `images.gallery` and the gallery renders accordingly.

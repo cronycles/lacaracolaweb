@@ -1,0 +1,52 @@
+---
+description: Product behavior and UX in agent-first format. Only functional rules useful for planning and execution.
+alwaysApply: true
+---
+
+## Vision
+- Showcase website plus operational management for a vacation apartment in Marina di Andora.
+- Primary goal: generate direct requests and reduce dependency on third-party portals.
+
+## Public flows
+- Main public pages: Home, Apartment, Map, Experiences, Reviews, Rules, Useful Places.
+- Availability request supports two admin-selectable modes:
+    - Internal form mode.
+    - External link mode (external platform URL).
+
+### Availability form (form mode)
+- The calendar shows occupied days and makes them non-selectable.
+- Occupancy is computed from:
+    - active bookings (not canceled),
+    - manual blocks.
+- Public price estimate:
+    - uses recurring month/day pricing rules,
+    - applies stay discount only to stay cost,
+    - adds cleaning fee,
+    - displays only total to the user.
+- If a price cutoff date is configured, no public estimate is shown from cutoff onward.
+- Minimum nights constraint is configured in `config/apartment.php` (default 3).
+
+## Admin flows
+- Access via email/password.
+- Availability management (manual blocks and calendar visibility).
+- Recurring pricing rule management (month/day).
+- Stay discount rule management by night range.
+- Price simulation in pricing page:
+    - uses the same engine as public quote,
+    - shows full breakdown (base, discount, cleaning, total),
+    - updates automatically when dates are selected.
+- Booking management:
+    - reversible logical cancellation via `canceled_at`,
+    - canceled bookings remain in history but do not block availability,
+    - restore is allowed only without conflicts,
+    - physical deletion also removes linked availability block.
+- People/guest management and stay history consultation.
+- Newsletter subscribers listing (sending not implemented).
+- Manual Interhome PDF import with booking/block creation.
+- Admin settings persisted in DB: only `booking_mode` and `booking_external_url`.
+- Admin password change available in private area.
+
+## Multilingual
+- Supported locales: it, en, fr, de.
+- Default locale from browser.
+- Fallback locale: Italian.

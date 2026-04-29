@@ -1,0 +1,51 @@
+---
+description: Project-specific technical constraints for La Caracola. Use this file for project-specific decisions.
+alwaysApply: true
+---
+
+# Stack and context
+- Monolite Laravel (Blade server-rendered).
+- DB: MySQL in production, SQLite in tests.
+- Frontend: TypeScript + PostCSS + Vite.
+- Target hosting: cPanel (SupportHost).
+
+# Specific entry points
+- [Specific Tech Backend Doc](./specific-tech-backend-doc.mdc)
+- [Specific Tech Frontend Doc](./specific-tech-frontend-doc.mdc)
+- [Specific Tech Images Doc](./specific-tech-images-doc.md)
+- [Specific Data Model](./specific-data-model.md)
+
+# Project-specific architecture decisions
+- Product is not multi-tenant; single admin context.
+- Bookings support reversible logical cancellation (`canceled_at`).
+- Public availability is based on:
+  - active bookings,
+  - manual blocks.
+- Pricing rules are recurring by month/day (no year).
+
+# Config vs DB (source of truth)
+- `config/apartment.php` is the primary source for stable data and booking defaults.
+- `settings` table is used only for:
+  - `booking_mode`
+  - `booking_external_url`
+- Do not store values like `min_nights`, `cleaning_fee`, `hide_price_from` in `settings`.
+
+# Stable content in config
+- Branding, apartment data, amenities, house rules, useful places.
+- Localized copy and metadata.
+- Stable lists supporting admin forms.
+
+# Operational data in DB
+- People, bookings, availability blocks.
+- Pricing rules, stay discount rules.
+- Newsletter subscriptions.
+- Interhome PDF import logs.
+
+# Project-specific product constraints
+- Supported locales: it, en, fr, de (fallback it).
+- Local SEO is a top-level requirement on public routes.
+- No WordPress or premium plugins.
+
+# Deployment and development references
+- Deploy: [docs/DEPLOY.md](./DEPLOY.md)
+- Script: [scripts/deploy.sh](../scripts/deploy.sh), [.cpanel.yml](../.cpanel.yml), [.github/workflows/deploy.yml](../.github/workflows/deploy.yml)

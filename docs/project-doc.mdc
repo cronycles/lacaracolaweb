@@ -1,0 +1,7 @@
+---
+description: Compatibility alias for the root doc. Keep this file minimal: the real entry point is base-doc.mdc.
+alwaysApply: true
+---
+
+## Root document
+Use [Base Doc](./base-doc.mdc) as the single agent-first entry point.

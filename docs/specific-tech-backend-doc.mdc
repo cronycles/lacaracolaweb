@@ -1,0 +1,55 @@
+---
+description: Project-specific backend reference (Laravel monolith) in quick agent-first format.
+globs: ["app/Http/Controllers/**/*.php", "app/Models/*.php", "app/Services/*.php", "routes/web.php", "routes/admin.php", "database/migrations/*.php", "config/*.php", "bootstrap/app.php"]
+alwaysApply: false
+---
+
+# Purpose
+This document describes only La Caracola backend-specific behavior.
+Generic engineering rules: [Tech Doc](./tech-doc.mdc).
+Product behavior: [Business Doc](./business-doc.mdc).
+Data model: [Specific Data Model](./specific-data-model.md).
+
+# Actual architecture
+- Monolite Laravel MVC con Blade server-rendered.
+- No separate public API: AJAX on web endpoints.
+- Admin area in the same codebase, protected by `auth`.
+- Global locale middleware on web stack: `ResolveLocaleFromRoute` (see `bootstrap/app.php`).
+
+# Routing and HTTP contracts
+- Public routes are locale-prefixed in `routes/web.php` with slugs from `config/routes.php`.
+- Admin routes are in `routes/admin.php`, loaded by `bootstrap/app.php` inside `web` middleware.
+- Admin login is separate (`/admin/login`), logout is `/logout`.
+
+## Critical operational endpoints
+- Public quote endpoint: `POST /{locale}/{availability-slug}/quote`
+  - valid input: `checkin`, `checkout`
+  - JSON output: `available`, `total_cents` plus technical breakdown
+- Availability request endpoint: `POST /{locale}/{availability-slug}`
+  - supports JSON and form submit
+  - sends owner email (`BookingRequestMail`), with non-blocking fallback on mail errors
+
+# Domain invariants
+- Canceled booking state is `canceled_at != null`.
+- Canceled bookings do not block public availability.
+- Booking restore is allowed only when no conflicts exist with active bookings or manual blocks.
+- Physical booking deletion removes linked `availability_block`.
+- Pricing is recurring by month/day only (no year).
+
+# Service map
+- `BookingCreationService`: creates booking + person + availability block.
+- `PricingQuoteService`: single pricing engine (public quote + admin simulator).
+- `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
+
+# Configuration and precedence
+- Source of truth booking defaults: `config/apartment.php`.
+- `settings` DB only for:
+  - `booking_mode`
+  - `booking_external_url`
+- Do not use `settings` for `min_nights`, `cleaning_fee`, `hide_price_from`.
+
+# Quick checklist before changing backend
+1. Confirm impacted endpoints/routes (`routes/web.php`, `routes/admin.php`).
+2. Keep controllers thin; keep logic in services/models.
+3. Verify side effects on availability, pricing, and PDF import.
+4. Update impacted docs in the same change set.

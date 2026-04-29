@@ -1,0 +1,61 @@
+---
+description: Project-specific frontend reference (Blade + TypeScript + Vite) in quick agent-first format.
+globs: ["resources/ts/**/*.ts", "resources/css/**/*.css", "resources/views/**/*.blade.php", "vite.config.js", "postcss.config.js", "eslint.config.js", "tsconfig.json", "package.json"]
+alwaysApply: false
+---
+
+# Purpose
+This document contains only project-specific frontend rules.
+Generic rules: [Tech Doc](./tech-doc.mdc).
+Product behavior: [Business Doc](./business-doc.mdc).
+Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc.mdc).
+
+# Actual stack
+- Blade server-rendered (no SPA framework).
+- TypeScript in `resources/ts`.
+- PostCSS in `resources/css`.
+- Bundling/build with Vite.
+
+# Active TS modules
+- `resources/ts/components/booking-form.ts`
+- `resources/ts/components/date-picker.ts`
+- `resources/ts/components/pricing-simulator.ts`
+- `resources/ts/components/hero-slider.ts`
+- `resources/ts/components/gallery.ts`
+- `resources/ts/components/map.ts`
+- `resources/ts/components/mobile-nav.ts`
+- `resources/ts/components/lang-switcher.ts`
+
+# Important frontend contracts
+## Public availability form
+- Date picker minimum nights comes from `data-min-nights`.
+- Occupied dates are received from backend via `data-unavailable-dates`.
+- AJAX quote:
+  - endpoint: `POST /{locale}/{availability-slug}/quote`
+  - payload: `checkin`, `checkout`
+  - UI-consumed output: `available`, `total_cents`, `message`
+- Public UI shows only total (no technical breakdown).
+
+## Admin pricing simulator
+- Module: `pricing-simulator.ts`.
+- Endpoint: `POST /admin/prezzi/simulazione`.
+- Shows full breakdown (stay, discount, cleaning, total).
+
+# Specific UI conventions
+- Use `data-*` attributes for JS hooks, not decorative classes.
+- i18n comes from Laravel lang files; avoid hardcoded copy in core Blade components.
+- Prefer reusable components in `resources/views/components`.
+- Mobile-first, with CLS awareness (reserve image space).
+
+# Build and quality gates
+- `npm run dev`
+- `npm run build`
+- `npm run build:fast`
+- `npm run lint`
+- `npm run lint:fix`
+
+# Quick checklist before changing frontend
+1. Verify impact on locale-aware routes and translations.
+2. Keep `data-*` attributes in Blade aligned with TS selectors.
+3. If an AJAX payload changes, update controller + TS + docs in the same change set.
+4. At minimum validate lint and a manual smoke test on home and admin pricing.

@@ -1,0 +1,55 @@
+---
+description: Generic, agent-first technical rules valid across projects. Project details belong in specific docs.
+alwaysApply: true
+---
+
+# Purpose
+This file contains only generic engineering rules.
+Project-specific product and implementation details are in:
+- [Business Doc](./business-doc.mdc)
+- [Specific Tech Doc](./specific-tech-doc.mdc)
+- [Specific Data Model](./specific-data-model.md)
+
+# Operating principles
+- Open source or free solutions by default.
+- Keep changes small, incremental, and verifiable.
+- Type safety is mandatory.
+- Use clear, semantic naming.
+- Avoid over-engineering.
+- Add comments only when logic is not obvious.
+- Keep stable data in config, operational data in DB.
+
+# Standard agent workflow
+1. Read only the minimum context needed before planning.
+2. Define a short plan focused on small tasks.
+3. Implement the minimum useful change.
+4. Verify according to impact (tests, lint, runtime checks).
+5. Update impacted docs in the same change set.
+
+# Code conventions
+- Validate at the edge (controller or request boundary).
+- Use early returns for auth and ownership checks.
+- Separate HTTP transport concerns from domain logic.
+- Avoid duplication: extract only when a pattern is stable.
+
+# Security
+- Never commit secrets or credentials.
+- Never trust client input.
+- Destructive actions require explicit authorization.
+- Constrain uploads with validation (type, mime, size).
+
+# Language standard
+- Technical artifacts in English (code, names, tests, commits, technical messages).
+- User-facing copy can be localized when required by the product.
+- Conversation language follows the user's language.
+
+# Documentation rules
+- Update only truly impacted docs.
+- Avoid duplication: one rule must have one source of truth.
+- Keep text short, executable, and action-oriented.
+- Ask for confirmation before changing general standards on request.
+
+# Skills and OpenSpec
+- If a skill applies, read its SKILL.md first.
+- Use OpenSpec when work needs structured proposal/design/tasks.
+- For small fixes or direct requests, do not force OpenSpec.

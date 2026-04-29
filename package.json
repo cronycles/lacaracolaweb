@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "restore": "composer install && php artisan config:clear && npm install && npm run build",
         "dev": "vite",
         "build": "tsc --noEmit && vite build",
         "build:fast": "vite build",
