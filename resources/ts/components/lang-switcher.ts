@@ -1,10 +1,46 @@
 /**
- * Language switcher — updates locale via form POST and stores preference.
+ * Language switcher dropdown — updates locale via form POST and stores preference.
  */
 
 export function initLangSwitcher(): void {
+    // Language dropdown toggle buttons
+    const toggles = document.querySelectorAll<HTMLButtonElement>('.lang-dropdown__toggle');
+    
+    // Language selection buttons (in both dropdowns)
     const buttons = document.querySelectorAll<HTMLButtonElement>('[data-lang]');
 
+    // Close all dropdowns
+    function closeAllDropdowns(): void {
+        toggles.forEach(toggle => {
+            toggle.setAttribute('aria-expanded', 'false');
+            const menu = toggle.nextElementSibling as HTMLElement | null;
+            if (menu) {
+                menu.classList.remove('show');
+            }
+        });
+    }
+
+    // Toggle dropdown on toggle button click
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', (e: Event) => {
+            e.stopPropagation();
+            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+            
+            // Close all other dropdowns
+            closeAllDropdowns();
+            
+            // Toggle this one
+            if (!isExpanded) {
+                toggle.setAttribute('aria-expanded', 'true');
+                const menu = toggle.nextElementSibling as HTMLElement | null;
+                if (menu) {
+                    menu.classList.add('show');
+                }
+            }
+        });
+    });
+
+    // Handle language selection
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const locale = btn.dataset['lang'];
@@ -34,4 +70,22 @@ export function initLangSwitcher(): void {
             form.submit();
         });
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e: Event) => {
+        const target = e.target as HTMLElement;
+        const isDropdown = target.closest('.lang-dropdown');
+        
+        if (!isDropdown) {
+            closeAllDropdowns();
+        }
+    });
+
+    // Close dropdown on Escape key
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
 }
+

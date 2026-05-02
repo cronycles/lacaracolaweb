@@ -22,15 +22,30 @@
             <li><a href="{{ route_locale('home') }}#booking" class="nav__link @active('home')">{{ __('app.nav_booking') }}</a></li>
         </ul>
 
-        {{-- Language switcher --}}
-        <div class="nav__lang nav__lang--desktop" aria-label="Language">
-            @foreach(['it','en','fr','de'] as $locale)
-                <button data-lang="{{ $locale }}"
-                        class="{{ app()->getLocale() === $locale ? 'active' : '' }}"
-                        aria-label="{{ strtoupper($locale) }}">
-                    {{ strtoupper($locale) }}
-                </button>
-            @endforeach
+        {{-- Language switcher dropdown --}}
+        <div class="lang-dropdown lang-dropdown--desktop" id="langDropdown">
+            <button class="lang-dropdown__toggle" aria-label="Select language" aria-expanded="false" aria-controls="lang-menu">
+                @php
+                    $flagPaths = [
+                        'it' => 'images/flags/it.svg',
+                        'en' => 'images/flags/en.svg',
+                        'fr' => 'images/flags/fr.svg',
+                        'de' => 'images/flags/de.svg',
+                    ];
+                    $currentLocale = app()->getLocale();
+                @endphp
+                <img src="{{ asset($flagPaths[$currentLocale] ?? $flagPaths['it']) }}" alt="" width="24" height="18" aria-hidden="true">
+            </button>
+            <ul class="lang-dropdown__menu" id="lang-menu" role="listbox">
+                @foreach(['it','en','fr','de'] as $locale)
+                    <li>
+                        <button type="button" data-lang="{{ $locale }}" class="lang-dropdown__item" role="option" aria-selected="{{ app()->getLocale() === $locale ? 'true' : 'false' }}">
+                            <img src="{{ asset($flagPaths[$locale]) }}" alt="" width="24" height="18" aria-hidden="true">
+                            <span>{{ strtoupper($locale) }}</span>
+                        </button>
+                    </li>
+                @endforeach
+            </ul>
         </div>
 
         {{-- Mobile burger --}}
@@ -50,12 +65,29 @@
     <a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a>
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
-    {{-- Language buttons inside mobile menu --}}
-    <div class="nav__lang nav__lang--mobile" style="margin-top:1rem">
-        @foreach(['it','en','fr','de'] as $locale)
-            <button data-lang="{{ $locale }}" class="{{ app()->getLocale() === $locale ? 'active' : '' }}">
-                {{ strtoupper($locale) }}
-            </button>
-        @endforeach
+    {{-- Language switcher dropdown inside mobile menu --}}
+    <div class="lang-dropdown lang-dropdown--mobile" style="margin-top:1rem" id="langDropdownMobile">
+        <button class="lang-dropdown__toggle" aria-label="Select language" aria-expanded="false" aria-controls="lang-menu-mobile">
+            @php
+                $flagPaths = [
+                    'it' => 'images/flags/it.svg',
+                    'en' => 'images/flags/en.svg',
+                    'fr' => 'images/flags/fr.svg',
+                    'de' => 'images/flags/de.svg',
+                ];
+                $currentLocale = app()->getLocale();
+            @endphp
+            <img src="{{ asset($flagPaths[$currentLocale] ?? $flagPaths['it']) }}" alt="" width="24" height="18" aria-hidden="true">
+        </button>
+        <ul class="lang-dropdown__menu" id="lang-menu-mobile" role="listbox">
+            @foreach(['it','en','fr','de'] as $locale)
+                <li>
+                    <button type="button" data-lang="{{ $locale }}" class="lang-dropdown__item" role="option" aria-selected="{{ app()->getLocale() === $locale ? 'true' : 'false' }}">
+                        <img src="{{ asset($flagPaths[$locale]) }}" alt="" width="24" height="18" aria-hidden="true">
+                        <span>{{ strtoupper($locale) }}</span>
+                    </button>
+                </li>
+            @endforeach
+        </ul>
     </div>
 </nav>
