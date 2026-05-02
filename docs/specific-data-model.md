@@ -91,6 +91,9 @@ Individual stay/reservation records linked to a primary guest.
 | `source`       | VARCHAR(30)      | Booking source: direct, airbnb, booking, interhome |
 | `external_ref` | VARCHAR(60)      | Platform reference ID (nullable)                   |
 | `notes`        | TEXT             | Internal notes (nullable)                          |
+| `income_amount`| DECIMAL(8,2)     | Incasso ricevuto dalla prenotazione (nullable)     |
+| `cleaning_amount` | DECIMAL(8,2)  | Costo pulizie associato alla prenotazione (nullable) |
+| `linen_amount` | DECIMAL(8,2)     | Costo biancheria associato alla prenotazione (nullable) |
 | `created_at`   | TIMESTAMP        |                                                    |
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |
@@ -113,7 +116,34 @@ Individual stay/reservation records linked to a primary guest.
 
 ---
 
-### 4. **availability_blocks**
+### 4. **financial_entries**
+
+Financial records for extra money movements not linked directly to a booking.
+
+| Field        | Type              | Notes                                                      |
+| ------------ | ----------------- | ---------------------------------------------------------- |
+| `id`         | BIGINT PK         | Auto-increment                                             |
+| `type`       | ENUM('income','expense') | Ingresso o uscita                                         |
+| `category`   | VARCHAR(60)       | Categoria libera (es.. manutenzione, utenze, altro)         |
+| `description`| TEXT              | Descrizione opzionale                                       |
+| `amount`     | DECIMAL(8,2)      | Importo in EUR                                              |
+| `entry_date` | DATE              | Data dell'operazione                                        |
+| `created_at` | TIMESTAMP         |                                                            |
+| `updated_at` | TIMESTAMP         |                                                            |
+
+**Notes:**
+
+- Usata per tracciare ingressi/uscite extra non direttamente legate a una prenotazione.
+- `type` determina se la voce contribuisce agli ingressi o alle uscite.
+- Viene inclusa nel calcolo dei totali finanziari nella dashboard.
+
+**Relations:**
+
+- None (standalone ledger entries)
+
+---
+
+### 5. **availability_blocks**
 
 Explicit date ranges when the apartment is unavailable (booked, maintenance, or manual owner block).
 
@@ -143,7 +173,7 @@ Explicit date ranges when the apartment is unavailable (booked, maintenance, or 
 
 ---
 
-### 5. **pricing_rules**
+### 6. **pricing_rules**
 
 Recurring annual pricing rules defining price per night for specific date ranges.
 
@@ -176,7 +206,7 @@ Dates are stored as **month/day pairs (no year)** — rules repeat annually.
 
 ---
 
-### 6. **stay_discount_rules**
+### 7. **stay_discount_rules**
 
 Tiered discounts applied to stay cost (not cleaning fee) based on number of nights.
 
@@ -205,7 +235,7 @@ Tiered discounts applied to stay cost (not cleaning fee) based on number of nigh
 
 ---
 
-### 7. **settings**
+### 8. **settings**
 
 Key-value store for dynamic runtime configuration. Persists admin-level preferences.
 
@@ -232,7 +262,7 @@ Key-value store for dynamic runtime configuration. Persists admin-level preferen
 
 ---
 
-### 8. **interhome_pdf_import_logs**
+### 9. **interhome_pdf_import_logs**
 
 Log entries for PDF imports from Interhome platform (one entry per import session).
 
