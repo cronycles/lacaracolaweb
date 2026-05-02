@@ -72,30 +72,33 @@
                                             if (isset($ownerDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--owner';
                                             }
-                                            if (isset($ownerArrivalDays[$dateKey])) {
+                                            if (isset($ownerArrivalDays[$dateKey]) && isset($ownerDepartureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--owner-arrival-departure';
+                                            } elseif (isset($ownerArrivalDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--owner-arrival';
-                                            }
-                                            if (isset($ownerDepartureDays[$dateKey])) {
+                                            } elseif (isset($ownerDepartureDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--owner-departure';
                                             }
                                         } elseif (isset($maintenanceDays[$dateKey]) || isset($maintenanceArrivalDays[$dateKey]) || isset($maintenanceDepartureDays[$dateKey])) {
                                             if (isset($maintenanceDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--maintenance';
                                             }
-                                            if (isset($maintenanceArrivalDays[$dateKey])) {
+                                            if (isset($maintenanceArrivalDays[$dateKey]) && isset($maintenanceDepartureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--maintenance-arrival-departure';
+                                            } elseif (isset($maintenanceArrivalDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--maintenance-arrival';
-                                            }
-                                            if (isset($maintenanceDepartureDays[$dateKey])) {
+                                            } elseif (isset($maintenanceDepartureDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--maintenance-departure';
                                             }
                                         } else {
                                             if (isset($bookedDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--booked';
                                             }
-                                            if (isset($arrivalDays[$dateKey])) {
+                                            if (isset($arrivalDays[$dateKey]) && isset($departureDays[$dateKey])) {
+                                                $dayClasses[] = 'cal-day--arrival-departure';
+                                            } elseif (isset($arrivalDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--arrival';
-                                            }
-                                            if (isset($departureDays[$dateKey])) {
+                                            } elseif (isset($departureDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--departure';
                                             }
                                         }
