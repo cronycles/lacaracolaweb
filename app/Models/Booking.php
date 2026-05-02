@@ -25,16 +25,22 @@ class Booking extends Model
         'external_ref',
         'notes',
         'canceled_at',
+        'income_amount',
+        'cleaning_amount',
+        'linen_amount',
     ];
 
     protected $casts = [
-        'checkin'  => 'date',
-        'checkout' => 'date',
-        'adults'   => 'integer',
-        'children' => 'integer',
-        'babies'   => 'integer',
-        'pets'     => 'integer',
-        'canceled_at' => 'datetime',
+        'checkin'          => 'date',
+        'checkout'         => 'date',
+        'adults'           => 'integer',
+        'children'         => 'integer',
+        'babies'           => 'integer',
+        'pets'             => 'integer',
+        'canceled_at'      => 'datetime',
+        'income_amount'    => 'decimal:2',
+        'cleaning_amount'  => 'decimal:2',
+        'linen_amount'     => 'decimal:2',
     ];
 
     public function person(): BelongsTo
@@ -57,6 +63,16 @@ class Booking extends Model
     public function getNightsAttribute(): int
     {
         return (int) $this->checkin->diffInDays($this->checkout);
+    }
+
+    /** Total expenses for this booking (cleaning + linen), null if both unknown */
+    public function getTotalExpensesAttribute(): ?float
+    {
+        if ($this->cleaning_amount === null && $this->linen_amount === null) {
+            return null;
+        }
+
+        return (float) ($this->cleaning_amount ?? 0) + (float) ($this->linen_amount ?? 0);
     }
 
     public function isCanceled(): bool

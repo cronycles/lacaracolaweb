@@ -91,5 +91,66 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Financial summary --}}
+        <div class="a-card" style="margin-top:1.25rem">
+            <div class="a-card__title">Dati economici</div>
+            <table class="a-table">
+                <tbody>
+                    <tr>
+                        <th style="width:160px">Incasso ricevuto</th>
+                        <td>
+                            @if ($booking->income_amount !== null)
+                                <strong>€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }}</strong>
+                            @else
+                                <span style="color:#6b7f89">—</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Pulizie</th>
+                        <td>
+                            @if ($booking->cleaning_amount !== null)
+                                € {{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }}
+                            @else
+                                <span style="color:#6b7f89">—</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Biancheria</th>
+                        <td>
+                            @if ($booking->linen_amount !== null)
+                                € {{ number_format((float)$booking->linen_amount, 2, ',', '.') }}
+                            @else
+                                <span style="color:#6b7f89">—</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @if ($booking->total_expenses !== null)
+                        <tr>
+                            <th>Totale uscite</th>
+                            <td>€ {{ number_format($booking->total_expenses, 2, ',', '.') }}</td>
+                        </tr>
+                    @endif
+                    @if ($booking->income_amount !== null && $booking->total_expenses !== null)
+                        <tr>
+                            <th>Saldo netto</th>
+                            <td>
+                                @php $net = (float)$booking->income_amount - $booking->total_expenses; @endphp
+                                <strong style="color:{{ $net >= 0 ? '#2e7d32' : '#c62828' }}">
+                                    € {{ number_format($net, 2, ',', '.') }}
+                                </strong>
+                            </td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+            <div style="margin-top:.75rem">
+                <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--outline btn--sm">
+                    Modifica dati economici
+                </a>
+            </div>
+        </div>
     </div>
 @endsection

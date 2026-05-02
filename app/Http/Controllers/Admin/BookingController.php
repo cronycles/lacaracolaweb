@@ -184,16 +184,19 @@ class BookingController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'person_id'    => ['required', 'exists:people,id'],
-            'checkin'      => ['required', 'date'],
-            'checkout'     => ['required', 'date', 'after:checkin'],
-            'adults'       => ['required', 'integer', 'min:1', 'max:6'],
-            'children'     => ['nullable', 'integer', 'min:0', 'max:6'],
-            'babies'       => ['nullable', 'integer', 'min:0', 'max:6'],
-            'pets'         => ['nullable', 'integer', 'min:0', 'max:4'],
-            'source'       => ['required', 'in:direct,airbnb,booking,interhome'],
-            'external_ref' => ['nullable', 'string', 'max:60'],
-            'notes'        => ['nullable', 'string', 'max:1000'],
+            'person_id'       => ['required', 'exists:people,id'],
+            'checkin'         => ['required', 'date'],
+            'checkout'        => ['required', 'date', 'after:checkin'],
+            'adults'          => ['required', 'integer', 'min:1', 'max:6'],
+            'children'        => ['nullable', 'integer', 'min:0', 'max:6'],
+            'babies'          => ['nullable', 'integer', 'min:0', 'max:6'],
+            'pets'            => ['nullable', 'integer', 'min:0', 'max:4'],
+            'source'          => ['required', 'in:direct,airbnb,booking,interhome'],
+            'external_ref'    => ['nullable', 'string', 'max:60'],
+            'notes'           => ['nullable', 'string', 'max:1000'],
+            'income_amount'   => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'cleaning_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'linen_amount'    => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
         ]);
     }
 

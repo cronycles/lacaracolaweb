@@ -27,6 +27,36 @@
         </div>
     </div>
 
+    {{-- Financial KPIs --}}
+    <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin:1.5rem 0 .6rem">
+        Contabilità {{ $stats['finance_year'] }}
+    </div>
+    <div class="stats-grid" style="margin-bottom:1.5rem">
+        <div class="stat-card" style="border-left:4px solid #2e7d32">
+            <div class="stat-card__number" style="color:#2e7d32">
+                € {{ number_format($stats['total_income'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Ingressi {{ $stats['finance_year'] }}</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid #c62828">
+            <div class="stat-card__number" style="color:#c62828">
+                € {{ number_format($stats['total_expenses'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Uscite {{ $stats['finance_year'] }}</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid {{ $stats['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
+            <div class="stat-card__number" style="color:{{ $stats['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
+                € {{ number_format($stats['balance'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Saldo {{ $stats['finance_year'] }}</div>
+        </div>
+    </div>
+    <div style="margin-bottom:1.5rem">
+        <a href="{{ route('admin.finance.index') }}" class="btn btn--outline btn--sm">
+            📒 Vedi contabilità completa
+        </a>
+    </div>
+
     {{-- Upcoming bookings --}}
     <div class="a-card">
         <div class="a-card__title">Prossimi arrivi</div>

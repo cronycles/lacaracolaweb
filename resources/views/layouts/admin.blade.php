@@ -55,6 +55,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.finance.index') }}" @class(['active' => request()->routeIs('admin.finance*')])>
+                    📒 Contabilità
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.newsletter') }}" @class(['active' => request()->routeIs('admin.newsletter*')])>
                     ✉️ Newsletter
                 </a>
@@ -103,5 +108,6 @@
             @yield('content')
         </main>
     </div>
+    @stack('scripts')
 </body>
 </html>

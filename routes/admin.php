@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\FinancialEntryController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Newsletter subscribers
     Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
     Route::patch('/newsletter/{person}/toggle', [NewsletterController::class, 'toggle'])->name('newsletter.toggle');
+
+    // Finance / accounting
+    Route::resource('contabilita', FinancialEntryController::class)
+        ->parameters(['contabilita' => 'entry'])
+        ->names('finance');
 
     // Settings (booking mode switch)
     Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');

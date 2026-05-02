@@ -133,6 +133,51 @@
                     @error('notes') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                {{-- Financial --}}
+                <hr style="border:none;border-top:1px solid #e0e8ec;margin:1.25rem 0 1rem">
+                <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.75rem">
+                    Dati economici (opzionali)
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="income_amount">Incasso ricevuto (€)</label>
+                        <input type="number" id="income_amount" name="income_amount" class="form-input"
+                               value="{{ old('income_amount', $booking->income_amount) }}"
+                               min="0" max="99999.99" step="0.01" placeholder="es. 850.00">
+                        @error('income_amount') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cleaning_amount">
+                            Pulizie (€)
+                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
+                                (default {{ config('apartment.booking.cleaning_fee') }}€)
+                            </span>
+                        </label>
+                        <input type="number" id="cleaning_amount" name="cleaning_amount" class="form-input"
+                               value="{{ old('cleaning_amount', $booking->cleaning_amount) }}"
+                               min="0" max="99999.99" step="0.01" placeholder="{{ config('apartment.booking.cleaning_fee') }}">
+                        @error('cleaning_amount') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="linen_amount">
+                            Biancheria (€)
+                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
+                                (default {{ config('apartment.booking.linen_fee_per_person') }}€/ospite)
+                            </span>
+                        </label>
+                        <input type="number" id="linen_amount" name="linen_amount" class="form-input"
+                               value="{{ old('linen_amount', $booking->linen_amount) }}"
+                               min="0" max="99999.99" step="0.01"
+                               placeholder="{{ config('apartment.booking.linen_fee_per_person') }}">
+                        @error('linen_amount') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+                @if (!$booking->exists)
+                    <p style="font-size:.8rem;color:#6b7f89;margin-top:-.5rem">
+                        Lascia vuoto per compilare in seguito. I valori predefiniti verranno suggeriti in base al numero di ospiti.
+                    </p>
+                @endif
+
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
                     <button type="submit" class="btn btn--primary">
                         {{ $booking->exists ? 'Salva modifiche' : 'Crea prenotazione' }}
@@ -142,4 +187,42 @@
             </form>
         </div>
     </div>
+
+@push('scripts')
+<script>
+(function () {
+    const DEFAULT_CLEANING = {{ config('apartment.booking.cleaning_fee') }};
+    const DEFAULT_LINEN_PER_PERSON = {{ config('apartment.booking.linen_fee_per_person') }};
+
+    const adults   = document.getElementById('adults');
+    const children = document.getElementById('children');
+    const linen    = document.getElementById('linen_amount');
+    const cleaning = document.getElementById('cleaning_amount');
+
+    function totalGuests() {
+        return (parseInt(adults?.value) || 0) + (parseInt(children?.value) || 0);
+    }
+
+    function suggestDefaults() {
+        // Only prefill if the field is currently empty (don't overwrite user input)
+        if (!cleaning.value) {
+            cleaning.placeholder = DEFAULT_CLEANING;
+        }
+        if (!linen.value) {
+            const guests = totalGuests();
+            linen.placeholder = guests > 0
+                ? (DEFAULT_LINEN_PER_PERSON * guests).toFixed(2)
+                : DEFAULT_LINEN_PER_PERSON;
+        }
+    }
+
+    adults?.addEventListener('input', suggestDefaults);
+    children?.addEventListener('input', suggestDefaults);
+
+    // Run once on load to set correct placeholder
+    suggestDefaults();
+})();
+</script>
+@endpush
 @endsection
+

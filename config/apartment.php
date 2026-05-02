@@ -81,8 +81,10 @@ return [
     'booking' => [
         // Global minimum nights for public availability request form.
         'min_nights'    => 3,
-        // Fixed cleaning fee (EUR) added to the stay estimate.
+        // Fixed cleaning fee (EUR) charged per booking (default pre-filled in admin form).
         'cleaning_fee'  => 100,
+        // Fixed linen fee (EUR) per guest charged per booking (default pre-filled in admin form).
+        'linen_fee_per_person' => 25,
         // Optional cutoff date (YYYY-MM-DD). If set, prices are hidden from this date onwards.
         // Examples: null (always show), '2027-01-01' (hide prices for stays on/after 2027-01-01).
         'hide_price_from' => '2027-01-01',
