@@ -10,17 +10,48 @@ use App\Models\Booking;
 use App\Models\Person;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        // Load bookings (guest reservations)
         $bookings = Booking::with('person')
             ->orderByDesc('checkin')
-            ->paginate(20);
+            ->get()
+            ->each(function ($booking) {
+                $booking->_type = 'booking';
+            });
 
-        return view('admin.bookings.index', compact('bookings'));
+        // Load personal blocks (owner/maintenance blocks not linked to bookings)
+        $personalBlocks = AvailabilityBlock::whereNull('booking_id')
+            ->orderByDesc('start_date')
+            ->get()
+            ->each(function ($block) {
+                $block->_type = 'block';
+            });
+
+        // Merge and sort all items by date (checkin/start_date)
+        $allItems = $bookings
+            ->merge($personalBlocks)
+            ->sortByDesc(function ($item) {
+                return $item->_type === 'booking' ? $item->checkin : $item->start_date;
+            })
+            ->values();
+
+        $perPage = 20;
+        $page = (int) $request->input('page', 1);
+        $items = new LengthAwarePaginator(
+            $allItems->forPage($page, $perPage),
+            $allItems->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.bookings.index', compact('items'));
     }
 
     public function create(): View
@@ -124,6 +155,32 @@ class BookingController extends Controller
         return redirect()->back()->with('success', 'Cancellazione rimossa. Prenotazione di nuovo attiva.');
     }
 
+    // Personal blocks management (owner/maintenance)
+    public function showBlock(AvailabilityBlock $block): View
+    {
+        return view('admin.bookings.show-block', compact('block'));
+    }
+
+    public function editBlock(AvailabilityBlock $block): View
+    {
+        return view('admin.bookings.form-block', compact('block'));
+    }
+
+    public function updateBlock(Request $request, AvailabilityBlock $block): RedirectResponse
+    {
+        $data = $this->validatedBlock($request);
+        $block->update($data);
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Blocco aggiornato.');
+    }
+
+    public function destroyBlock(AvailabilityBlock $block): RedirectResponse
+    {
+        $block->delete();
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Blocco rimosso.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
@@ -137,6 +194,16 @@ class BookingController extends Controller
             'source'       => ['required', 'in:direct,airbnb,booking,interhome'],
             'external_ref' => ['nullable', 'string', 'max:60'],
             'notes'        => ['nullable', 'string', 'max:1000'],
+        ]);
+    }
+
+    private function validatedBlock(Request $request): array
+    {
+        return $request->validate([
+            'start_date' => ['required', 'date'],
+            'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
+            'reason'     => ['required', 'in:owner,maintenance'],
+            'notes'      => ['nullable', 'string', 'max:1000'],
         ]);
     }
 }

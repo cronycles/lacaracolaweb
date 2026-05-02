@@ -37,6 +37,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/prenotazioni/import-pdf/confirm', [InterhomePdfImportController::class, 'confirm'])->name('bookings.import-pdf.confirm');
     Route::patch('/prenotazioni/{prenotazioni}/annulla', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::patch('/prenotazioni/{prenotazioni}/ripristina', [BookingController::class, 'restore'])->name('bookings.restore');
+    
+    // Personal blocks (owner/maintenance)
+    Route::get('/prenotazioni/blocco/{block}', [BookingController::class, 'showBlock'])->name('bookings.show-block');
+    Route::get('/prenotazioni/blocco/{block}/edit', [BookingController::class, 'editBlock'])->name('bookings.edit-block');
+    Route::put('/prenotazioni/blocco/{block}', [BookingController::class, 'updateBlock'])->name('bookings.update-block');
+    Route::delete('/prenotazioni/blocco/{block}', [BookingController::class, 'destroyBlock'])->name('bookings.destroy-block');
+    
     Route::resource('prenotazioni', BookingController::class)->names('bookings');
 
     // People / guests

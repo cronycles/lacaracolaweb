@@ -170,12 +170,7 @@
                                     </div>
                                 </div>
                                 <div style="flex-shrink:0">
-                                    <form method="POST" action="{{ route('admin.calendar.block.destroy', ['block' => $block, 'month' => $windowCenterMonth]) }}"
-                                          onsubmit="return confirm('Eliminare questo blocco?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn--danger btn--sm">Rimuovi</button>
-                                    </form>
+                                    <a href="{{ route('admin.bookings.show-block', $block) }}" class="btn btn--outline btn--sm">Dettaglio</a>
                                 </div>
                             </li>
                         @endforeach
