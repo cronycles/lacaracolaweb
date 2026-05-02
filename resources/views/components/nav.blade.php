@@ -48,6 +48,11 @@
             </ul>
         </div>
 
+        {{-- Admin area link (discreet) --}}
+        <a href="/admin" class="nav__admin-link" aria-label="Admin area" title="Admin">
+            🔒
+        </a>
+
         {{-- Mobile burger --}}
         <button class="nav__burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
             <span></span><span></span><span></span>

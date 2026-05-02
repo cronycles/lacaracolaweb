@@ -64,6 +64,24 @@
         }
     }
 
+    &__admin-link {
+        font-size: 1.2rem;
+        line-height: 1;
+        color: var(--color-text-muted);
+        transition: color var(--transition-fast), transform var(--transition-fast);
+        padding: var(--space-1);
+        display: none;
+
+        @media (min-width: 768px) {
+            display: inline-block;
+        }
+
+        &:hover {
+            color: var(--color-primary);
+            transform: scale(1.15);
+        }
+    }
+
     &__lang {
         display: flex;
         gap: var(--space-2);
