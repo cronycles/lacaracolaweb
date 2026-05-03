@@ -1,0 +1,56 @@
+## ADDED Requirements
+
+### Requirement: Role and permission data model
+The system SHALL define and persist roles (super_admin, host_keeper, etc.) and permissions (view_bookings, edit_pricing, etc.) in the database. Users SHALL be assignable to a role and MAY have per-user permission overrides.
+
+#### Scenario: User with role and inherited permissions
+- **WHEN** a user is assigned the `host_keeper` role
+- **THEN** the user inherits all permissions granted to `host_keeper` (e.g., `view_bookings`, `view_people`)
+
+#### Scenario: User with role and per-user override
+- **WHEN** a user has role `host_keeper` and a specific permission override is set (e.g., `edit_pricing`)
+- **THEN** the user has the override permission in addition to their role permissions
+
+### Requirement: Super admin role
+The system SHALL define a `super_admin` role that grants all permissions. The super admin MAY be assigned to any user and SHALL have unrestricted access to all admin features.
+
+#### Scenario: Super admin has all permissions
+- **WHEN** a user has the `super_admin` role
+- **THEN** the user can perform all admin actions (create/edit/delete bookings, manage pricing, etc.)
+
+### Requirement: Host keeper role
+The system SHALL define a `host_keeper` role with restricted permissions. A host keeper user SHALL have the following permissions:
+- `view_dashboard` (accounting widget excluded)
+- `view_calendar`
+- `view_bookings` (read-only, pulizie/biancheria fields only, no income_amount)
+- `view_people` (read-only)
+
+#### Scenario: Host keeper accesses allowed features
+- **WHEN** a user with `host_keeper` role logs in and navigates to `/admin/calendario`
+- **THEN** the calendar page loads successfully
+
+#### Scenario: Host keeper cannot access restricted features
+- **WHEN** a user with `host_keeper` role attempts to navigate to `/admin/prezzi`
+- **THEN** the page is not accessible (403 or redirect to dashboard)
+
+### Requirement: User permission helpers
+The User model SHALL provide methods to check permissions: `hasPermission(string $permission): bool`, `hasRole(string $role): bool`, and `can(string $permission): bool`. These methods SHALL check role permissions + per-user overrides.
+
+#### Scenario: User permission check with role
+- **WHEN** `auth()->user()->can('view_bookings')` is called on a host_keeper user
+- **THEN** the method returns true
+
+#### Scenario: User permission check with override
+- **WHEN** a super_admin has assigned the host_keeper a specific override permission
+- **THEN** `auth()->user()->can('edit_pricing')` returns true for that user only
+
+### Requirement: Initial data seeding
+The system SHALL seed initial roles and permissions on database setup. Super admin role SHALL include all permissions. Host keeper role SHALL include only its designated permissions (calendar, bookings, people).
+
+#### Scenario: Initial role seeding
+- **WHEN** migrations and seeders run for the first time
+- **THEN** `super_admin` and `host_keeper` roles exist in the database with correct permission assignments
+
+#### Scenario: Existing super admin user migration
+- **WHEN** existing users (cronycles@gmail.com) are migrated from no-role to role-based system
+- **THEN** cronycles is automatically assigned the `super_admin` role
