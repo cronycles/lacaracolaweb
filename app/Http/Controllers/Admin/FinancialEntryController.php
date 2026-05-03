@@ -17,20 +17,23 @@ class FinancialEntryController extends Controller
     {
         $year = (int) $request->input('year', now()->year);
 
-        // Booking-sourced income (income_amount) for the year
+        // Booking-sourced income (income_amount where income_paid = true) for the year
         $bookingIncome = Booking::whereNull('canceled_at')
             ->whereYear('checkin', $year)
+            ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
-        // Booking-sourced expenses (cleaning + linen) for the year
+        // Booking-sourced expenses (cleaning + linen only when marked as paid) for the year
         $bookingCleaning = Booking::whereNull('canceled_at')
             ->whereYear('checkin', $year)
+            ->where('cleaning_paid', true)
             ->whereNotNull('cleaning_amount')
             ->sum('cleaning_amount');
 
         $bookingLinen = Booking::whereNull('canceled_at')
             ->whereYear('checkin', $year)
+            ->where('linen_paid', true)
             ->whereNotNull('linen_amount')
             ->sum('linen_amount');
 
@@ -62,13 +65,15 @@ class FinancialEntryController extends Controller
             $bInc = Booking::whereNull('canceled_at')
                 ->whereYear('checkin', $year)
                 ->whereMonth('checkin', $m)
+                ->where('income_paid', true)
                 ->whereNotNull('income_amount')
                 ->sum('income_amount');
 
             $bExp = Booking::whereNull('canceled_at')
                 ->whereYear('checkin', $year)
                 ->whereMonth('checkin', $m)
-                ->selectRaw('COALESCE(SUM(cleaning_amount), 0) + COALESCE(SUM(linen_amount), 0) as total')
+                ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) + 
+                             COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
                 ->value('total') ?? 0;
 
             $eInc = FinancialEntry::where('type', 'income')

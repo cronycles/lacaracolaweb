@@ -26,8 +26,11 @@ class Booking extends Model
         'notes',
         'canceled_at',
         'income_amount',
+        'income_paid',
         'cleaning_amount',
+        'cleaning_paid',
         'linen_amount',
+        'linen_paid',
     ];
 
     protected $casts = [
@@ -39,8 +42,11 @@ class Booking extends Model
         'pets'             => 'integer',
         'canceled_at'      => 'datetime',
         'income_amount'    => 'decimal:2',
+        'income_paid'      => 'boolean',
         'cleaning_amount'  => 'decimal:2',
+        'cleaning_paid'    => 'boolean',
         'linen_amount'     => 'decimal:2',
+        'linen_paid'       => 'boolean',
     ];
 
     public function person(): BelongsTo
@@ -73,6 +79,27 @@ class Booking extends Model
         }
 
         return (float) ($this->cleaning_amount ?? 0) + (float) ($this->linen_amount ?? 0);
+    }
+
+    /** Paid income from this booking (only if marked as paid) */
+    public function getPaidIncomeAttribute(): float
+    {
+        return $this->income_paid && $this->income_amount !== null 
+            ? (float) $this->income_amount 
+            : 0;
+    }
+
+    /** Paid expenses for this booking (only paid items) */
+    public function getPaidExpensesAttribute(): float
+    {
+        $total = 0;
+        if ($this->cleaning_paid && $this->cleaning_amount !== null) {
+            $total += (float) $this->cleaning_amount;
+        }
+        if ($this->linen_paid && $this->linen_amount !== null) {
+            $total += (float) $this->linen_amount;
+        }
+        return $total;
     }
 
     public function isCanceled(): bool

@@ -172,6 +172,33 @@
                         @error('linen_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
+
+                {{-- Payment status --}}
+                <div style="background-color:#f8fafb;border:1px solid #e0e8ec;border-radius:.375rem;padding:.75rem;margin-top:.75rem">
+                    <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.5rem">
+                        Stato pagamenti
+                    </div>
+                    <div class="form-row">
+                        <div style="display:flex;align-items:center;gap:.5rem">
+                            <input type="hidden" name="income_paid" value="0">
+                            <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
+                                   @checked(old('income_paid', $booking->income_paid ?? false))>
+                            <label class="form-label" for="income_paid" style="margin:0;cursor:pointer">Incasso pagato</label>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:.5rem">
+                            <input type="hidden" name="cleaning_paid" value="0">
+                            <input type="checkbox" id="cleaning_paid" name="cleaning_paid" value="1" class="form-checkbox"
+                                   @checked(old('cleaning_paid', $booking->cleaning_paid ?? false))>
+                            <label class="form-label" for="cleaning_paid" style="margin:0;cursor:pointer">Pulizie pagate</label>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:.5rem">
+                            <input type="hidden" name="linen_paid" value="0">
+                            <input type="checkbox" id="linen_paid" name="linen_paid" value="1" class="form-checkbox"
+                                   @checked(old('linen_paid', $booking->linen_paid ?? false))>
+                            <label class="form-label" for="linen_paid" style="margin:0;cursor:pointer">Biancheria pagata</label>
+                        </div>
+                    </div>
+                </div>
                 @if (!$booking->exists)
                     <p style="font-size:.8rem;color:#6b7f89;margin-top:-.5rem">
                         Lascia vuoto per compilare in seguito. I valori predefiniti verranno suggeriti in base al numero di ospiti.

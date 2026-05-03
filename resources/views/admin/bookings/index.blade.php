@@ -22,6 +22,8 @@
                         <th>Notti</th>
                         <th>Ospiti</th>
                         <th>Origine</th>
+                        <th>Pulizie</th>
+                        <th>Biancheria</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -55,15 +57,10 @@
                                     @endif
                                 </td>
                                 <td><span class="badge badge--{{ $item->source }}">{{ $item->source }}</span></td>
+                                <td>{{ $item->cleaning_amount ? '€ ' . number_format($item->cleaning_amount, 2, ',', '.') : '—' }}</td>
+                                <td>{{ $item->linen_amount ? '€ ' . number_format($item->linen_amount, 2, ',', '.') : '—' }}</td>
                                 <td style="white-space:nowrap">
                                     <a href="{{ route('admin.bookings.show', $item) }}" class="btn btn--outline btn--sm">Vedi</a>
-                                    <a href="{{ route('admin.bookings.edit', $item) }}" class="btn btn--outline btn--sm">Modifica</a>
-                                    <form method="POST" action="{{ route('admin.bookings.destroy', $item) }}"
-                                          style="display:inline" onsubmit="return confirm('Eliminare la prenotazione?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-                                    </form>
                                 </td>
                             </tr>
                         @else
@@ -85,15 +82,10 @@
                                 <td>{{ $item->start_date->diffInDays($item->end_date) }}</td>
                                 <td>—</td>
                                 <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
                                 <td style="white-space:nowrap">
                                     <a href="{{ route('admin.bookings.show-block', $item) }}" class="btn btn--outline btn--sm">Vedi</a>
-                                    <a href="{{ route('admin.bookings.edit-block', $item) }}" class="btn btn--outline btn--sm">Modifica</a>
-                                    <form method="POST" action="{{ route('admin.bookings.destroy-block', $item) }}"
-                                          style="display:inline" onsubmit="return confirm('Eliminare il blocco?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-                                    </form>
                                 </td>
                             </tr>
                         @endif

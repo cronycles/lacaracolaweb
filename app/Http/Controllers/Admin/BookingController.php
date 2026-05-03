@@ -195,8 +195,11 @@ class BookingController extends Controller
             'external_ref'    => ['nullable', 'string', 'max:60'],
             'notes'           => ['nullable', 'string', 'max:1000'],
             'income_amount'   => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'income_paid'     => ['nullable', 'boolean'],
             'cleaning_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'cleaning_paid'   => ['nullable', 'boolean'],
             'linen_amount'    => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'linen_paid'      => ['nullable', 'boolean'],
         ]);
     }
 

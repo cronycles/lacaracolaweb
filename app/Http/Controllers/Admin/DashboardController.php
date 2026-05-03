@@ -16,15 +16,17 @@ class DashboardController extends Controller
     {
         $year = now()->year;
 
-        // Financial totals for the current year
+        // Financial totals for the current year (only paid items)
         $bookingIncome = Booking::whereNull('canceled_at')
             ->whereYear('checkin', $year)
+            ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
         $bookingExpenses = Booking::whereNull('canceled_at')
             ->whereYear('checkin', $year)
-            ->selectRaw('COALESCE(SUM(cleaning_amount), 0) + COALESCE(SUM(linen_amount), 0) as total')
+            ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) + 
+                         COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;
 
         $extraIncome   = FinancialEntry::where('type', 'income')->whereYear('entry_date', $year)->sum('amount');
