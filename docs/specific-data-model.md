@@ -19,25 +19,29 @@ Data model for La Caracola (single-property rental management).
 
 ### 1. **users**
 
-Admin/owner account for the apartment management system.
+Admin accounts for the apartment management system. Supports multiple users with different roles.
 
-| Field        | Type         | Notes                   |
-| ------------ | ------------ | ----------------------- |
-| `id`         | BIGINT PK    | Auto-increment          |
-| `name`       | VARCHAR(255) | Admin display name      |
-| `email`      | VARCHAR(255) | Unique, used for login  |
-| `password`   | VARCHAR(255) | Hashed (Laravel bcrypt) |
-| `created_at` | TIMESTAMP    |                         |
-| `updated_at` | TIMESTAMP    |                         |
+| Field        | Type         | Notes                                     |
+| ------------ | ------------ | ----------------------------------------- |
+| `id`         | BIGINT PK    | Auto-increment                            |
+| `role_id`    | BIGINT FK    | References `roles.id` (nullable, SET NULL) |
+| `name`       | VARCHAR(255) | Admin display name                        |
+| `email`      | VARCHAR(255) | Unique, used for login                    |
+| `password`   | VARCHAR(255) | Hashed (Laravel bcrypt)                   |
+| `created_at` | TIMESTAMP    |                                           |
+| `updated_at` | TIMESTAMP    |                                           |
 
 **Notes:**
 
-- Currently, only one admin user per installation
+- Multiple admin users supported with role-based access control
+- `role_id` is nullable: a user without a role has no permissions (no access beyond login)
 - Password change available in admin panel (`/admin/impostazioni/sicurezza`)
+- Super admin created via `RoleSeeder` (assigned to `cronycles@gmail.com`)
 
 **Relations:**
 
-- None (single-user admin)
+- N → 1 `roles` (user belongs to one role)
+- N ↔ N `permissions` via `user_permissions` (per-user overrides)
 
 ---
 
@@ -262,7 +266,73 @@ Key-value store for dynamic runtime configuration. Persists admin-level preferen
 
 ---
 
-### 9. **interhome_pdf_import_logs**
+### 9. **roles**
+
+Predefined admin roles. Not dynamically creatable via UI — managed via seeders.
+
+| Field         | Type         | Notes          |
+| ------------- | ------------ | -------------- |
+| `id`          | BIGINT PK    | Auto-increment |
+| `name`        | VARCHAR(255) | Unique slug (e.g., `super_admin`, `host_keeper`) |
+| `description` | VARCHAR(255) | Human-readable description (nullable) |
+| `created_at`  | TIMESTAMP    |                |
+| `updated_at`  | TIMESTAMP    |                |
+
+**Seeded roles:**
+- `super_admin`: full access to all features
+- `host_keeper`: viewer only (calendar, bookings without `income_amount`, guests)
+
+**Relations:**
+- 1 → N `users`
+- N ↔ N `permissions` via `role_permissions`
+
+---
+
+### 10. **permissions**
+
+Feature-level permission slugs. Defined once in `PermissionSeeder`.
+
+| Field         | Type         | Notes          |
+| ------------- | ------------ | -------------- |
+| `id`          | BIGINT PK    | Auto-increment |
+| `name`        | VARCHAR(255) | Unique slug (e.g., `view_bookings`, `manage_pricing`) |
+| `description` | VARCHAR(255) | Human-readable description (nullable) |
+| `created_at`  | TIMESTAMP    |                |
+| `updated_at`  | TIMESTAMP    |                |
+
+**Defined permissions:** `view_bookings`, `manage_bookings`, `view_people`, `manage_people`, `view_calendar`, `manage_calendar`, `view_accounting`, `manage_pricing`, `manage_settings`, `manage_newsletter`, `manage_users`
+
+**Relations:**
+- N ↔ N `roles` via `role_permissions`
+- N ↔ N `users` via `user_permissions` (per-user overrides)
+
+---
+
+### 11. **role_permissions** *(pivot)*
+
+| Field           | Type      | Notes                     |
+| --------------- | --------- | ------------------------- |
+| `role_id`       | BIGINT FK | References `roles.id`     |
+| `permission_id` | BIGINT FK | References `permissions.id` |
+
+Primary key: `(role_id, permission_id)`
+
+---
+
+### 12. **user_permissions** *(pivot)*
+
+Per-user permission overrides, additive to the user's role permissions. `manage_users` is excluded by application logic (non-delegable).
+
+| Field           | Type      | Notes                     |
+| --------------- | --------- | ------------------------- |
+| `user_id`       | BIGINT FK | References `users.id`     |
+| `permission_id` | BIGINT FK | References `permissions.id` |
+
+Primary key: `(user_id, permission_id)`
+
+---
+
+### 13. **interhome_pdf_import_logs**
 
 Log entries for PDF imports from Interhome platform (one entry per import session).
 
@@ -291,7 +361,9 @@ Log entries for PDF imports from Interhome platform (one entry per import sessio
 ## Relationship Summary
 
 ```
-users (1) ──→ (1) admin
+users (N) ──→ (1) roles
+users (N) ↔↔ (N) permissions  [via user_permissions — per-user overrides]
+roles (N) ↔↔ (N) permissions  [via role_permissions]
 
 people (1) ──→ (N) bookings
 bookings (N) ──→ (1) people
@@ -308,7 +380,7 @@ interhome_pdf_import_logs: standalone (audit log)
 
 ## Key Design Notes
 
-1. **Single admin context:** no multi-tenant design.
+1. **Multi-user admin with RBAC:** multiple admin users with predefined roles (`super_admin`, `host_keeper`). Hybrid model: role permissions + per-user overrides. See `docs/specific-tech-backend-doc.mdc` for authorization patterns.
 
 2. **Cancellation semantics:**
     - `canceled_at != null` means booking is inactive but preserved in history.

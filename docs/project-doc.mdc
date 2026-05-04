@@ -17,3 +17,17 @@ alwaysApply: true
 ## Documentation updates
 - Every significant code change must update impacted docs in the same change set.
 - Update README only when setup, build, deploy, or operating workflow changes.
+
+### Which doc to update per change type
+
+| Change type | Documents to update |
+|---|---|
+| New tables / columns / migrations | `docs/specific-data-model.md` |
+| New routes / middleware / services / auth | `docs/specific-tech-backend-doc.mdc` |
+| New Blade views / layouts / JS / CSS | `docs/specific-tech-frontend-doc.mdc` |
+| Images / media handling | `docs/specific-tech-images-doc.md` |
+| Business logic / UX / product behavior | `docs/business-doc.mdc` |
+| Deploy / build / environment setup | `docs/DEPLOY.md` |
+| Cross-project engineering rules | `docs/tech-doc.mdc` |
+
+When making DB schema changes, **always** update both `specific-data-model.md` (tables/relations) and `specific-tech-backend-doc.mdc` (code patterns) if authorization or service logic is involved.
