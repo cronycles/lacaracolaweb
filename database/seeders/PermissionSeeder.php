@@ -13,7 +13,8 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             ['name' => 'view_bookings',    'description' => 'Visualizza lista e dettaglio prenotazioni (read-only, senza income_amount)'],
-            ['name' => 'manage_bookings',  'description' => 'Crea, modifica, elimina, cancella prenotazioni e importa PDF'],
+            ['name' => 'manage_bookings',  'description' => 'Crea, modifica, elimina e cancella prenotazioni'],
+            ['name' => 'import_pdf',       'description' => 'Importa prenotazioni da PDF Interhome'],
             ['name' => 'view_people',      'description' => 'Visualizza lista e dettaglio ospiti (read-only)'],
             ['name' => 'manage_people',    'description' => 'Crea, modifica, elimina ospiti'],
             ['name' => 'view_calendar',    'description' => 'Visualizza calendario disponibilità (read-only)'],

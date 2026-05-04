@@ -46,7 +46,7 @@
                     🏠 Prenotazioni
                 </a>
             </li>
-            @if(auth()->user()->hasPermission('manage_bookings'))
+            @if(auth()->user()->hasPermission('import_pdf'))
             <li>
                 <a href="{{ route('admin.bookings.import-pdf') }}" @class(['active' => request()->routeIs('admin.bookings.import-pdf*')])>
                     📄 Import PDF

@@ -34,6 +34,17 @@ class RoleSeeder extends Seeder
         ]);
         $hostKeeper->permissions()->sync($hostKeeperPermissions->pluck('id'));
 
+        // host_owner: everything except manage_users and import_pdf
+        $hostOwner = Role::firstOrCreate(
+            ['name' => 'host_owner'],
+            ['description' => 'Accesso completo tranne gestione utenti e importazione PDF'],
+        );
+        $hostOwnerPermissions = $allPermissions->whereNotIn('name', [
+            'manage_users',
+            'import_pdf',
+        ]);
+        $hostOwner->permissions()->sync($hostOwnerPermissions->pluck('id'));
+
         // Assign super_admin role to the owner account
         $owner = User::where('email', 'cronycles@gmail.com')->first();
         if ($owner) {

@@ -32,12 +32,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // ── manage_bookings ──────────────────────────────────────────────────────
     // Specific booking routes must be registered BEFORE the {prenotazioni} wildcard
 
-    Route::middleware('permission:manage_bookings')->group(function () {
+    Route::middleware('permission:import_pdf')->group(function () {
         // PDF import (must be before {prenotazioni} wildcard)
         Route::get('/prenotazioni/import-pdf', [InterhomePdfImportController::class, 'index'])->name('bookings.import-pdf');
         Route::post('/prenotazioni/import-pdf/preview', [InterhomePdfImportController::class, 'preview'])->name('bookings.import-pdf.preview');
         Route::post('/prenotazioni/import-pdf/confirm', [InterhomePdfImportController::class, 'confirm'])->name('bookings.import-pdf.confirm');
+    });
 
+    Route::middleware('permission:manage_bookings')->group(function () {
         // Create (must be before {prenotazioni} wildcard)
         Route::get('/prenotazioni/create', [BookingController::class, 'create'])->name('bookings.create');
         Route::post('/prenotazioni', [BookingController::class, 'store'])->name('bookings.store');
