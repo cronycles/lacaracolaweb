@@ -9,11 +9,11 @@ The admin navigation sidebar SHALL conditionally show/hide links based on user p
 
 #### Scenario: Host keeper sees limited navigation
 - **WHEN** a host_keeper user views the admin area
-- **THEN** only permitted navigation links are visible: dashboard, calendar, bookings, guests. Links for pricing, settings, accounting, newsletter, users are hidden.
+- **THEN** only permitted navigation links are visible: dashboard, calendar, bookings, guests, security (password change). Links for pricing, sconti-soggiorno, settings, accounting, newsletter, users are hidden.
 
-#### Scenario: Button visibility based on permissions
-- **WHEN** a host_keeper views a section they can access
-- **THEN** only read-only or view buttons are shown; action buttons (create, edit, delete) are hidden or disabled
+#### Scenario: Host keeper sees no action buttons
+- **WHEN** a host_keeper views any section they can access
+- **THEN** create, edit, and delete buttons are all hidden; the view is fully read-only
 
 #### Scenario: Super admin sees all action buttons
 - **WHEN** a super_admin views any admin section

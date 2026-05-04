@@ -16,34 +16,38 @@ The system SHALL enforce permission checks on admin routes. Users without requir
 - **THEN** all routes are accessible
 
 ### Requirement: Booking feature authorization
-Host keeper users SHALL only view bookings but not create, edit, or delete them. When viewing booking details, host keeper SHALL see only: checkin, checkout, guest name, email, phone, cleaning_amount, linen_amount. Host keeper SHALL NOT see income_amount.
+Host keeper users SHALL only view bookings but not create, edit, delete, cancel, restore them. When viewing booking list or detail, host keeper SHALL NOT see `income_amount` (neither in the list nor in the detail). Host keeper SHALL NOT access the PDF import.
 
-#### Scenario: Host keeper views bookings
+#### Scenario: Host keeper views bookings list
 - **WHEN** a host_keeper navigates to `/admin/prenotazioni`
-- **THEN** bookings are displayed in read-only mode
+- **THEN** bookings are displayed in read-only mode; `income_amount` column is not shown
+
+#### Scenario: Host keeper views booking detail
+- **WHEN** a host_keeper views a booking at `/admin/prenotazioni/{id}`
+- **THEN** the detail is shown read-only; `income_amount` field is not present; `cleaning_amount` and `linen_amount` are visible
 
 #### Scenario: Host keeper cannot create booking
-- **WHEN** a host_keeper attempts POST to `/admin/prenotazioni` to create a booking
-- **THEN** action is denied
-
-#### Scenario: Host keeper cannot see income amount
-- **WHEN** a host_keeper views a booking detail at `/admin/prenotazioni/{id}`
-- **THEN** the `income_amount` field is hidden or not shown
+- **WHEN** a host_keeper attempts POST to `/admin/prenotazioni`
+- **THEN** action is denied (403)
 
 #### Scenario: Host keeper cannot access PDF import
 - **WHEN** a host_keeper navigates to `/admin/prenotazioni/import-pdf`
-- **THEN** access is denied
+- **THEN** access is denied (403)
 
 ### Requirement: Calendar authorization
-Host keeper users SHALL be able to view and create manual availability blocks on the calendar but only for `owner` reason type.
+Host keeper users SHALL be able to view the calendar in read-only mode. They SHALL NOT create or delete availability blocks.
 
 #### Scenario: Host keeper views calendar
 - **WHEN** a host_keeper navigates to `/admin/calendario`
-- **THEN** calendar is displayed
+- **THEN** calendar is displayed in read-only mode (block creation UI is hidden)
 
-#### Scenario: Host keeper can create personal block
-- **WHEN** a host_keeper creates a block with reason `owner`
-- **THEN** the block is created and appears on calendar
+#### Scenario: Host keeper cannot create block
+- **WHEN** a host_keeper attempts POST to `/admin/blocchi`
+- **THEN** the request is denied (403)
+
+#### Scenario: Host keeper cannot delete block
+- **WHEN** a host_keeper attempts DELETE to `/admin/blocchi/{block}`
+- **THEN** the request is denied (403)
 
 ### Requirement: Pricing feature authorization
 Host keeper users SHALL NOT access pricing or stay discount rules. All pricing-related routes SHALL be denied.

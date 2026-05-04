@@ -13,15 +13,15 @@ This is critical for onboarding non-owner users (e.g., property maintenance staf
 - **Authentication**: Users now have roles + optional per-user permission overrides
 - **Authorization**:
   - Super admin (`cronycles@gmail.com`): full access to all features
-  - Host keeper (new): restricted access—can see dashboard, upcoming bookings, guest data, calendar, but cannot manage pricing, settings, accounting, or import PDFs
+  - Host keeper (new): **viewer only** — can see dashboard (no accounting widget), booking list/detail (no `income_amount`), guest list, calendar. Cannot create, edit, or delete anything. Cannot access pricing, sconti-soggiorno, settings, accounting, newsletter, PDF import, user management.
   - Infrastructure ready for future roles
 - **UI & Admin**:
   - Dashboard conditionally hides sections based on permissions (e.g., accounting widget hidden for host keeper)
-  - New admin page `/admin/utenti` to manage users, assign roles, and override permissions
-  - Conditional rendering in templates to show/hide restricted sections
+  - New admin page `/admin/utenti` to manage users: create users (super admin sets password directly), assign roles, manage per-user permission overrides
 - **Policy & Authorization**:
-  - Gate/middleware checks on admin routes for feature-level access
-  - Early return in controllers for action-level authorization
+  - `RequirePermission` middleware applied on route groups in `routes/admin.php` — no controller changes needed for access control
+  - View conditionals with `auth()->user()->hasPermission()` and `auth()->user()->isSuperAdmin()` in Blade templates
+  - Laravel's built-in `can()` is not overridden
 
 **Note**: Roles are role-based + permission-based (hybrid). This allows flexibility—role predefined permissions + per-user overrides for edge cases.
 
@@ -47,7 +47,7 @@ This is critical for onboarding non-owner users (e.g., property maintenance staf
   - `routes/admin.php`: Add user management routes, optional middleware
   - `resources/views/admin/`: Conditional rendering, permission-aware navigation
 
-- **Database**: 4 new migrations (roles, permissions, role_permissions, user_permissions)
+- **Database**: 4 new migrations (roles, permissions, role_permissions, user_permissions) + 1 migration to add `role_id` to users. ~11 permissions seeded.
 
 - **Testing**: Authorization tests for each role-feature pair
 

@@ -19,33 +19,37 @@ The system SHALL define a `super_admin` role that grants all permissions. The su
 - **THEN** the user can perform all admin actions (create/edit/delete bookings, manage pricing, etc.)
 
 ### Requirement: Host keeper role
-The system SHALL define a `host_keeper` role with restricted permissions. A host keeper user SHALL have the following permissions:
-- `view_dashboard` (accounting widget excluded)
-- `view_calendar`
-- `view_bookings` (read-only, pulizie/biancheria fields only, no income_amount)
+The system SHALL define a `host_keeper` role. Host keeper is a **viewer only** role: can see but cannot create, modify, or delete anything. Permitted features:
+- `view_dashboard` (accounting widget excluded, only booking stats)
+- `view_calendar` (read-only, cannot create or delete blocks)
+- `view_bookings` (read-only; field `income_amount` is hidden everywhere — list and detail)
 - `view_people` (read-only)
 
 #### Scenario: Host keeper accesses allowed features
 - **WHEN** a user with `host_keeper` role logs in and navigates to `/admin/calendario`
-- **THEN** the calendar page loads successfully
+- **THEN** the calendar page loads successfully in read-only mode (no block creation UI visible)
 
 #### Scenario: Host keeper cannot access restricted features
 - **WHEN** a user with `host_keeper` role attempts to navigate to `/admin/prezzi`
 - **THEN** the page is not accessible (403 or redirect to dashboard)
 
 ### Requirement: User permission helpers
-The User model SHALL provide methods to check permissions: `hasPermission(string $permission): bool`, `hasRole(string $role): bool`, and `can(string $permission): bool`. These methods SHALL check role permissions + per-user overrides.
+The User model SHALL provide methods: `isSuperAdmin(): bool` and `hasPermission(string $permission): bool`. These methods SHALL NOT override Laravel's built-in `can()` method. `hasPermission()` checks role permissions + per-user overrides; if user is super_admin it always returns `true`. The permission `manage_users` is non-delegable: it can never be granted via per-user override, only through the `super_admin` role.
 
 #### Scenario: User permission check with role
-- **WHEN** `auth()->user()->can('view_bookings')` is called on a host_keeper user
-- **THEN** the method returns true
+- **WHEN** `auth()->user()->hasPermission('view_bookings')` is called on a host_keeper user
+- **THEN** the method returns `true`
 
 #### Scenario: User permission check with override
-- **WHEN** a super_admin has assigned the host_keeper a specific override permission
-- **THEN** `auth()->user()->can('edit_pricing')` returns true for that user only
+- **WHEN** a super_admin has assigned the host_keeper a specific override permission (e.g., `manage_bookings`)
+- **THEN** `auth()->user()->hasPermission('manage_bookings')` returns `true` for that user only
+
+#### Scenario: manage_users is non-delegable
+- **WHEN** a super_admin attempts to add `manage_users` as a per-user override for a host_keeper
+- **THEN** the system silently ignores or blocks the override; `hasPermission('manage_users')` still returns `false`
 
 ### Requirement: Initial data seeding
-The system SHALL seed initial roles and permissions on database setup. Super admin role SHALL include all permissions. Host keeper role SHALL include only its designated permissions (calendar, bookings, people).
+The system SHALL seed initial roles and permissions on database setup. Super admin role SHALL include all permissions. Host keeper role SHALL include only `view_bookings`, `view_people`, `view_calendar`. The existing user `cronycles@gmail.com` SHALL be automatically assigned the `super_admin` role during seeding.
 
 #### Scenario: Initial role seeding
 - **WHEN** migrations and seeders run for the first time

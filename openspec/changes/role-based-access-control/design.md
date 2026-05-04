@@ -8,25 +8,27 @@ Currently:
 
 Required behavior:
 - **Super admin** (cronycles): see/edit everything
-- **Host keeper**: see dashboard (no accounting), upcoming bookings, guest list (read-only), calendar; cannot touch pricing, settings, accounting, newsletter, PDF import, booking creation/deletion
-- **Dashboard**: conditional widgets based on user role
-- **UI**: sections hidden/disabled per permissions, not full-page 403s
-- **Management**: super admin UI at `/admin/utenti` to assign roles and per-user permission overrides
+- **Host keeper**: **viewer only** — can see dashboard (no accounting widget), booking list/detail (no `income_amount`), guest list (read-only), calendar (read-only). Cannot create, edit, or delete anything. Cannot access pricing, sconti-soggiorno, settings, accounting, newsletter, PDF import, user management.
+- **Dashboard**: conditional widgets based on user permissions
+- **UI**: sections hidden/disabled per permissions; forbidden routes return 403 (not just hidden in nav)
+- **Management**: super admin UI at `/admin/utenti` to create users, assign roles, manage per-user permission overrides
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Enable role-based access control (RBAC) on admin features with hybrid model: predefined roles + per-user overrides
 - Restrict non-admin users from sensitive areas (pricing, accounting, settings, import)
-- Provide super admin UI to manage users and permissions
+- Provide super admin UI to create/delete users and manage roles + per-user permission overrides
 - No breaking changes to existing auth or routing
 - Implement least-privilege: default deny, explicit allow per role
+- Keep controllers clean: authorization lives in route middleware and view conditionals, not in controller bodies
 
 **Non-Goals:**
 - Multi-tenant support or advanced audit logs (future if needed)
 - Public-facing role assignment (only super admin can assign)
 - Real-time permission caching or distributed permission checking (single app, local enough)
 - Dynamic role creation in UI (predefined roles only: super_admin, host_keeper, future-proof for more)
+- Email invitation on user creation (super admin sets password directly and communicates it manually)
 
 ## Decisions
 
@@ -44,20 +46,20 @@ Required behavior:
 - ✗ JSON permissions on `users` (works, but denormalizes and complicates querying)
 
 ### 2. **Authorization Approach: Middleware vs. Gates vs. Controller Checks**
-**Decision**: Hybrid approach:
-- **Route-level**: Middleware on admin route group to ensure auth
-- **Feature-level**: Early return in controller action with condition check
-- **View-level**: Conditional rendering with permission helpers in Blade templates
+**Decision**: Middleware-first approach:
+- **Auth-level**: Existing `auth` middleware on the whole admin group
+- **Feature-level**: `RequirePermission` middleware applied per route group in `routes/admin.php`
+- **View-level**: Conditional rendering with `auth()->user()->hasPermission()` in Blade templates
 
 **Rationale**:
-- Middleware for coarse-grained checks (all `/admin/*` is protected)
-- Controller early returns for action-level business logic (e.g., "can this user create a booking?")
-- Template conditionals for UX (hide buttons, gray out sections)
+- Route groups with permission middleware keep authorization in one place (routes file), not scattered across controllers — DRY
+- No controller changes needed for access control: controllers stay thin and focused on business logic
+- Template conditionals for UX (hide buttons/links for forbidden actions)
 - Avoids authorization bloat in policies or gates (not needed for single-app, non-multi-tenant context)
 
 **Alternatives Considered**:
 - ✗ Full Laravel policies (overkill, adds abstraction layer; better for larger multi-resource systems)
-- ✗ All checks in middleware (harder to read, less DRY; authorization logic belongs near business logic)
+- ✗ Controller early returns (pollutes controllers with authorization logic, less DRY)
 
 ### 3. **Hybrid Role + Permission Override Model**
 **Decision**: Users have a primary role (e.g., "host_keeper") + optional per-user permission overrides in `user_permissions` table.
@@ -84,12 +86,20 @@ Roles are **not dynamically creatable** via UI (prevents security misconfigurati
 - Reduces complexity; UI manages only user-to-role assignment, not role creation
 
 ### 5. **Permission Granularity**
-**Decision**: Permissions are **feature-level** (e.g., `view_pricing`, `edit_bookings`, `view_accounting`), not action-level (CRUD).
+**Decision**: Permissions are **feature-level** with view/manage split where needed. Final list (~11 permissions):
+- `view_bookings`, `manage_bookings`
+- `view_people`, `manage_people`
+- `view_calendar`, `manage_calendar`
+- `view_accounting`
+- `manage_pricing`
+- `manage_settings`
+- `manage_newsletter`
+- `manage_users` (non-delegable: only `isSuperAdmin()` can grant it, never via per-user override)
 
 **Rationale**:
-- Host keeper may view bookings but not edit them—one `view_bookings` permission covers this
-- Cleaner, fewer permissions (~15-20 total)
-- Avoids permission explosion (not every delete is a separate permission)
+- `view_*` / `manage_*` split cleanly separates read vs. write where the distinction matters
+- `manage_users` is non-delegable by design to prevent privilege escalation
+- ~11 permissions avoids explosion while remaining explicit
 
 ### 6. **Dashboard Conditional Rendering**
 **Decision**: Host keeper sees dashboard but without accounting/financial widgets. Use Blade `@if` directives to conditionally include template sections.
