@@ -34,8 +34,11 @@ class BookingController extends Controller
             });
 
         // Merge and sort all items by date (checkin/start_date)
+        // Use concat() instead of merge() to avoid key collisions: Eloquent collections
+        // are keyed by primary key, so merge() would overwrite a Booking with an
+        // AvailabilityBlock that share the same numeric ID.
         $allItems = $bookings
-            ->merge($personalBlocks)
+            ->concat($personalBlocks)
             ->sortByDesc(function ($item) {
                 return $item->_type === 'booking' ? $item->checkin : $item->start_date;
             })
