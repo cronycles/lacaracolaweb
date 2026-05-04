@@ -27,6 +27,39 @@
         </div>
     </div>
 
+    {{-- Cleaning / linen payment summary (all roles with view_bookings) --}}
+    @if(auth()->user()->hasPermission('view_bookings'))
+    <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin:1.5rem 0 .6rem">
+        Pulizie &amp; Biancheria — stato pagamenti
+    </div>
+    <div class="stats-grid" style="margin-bottom:1.5rem">
+        <div class="stat-card" style="border-left:4px solid #92400e">
+            <div class="stat-card__number" style="color:#92400e">
+                € {{ number_format($stats['cleaning_unpaid'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Pulizie da pagare</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid #92400e">
+            <div class="stat-card__number" style="color:#92400e">
+                € {{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Biancheria da pagare</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid #166534">
+            <div class="stat-card__number" style="color:#166534">
+                € {{ number_format($stats['cleaning_paid_total'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Pulizie pagate (totale)</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid #166534">
+            <div class="stat-card__number" style="color:#166534">
+                € {{ number_format($stats['linen_paid_total'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Biancheria pagata (totale)</div>
+        </div>
+    </div>
+    @endif
+
     {{-- Financial KPIs (super_admin / view_accounting only) --}}
     @if(auth()->user()->hasPermission('view_accounting'))
     <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin:1.5rem 0 .6rem">
@@ -50,6 +83,12 @@
                 € {{ number_format($stats['balance'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Saldo {{ $stats['finance_year'] }}</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid {{ $stats['global_balance'] >= 0 ? '#7b1fa2' : '#c62828' }}">
+            <div class="stat-card__number" style="color:{{ $stats['global_balance'] >= 0 ? '#7b1fa2' : '#c62828' }}">
+                € {{ number_format($stats['global_balance'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Saldo totale</div>
         </div>
     </div>
     <div style="margin-bottom:1.5rem">

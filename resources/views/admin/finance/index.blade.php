@@ -51,6 +51,12 @@
             </div>
             <div class="stat-card__label">Saldo {{ $year }}</div>
         </div>
+        <div class="stat-card" style="border-left:4px solid {{ $globalBalance >= 0 ? '#7b1fa2' : '#c62828' }}">
+            <div class="stat-card__number" style="color:{{ $globalBalance >= 0 ? '#7b1fa2' : '#c62828' }}">
+                € {{ number_format($globalBalance, 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Saldo totale</div>
+        </div>
     </div>
 
     {{-- Monthly breakdown --}}

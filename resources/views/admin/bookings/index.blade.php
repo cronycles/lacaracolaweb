@@ -57,8 +57,26 @@
                                     @endif
                                 </td>
                                 <td><span class="badge badge--{{ $item->source }}">{{ $item->source }}</span></td>
-                                <td>{{ $item->cleaning_amount ? '€ ' . number_format($item->cleaning_amount, 2, ',', '.') : '—' }}</td>
-                                <td>{{ $item->linen_amount ? '€ ' . number_format($item->linen_amount, 2, ',', '.') : '—' }}</td>
+                                <td>
+                                    @if($item->cleaning_amount)
+                                        <span class="badge badge--{{ $item->cleaning_paid ? 'paid' : 'unpaid' }}"
+                                              title="{{ $item->cleaning_paid ? 'Pagate' : 'Da pagare' }}">
+                                            € {{ number_format($item->cleaning_amount, 2, ',', '.') }}
+                                        </span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($item->linen_amount)
+                                        <span class="badge badge--{{ $item->linen_paid ? 'paid' : 'unpaid' }}"
+                                              title="{{ $item->linen_paid ? 'Pagata' : 'Da pagare' }}">
+                                            € {{ number_format($item->linen_amount, 2, ',', '.') }}
+                                        </span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
                                 <td style="white-space:nowrap">
                                     <a href="{{ route('admin.bookings.show', $item) }}" class="btn btn--outline btn--sm">Vedi</a>
                                 </td>
@@ -95,6 +113,11 @@
 
             <div class="pagination-wrap">
                 {{ $items->links() }}
+            </div>
+            <div style="margin-top:.75rem;font-size:.75rem;color:#6b7f89;display:flex;gap:1rem;align-items:center">
+                <strong style="color:#444">Legenda pulizie/biancheria:</strong>
+                <span class="badge badge--paid">€ X,XX</span> pagata
+                <span class="badge badge--unpaid">€ X,XX</span> da pagare
             </div>
         @endif
     </div>

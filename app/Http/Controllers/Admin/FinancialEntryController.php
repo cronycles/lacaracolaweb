@@ -59,6 +59,22 @@ class FinancialEntryController extends Controller
 
         $totals['balance'] = $totals['income'] - $totals['expenses'];
 
+        // Cumulative all-time balance (no year filter)
+        $globalBookingIncome = Booking::whereNull('canceled_at')
+            ->where('income_paid', true)
+            ->whereNotNull('income_amount')
+            ->sum('income_amount');
+
+        $globalBookingExpenses = Booking::whereNull('canceled_at')
+            ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
+                         COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
+            ->value('total') ?? 0;
+
+        $globalExtraIncome    = FinancialEntry::where('type', 'income')->sum('amount');
+        $globalExtraExpenses  = FinancialEntry::where('type', 'expense')->sum('amount');
+
+        $globalBalance = ($globalBookingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
+
         // Monthly breakdown for the selected year
         $monthlyData = [];
         for ($m = 1; $m <= 12; $m++) {
@@ -72,7 +88,7 @@ class FinancialEntryController extends Controller
             $bExp = Booking::whereNull('canceled_at')
                 ->whereYear('checkin', $year)
                 ->whereMonth('checkin', $m)
-                ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) + 
+                ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                              COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
                 ->value('total') ?? 0;
 
@@ -101,7 +117,7 @@ class FinancialEntryController extends Controller
         $availableYears = $this->availableYears();
 
         return view('admin.finance.index', compact(
-            'year', 'totals', 'monthlyData', 'entries', 'availableYears'
+            'year', 'totals', 'monthlyData', 'entries', 'availableYears', 'globalBalance'
         ));
     }
 
