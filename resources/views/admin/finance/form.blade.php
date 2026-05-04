@@ -39,9 +39,14 @@
                 {{-- Category --}}
                 <div class="form-group">
                     <label class="form-label" for="category">Categoria</label>
-                    <input type="text" id="category" name="category" class="form-input"
-                           value="{{ old('category', $entry->category) }}" maxlength="60" required
-                           placeholder="es. affitto, manutenzione, utenze, altro…">
+                    <select id="category" name="category" class="form-input" required>
+                        <option value="" disabled @selected(old('category', $entry->category) === '')>— Seleziona categoria —</option>
+                        @foreach(config('finance.categories') as $key => $label)
+                            <option value="{{ $key }}" @selected(old('category', $entry->category) === $key)>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('category') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 

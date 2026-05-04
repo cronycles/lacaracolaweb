@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\FinancialEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class FinancialEntryController extends Controller
@@ -158,7 +159,7 @@ class FinancialEntryController extends Controller
     {
         return $request->validate([
             'type'        => ['required', 'in:income,expense'],
-            'category'    => ['required', 'string', 'max:60'],
+            'category'    => ['required', 'string', Rule::in(array_keys(config('finance.categories')))],
             'description' => ['nullable', 'string', 'max:1000'],
             'amount'      => ['required', 'numeric', 'min:0.01', 'max:99999.99'],
             'entry_date'  => ['required', 'date'],
