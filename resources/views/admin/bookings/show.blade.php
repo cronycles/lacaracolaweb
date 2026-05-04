@@ -6,13 +6,15 @@
     <div style="max-width:680px">
         <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Prenotazioni</a>
-            <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--primary btn--sm">Modifica</a>
-            <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
-                  onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-            </form>
+            @if(auth()->user()->hasPermission('manage_bookings'))
+                <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--primary btn--sm">Modifica</a>
+                <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
+                      onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
+                </form>
+            @endif
         </div>
 
         <div class="a-card">
@@ -97,6 +99,7 @@
             <div class="a-card__title">Dati economici</div>
             <table class="a-table">
                 <tbody>
+                    @if(auth()->user()->hasPermission('view_accounting'))
                     <tr>
                         <th style="width:160px">Incasso ricevuto</th>
                         <td>
@@ -107,8 +110,9 @@
                             @endif
                         </td>
                     </tr>
+                    @endif
                     <tr>
-                        <th>Pulizie</th>
+                        <th style="width:160px">Pulizie</th>
                         <td>
                             @if ($booking->cleaning_amount !== null)
                                 € {{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }}
@@ -127,6 +131,7 @@
                             @endif
                         </td>
                     </tr>
+                    @if(auth()->user()->hasPermission('view_accounting'))
                     @if ($booking->total_expenses !== null)
                         <tr>
                             <th>Totale uscite</th>
@@ -144,13 +149,16 @@
                             </td>
                         </tr>
                     @endif
+                    @endif
                 </tbody>
             </table>
+            @if(auth()->user()->hasPermission('manage_bookings'))
             <div style="margin-top:.75rem">
                 <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--outline btn--sm">
                     Modifica dati economici
                 </a>
             </div>
+            @endif
         </div>
     </div>
 @endsection

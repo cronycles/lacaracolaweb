@@ -27,7 +27,8 @@
         </div>
     </div>
 
-    {{-- Financial KPIs --}}
+    {{-- Financial KPIs (super_admin / view_accounting only) --}}
+    @if(auth()->user()->hasPermission('view_accounting'))
     <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin:1.5rem 0 .6rem">
         Contabilità {{ $stats['finance_year'] }}
     </div>
@@ -56,6 +57,7 @@
             📒 Vedi contabilità completa
         </a>
     </div>
+    @endif
 
     {{-- Upcoming bookings --}}
     <div class="a-card">
@@ -101,10 +103,16 @@
     <div class="a-card">
         <div class="a-card__title">Azioni rapide</div>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-            <a href="{{ route('admin.bookings.create') }}" class="btn btn--primary">+ Nuova prenotazione</a>
-            <a href="{{ route('admin.people.create') }}" class="btn btn--outline">+ Nuovo ospite</a>
+            @if(auth()->user()->hasPermission('manage_bookings'))
+                <a href="{{ route('admin.bookings.create') }}" class="btn btn--primary">+ Nuova prenotazione</a>
+            @endif
+            @if(auth()->user()->hasPermission('manage_people'))
+                <a href="{{ route('admin.people.create') }}" class="btn btn--outline">+ Nuovo ospite</a>
+            @endif
             <a href="{{ route('admin.calendar') }}" class="btn btn--outline">Calendario disponibilità</a>
-            <a href="{{ route('admin.pricing.create') }}" class="btn btn--outline">+ Regola prezzi</a>
+            @if(auth()->user()->hasPermission('manage_pricing'))
+                <a href="{{ route('admin.pricing.create') }}" class="btn btn--outline">+ Regola prezzi</a>
+            @endif
         </div>
     </div>
 @endsection

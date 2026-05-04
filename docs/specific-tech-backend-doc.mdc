@@ -53,3 +53,55 @@ Data model: [Specific Data Model](./specific-data-model.md).
 2. Keep controllers thin; keep logic in services/models.
 3. Verify side effects on availability, pricing, and PDF import.
 4. Update impacted docs in the same change set.
+
+# Role-Based Access Control (RBAC)
+
+## Roles
+| Slug | Description |
+|---|---|
+| `super_admin` | Full access to all features |
+| `host_keeper` | Viewer only: calendar, bookings (no `income_amount`), guests |
+
+Roles are predefined in `RoleSeeder` — not dynamically created via UI.
+
+## Permissions
+| Slug | Protects |
+|---|---|
+| `view_bookings` | Lista e dettaglio prenotazioni (read-only, no `income_amount`) |
+| `manage_bookings` | Crea/modifica/elimina/cancella prenotazioni, import PDF |
+| `view_people` | Lista e dettaglio ospiti (read-only) |
+| `manage_people` | Crea/modifica/elimina ospiti |
+| `view_calendar` | Visualizza calendario |
+| `manage_calendar` | Crea/elimina blocchi disponibilità |
+| `view_accounting` | Accesso contabilità, campo `income_amount`, widget dashboard |
+| `manage_pricing` | Prezzi e sconti soggiorno |
+| `manage_settings` | Impostazioni generali |
+| `manage_newsletter` | Newsletter |
+| `manage_users` | Gestione utenti **(non delegabile via override)** |
+
+## How to check permissions in code
+```php
+// Blade
+@if(auth()->user()->hasPermission('view_accounting'))
+
+// PHP
+$user->isSuperAdmin();              // true if role is super_admin
+$user->hasPermission('manage_pricing'); // checks role + per-user overrides
+```
+
+Do **not** override Laravel's `can()` method. Use `hasPermission()` and `isSuperAdmin()` exclusively for admin authorization.
+
+## How authorization is enforced
+- **Route level**: `permission:<slug>` middleware on route groups in `routes/admin.php`
+- **View level**: `@if(auth()->user()->hasPermission(...))` Blade conditionals
+- Controllers do NOT contain authorization checks — they stay focused on business logic.
+
+## Data model
+- `users.role_id` → FK to `roles`
+- `role_permissions` pivot → role's default permissions
+- `user_permissions` pivot → per-user overrides (additive; `manage_users` is excluded from overrides)
+
+## Adding a new role or permission
+1. Add to `PermissionSeeder` / `RoleSeeder`
+2. Add `permission:<slug>` middleware to the relevant route group in `routes/admin.php`
+3. Add `@if(auth()->user()->hasPermission(...))` in affected Blade templates

@@ -29,6 +29,7 @@
                     📅 Calendario
                 </a>
             </li>
+            @if(auth()->user()->hasPermission('manage_pricing'))
             <li>
                 <a href="{{ route('admin.pricing.index') }}" @class(['active' => request()->routeIs('admin.pricing*')])>
                     💶 Prezzi
@@ -39,41 +40,57 @@
                     🏷️ Sconti soggiorno
                 </a>
             </li>
+            @endif
             <li>
                 <a href="{{ route('admin.bookings.index') }}" @class(['active' => request()->routeIs('admin.bookings*')])>
                     🏠 Prenotazioni
                 </a>
             </li>
+            @if(auth()->user()->hasPermission('manage_bookings'))
             <li>
                 <a href="{{ route('admin.bookings.import-pdf') }}" @class(['active' => request()->routeIs('admin.bookings.import-pdf*')])>
                     📄 Import PDF
                 </a>
             </li>
+            @endif
             <li>
                 <a href="{{ route('admin.people.index') }}" @class(['active' => request()->routeIs('admin.people*')])>
                     👥 Ospiti
                 </a>
             </li>
+            @if(auth()->user()->hasPermission('view_accounting'))
             <li>
                 <a href="{{ route('admin.finance.index') }}" @class(['active' => request()->routeIs('admin.finance*')])>
                     📒 Contabilità
                 </a>
             </li>
+            @endif
+            @if(auth()->user()->hasPermission('manage_newsletter'))
             <li>
                 <a href="{{ route('admin.newsletter') }}" @class(['active' => request()->routeIs('admin.newsletter*')])>
                     ✉️ Newsletter
                 </a>
             </li>
+            @endif
+            @if(auth()->user()->hasPermission('manage_settings'))
             <li>
                 <a href="{{ route('admin.settings') }}" @class(['active' => request()->routeIs('admin.settings*')])>
                     ⚙️ Impostazioni
                 </a>
             </li>
+            @endif
             <li>
                 <a href="{{ route('admin.account-security') }}" @class(['active' => request()->routeIs('admin.account-security*')])>
                     🔐 Sicurezza Account
                 </a>
             </li>
+            @if(auth()->user()->isSuperAdmin())
+            <li>
+                <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users*')])>
+                    👤 Utenti
+                </a>
+            </li>
+            @endif
         </ul>
 
         <div class="admin-sidebar__footer">

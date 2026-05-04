@@ -5,7 +5,9 @@
 @section('content')
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <h1 style="font-size:1.1rem;font-weight:700">Ospiti</h1>
-        <a href="{{ route('admin.people.create') }}" class="btn btn--primary">+ Nuovo ospite</a>
+        @if(auth()->user()->hasPermission('manage_people'))
+            <a href="{{ route('admin.people.create') }}" class="btn btn--primary">+ Nuovo ospite</a>
+        @endif
     </div>
 
     {{-- Search bar --}}
@@ -55,13 +57,15 @@
                             </td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.people.show', $person) }}" class="btn btn--outline btn--sm">Vedi</a>
-                                                                <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => request()->fullUrl()]) }}" class="btn btn--outline btn--sm">Modifica</a>
-                                <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
-                                      style="display:inline" onsubmit="return confirm('Eliminare questo ospite?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-                                </form>
+                                @if(auth()->user()->hasPermission('manage_people'))
+                                    <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => request()->fullUrl()]) }}" class="btn btn--outline btn--sm">Modifica</a>
+                                    <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
+                                          style="display:inline" onsubmit="return confirm('Eliminare questo ospite?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

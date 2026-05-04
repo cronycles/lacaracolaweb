@@ -6,14 +6,18 @@
     <div style="max-width:720px">
         <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
             <a href="{{ route('admin.people.index') }}" class="btn btn--outline btn--sm">← Ospiti</a>
-            <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => route('admin.people.show', $person)]) }}" class="btn btn--primary btn--sm">Modifica</a>
+            @if(auth()->user()->hasPermission('manage_people'))
+                <a href="{{ route('admin.people.edit', ['ospiti' => $person, 'return_to' => route('admin.people.show', $person)]) }}" class="btn btn--primary btn--sm">Modifica</a>
+            @endif
             <a href="{{ route('admin.people.stays', $person) }}" class="btn btn--outline btn--sm">Soggiorni</a>
-            <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
-                  onsubmit="return confirm('Eliminare questo ospite?')" style="margin-left:auto">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-            </form>
+            @if(auth()->user()->hasPermission('manage_people'))
+                <form method="POST" action="{{ route('admin.people.destroy', $person) }}"
+                      onsubmit="return confirm('Eliminare questo ospite?')" style="margin-left:auto">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
+                </form>
+            @endif
         </div>
 
         {{-- Personal data --}}

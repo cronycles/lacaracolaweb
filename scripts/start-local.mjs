@@ -75,20 +75,15 @@ function runClearConfigAndStart() {
             process.exit(code ?? 1);
         }
 
-        const startStack = spawn('npx', [
-            'concurrently',
-            '--kill-others-on-fail',
-            '--names',
-            'APP,VITE',
-            '--prefix-colors',
-            'green,cyan',
-            'php artisan serve',
-            'npm run dev -- --host 127.0.0.1 --port 5173',
-        ], {
-            cwd: projectRoot,
-            stdio: 'inherit',
-            shell: process.platform === 'win32',
-        });
+        const startStack = spawn(
+            'npx concurrently --kill-others-on-fail --names APP,VITE --prefix-colors green,cyan "php artisan serve" "npm run dev -- --host 127.0.0.1 --port 5173"',
+            [],
+            {
+                cwd: projectRoot,
+                stdio: 'inherit',
+                shell: true,
+            },
+        );
 
         startStack.on('exit', (stackCode) => {
             process.exit(stackCode ?? 0);

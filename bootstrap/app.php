@@ -23,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Unauthenticated users on admin routes => redirect to admin login
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
+
+        // Permission-based authorization for admin route groups
+        $middleware->alias([
+            'permission' => \App\Http\Middleware\RequirePermission::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

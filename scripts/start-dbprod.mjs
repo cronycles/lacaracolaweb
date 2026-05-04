@@ -124,17 +124,8 @@ async function startDbProd() {
 
     const envOverrides = parseEnvFile(envFile);
     const stack = spawn(
-        "npx",
-        [
-            "concurrently",
-            "--kill-others-on-fail",
-            "--names",
-            "APP,VITE",
-            "--prefix-colors",
-            "green,cyan",
-            "php artisan serve --env=prod-local --host=127.0.0.1 --port=8000",
-            "npm run dev -- --host 127.0.0.1 --port 5173",
-        ],
+        'npx concurrently --kill-others-on-fail --names APP,VITE --prefix-colors green,cyan "php artisan serve --env=prod-local --host=127.0.0.1 --port=8000" "npm run dev -- --host 127.0.0.1 --port 5173"',
+        [],
         {
             cwd: projectRoot,
             env: {
@@ -142,7 +133,7 @@ async function startDbProd() {
                 ...envOverrides,
             },
             stdio: "inherit",
-            shell: process.platform === "win32",
+            shell: true,
         },
     );
 

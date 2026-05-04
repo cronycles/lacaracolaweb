@@ -6,13 +6,15 @@
     <div style="max-width:680px">
         <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Prenotazioni</a>
-            <a href="{{ route('admin.bookings.edit-block', $block) }}" class="btn btn--primary btn--sm">Modifica</a>
-            <form method="POST" action="{{ route('admin.bookings.destroy-block', $block) }}"
-                  onsubmit="return confirm('Eliminare questo blocco?')" style="margin-left:auto">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
-            </form>
+            @if(auth()->user()->hasPermission('manage_calendar'))
+                <a href="{{ route('admin.bookings.edit-block', $block) }}" class="btn btn--primary btn--sm">Modifica</a>
+                <form method="POST" action="{{ route('admin.bookings.destroy-block', $block) }}"
+                      onsubmit="return confirm('Eliminare questo blocco?')" style="margin-left:auto">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
+                </form>
+            @endif
         </div>
 
         <div class="a-card">

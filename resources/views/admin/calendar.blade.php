@@ -182,8 +182,9 @@
             </div>
         </div>
 
-        {{-- Right: add manual block form --}}
+        {{-- Right: add manual block form (manage_calendar only) --}}
         <div>
+            @if(auth()->user()->hasPermission('manage_calendar'))
             <div class="a-card">
                 <div class="a-card__title">Aggiungi blocco manuale</div>
                 <form method="POST" action="{{ route('admin.calendar.block', ['month' => $windowCenterMonth]) }}">
@@ -230,6 +231,7 @@
                     + Nuova prenotazione
                 </a>
             </div>
+            @endif
         </div>
     </div>
 @endsection
