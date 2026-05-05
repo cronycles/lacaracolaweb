@@ -122,7 +122,7 @@
         <div class="stats-grid" style="margin-bottom:1.25rem">
             <div class="stat-card" style="border-left:4px solid #2e7d32">
                 <div class="stat-card__number" style="color:#2e7d32;font-size:1.3rem">
-                    € {{ number_format($totals['income'], 2, ',', '.') }}
+                    +&nbsp;€&nbsp;{{ number_format($totals['income'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Ingressi {{ $year }}</div>
                 <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
@@ -134,7 +134,7 @@
             </div>
             <div class="stat-card" style="border-left:4px solid #c62828">
                 <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    € {{ number_format($totals['expenses'], 2, ',', '.') }}
+                    −&nbsp;€&nbsp;{{ number_format($totals['expenses'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Uscite {{ $year }}</div>
                 <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
@@ -150,14 +150,14 @@
                 </div>
                 <div class="stat-card__label">Saldo {{ $year }}</div>
             </div>
-            <div class="stat-card" style="border-left:4px solid #92400e">
-                <div class="stat-card__number" style="color:#92400e;font-size:1.3rem">
+            <div class="stat-card" style="border-left:4px solid #c62828">
+                <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
                     −&nbsp;€&nbsp;{{ number_format($totals['cleaning_paid'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Pulizie pagate {{ $year }}</div>
             </div>
-            <div class="stat-card" style="border-left:4px solid #92400e">
-                <div class="stat-card__number" style="color:#92400e;font-size:1.3rem">
+            <div class="stat-card" style="border-left:4px solid #c62828">
+                <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
                     −&nbsp;€&nbsp;{{ number_format($totals['linen_paid'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Biancheria pagata {{ $year }}</div>
