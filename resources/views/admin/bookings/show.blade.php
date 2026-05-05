@@ -104,7 +104,13 @@
                         <th style="width:160px">Incasso ricevuto</th>
                         <td>
                             @if ($booking->income_amount !== null)
-                                <strong>€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }}</strong>
+                                <span class="badge badge--{{ $booking->income_paid ? 'paid' : 'unpaid' }}"
+                                      title="{{ $booking->income_paid ? 'Pagato' : 'Da pagare' }}">
+                                    € {{ number_format((float)$booking->income_amount, 2, ',', '.') }}
+                                </span>
+                                <span style="font-size:.8rem;color:#6b7f89;margin-left:.35rem">
+                                    {{ $booking->income_paid ? 'Pagato' : 'Da pagare' }}
+                                </span>
                             @else
                                 <span style="color:#6b7f89">—</span>
                             @endif
@@ -115,7 +121,13 @@
                         <th style="width:160px">Pulizie</th>
                         <td>
                             @if ($booking->cleaning_amount !== null)
-                                € {{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }}
+                                <span class="badge badge--{{ $booking->cleaning_paid ? 'paid' : 'unpaid' }}"
+                                      title="{{ $booking->cleaning_paid ? 'Pagate' : 'Da pagare' }}">
+                                    € {{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }}
+                                </span>
+                                <span style="font-size:.8rem;color:#6b7f89;margin-left:.35rem">
+                                    {{ $booking->cleaning_paid ? 'Pagate' : 'Da pagare' }}
+                                </span>
                             @else
                                 <span style="color:#6b7f89">—</span>
                             @endif
@@ -125,7 +137,13 @@
                         <th>Biancheria</th>
                         <td>
                             @if ($booking->linen_amount !== null)
-                                € {{ number_format((float)$booking->linen_amount, 2, ',', '.') }}
+                                <span class="badge badge--{{ $booking->linen_paid ? 'paid' : 'unpaid' }}"
+                                      title="{{ $booking->linen_paid ? 'Pagata' : 'Da pagare' }}">
+                                    € {{ number_format((float)$booking->linen_amount, 2, ',', '.') }}
+                                </span>
+                                <span style="font-size:.8rem;color:#6b7f89;margin-left:.35rem">
+                                    {{ $booking->linen_paid ? 'Pagata' : 'Da pagare' }}
+                                </span>
                             @else
                                 <span style="color:#6b7f89">—</span>
                             @endif
