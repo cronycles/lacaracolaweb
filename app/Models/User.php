@@ -33,9 +33,34 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * All pivot records for this user (both grants and denials).
+     * Use this relationship for syncing.
+     */
+    public function userPermissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions')
+            ->withPivot('denied');
+    }
+
+    /**
+     * Per-user permission grants (denied = false).
+     * These add permissions on top of the role.
+     */
     public function permissionOverrides(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'user_permissions');
+        return $this->belongsToMany(Permission::class, 'user_permissions')
+            ->wherePivot('denied', false);
+    }
+
+    /**
+     * Per-user permission denials (denied = true).
+     * These remove permissions granted by the role.
+     */
+    public function permissionDenials(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions')
+            ->wherePivot('denied', true);
     }
 
     // ── Authorization helpers ──────────────────────────────────────────────────
@@ -49,6 +74,7 @@ class User extends Authenticatable
      * Check whether this user has a given permission slug.
      * Super admin always returns true.
      * manage_users is non-delegable: only super_admin can have it.
+     * Explicit per-user denials override role grants.
      */
     public function hasPermission(string $permission): bool
     {
@@ -61,12 +87,17 @@ class User extends Authenticatable
             return false;
         }
 
-        // Check role permissions
-        if ($this->role && $this->role->permissions->contains('name', $permission)) {
+        // Explicit denial overrides everything
+        if ($this->permissionDenials->contains('name', $permission)) {
+            return false;
+        }
+
+        // Explicit grant
+        if ($this->permissionOverrides->contains('name', $permission)) {
             return true;
         }
 
-        // Check per-user overrides
-        return $this->permissionOverrides->contains('name', $permission);
+        // Role grant
+        return $this->role && $this->role->permissions->contains('name', $permission);
     }
 }

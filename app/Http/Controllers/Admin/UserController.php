@@ -54,28 +54,62 @@ class UserController extends Controller
         $roles       = Role::orderBy('name')->get();
         $permissions = Permission::where('name', '!=', 'manage_users')->orderBy('name')->get();
 
-        $utenti->load('role', 'permissionOverrides');
+        $utenti->load('role.permissions', 'permissionOverrides', 'permissionDenials');
+
+        // Effective state: checked if the user effectively has the permission
+        // (role grant or explicit grant, minus explicit denials)
+        $rolePermissionIds   = $utenti->role?->permissions->pluck('id')->toArray() ?? [];
+        $overrideIds         = $utenti->permissionOverrides->pluck('id')->toArray();
+        $denialIds           = $utenti->permissionDenials->pluck('id')->toArray();
+        $effectivePermissionIds = array_values(array_diff(
+            array_unique(array_merge($rolePermissionIds, $overrideIds)),
+            $denialIds
+        ));
 
         return view('admin.users.edit', [
-            'user'        => $utenti,
-            'roles'       => $roles,
-            'permissions' => $permissions,
+            'user'                   => $utenti,
+            'roles'                  => $roles,
+            'permissions'            => $permissions,
+            'rolePermissionIds'      => $rolePermissionIds,
+            'effectivePermissionIds' => $effectivePermissionIds,
         ]);
     }
 
     public function update(Request $request, User $utenti): RedirectResponse
     {
         $data = $request->validate([
-            'role_id'     => ['nullable', 'exists:roles,id'],
-            'permissions' => ['nullable', 'array'],
+            'role_id'       => ['nullable', 'exists:roles,id'],
+            'permissions'   => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id'],
         ]);
 
         $utenti->role_id = $data['role_id'] ?? null;
         $utenti->save();
 
-        // Sync per-user permission overrides (manage_users is excluded from the form)
-        $utenti->permissionOverrides()->sync($data['permissions'] ?? []);
+        // Reload role permissions after potential role change
+        $utenti->load('role.permissions');
+
+        $checkedIds     = array_map('intval', $data['permissions'] ?? []);
+        $allPermissions = Permission::where('name', '!=', 'manage_users')->get();
+
+        // Build sync payload:
+        // - checked + not in role  → explicit grant  (denied=false)
+        // - unchecked + in role    → explicit denial (denied=true)
+        // - checked + in role      → no record needed (role already grants it)
+        // - unchecked + not in role → no record needed (naturally denied)
+        $syncData = [];
+        foreach ($allPermissions as $perm) {
+            $isChecked = in_array($perm->id, $checkedIds);
+            $fromRole  = $utenti->role && $utenti->role->permissions->contains('id', $perm->id);
+
+            if ($isChecked && ! $fromRole) {
+                $syncData[$perm->id] = ['denied' => false];
+            } elseif (! $isChecked && $fromRole) {
+                $syncData[$perm->id] = ['denied' => true];
+            }
+        }
+
+        $utenti->userPermissions()->sync($syncData);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Utente aggiornato.');
