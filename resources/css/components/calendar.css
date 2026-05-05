@@ -257,43 +257,45 @@
 .cal-window-nav {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    padding: 0.35rem 0;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
     margin-bottom: 1rem;
     border-bottom: 1px solid #e5eaee;
+}
+
+.cal-window-nav__pager {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .cal-window-nav__label {
     font-size: 0.875rem;
     font-weight: 600;
     color: #1e3d4a;
-    flex: 1;
-    text-align: center;
-    min-width: 0;
-}
-
-.cal-window-nav__sep {
-    width: 1px;
-    height: 1.2rem;
-    background: #dde3e8;
-    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .cal-window-nav__btn {
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 30px;
+    min-height: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.2rem 0.5rem;
+    padding: 0.15rem 0.45rem;
+}
+
+.cal-window-nav__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .cal-window-nav__picker {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    flex-wrap: wrap;
 }
 
 .cal-window-nav__picker-label {
@@ -303,9 +305,9 @@
 }
 
 .form-select--sm {
-    min-width: 190px;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
+    min-width: 170px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     font-size: 0.75rem;
 }
 
@@ -321,8 +323,9 @@
 }
 
 @media (max-width: 640px) {
-    .cal-window-nav__picker {
-        flex: 1;
+    .cal-window-nav {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .form-select--sm {

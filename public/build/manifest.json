@@ -9,7 +9,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-D62PGnOJ.css",
+    "file": "assets/app-D54Tign_.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -27,7 +27,7 @@
     ]
   },
   "resources/css/components/calendar.css": {
-    "file": "assets/calendar-XEqwj6Fl.css",
+    "file": "assets/calendar-C3vQble8.css",
     "src": "resources/css/components/calendar.css",
     "isEntry": true,
     "name": "calendar",
