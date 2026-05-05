@@ -185,8 +185,8 @@ body {
 .row--today td { background: #fffbeb; }
 .row--today td:first-child { box-shadow: inset 3px 0 0 #f59e0b; }
 .row--today:hover td { background: #fef3c7; }
-.row--past td { background: #f5f6f7; }
-.row--past:hover td { background: #eef0f1; }
+.row--past { opacity: .55; }
+.row--past:hover { opacity: .75; }
 
 /* Badges */
 .badge {
