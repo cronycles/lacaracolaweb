@@ -3,10 +3,21 @@
 @section('title', 'Contabilità ' . $year)
 
 @section('content')
-    {{-- Year filter --}}
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap">
-        <div style="font-size:1.1rem;font-weight:700;color:#1a2e3a">Contabilità</div>
-        <div style="display:flex;gap:.5rem;align-items:center">
+    {{-- Hero: Saldo totale --}}
+    @php $heroColor = $globalBalance >= 0 ? '#2e7d32' : '#c62828'; @endphp
+    <div style="background:{{ $globalBalance >= 0 ? '#f1f8f1' : '#fff5f5' }};border:2px solid {{ $heroColor }};border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+        <div>
+            <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:{{ $heroColor }};opacity:.75;margin-bottom:.2rem">Saldo totale</div>
+            <div style="font-size:2.4rem;font-weight:800;color:{{ $heroColor }};line-height:1">
+                € {{ number_format($globalBalance, 2, ',', '.') }}
+            </div>
+        </div>
+    </div>
+
+    {{-- Toolbar: anno + nuova voce --}}
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+        <div style="font-size:1rem;font-weight:700;color:#1a2e3a">Contabilità</div>
+        <div style="display:flex;gap:.4rem;align-items:center">
             @foreach ($availableYears as $y)
                 <a href="{{ route('admin.finance.index', ['year' => $y]) }}"
                    class="btn btn--sm {{ $y == $year ? 'btn--primary' : 'btn--outline' }}">
@@ -16,46 +27,6 @@
         </div>
         <div style="margin-left:auto">
             <a href="{{ route('admin.finance.create') }}" class="btn btn--primary btn--sm">+ Nuova voce</a>
-        </div>
-    </div>
-
-    {{-- Totals --}}
-    <div class="stats-grid" style="margin-bottom:1.5rem">
-        <div class="stat-card" style="border-left:4px solid #2e7d32">
-            <div class="stat-card__number" style="color:#2e7d32">
-                € {{ number_format($totals['income'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Ingressi {{ $year }}</div>
-            <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
-                prenotazioni: € {{ number_format($totals['booking_income'], 2, ',', '.') }}
-                @if ($totals['extra_income'] > 0)
-                    &nbsp;+ extra: € {{ number_format($totals['extra_income'], 2, ',', '.') }}
-                @endif
-            </div>
-        </div>
-        <div class="stat-card" style="border-left:4px solid #c62828">
-            <div class="stat-card__number" style="color:#c62828">
-                € {{ number_format($totals['expenses'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Uscite {{ $year }}</div>
-            <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
-                prenotazioni: € {{ number_format($totals['booking_expenses'], 2, ',', '.') }}
-                @if ($totals['extra_expenses'] > 0)
-                    &nbsp;+ extra: € {{ number_format($totals['extra_expenses'], 2, ',', '.') }}
-                @endif
-            </div>
-        </div>
-        <div class="stat-card" style="border-left:4px solid {{ $totals['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
-            <div class="stat-card__number" style="color:{{ $totals['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
-                € {{ number_format($totals['balance'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Saldo {{ $year }}</div>
-        </div>
-        <div class="stat-card" style="border-left:4px solid {{ $globalBalance >= 0 ? '#7b1fa2' : '#c62828' }}">
-            <div class="stat-card__number" style="color:{{ $globalBalance >= 0 ? '#7b1fa2' : '#c62828' }}">
-                € {{ number_format($globalBalance, 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Saldo totale</div>
         </div>
     </div>
 
@@ -117,6 +88,43 @@
                 </table>
             </div>
         @endif
+    </div>
+
+    {{-- Secondary: yearly analysis --}}
+    <div style="margin-bottom:1rem;margin-top:2rem;padding-top:1.25rem;border-top:1px solid #e0e8ed">
+        <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:1rem">Analisi {{ $year }}</div>
+        <div class="stats-grid" style="margin-bottom:1.25rem">
+            <div class="stat-card" style="border-left:4px solid #2e7d32">
+                <div class="stat-card__number" style="color:#2e7d32;font-size:1.3rem">
+                    € {{ number_format($totals['income'], 2, ',', '.') }}
+                </div>
+                <div class="stat-card__label">Ingressi {{ $year }}</div>
+                <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
+                    prenotazioni: € {{ number_format($totals['booking_income'], 2, ',', '.') }}
+                    @if ($totals['extra_income'] > 0)
+                        &nbsp;+ extra: € {{ number_format($totals['extra_income'], 2, ',', '.') }}
+                    @endif
+                </div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid #c62828">
+                <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
+                    € {{ number_format($totals['expenses'], 2, ',', '.') }}
+                </div>
+                <div class="stat-card__label">Uscite {{ $year }}</div>
+                <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
+                    prenotazioni: € {{ number_format($totals['booking_expenses'], 2, ',', '.') }}
+                    @if ($totals['extra_expenses'] > 0)
+                        &nbsp;+ extra: € {{ number_format($totals['extra_expenses'], 2, ',', '.') }}
+                    @endif
+                </div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid {{ $totals['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
+                <div class="stat-card__number" style="color:{{ $totals['balance'] >= 0 ? '#1976d2' : '#c62828' }};font-size:1.3rem">
+                    € {{ number_format($totals['balance'], 2, ',', '.') }}
+                </div>
+                <div class="stat-card__label">Saldo {{ $year }}</div>
+            </div>
+        </div>
     </div>
 
     {{-- Monthly breakdown --}}
