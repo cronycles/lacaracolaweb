@@ -19,14 +19,14 @@ class FinancialEntryController extends Controller
     {
         $year = (int) $request->input('year', now()->year);
 
-        // Booking-sourced income (income_amount where income_paid = true) for the year
+        // ── Year totals (stat cards) ─────────────────────────────────────────
+
         $bookingIncome = Booking::whereNull('canceled_at')
             ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
-        // Booking-sourced expenses (cleaning + linen only when marked as paid) for the year
         $bookingCleaning = Booking::whereNull('canceled_at')
             ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->where('cleaning_paid', true)
@@ -41,7 +41,6 @@ class FinancialEntryController extends Controller
 
         $bookingExpenses = $bookingCleaning + $bookingLinen;
 
-        // Extra financial entries for the year
         $extraIncome = FinancialEntry::where('type', 'income')
             ->whereYear('entry_date', $year)
             ->sum('amount');
@@ -61,7 +60,8 @@ class FinancialEntryController extends Controller
 
         $totals['balance'] = $totals['income'] - $totals['expenses'];
 
-        // Cumulative all-time balance (no year filter)
+        // ── All-time global balance ──────────────────────────────────────────
+
         $globalBookingIncome = Booking::whereNull('canceled_at')
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
@@ -72,12 +72,32 @@ class FinancialEntryController extends Controller
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;
 
-        $globalExtraIncome    = FinancialEntry::where('type', 'income')->sum('amount');
-        $globalExtraExpenses  = FinancialEntry::where('type', 'expense')->sum('amount');
+        $globalExtraIncome   = FinancialEntry::where('type', 'income')->sum('amount');
+        $globalExtraExpenses = FinancialEntry::where('type', 'expense')->sum('amount');
 
         $globalBalance = ($globalBookingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
 
-        // Monthly breakdown for the selected year
+        // ── Balance at start of selected year (all previous years combined) ──
+
+        $prevBookingIncome = Booking::whereNull('canceled_at')
+            ->whereRaw('YEAR(COALESCE(income_paid_at, checkout)) < ?', [$year])
+            ->where('income_paid', true)
+            ->whereNotNull('income_amount')
+            ->sum('income_amount');
+
+        $prevBookingExpenses = Booking::whereNull('canceled_at')
+            ->whereRaw('YEAR(COALESCE(services_paid_at, checkout)) < ?', [$year])
+            ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
+                         COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
+            ->value('total') ?? 0;
+
+        $prevExtraIncome   = FinancialEntry::where('type', 'income')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
+        $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
+
+        $previousBalance = (float) ($prevBookingIncome + $prevExtraIncome) - ($prevBookingExpenses + $prevExtraExpenses);
+
+        // ── Monthly breakdown ────────────────────────────────────────────────
+
         $monthlyData = [];
         for ($m = 1; $m <= 12; $m++) {
             $bInc = Booking::whereNull('canceled_at')
@@ -110,16 +130,119 @@ class FinancialEntryController extends Controller
             ];
         }
 
-        // All extra entries for the year, sorted by date desc
-        $entries = FinancialEntry::whereYear('entry_date', $year)
-            ->orderByDesc('entry_date')
-            ->orderByDesc('id')
+        // ── Unified movement list for the year ───────────────────────────────
+
+        $movements = collect();
+
+        // 1. Extra financial entries
+        foreach (FinancialEntry::whereYear('entry_date', $year)->get() as $entry) {
+            $movements->push([
+                'date'           => $entry->entry_date,
+                'type'           => $entry->type,
+                'category_label' => config('finance.categories')[$entry->category] ?? $entry->category,
+                'description'    => $entry->description,
+                'amount'         => (float) $entry->amount,
+                'source'         => 'entry',
+                'entry'          => $entry,
+                'booking_id'     => null,
+            ]);
+        }
+
+        // 2. Booking income payments
+        $bookingIncomeRows = Booking::whereNull('canceled_at')
+            ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
+            ->where('income_paid', true)
+            ->whereNotNull('income_amount')
+            ->with('person')
             ->get();
+
+        foreach ($bookingIncomeRows as $booking) {
+            $date = $booking->income_paid_at ?? $booking->checkout;
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
+                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $movements->push([
+                'date'           => $date,
+                'type'           => 'income',
+                'category_label' => 'Prenotazione',
+                'description'    => $desc,
+                'amount'         => (float) $booking->income_amount,
+                'source'         => 'booking_income',
+                'entry'          => null,
+                'booking_id'     => $booking->id,
+            ]);
+        }
+
+        // 3. Booking cleaning/linen payments
+        $bookingServiceRows = Booking::whereNull('canceled_at')
+            ->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->where('cleaning_paid', true)->whereNotNull('cleaning_amount');
+                })->orWhere(function ($q2) {
+                    $q2->where('linen_paid', true)->whereNotNull('linen_amount');
+                });
+            })
+            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
+            ->with('person')
+            ->get();
+
+        foreach ($bookingServiceRows as $booking) {
+            $date       = $booking->services_paid_at ?? $booking->checkout;
+            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
+                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+
+            if ($booking->cleaning_paid && $booking->cleaning_amount !== null) {
+                $movements->push([
+                    'date'           => $date,
+                    'type'           => 'expense',
+                    'category_label' => 'Pulizie',
+                    'description'    => $bookingRef,
+                    'amount'         => (float) $booking->cleaning_amount,
+                    'source'         => 'booking_cleaning',
+                    'entry'          => null,
+                    'booking_id'     => $booking->id,
+                ]);
+            }
+
+            if ($booking->linen_paid && $booking->linen_amount !== null) {
+                $movements->push([
+                    'date'           => $date,
+                    'type'           => 'expense',
+                    'category_label' => 'Biancheria',
+                    'description'    => $bookingRef,
+                    'amount'         => (float) $booking->linen_amount,
+                    'source'         => 'booking_linen',
+                    'entry'          => null,
+                    'booking_id'     => $booking->id,
+                ]);
+            }
+        }
+
+        // Sort ASC by date (then by id for stability), compute running balances, then reverse for display
+        $movements = $movements->sort(function ($a, $b) {
+            $cmp = $a['date']->timestamp <=> $b['date']->timestamp;
+            if ($cmp !== 0) {
+                return $cmp;
+            }
+
+            return ($a['entry']?->id ?? $a['booking_id'] ?? 0) <=> ($b['entry']?->id ?? $b['booking_id'] ?? 0);
+        })->values();
+
+        $runningBalance = $previousBalance;
+        $movements = $movements->map(function ($m) use (&$runningBalance) {
+            if ($m['type'] === 'income') {
+                $runningBalance += $m['amount'];
+            } else {
+                $runningBalance -= $m['amount'];
+            }
+            $m['running_balance'] = $runningBalance;
+
+            return $m;
+        })->reverse()->values();
 
         $availableYears = $this->availableYears();
 
         return view('admin.finance.index', compact(
-            'year', 'totals', 'monthlyData', 'entries', 'availableYears', 'globalBalance'
+            'year', 'totals', 'monthlyData', 'movements', 'previousBalance', 'availableYears', 'globalBalance'
         ));
     }
 
