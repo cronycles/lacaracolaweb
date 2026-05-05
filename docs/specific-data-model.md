@@ -287,6 +287,7 @@ Predefined admin roles. Not dynamically creatable via UI — managed via seeders
 
 **Seeded roles:**
 - `super_admin`: full access to all features
+- `host_owner`: full access except `manage_users` and `import_pdf`
 - `host_keeper`: viewer only (calendar, bookings without `income_amount`, guests)
 
 **Relations:**
@@ -307,7 +308,7 @@ Feature-level permission slugs. Defined once in `PermissionSeeder`.
 | `created_at`  | TIMESTAMP    |                |
 | `updated_at`  | TIMESTAMP    |                |
 
-**Defined permissions:** `view_bookings`, `manage_bookings`, `view_people`, `manage_people`, `view_calendar`, `manage_calendar`, `view_accounting`, `manage_pricing`, `manage_settings`, `manage_newsletter`, `manage_users`
+**Defined permissions:** `view_bookings`, `manage_bookings`, `import_pdf`, `view_people`, `manage_people`, `view_calendar`, `manage_calendar`, `view_accounting`, `manage_pricing`, `manage_settings`, `manage_newsletter`, `manage_users`
 
 **Relations:**
 - N ↔ N `roles` via `role_permissions`

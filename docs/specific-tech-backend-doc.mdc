@@ -60,6 +60,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 | Slug | Description |
 |---|---|
 | `super_admin` | Full access to all features |
+| `host_owner` | Full access except `manage_users` and `import_pdf` |
 | `host_keeper` | Viewer only: calendar, bookings (no `income_amount`), guests |
 
 Roles are predefined in `RoleSeeder` — not dynamically created via UI.
@@ -68,7 +69,8 @@ Roles are predefined in `RoleSeeder` — not dynamically created via UI.
 | Slug | Protects |
 |---|---|
 | `view_bookings` | Lista e dettaglio prenotazioni (read-only, no `income_amount`) |
-| `manage_bookings` | Crea/modifica/elimina/cancella prenotazioni, import PDF |
+| `manage_bookings` | Crea/modifica/elimina/cancella prenotazioni |
+| `import_pdf` | Importa prenotazioni da PDF Interhome |
 | `view_people` | Lista e dettaglio ospiti (read-only) |
 | `manage_people` | Crea/modifica/elimina ospiti |
 | `view_calendar` | Visualizza calendario |
