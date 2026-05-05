@@ -18,7 +18,7 @@
             <div>
                 <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#92400e;opacity:.8;margin-bottom:.2rem">Pulizie da pagare</div>
                 <div style="font-size:1.8rem;font-weight:800;color:#92400e;line-height:1">
-                    {{ $cleaningUnpaid != 0 ? '−&nbsp;' : '' }}€&nbsp;{{ number_format($cleaningUnpaid, 2, ',', '.') }}
+                    {!! $cleaningUnpaid != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($cleaningUnpaid, 2, ',', '.') }}
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div>
                 <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#92400e;opacity:.8;margin-bottom:.2rem">Biancheria da pagare</div>
                 <div style="font-size:1.8rem;font-weight:800;color:#92400e;line-height:1">
-                    {{ $linenUnpaid != 0 ? '−&nbsp;' : '' }}€&nbsp;{{ number_format($linenUnpaid, 2, ',', '.') }}
+                    {!! $linenUnpaid != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($linenUnpaid, 2, ',', '.') }}
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div>
                 <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1565c0;opacity:.8;margin-bottom:.2rem">Posto auto da incassare</div>
                 <div style="font-size:1.8rem;font-weight:800;color:#1565c0;line-height:1">
-                    {{ $parkingUnpaid != 0 ? '+&nbsp;' : '' }}€&nbsp;{{ number_format($parkingUnpaid, 2, ',', '.') }}
+                    {!! $parkingUnpaid != 0 ? '+&nbsp;' : '' !!}€&nbsp;{{ number_format($parkingUnpaid, 2, ',', '.') }}
                 </div>
             </div>
         </div>
@@ -122,7 +122,7 @@
         <div class="stats-grid" style="margin-bottom:1.25rem">
             <div class="stat-card" style="border-left:4px solid #2e7d32">
                 <div class="stat-card__number" style="color:#2e7d32;font-size:1.3rem">
-                    {{ $totals['income'] != 0 ? '+&nbsp;' : '' }}€&nbsp;{{ number_format($totals['income'], 2, ',', '.') }}
+                    {!! $totals['income'] != 0 ? '+&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['income'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Ingressi {{ $year }}</div>
                 <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
@@ -134,7 +134,7 @@
             </div>
             <div class="stat-card" style="border-left:4px solid #c62828">
                 <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    {{ $totals['expenses'] != 0 ? '−&nbsp;' : '' }}€&nbsp;{{ number_format($totals['expenses'], 2, ',', '.') }}
+                    {!! $totals['expenses'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['expenses'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Uscite {{ $year }}</div>
                 <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
@@ -152,13 +152,13 @@
             </div>
             <div class="stat-card" style="border-left:4px solid #c62828">
                 <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    {{ $totals['cleaning_paid'] != 0 ? '−&nbsp;' : '' }}€&nbsp;{{ number_format($totals['cleaning_paid'], 2, ',', '.') }}
+                    {!! $totals['cleaning_paid'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['cleaning_paid'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Pulizie pagate {{ $year }}</div>
             </div>
             <div class="stat-card" style="border-left:4px solid #c62828">
                 <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    {{ $totals['linen_paid'] != 0 ? '−&nbsp;' : '' }}€&nbsp;{{ number_format($totals['linen_paid'], 2, ',', '.') }}
+                    {!! $totals['linen_paid'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['linen_paid'], 2, ',', '.') }}
                 </div>
                 <div class="stat-card__label">Biancheria pagata {{ $year }}</div>
             </div>
