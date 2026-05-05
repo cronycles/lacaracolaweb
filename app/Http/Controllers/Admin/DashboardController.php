@@ -70,6 +70,13 @@ class DashboardController extends Controller
             'balance'          => $totalIncome - $totalExpenses,
             'global_balance'   => $globalBalance,
 
+            // Current booking (guests in the apartment right now)
+            'current_booking'  => Booking::whereNull('canceled_at')
+                                         ->where('checkin', '<=', today())
+                                         ->where('checkout', '>', today())
+                                         ->with('person')
+                                         ->first(),
+
             // Cleaning / linen payment summary (visible to all with view_bookings)
             'cleaning_unpaid'  => Booking::whereNull('canceled_at')
                                          ->whereNotNull('cleaning_amount')
