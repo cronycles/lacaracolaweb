@@ -241,8 +241,24 @@ class FinancialEntryController extends Controller
 
         $availableYears = $this->availableYears();
 
+        $cleaningUnpaid = Booking::whereNull('canceled_at')
+            ->whereNotNull('cleaning_amount')
+            ->where('cleaning_paid', false)
+            ->sum('cleaning_amount');
+
+        $linenUnpaid = Booking::whereNull('canceled_at')
+            ->whereNotNull('linen_amount')
+            ->where('linen_paid', false)
+            ->sum('linen_amount');
+
+        $parkingUnpaid = Booking::whereNull('canceled_at')
+            ->whereNotNull('parking_amount')
+            ->where('parking_paid', false)
+            ->sum('parking_amount');
+
         return view('admin.finance.index', compact(
-            'year', 'totals', 'monthlyData', 'movements', 'previousBalance', 'availableYears', 'globalBalance'
+            'year', 'totals', 'monthlyData', 'movements', 'previousBalance', 'availableYears', 'globalBalance',
+            'cleaningUnpaid', 'linenUnpaid', 'parkingUnpaid'
         ));
     }
 

@@ -3,13 +3,39 @@
 @section('title', 'Contabilità ' . $year)
 
 @section('content')
-    {{-- Hero: Saldo totale --}}
+    {{-- Hero: Saldo totale + cards spese/incassi --}}
     @php $heroColor = $globalBalance >= 0 ? '#2e7d32' : '#c62828'; @endphp
-    <div style="background:{{ $globalBalance >= 0 ? '#f1f8f1' : '#fff5f5' }};border:2px solid {{ $heroColor }};border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div>
-            <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:{{ $heroColor }};opacity:.75;margin-bottom:.2rem">Saldo totale</div>
-            <div style="font-size:2.4rem;font-weight:800;color:{{ $heroColor }};line-height:1">
-                € {{ number_format($globalBalance, 2, ',', '.') }}
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:stretch;margin-bottom:1.5rem">
+        <div style="flex:1 1 200px;background:{{ $globalBalance >= 0 ? '#f1f8f1' : '#fff5f5' }};border:2px solid {{ $heroColor }};border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center">
+            <div>
+                <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:{{ $heroColor }};opacity:.75;margin-bottom:.2rem">Saldo totale</div>
+                <div style="font-size:2.4rem;font-weight:800;color:{{ $heroColor }};line-height:1">
+                    € {{ number_format($globalBalance, 2, ',', '.') }}
+                </div>
+            </div>
+        </div>
+        <div style="flex:1 1 160px;background:#fff8f0;border:2px solid #92400e;border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center">
+            <div>
+                <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#92400e;opacity:.8;margin-bottom:.2rem">Pulizie da pagare</div>
+                <div style="font-size:1.8rem;font-weight:800;color:#92400e;line-height:1">
+                    −&nbsp;€&nbsp;{{ number_format($cleaningUnpaid, 2, ',', '.') }}
+                </div>
+            </div>
+        </div>
+        <div style="flex:1 1 160px;background:#fff8f0;border:2px solid #92400e;border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center">
+            <div>
+                <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#92400e;opacity:.8;margin-bottom:.2rem">Biancheria da pagare</div>
+                <div style="font-size:1.8rem;font-weight:800;color:#92400e;line-height:1">
+                    −&nbsp;€&nbsp;{{ number_format($linenUnpaid, 2, ',', '.') }}
+                </div>
+            </div>
+        </div>
+        <div style="flex:1 1 160px;background:#f0f4ff;border:2px solid #1565c0;border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center">
+            <div>
+                <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1565c0;opacity:.8;margin-bottom:.2rem">Posto auto da incassare</div>
+                <div style="font-size:1.8rem;font-weight:800;color:#1565c0;line-height:1">
+                    +&nbsp;€&nbsp;{{ number_format($parkingUnpaid, 2, ',', '.') }}
+                </div>
             </div>
         </div>
     </div>
