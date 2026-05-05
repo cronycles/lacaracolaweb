@@ -22,19 +22,19 @@
         @if(auth()->user()->hasPermission('view_bookings'))
         <div class="stat-card stat-card--hero" style="border-left:4px solid #92400e">
             <div class="stat-card__number" style="color:#92400e">
-                € {{ number_format($stats['cleaning_unpaid'], 2, ',', '.') }}
+                −&nbsp;€&nbsp;{{ number_format($stats['cleaning_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Pulizie da pagare</div>
         </div>
         <div class="stat-card stat-card--hero" style="border-left:4px solid #92400e">
             <div class="stat-card__number" style="color:#92400e">
-                € {{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
+                −&nbsp;€&nbsp;{{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Biancheria da pagare</div>
         </div>
         <div class="stat-card stat-card--hero" style="border-left:4px solid #1565c0">
             <div class="stat-card__number" style="color:#1565c0">
-                € {{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
+                +&nbsp;€&nbsp;{{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Posto auto da incassare</div>
         </div>
@@ -45,19 +45,19 @@
     <div class="stats-grid stats-grid--hero" style="margin-bottom:1.25rem">
         <div class="stat-card stat-card--hero" style="border-left:4px solid #92400e">
             <div class="stat-card__number" style="color:#92400e">
-                € {{ number_format($stats['cleaning_unpaid'], 2, ',', '.') }}
+                −&nbsp;€&nbsp;{{ number_format($stats['cleaning_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Pulizie da pagare</div>
         </div>
         <div class="stat-card stat-card--hero" style="border-left:4px solid #92400e">
             <div class="stat-card__number" style="color:#92400e">
-                € {{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
+                −&nbsp;€&nbsp;{{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Biancheria da pagare</div>
         </div>
         <div class="stat-card stat-card--hero" style="border-left:4px solid #1565c0">
             <div class="stat-card__number" style="color:#1565c0">
-                € {{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
+                +&nbsp;€&nbsp;{{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Posto auto da incassare</div>
         </div>
