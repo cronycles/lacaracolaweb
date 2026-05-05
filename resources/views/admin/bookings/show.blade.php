@@ -152,13 +152,7 @@
                     @endif
                 </tbody>
             </table>
-            @if(auth()->user()->hasPermission('manage_bookings'))
-            <div style="margin-top:.75rem">
-                <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--outline btn--sm">
-                    Modifica dati economici
-                </a>
-            </div>
-            @endif
+
         </div>
     </div>
 @endsection
