@@ -204,6 +204,8 @@ class BookingController extends Controller
             'cleaning_paid'   => ['nullable', 'boolean'],
             'linen_amount'    => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'linen_paid'      => ['nullable', 'boolean'],
+            'parking_amount'  => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'parking_paid'    => ['nullable', 'boolean'],
             'services_paid_at' => ['nullable', 'date'],
         ]);
     }

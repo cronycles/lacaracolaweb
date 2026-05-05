@@ -171,6 +171,19 @@
                                placeholder="{{ config('apartment.booking.linen_fee_per_person') }}">
                         @error('linen_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="parking_amount">
+                            Posto auto (€)
+                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
+                                (default {{ config('apartment.booking.parking_fee_per_day') }}€/notte)
+                            </span>
+                        </label>
+                        <input type="number" id="parking_amount" name="parking_amount" class="form-input"
+                               value="{{ old('parking_amount', $booking->parking_amount) }}"
+                               min="0" max="99999.99" step="0.01"
+                               placeholder="{{ config('apartment.booking.parking_fee_per_day') }}">
+                        @error('parking_amount') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
                 {{-- Payment status --}}
@@ -207,8 +220,14 @@
                                        @checked(old('linen_paid', $booking->linen_paid ?? false))>
                                 <label class="form-label" for="linen_paid" style="margin:0;cursor:pointer">Biancheria pagata</label>
                             </div>
+                            <div style="display:flex;align-items:center;gap:.5rem">
+                                <input type="hidden" name="parking_paid" value="0">
+                                <input type="checkbox" id="parking_paid" name="parking_paid" value="1" class="form-checkbox"
+                                       @checked(old('parking_paid', $booking->parking_paid ?? false))>
+                                <label class="form-label" for="parking_paid" style="margin:0;cursor:pointer">Posto auto incassato</label>
+                            </div>
                             <div>
-                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria</label>
+                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria/parcheggio</label>
                                 <input type="date" id="services_paid_at" name="services_paid_at" class="form-input"
                                        value="{{ old('services_paid_at', $booking->services_paid_at?->format('Y-m-d')) }}"
                                        style="font-size:.85rem;padding:.25rem .5rem">
@@ -238,18 +257,30 @@
 (function () {
     const DEFAULT_CLEANING = {{ config('apartment.booking.cleaning_fee') }};
     const DEFAULT_LINEN_PER_PERSON = {{ config('apartment.booking.linen_fee_per_person') }};
+    const DEFAULT_PARKING_PER_DAY = {{ config('apartment.booking.parking_fee_per_day') }};
 
     const adults   = document.getElementById('adults');
     const children = document.getElementById('children');
     const linen    = document.getElementById('linen_amount');
     const cleaning = document.getElementById('cleaning_amount');
+    const parking  = document.getElementById('parking_amount');
+    const checkin  = document.getElementById('checkin');
+    const checkout = document.getElementById('checkout');
 
     function totalGuests() {
         return (parseInt(adults?.value) || 0) + (parseInt(children?.value) || 0);
     }
 
+    function totalNights() {
+        if (!checkin?.value || !checkout?.value) return 0;
+        const ci = new Date(checkin.value);
+        const co = new Date(checkout.value);
+        const diff = (co - ci) / (1000 * 60 * 60 * 24);
+        return diff > 0 ? diff : 0;
+    }
+
     function suggestDefaults() {
-        // Only prefill if the field is currently empty (don't overwrite user input)
+        // Only update placeholder if the field is currently empty (don't overwrite user input)
         if (!cleaning.value) {
             cleaning.placeholder = DEFAULT_CLEANING;
         }
@@ -259,16 +290,22 @@
                 ? (DEFAULT_LINEN_PER_PERSON * guests).toFixed(2)
                 : DEFAULT_LINEN_PER_PERSON;
         }
+        if (!parking.value) {
+            const nights = totalNights();
+            parking.placeholder = nights > 0
+                ? (DEFAULT_PARKING_PER_DAY * nights).toFixed(2)
+                : DEFAULT_PARKING_PER_DAY;
+        }
     }
 
     adults?.addEventListener('input', suggestDefaults);
     children?.addEventListener('input', suggestDefaults);
+    checkin?.addEventListener('change', suggestDefaults);
 
     // Run once on load to set correct placeholder
     suggestDefaults();
 
     // Pre-fill payment dates with checkout date when checkout changes
-    const checkout        = document.getElementById('checkout');
     const incomePaidAt    = document.getElementById('income_paid_at');
     const servicesPaidAt  = document.getElementById('services_paid_at');
 
@@ -287,7 +324,10 @@
     incomePaidAt?.addEventListener('change', () => { incomePaidAt.dataset.userEdited = '1'; });
     servicesPaidAt?.addEventListener('change', () => { servicesPaidAt.dataset.userEdited = '1'; });
 
-    checkout?.addEventListener('change', syncPaymentDates);
+    checkout?.addEventListener('change', () => {
+        syncPaymentDates();
+        suggestDefaults();
+    });
 
     // On load: if date fields are empty (new booking), pre-fill from checkout
     if (checkout?.value) {

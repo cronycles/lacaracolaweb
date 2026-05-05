@@ -24,6 +24,7 @@
                         <th>Origine</th>
                         <th>Pulizie</th>
                         <th>Biancheria</th>
+                        <th>Posto auto</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -81,8 +82,16 @@
                                     @else
                                         —
                                     @endif
-                                </td>
-                                <td style="white-space:nowrap">
+                                </td>                                <td>
+                                    @if($item->parking_amount)
+                                        <span class="badge badge--{{ $item->parking_paid ? 'paid' : 'unpaid' }}"
+                                              title="{{ $item->parking_paid ? 'Incassato' : 'Da incassare' }}">
+                                            € {{ number_format($item->parking_amount, 2, ',', '.') }}
+                                        </span>
+                                    @else
+                                        &mdash;
+                                    @endif
+                                </td>                                <td style="white-space:nowrap">
                                     <a href="{{ route('admin.bookings.show', $item) }}" class="btn btn--outline btn--sm">Vedi</a>
                                 </td>
                             </tr>
@@ -111,6 +120,7 @@
                                 <td>—</td>
                                 <td>—</td>
                                 <td>—</td>
+                                <td>—</td>
                                 <td style="white-space:nowrap">
                                     <a href="{{ route('admin.bookings.show-block', $item) }}" class="btn btn--outline btn--sm">Vedi</a>
                                 </td>
@@ -124,9 +134,9 @@
                 {{ $items->links() }}
             </div>
             <div style="margin-top:.75rem;font-size:.75rem;color:#6b7f89;display:flex;gap:1rem;align-items:center">
-                <strong style="color:#444">Legenda pulizie/biancheria:</strong>
-                <span class="badge badge--paid">€ X,XX</span> pagata
-                <span class="badge badge--unpaid">€ X,XX</span> da pagare
+                <strong style="color:#444">Legenda:</strong>
+                <span class="badge badge--paid">€ X,XX</span> pagato / incassato
+                <span class="badge badge--unpaid">€ X,XX</span> da pagare / da incassare
             </div>
         @endif
     </div>

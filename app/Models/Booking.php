@@ -32,6 +32,8 @@ class Booking extends Model
         'cleaning_paid',
         'linen_amount',
         'linen_paid',
+        'parking_amount',
+        'parking_paid',
         'services_paid_at',
     ];
 
@@ -50,6 +52,8 @@ class Booking extends Model
         'cleaning_paid'    => 'boolean',
         'linen_amount'     => 'decimal:2',
         'linen_paid'       => 'boolean',
+        'parking_amount'   => 'decimal:2',
+        'parking_paid'     => 'boolean',
         'services_paid_at' => 'date',
     ];
 
@@ -85,12 +89,16 @@ class Booking extends Model
         return (float) ($this->cleaning_amount ?? 0) + (float) ($this->linen_amount ?? 0);
     }
 
-    /** Paid income from this booking (only if marked as paid) */
+    /** Paid income from this booking (only if marked as paid, includes parking) */
     public function getPaidIncomeAttribute(): float
     {
-        return $this->income_paid && $this->income_amount !== null
+        $total = $this->income_paid && $this->income_amount !== null
             ? (float) $this->income_amount
             : 0;
+        if ($this->parking_paid && $this->parking_amount !== null) {
+            $total += (float) $this->parking_amount;
+        }
+        return $total;
     }
 
     /** Paid expenses for this booking (only paid items) */

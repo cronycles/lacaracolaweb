@@ -32,6 +32,12 @@
             </div>
             <div class="stat-card__label">Biancheria da pagare</div>
         </div>
+        <div class="stat-card stat-card--hero" style="border-left:4px solid #1565c0">
+            <div class="stat-card__number" style="color:#1565c0">
+                € {{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Posto auto da incassare</div>
+        </div>
         @endif
     </div>
     @elseif(auth()->user()->hasPermission('view_bookings'))
@@ -48,6 +54,12 @@
                 € {{ number_format($stats['linen_unpaid'], 2, ',', '.') }}
             </div>
             <div class="stat-card__label">Biancheria da pagare</div>
+        </div>
+        <div class="stat-card stat-card--hero" style="border-left:4px solid #1565c0">
+            <div class="stat-card__number" style="color:#1565c0">
+                € {{ number_format($stats['parking_unpaid'], 2, ',', '.') }}
+            </div>
+            <div class="stat-card__label">Posto auto da incassare</div>
         </div>
     </div>
     @endif

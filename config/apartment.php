@@ -85,6 +85,8 @@ return [
         'cleaning_fee'  => 100,
         // Fixed linen fee (EUR) per guest charged per booking (default pre-filled in admin form).
         'linen_fee_per_person' => 25,
+        // Parking fee (EUR) per night charged per booking (default pre-filled in admin form).
+        'parking_fee_per_day' => 10,
         // Optional cutoff date (YYYY-MM-DD). If set, prices are hidden from this date onwards.
         // Examples: null (always show), '2027-01-01' (hide prices for stays on/after 2027-01-01).
         'hide_price_from' => '2027-01-01',

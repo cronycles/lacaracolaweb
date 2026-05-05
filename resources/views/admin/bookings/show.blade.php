@@ -149,6 +149,22 @@
                             @endif
                         </td>
                     </tr>
+                    <tr>
+                        <th>Posto auto</th>
+                        <td>
+                            @if ($booking->parking_amount !== null)
+                                <span class="badge badge--{{ $booking->parking_paid ? 'paid' : 'unpaid' }}"
+                                      title="{{ $booking->parking_paid ? 'Incassato' : 'Da incassare' }}">
+                                    € {{ number_format((float)$booking->parking_amount, 2, ',', '.') }}
+                                </span>
+                                <span style="font-size:.8rem;color:#6b7f89;margin-left:.35rem">
+                                    {{ $booking->parking_paid ? 'Incassato' : 'Da incassare' }}
+                                </span>
+                            @else
+                                <span style="color:#6b7f89">—</span>
+                            @endif
+                        </td>
+                    </tr>
                     @if(auth()->user()->hasPermission('view_accounting'))
                     @if ($booking->total_expenses !== null)
                         <tr>
@@ -160,7 +176,7 @@
                         <tr>
                             <th>Saldo netto</th>
                             <td>
-                                @php $net = (float)$booking->income_amount - $booking->total_expenses; @endphp
+                                @php $net = (float)$booking->income_amount + (float)($booking->parking_amount ?? 0) - $booking->total_expenses; @endphp
                                 <strong style="color:{{ $net >= 0 ? '#2e7d32' : '#c62828' }}">
                                     € {{ number_format($net, 2, ',', '.') }}
                                 </strong>

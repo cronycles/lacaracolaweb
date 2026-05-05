@@ -24,6 +24,12 @@ class DashboardController extends Controller
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
+        $parkingIncome = Booking::whereNull('canceled_at')
+            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->sum('parking_amount');
+
         $bookingExpenses = Booking::whereNull('canceled_at')
             ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
@@ -33,7 +39,7 @@ class DashboardController extends Controller
         $extraIncome   = FinancialEntry::where('type', 'income')->whereYear('entry_date', $year)->sum('amount');
         $extraExpenses = FinancialEntry::where('type', 'expense')->whereYear('entry_date', $year)->sum('amount');
 
-        $totalIncome   = $bookingIncome + $extraIncome;
+        $totalIncome   = $bookingIncome + $parkingIncome + $extraIncome;
         $totalExpenses = $bookingExpenses + $extraExpenses;
 
         // Cumulative all-time balance (no year filter)
@@ -41,6 +47,11 @@ class DashboardController extends Controller
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
+
+        $globalParkingIncome = Booking::whereNull('canceled_at')
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->sum('parking_amount');
 
         $globalBookingExpenses = Booking::whereNull('canceled_at')
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
@@ -50,7 +61,7 @@ class DashboardController extends Controller
         $globalExtraIncome   = FinancialEntry::where('type', 'income')->sum('amount');
         $globalExtraExpenses = FinancialEntry::where('type', 'expense')->sum('amount');
 
-        $globalBalance = ($globalBookingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
+        $globalBalance = ($globalBookingIncome + $globalParkingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
 
         $stats = [
             'total_bookings'   => Booking::count(),
@@ -86,6 +97,10 @@ class DashboardController extends Controller
                                          ->whereNotNull('linen_amount')
                                          ->where('linen_paid', false)
                                          ->sum('linen_amount'),
+            'parking_unpaid'   => Booking::whereNull('canceled_at')
+                                         ->whereNotNull('parking_amount')
+                                         ->where('parking_paid', false)
+                                         ->sum('parking_amount'),
             'cleaning_paid_total' => Booking::whereNull('canceled_at')
                                          ->whereNotNull('cleaning_amount')
                                          ->where('cleaning_paid', true)
