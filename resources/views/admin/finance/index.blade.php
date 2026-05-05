@@ -150,6 +150,18 @@
                 </div>
                 <div class="stat-card__label">Saldo {{ $year }}</div>
             </div>
+            <div class="stat-card" style="border-left:4px solid #92400e">
+                <div class="stat-card__number" style="color:#92400e;font-size:1.3rem">
+                    −&nbsp;€&nbsp;{{ number_format($totals['cleaning_paid'], 2, ',', '.') }}
+                </div>
+                <div class="stat-card__label">Pulizie pagate {{ $year }}</div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid #92400e">
+                <div class="stat-card__number" style="color:#92400e;font-size:1.3rem">
+                    −&nbsp;€&nbsp;{{ number_format($totals['linen_paid'], 2, ',', '.') }}
+                </div>
+                <div class="stat-card__label">Biancheria pagata {{ $year }}</div>
+            </div>
         </div>
     </div>
 

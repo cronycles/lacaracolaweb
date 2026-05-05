@@ -56,6 +56,8 @@ class FinancialEntryController extends Controller
             'booking_expenses' => $bookingExpenses,
             'extra_income'     => $extraIncome,
             'extra_expenses'   => $extraExpenses,
+            'cleaning_paid'    => $bookingCleaning,
+            'linen_paid'       => $bookingLinen,
         ];
 
         $totals['balance'] = $totals['income'] - $totals['expenses'];

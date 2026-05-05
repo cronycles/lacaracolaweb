@@ -125,51 +125,6 @@
     @endif
 
     {{-- ═══════════════════════════════════════════════
-         SEZIONE 4 — Contabilità anno corrente (secondaria)
-         Solo view_accounting
-         ═══════════════════════════════════════════════ --}}
-    @if(auth()->user()->hasPermission('view_accounting'))
-    <div style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#9ca8b0;margin:1.75rem 0 .5rem">
-        Contabilità {{ $stats['finance_year'] }}
-    </div>
-    <div class="stats-grid stats-grid--secondary">
-        <div class="stat-card stat-card--secondary" style="border-left:3px solid #2e7d32">
-            <div class="stat-card__number" style="color:#2e7d32">
-                € {{ number_format($stats['total_income'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Ingressi {{ $stats['finance_year'] }}</div>
-        </div>
-        <div class="stat-card stat-card--secondary" style="border-left:3px solid #c62828">
-            <div class="stat-card__number" style="color:#c62828">
-                € {{ number_format($stats['total_expenses'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Uscite {{ $stats['finance_year'] }}</div>
-        </div>
-        <div class="stat-card stat-card--secondary" style="border-left:3px solid {{ $stats['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
-            <div class="stat-card__number" style="color:{{ $stats['balance'] >= 0 ? '#1976d2' : '#c62828' }}">
-                € {{ number_format($stats['balance'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Saldo {{ $stats['finance_year'] }}</div>
-        </div>
-        <div class="stat-card stat-card--secondary" style="border-left:3px solid #166534">
-            <div class="stat-card__number" style="color:#166534">
-                € {{ number_format($stats['cleaning_paid_total'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Pulizie pagate (tot.)</div>
-        </div>
-        <div class="stat-card stat-card--secondary" style="border-left:3px solid #166534">
-            <div class="stat-card__number" style="color:#166534">
-                € {{ number_format($stats['linen_paid_total'], 2, ',', '.') }}
-            </div>
-            <div class="stat-card__label">Biancheria pagata (tot.)</div>
-        </div>
-    </div>
-    <div style="margin-bottom:1.5rem">
-        <a href="{{ route('admin.finance.index') }}" class="btn btn--outline btn--sm">📒 Vedi contabilità completa</a>
-    </div>
-    @endif
-
-    {{-- ═══════════════════════════════════════════════
          SEZIONE 5 — Statistiche marginali
          ═══════════════════════════════════════════════ --}}
     <div style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#9ca8b0;margin:1.75rem 0 .5rem">
