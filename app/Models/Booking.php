@@ -27,10 +27,12 @@ class Booking extends Model
         'canceled_at',
         'income_amount',
         'income_paid',
+        'income_paid_at',
         'cleaning_amount',
         'cleaning_paid',
         'linen_amount',
         'linen_paid',
+        'services_paid_at',
     ];
 
     protected $casts = [
@@ -43,10 +45,12 @@ class Booking extends Model
         'canceled_at'      => 'datetime',
         'income_amount'    => 'decimal:2',
         'income_paid'      => 'boolean',
+        'income_paid_at'   => 'date',
         'cleaning_amount'  => 'decimal:2',
         'cleaning_paid'    => 'boolean',
         'linen_amount'     => 'decimal:2',
         'linen_paid'       => 'boolean',
+        'services_paid_at' => 'date',
     ];
 
     public function person(): BelongsTo
@@ -84,8 +88,8 @@ class Booking extends Model
     /** Paid income from this booking (only if marked as paid) */
     public function getPaidIncomeAttribute(): float
     {
-        return $this->income_paid && $this->income_amount !== null 
-            ? (float) $this->income_amount 
+        return $this->income_paid && $this->income_amount !== null
+            ? (float) $this->income_amount
             : 0;
     }
 

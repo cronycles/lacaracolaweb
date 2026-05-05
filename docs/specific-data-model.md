@@ -96,8 +96,13 @@ Individual stay/reservation records linked to a primary guest.
 | `external_ref` | VARCHAR(60)      | Platform reference ID (nullable)                   |
 | `notes`        | TEXT             | Internal notes (nullable)                          |
 | `income_amount`| DECIMAL(8,2)     | Incasso ricevuto dalla prenotazione (nullable)     |
+| `income_paid`  | BOOLEAN          | Incasso marcato come pagato (default: false)       |
+| `income_paid_at` | DATE           | Data di imputazione contabile dell'incasso (nullable, default: checkout) |
 | `cleaning_amount` | DECIMAL(8,2)  | Costo pulizie associato alla prenotazione (nullable) |
+| `cleaning_paid` | BOOLEAN         | Pulizie marcate come pagate (default: false)       |
 | `linen_amount` | DECIMAL(8,2)     | Costo biancheria associato alla prenotazione (nullable) |
+| `linen_paid`   | BOOLEAN          | Biancheria marcata come pagata (default: false)    |
+| `services_paid_at` | DATE         | Data di imputazione contabile di pulizie+biancheria (nullable, default: checkout) |
 | `created_at`   | TIMESTAMP        |                                                    |
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |

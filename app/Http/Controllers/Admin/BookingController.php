@@ -199,10 +199,12 @@ class BookingController extends Controller
             'notes'           => ['nullable', 'string', 'max:1000'],
             'income_amount'   => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'income_paid'     => ['nullable', 'boolean'],
+            'income_paid_at'  => ['nullable', 'date'],
             'cleaning_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'cleaning_paid'   => ['nullable', 'boolean'],
             'linen_amount'    => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'linen_paid'      => ['nullable', 'boolean'],
+            'services_paid_at' => ['nullable', 'date'],
         ]);
     }
 

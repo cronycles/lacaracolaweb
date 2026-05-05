@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\FinancialEntry;
 use App\Models\Person;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -18,13 +19,13 @@ class DashboardController extends Controller
 
         // Financial totals for the current year (only paid items)
         $bookingIncome = Booking::whereNull('canceled_at')
-            ->whereYear('checkin', $year)
+            ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
         $bookingExpenses = Booking::whereNull('canceled_at')
-            ->whereYear('checkin', $year)
+            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;

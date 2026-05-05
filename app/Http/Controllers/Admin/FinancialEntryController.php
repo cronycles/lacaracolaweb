@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\FinancialEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -20,20 +21,20 @@ class FinancialEntryController extends Controller
 
         // Booking-sourced income (income_amount where income_paid = true) for the year
         $bookingIncome = Booking::whereNull('canceled_at')
-            ->whereYear('checkin', $year)
+            ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
         // Booking-sourced expenses (cleaning + linen only when marked as paid) for the year
         $bookingCleaning = Booking::whereNull('canceled_at')
-            ->whereYear('checkin', $year)
+            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->where('cleaning_paid', true)
             ->whereNotNull('cleaning_amount')
             ->sum('cleaning_amount');
 
         $bookingLinen = Booking::whereNull('canceled_at')
-            ->whereYear('checkin', $year)
+            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->where('linen_paid', true)
             ->whereNotNull('linen_amount')
             ->sum('linen_amount');
@@ -80,15 +81,15 @@ class FinancialEntryController extends Controller
         $monthlyData = [];
         for ($m = 1; $m <= 12; $m++) {
             $bInc = Booking::whereNull('canceled_at')
-                ->whereYear('checkin', $year)
-                ->whereMonth('checkin', $m)
+                ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
+                ->whereMonth(\DB::raw('COALESCE(income_paid_at, checkout)'), $m)
                 ->where('income_paid', true)
                 ->whereNotNull('income_amount')
                 ->sum('income_amount');
 
             $bExp = Booking::whereNull('canceled_at')
-                ->whereYear('checkin', $year)
-                ->whereMonth('checkin', $m)
+                ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
+                ->whereMonth(\DB::raw('COALESCE(services_paid_at, checkout)'), $m)
                 ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                              COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
                 ->value('total') ?? 0;

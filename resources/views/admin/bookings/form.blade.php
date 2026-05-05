@@ -179,23 +179,41 @@
                         Stato pagamenti
                     </div>
                     <div class="form-row">
-                        <div style="display:flex;align-items:center;gap:.5rem">
-                            <input type="hidden" name="income_paid" value="0">
-                            <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
-                                   @checked(old('income_paid', $booking->income_paid ?? false))>
-                            <label class="form-label" for="income_paid" style="margin:0;cursor:pointer">Incasso pagato</label>
+                        <div style="display:flex;flex-direction:column;gap:.35rem">
+                            <div style="display:flex;align-items:center;gap:.5rem">
+                                <input type="hidden" name="income_paid" value="0">
+                                <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
+                                       @checked(old('income_paid', $booking->income_paid ?? false))>
+                                <label class="form-label" for="income_paid" style="margin:0;cursor:pointer">Incasso pagato</label>
+                            </div>
+                            <div>
+                                <label class="form-label" for="income_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione incasso</label>
+                                <input type="date" id="income_paid_at" name="income_paid_at" class="form-input"
+                                       value="{{ old('income_paid_at', $booking->income_paid_at?->format('Y-m-d')) }}"
+                                       style="font-size:.85rem;padding:.25rem .5rem">
+                                @error('income_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                            </div>
                         </div>
-                        <div style="display:flex;align-items:center;gap:.5rem">
-                            <input type="hidden" name="cleaning_paid" value="0">
-                            <input type="checkbox" id="cleaning_paid" name="cleaning_paid" value="1" class="form-checkbox"
-                                   @checked(old('cleaning_paid', $booking->cleaning_paid ?? false))>
-                            <label class="form-label" for="cleaning_paid" style="margin:0;cursor:pointer">Pulizie pagate</label>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:.5rem">
-                            <input type="hidden" name="linen_paid" value="0">
-                            <input type="checkbox" id="linen_paid" name="linen_paid" value="1" class="form-checkbox"
-                                   @checked(old('linen_paid', $booking->linen_paid ?? false))>
-                            <label class="form-label" for="linen_paid" style="margin:0;cursor:pointer">Biancheria pagata</label>
+                        <div style="display:flex;flex-direction:column;gap:.35rem">
+                            <div style="display:flex;align-items:center;gap:.5rem">
+                                <input type="hidden" name="cleaning_paid" value="0">
+                                <input type="checkbox" id="cleaning_paid" name="cleaning_paid" value="1" class="form-checkbox"
+                                       @checked(old('cleaning_paid', $booking->cleaning_paid ?? false))>
+                                <label class="form-label" for="cleaning_paid" style="margin:0;cursor:pointer">Pulizie pagate</label>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:.5rem">
+                                <input type="hidden" name="linen_paid" value="0">
+                                <input type="checkbox" id="linen_paid" name="linen_paid" value="1" class="form-checkbox"
+                                       @checked(old('linen_paid', $booking->linen_paid ?? false))>
+                                <label class="form-label" for="linen_paid" style="margin:0;cursor:pointer">Biancheria pagata</label>
+                            </div>
+                            <div>
+                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria</label>
+                                <input type="date" id="services_paid_at" name="services_paid_at" class="form-input"
+                                       value="{{ old('services_paid_at', $booking->services_paid_at?->format('Y-m-d')) }}"
+                                       style="font-size:.85rem;padding:.25rem .5rem">
+                                @error('services_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -248,6 +266,38 @@
 
     // Run once on load to set correct placeholder
     suggestDefaults();
+
+    // Pre-fill payment dates with checkout date when checkout changes
+    const checkout        = document.getElementById('checkout');
+    const incomePaidAt    = document.getElementById('income_paid_at');
+    const servicesPaidAt  = document.getElementById('services_paid_at');
+
+    function syncPaymentDates() {
+        const val = checkout?.value;
+        if (!val) return;
+        if (incomePaidAt && !incomePaidAt.dataset.userEdited) {
+            incomePaidAt.value = val;
+        }
+        if (servicesPaidAt && !servicesPaidAt.dataset.userEdited) {
+            servicesPaidAt.value = val;
+        }
+    }
+
+    // Mark as user-edited when the user manually changes the date
+    incomePaidAt?.addEventListener('change', () => { incomePaidAt.dataset.userEdited = '1'; });
+    servicesPaidAt?.addEventListener('change', () => { servicesPaidAt.dataset.userEdited = '1'; });
+
+    checkout?.addEventListener('change', syncPaymentDates);
+
+    // On load: if date fields are empty (new booking), pre-fill from checkout
+    if (checkout?.value) {
+        if (incomePaidAt && !incomePaidAt.value) {
+            incomePaidAt.value = checkout.value;
+        }
+        if (servicesPaidAt && !servicesPaidAt.value) {
+            servicesPaidAt.value = checkout.value;
+        }
+    }
 })();
 </script>
 @endpush
