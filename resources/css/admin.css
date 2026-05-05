@@ -181,6 +181,13 @@ body {
 
 .a-table tr:hover td { background: #f6f8fa; }
 
+/* Booking row status highlights */
+.row--today td { background: #fffbeb; }
+.row--today td:first-child { box-shadow: inset 3px 0 0 #f59e0b; }
+.row--today:hover td { background: #fef3c7; }
+.row--past td { background: #f5f6f7; }
+.row--past:hover td { background: #eef0f1; }
+
 /* Badges */
 .badge {
     font-size: .7rem;
@@ -436,6 +443,11 @@ body {
     font-weight: 600;
     font-size: .875rem;
 }
+
+/* Event list status highlights */
+.event-item--today { background: #fffbeb; border-radius: 6px; margin: 0 -.5rem; padding: .65rem .5rem; }
+.event-item--today .event-item__bar { border-radius: 4px; }
+.event-item--past { opacity: .55; }
 
 /* Mobile responsive sidebar */
 @media (max-width: 768px) {

@@ -122,7 +122,12 @@
                 @else
                     <ul class="event-list">
                         @foreach ($bookings as $booking)
-                            <li class="event-item">
+                            @php
+                                $todayCarbon = \Carbon\Carbon::today();
+                                $isActive = !$booking->isCanceled() && $booking->checkin->lte($todayCarbon) && $booking->checkout->gt($todayCarbon);
+                                $isPast   = $booking->checkout->lte($todayCarbon);
+                            @endphp
+                            <li class="event-item{{ $isActive ? ' event-item--today' : ($isPast ? ' event-item--past' : '') }}">
                                 <div class="event-item__bar event-item__bar--{{ $booking->isCanceled() ? 'canceled' : 'booked' }}"></div>
                                 <div style="flex:1">
                                     <div class="event-item__name" @if($booking->isCanceled()) style="color:#9ca3af" @endif>
@@ -158,7 +163,11 @@
                         @endforeach
 
                         @foreach ($blocks as $block)
-                            <li class="event-item">
+                            @php
+                                $isActive = $block->start_date->lte($todayCarbon) && $block->end_date->gt($todayCarbon);
+                                $isPast   = $block->end_date->lte($todayCarbon);
+                            @endphp
+                            <li class="event-item{{ $isActive ? ' event-item--today' : ($isPast ? ' event-item--past' : '') }}">
                                 <div class="event-item__bar event-item__bar--{{ $block->reason }}"></div>
                                 <div style="flex:1">
                                     <div class="event-item__name">

@@ -28,9 +28,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $today = \Carbon\Carbon::today(); @endphp
                     @foreach ($items as $item)
                         @if ($item->_type === 'booking')
-                            <tr @if($item->isCanceled()) style="opacity:.72" @endif>
+                            @php
+                                $isToday = !$item->isCanceled() && $item->checkin->lte($today) && $item->checkout->gt($today);
+                                $isPast  = $item->checkout->lte($today);
+                            @endphp
+                            <tr class="{{ $isToday ? 'row--today' : ($isPast ? 'row--past' : '') }}" @if($item->isCanceled()) style="opacity:.72" @endif>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $item) }}"
                                        style="color:#30596C;font-weight:600;text-decoration:none">
@@ -83,7 +88,11 @@
                             </tr>
                         @else
                             {{-- Personal block (owner/maintenance) --}}
-                            <tr>
+                            @php
+                                $isToday = $item->start_date->lte($today) && $item->end_date->gt($today);
+                                $isPast  = $item->end_date->lte($today);
+                            @endphp
+                            <tr class="{{ $isToday ? 'row--today' : ($isPast ? 'row--past' : '') }}">
                                 <td style="color:#6b7f89">
                                     <strong>{{ ucfirst($item->reason) }}</strong>
                                     @if ($item->notes)
