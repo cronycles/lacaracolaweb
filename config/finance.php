@@ -14,18 +14,13 @@ declare(strict_types=1);
 
 return [
     'categories' => [
-        'affitto'        => 'Affitto',
-        'caparra'        => 'Caparra / Deposito',
-        'pulizie'        => 'Pulizie',
-        'utenze'         => 'Utenze',
-        'manutenzione'   => 'Manutenzione',
-        'arredamento'    => 'Arredamento / Acquisti',
+        'pulizie'        => 'Pulizie / Biancheria',
+        'utenze'         => 'Utenze (acqua, luce, gas, internet, hosting)',
+        'manutenzione'   => 'Manutenzione / Arredamento / Assistenza',
+        'amministrazione'  => 'Amministrazione',
         'assicurazione'  => 'Assicurazione',
-        'tasse'          => 'Tasse / Imposte',
-        'commissioni'    => 'Commissioni piattaforme',
-        'forniture'      => 'Forniture / Materiali',
-        'servizi_extra'  => 'Servizi extra',
-        'rimborso'       => 'Rimborso',
+        'tasse'          => 'Tasse',
+        'ingresso'       => 'Ingresso Puntuale',
         'altro'          => 'Altro',
     ],
 ];
