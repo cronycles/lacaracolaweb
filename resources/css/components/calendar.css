@@ -255,62 +255,44 @@
 }
 
 .cal-window-nav {
-    display: grid;
-    gap: 0.75rem;
-    border: 1px solid #dde3e8;
-    border-radius: 0.6rem;
-    background: #f7fafc;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.cal-window-nav__primary {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.cal-window-nav__btn {
-    min-width: 44px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.6rem;
-}
-
-.cal-window-nav__label-wrap {
-    text-align: center;
-}
-
-.cal-window-nav__label-kicker {
-    display: block;
-    font-size: 0.68rem;
-    color: #6b7f89;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.15rem;
+    flex-wrap: wrap;
+    padding: 0.35rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5eaee;
 }
 
 .cal-window-nav__label {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: #1e3d4a;
+    flex: 1;
+    text-align: center;
+    min-width: 0;
 }
 
-.cal-window-nav__actions {
-    display: flex;
-    justify-content: space-between;
+.cal-window-nav__sep {
+    width: 1px;
+    height: 1.2rem;
+    background: #dde3e8;
+    flex-shrink: 0;
+}
+
+.cal-window-nav__btn {
+    min-width: 32px;
+    min-height: 32px;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.2rem 0.5rem;
 }
 
 .cal-window-nav__picker {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex-wrap: wrap;
 }
 
@@ -331,23 +313,20 @@
     white-space: nowrap;
 }
 
-@media (max-width: 640px) {
-    .cal-window-nav__actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
+/* Today indicator — sky-blue double ring, visible on any day colour */
+.cal-day--today {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0ea5e9;
+    z-index: 1;
+    font-weight: 700;
+}
 
+@media (max-width: 640px) {
     .cal-window-nav__picker {
-        width: 100%;
+        flex: 1;
     }
 
     .form-select--sm {
         min-width: 0;
         flex: 1;
-    }
-
-    .cal-window-nav__today {
-        width: 100%;
-        justify-content: center;
     }
 }

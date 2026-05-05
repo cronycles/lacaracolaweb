@@ -120,6 +120,7 @@ class CalendarController extends Controller
         return view('admin.calendar', [
             'bookings' => $bookings,
             'blocks' => $blocks,
+            'today' => Carbon::today()->format('Y-m-d'),
             'months' => $months,
             'bookedDays' => $bookedDays,
             'arrivalDays' => $arrivalDays,

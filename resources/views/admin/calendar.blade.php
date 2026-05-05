@@ -11,29 +11,22 @@
                 <div class="a-card__title">Eventi nel periodo visualizzato</div>
 
                 <div class="cal-window-nav">
-                    <div class="cal-window-nav__primary">
-                        <a href="{{ route('admin.calendar', ['month' => $previousWindowMonth]) }}" class="btn btn--outline btn--sm cal-window-nav__btn" aria-label="Vai al mese precedente">←</a>
-                        <div class="cal-window-nav__label-wrap">
-                            <span class="cal-window-nav__label-kicker">Intervallo visualizzato</span>
-                            <div class="cal-window-nav__label">{{ ucfirst($windowLabel) }}</div>
-                        </div>
-                        <a href="{{ route('admin.calendar', ['month' => $nextWindowMonth]) }}" class="btn btn--outline btn--sm cal-window-nav__btn" aria-label="Vai al mese successivo">→</a>
-                    </div>
-
-                    <div class="cal-window-nav__actions">
-                        <form method="GET" action="{{ route('admin.calendar') }}" class="cal-window-nav__picker">
-                            <label for="month" class="cal-window-nav__picker-label">Vai a:</label>
-                            <select id="month" name="month" class="form-select form-select--sm">
-                                @foreach ($selectorMonths as $option)
-                                    <option value="{{ $option['value'] }}" @selected($windowCenterMonth === $option['value'])>
-                                        {{ $option['label'] }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn btn--outline btn--sm">Vai</button>
-                        </form>
-                        <a href="{{ route('admin.calendar') }}" class="btn btn--outline btn--sm cal-window-nav__today">Torna a oggi</a>
-                    </div>
+                    <a href="{{ route('admin.calendar', ['month' => $previousWindowMonth]) }}" class="btn btn--outline btn--sm cal-window-nav__btn" aria-label="Vai al mese precedente">←</a>
+                    <div class="cal-window-nav__label">{{ ucfirst($windowLabel) }}</div>
+                    <a href="{{ route('admin.calendar', ['month' => $nextWindowMonth]) }}" class="btn btn--outline btn--sm cal-window-nav__btn" aria-label="Vai al mese successivo">→</a>
+                    <div class="cal-window-nav__sep" aria-hidden="true"></div>
+                    <form method="GET" action="{{ route('admin.calendar') }}" class="cal-window-nav__picker">
+                        <label for="month" class="cal-window-nav__picker-label">Vai a:</label>
+                        <select id="month" name="month" class="form-select form-select--sm">
+                            @foreach ($selectorMonths as $option)
+                                <option value="{{ $option['value'] }}" @selected($windowCenterMonth === $option['value'])>
+                                    {{ $option['label'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="btn btn--outline btn--sm">Vai</button>
+                    </form>
+                    <a href="{{ route('admin.calendar') }}" class="btn btn--outline btn--sm cal-window-nav__today">Oggi</a>
                 </div>
 
                 <div class="cal-grid-wrap">
@@ -101,6 +94,9 @@
                                             } elseif (isset($departureDays[$dateKey])) {
                                                 $dayClasses[] = 'cal-day--departure';
                                             }
+                                        }
+                                        if ($dateKey === $today) {
+                                            $dayClasses[] = 'cal-day--today';
                                         }
                                     @endphp
 
