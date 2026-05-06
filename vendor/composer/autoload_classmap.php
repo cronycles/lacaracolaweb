@@ -17,6 +17,7 @@ return array(
     'App\\Http\\Controllers\\Admin\\PricingController' => $baseDir . '/app/Http/Controllers/Admin/PricingController.php',
     'App\\Http\\Controllers\\Admin\\SettingsController' => $baseDir . '/app/Http/Controllers/Admin/SettingsController.php',
     'App\\Http\\Controllers\\Admin\\StayDiscountRuleController' => $baseDir . '/app/Http/Controllers/Admin/StayDiscountRuleController.php',
+    'App\\Http\\Controllers\\Admin\\TaxDeclarationController' => $baseDir . '/app/Http/Controllers/Admin/TaxDeclarationController.php',
     'App\\Http\\Controllers\\Admin\\UserController' => $baseDir . '/app/Http/Controllers/Admin/UserController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\LocaleController' => $baseDir . '/app/Http/Controllers/LocaleController.php',

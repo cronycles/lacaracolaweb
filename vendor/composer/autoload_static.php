@@ -537,6 +537,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Http\\Controllers\\Admin\\PricingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/PricingController.php',
         'App\\Http\\Controllers\\Admin\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SettingsController.php',
         'App\\Http\\Controllers\\Admin\\StayDiscountRuleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/StayDiscountRuleController.php',
+        'App\\Http\\Controllers\\Admin\\TaxDeclarationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/TaxDeclarationController.php',
         'App\\Http\\Controllers\\Admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UserController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\LocaleController' => __DIR__ . '/../..' . '/app/Http/Controllers/LocaleController.php',

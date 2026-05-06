@@ -134,11 +134,12 @@
                 </div>
 
                 {{-- Financial --}}
-                <hr style="border:none;border-top:1px solid #e0e8ec;margin:1.25rem 0 1rem">
-                <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.75rem">
-                    Dati economici (opzionali)
+                <div class="form-section-divider">
+                    Dati economici
+                    <span class="form-section-divider__note">(opzionali)</span>
                 </div>
-                <div class="form-row">
+
+                <div class="form-row form-row--2col">
                     <div class="form-group">
                         <label class="form-label" for="income_amount">Incasso ricevuto (€)</label>
                         <input type="number" id="income_amount" name="income_amount" class="form-input"
@@ -147,144 +148,140 @@
                         @error('income_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="cleaning_amount">
-                            Pulizie (€)
-                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
-                                (default {{ config('apartment.booking.cleaning_fee') }}€)
-                            </span>
-                        </label>
+                        <label class="form-label" for="cleaning_amount">Pulizie (€)</label>
                         <input type="number" id="cleaning_amount" name="cleaning_amount" class="form-input"
                                value="{{ old('cleaning_amount', $booking->cleaning_amount) }}"
                                min="0" max="99999.99" step="0.01" placeholder="{{ config('apartment.booking.cleaning_fee') }}">
+                        <span class="form-hint">Default: {{ config('apartment.booking.cleaning_fee') }}€</span>
                         @error('cleaning_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="linen_amount">
-                            Biancheria (€)
-                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
-                                (default {{ config('apartment.booking.linen_fee_per_person') }}€/ospite)
-                            </span>
-                        </label>
+                        <label class="form-label" for="linen_amount">Biancheria (€)</label>
                         <input type="number" id="linen_amount" name="linen_amount" class="form-input"
                                value="{{ old('linen_amount', $booking->linen_amount) }}"
                                min="0" max="99999.99" step="0.01"
                                placeholder="{{ config('apartment.booking.linen_fee_per_person') }}">
+                        <span class="form-hint">Default: {{ config('apartment.booking.linen_fee_per_person') }}€/ospite</span>
                         @error('linen_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="parking_amount">
-                            Posto auto (€)
-                            <span style="font-size:.75rem;color:#6b7f89;font-weight:400">
-                                (default {{ config('apartment.booking.parking_fee_per_day') }}€/notte)
-                            </span>
-                        </label>
+                        <label class="form-label" for="parking_amount">Posto auto (€)</label>
                         <input type="number" id="parking_amount" name="parking_amount" class="form-input"
                                value="{{ old('parking_amount', $booking->parking_amount) }}"
                                min="0" max="99999.99" step="0.01"
                                placeholder="{{ config('apartment.booking.parking_fee_per_day') }}">
+                        <span class="form-hint">Default: {{ config('apartment.booking.parking_fee_per_day') }}€/notte</span>
                         @error('parking_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
-                {{-- Payment status --}}
-                <div style="background-color:#f8fafb;border:1px solid #e0e8ec;border-radius:.375rem;padding:.75rem;margin-top:.75rem">
-                    <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.5rem">
-                        Stato pagamenti
-                    </div>
-                    <div class="form-row">
-                        <div style="display:flex;flex-direction:column;gap:.35rem">
-                            <div style="display:flex;align-items:center;gap:.5rem">
-                                <input type="hidden" name="income_paid" value="0">
-                                <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
-                                       @checked(old('income_paid', $booking->income_paid ?? false))>
-                                <label class="form-label" for="income_paid" style="margin:0;cursor:pointer">Incasso pagato</label>
-                            </div>
-                            <div>
-                                <label class="form-label" for="income_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione incasso</label>
-                                <input type="date" id="income_paid_at" name="income_paid_at" class="form-input"
-                                       value="{{ old('income_paid_at', $booking->income_paid_at?->format('Y-m-d')) }}"
-                                       style="font-size:.85rem;padding:.25rem .5rem">
-                                @error('income_paid_at') <div class="form-error">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:.35rem">
-                            <div style="display:flex;align-items:center;gap:.5rem">
-                                <input type="hidden" name="cleaning_paid" value="0">
-                                <input type="checkbox" id="cleaning_paid" name="cleaning_paid" value="1" class="form-checkbox"
-                                       @checked(old('cleaning_paid', $booking->cleaning_paid ?? false))>
-                                <label class="form-label" for="cleaning_paid" style="margin:0;cursor:pointer">Pulizie pagate</label>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:.5rem">
-                                <input type="hidden" name="linen_paid" value="0">
-                                <input type="checkbox" id="linen_paid" name="linen_paid" value="1" class="form-checkbox"
-                                       @checked(old('linen_paid', $booking->linen_paid ?? false))>
-                                <label class="form-label" for="linen_paid" style="margin:0;cursor:pointer">Biancheria pagata</label>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:.5rem">
-                                <input type="hidden" name="parking_paid" value="0">
-                                <input type="checkbox" id="parking_paid" name="parking_paid" value="1" class="form-checkbox"
-                                       @checked(old('parking_paid', $booking->parking_paid ?? false))>
-                                <label class="form-label" for="parking_paid" style="margin:0;cursor:pointer">Posto auto incassato</label>
-                            </div>
-                            <div>
-                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria</label>
-                                <input type="date" id="services_paid_at" name="services_paid_at" class="form-input"
-                                       value="{{ old('services_paid_at', $booking->services_paid_at?->format('Y-m-d')) }}"
-                                       style="font-size:.85rem;padding:.25rem .5rem">
-                                @error('services_paid_at') <div class="form-error">{{ $message }}</div> @enderror
-                            </div>
-                            <div>
-                                <label class="form-label" for="parking_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione parcheggio</label>
-                                <input type="date" id="parking_paid_at" name="parking_paid_at" class="form-input"
-                                       value="{{ old('parking_paid_at', $booking->parking_paid_at?->format('Y-m-d')) }}"
-                                       style="font-size:.85rem;padding:.25rem .5rem">
-                                @error('parking_paid_at') <div class="form-error">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 @if (!$booking->exists)
-                    <p style="font-size:.8rem;color:#6b7f89;margin-top:-.5rem">
+                    <p class="form-hint" style="margin-top:-.25rem;margin-bottom:.75rem">
                         Lascia vuoto per compilare in seguito. I valori predefiniti verranno suggeriti in base al numero di ospiti.
                     </p>
                 @endif
 
+                {{-- Payment status --}}
+                <div class="payment-table">
+                    <div class="payment-table__header">
+                        <span>Stato pagamenti</span>
+                        <span>Data imputazione</span>
+                    </div>
+
+                    {{-- Incasso --}}
+                    <div class="payment-table__row">
+                        <label class="payment-table__check">
+                            <input type="hidden" name="income_paid" value="0">
+                            <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
+                                   @checked(old('income_paid', $booking->income_paid ?? false))>
+                            <span>Incasso pagato</span>
+                        </label>
+                        <div class="payment-table__date">
+                            <input type="date" id="income_paid_at" name="income_paid_at" class="form-input"
+                                   value="{{ old('income_paid_at', $booking->income_paid_at?->format('Y-m-d')) }}">
+                            @error('income_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    {{-- Pulizie + Biancheria (data condivisa) --}}
+                    <div class="payment-table__row">
+                        <div class="payment-table__multi-check">
+                            <label class="payment-table__check">
+                                <input type="hidden" name="cleaning_paid" value="0">
+                                <input type="checkbox" id="cleaning_paid" name="cleaning_paid" value="1" class="form-checkbox"
+                                       @checked(old('cleaning_paid', $booking->cleaning_paid ?? false))>
+                                <span>Pulizie pagate</span>
+                            </label>
+                            <label class="payment-table__check">
+                                <input type="hidden" name="linen_paid" value="0">
+                                <input type="checkbox" id="linen_paid" name="linen_paid" value="1" class="form-checkbox"
+                                       @checked(old('linen_paid', $booking->linen_paid ?? false))>
+                                <span>Biancheria pagata</span>
+                            </label>
+                        </div>
+                        <div class="payment-table__date">
+                            <span class="form-hint" style="margin-bottom:.2rem;display:block">Data pulizie / biancheria</span>
+                            <input type="date" id="services_paid_at" name="services_paid_at" class="form-input"
+                                   value="{{ old('services_paid_at', $booking->services_paid_at?->format('Y-m-d')) }}">
+                            @error('services_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    {{-- Posto auto --}}
+                    <div class="payment-table__row payment-table__row--last">
+                        <label class="payment-table__check">
+                            <input type="hidden" name="parking_paid" value="0">
+                            <input type="checkbox" id="parking_paid" name="parking_paid" value="1" class="form-checkbox"
+                                   @checked(old('parking_paid', $booking->parking_paid ?? false))>
+                            <span>Posto auto incassato</span>
+                        </label>
+                        <div class="payment-table__date">
+                            <span class="form-hint" style="margin-bottom:.2rem;display:block">Data parcheggio</span>
+                            <input type="date" id="parking_paid_at" name="parking_paid_at" class="form-input"
+                                   value="{{ old('parking_paid_at', $booking->parking_paid_at?->format('Y-m-d')) }}">
+                            @error('parking_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+                </div>
+
                 @if(auth()->user()->hasPermission('view_accounting'))
                 {{-- Tax declaration --}}
-                <div style="background-color:#f8fafb;border:1px solid #e0e8ec;border-radius:.375rem;padding:.75rem;margin-top:.75rem">
-                    <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.5rem">
-                        Dichiarazione dei redditi
+                <div class="payment-table" style="margin-top:.75rem">
+                    <div class="payment-table__header" style="grid-template-columns:1fr">
+                        <span>Dichiarazione dei redditi</span>
                     </div>
-                    <p style="font-size:.78rem;color:#6b7f89;margin-bottom:.6rem;margin-top:0">
-                        Le voci selezionate compariranno nella
-                        <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C" target="_blank">dichiarazione dei redditi</a>
-                        se il relativo pagamento risulta già incassato/pagato.
-                    </p>
-                    <div style="display:flex;flex-wrap:wrap;gap:.5rem 1.5rem">
-                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                            <input type="hidden"   name="income_tax" value="0">
-                            <input type="checkbox" name="income_tax" id="income_tax" value="1" class="form-checkbox"
-                                   @checked(old('income_tax', $booking->exists ? $booking->income_tax : (bool) config('finance.tax_declaration_defaults.income', true)))>
-                            <span style="font-size:.875rem">Incasso</span>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                            <input type="hidden"   name="cleaning_tax" value="0">
-                            <input type="checkbox" name="cleaning_tax" id="cleaning_tax" value="1" class="form-checkbox"
-                                   @checked(old('cleaning_tax', $booking->exists ? $booking->cleaning_tax : (bool) config('finance.tax_declaration_defaults.cleaning', true)))>
-                            <span style="font-size:.875rem">Pulizie</span>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                            <input type="hidden"   name="linen_tax" value="0">
-                            <input type="checkbox" name="linen_tax" id="linen_tax" value="1" class="form-checkbox"
-                                   @checked(old('linen_tax', $booking->exists ? $booking->linen_tax : (bool) config('finance.tax_declaration_defaults.linen', true)))>
-                            <span style="font-size:.875rem">Biancheria</span>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                            <input type="hidden"   name="parking_tax" value="0">
-                            <input type="checkbox" name="parking_tax" id="parking_tax" value="1" class="form-checkbox"
-                                   @checked(old('parking_tax', $booking->exists ? $booking->parking_tax : (bool) config('finance.tax_declaration_defaults.parking', false)))>
-                            <span style="font-size:.875rem">Posto auto</span>
-                        </label>
+                    <div style="padding:.75rem 1rem">
+                        <p class="form-hint" style="margin-bottom:.6rem">
+                            Le voci selezionate compariranno nella
+                            <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C" target="_blank">dichiarazione dei redditi</a>
+                            se il relativo pagamento risulta già incassato/pagato.
+                        </p>
+                        <div style="display:flex;flex-wrap:wrap;gap:.4rem 1.5rem">
+                            <label class="payment-table__check">
+                                <input type="hidden"   name="income_tax" value="0">
+                                <input type="checkbox" name="income_tax" id="income_tax" value="1" class="form-checkbox"
+                                       @checked(old('income_tax', $booking->exists ? $booking->income_tax : (bool) config('finance.tax_declaration_defaults.income', true)))>
+                                <span>Incasso</span>
+                            </label>
+                            <label class="payment-table__check">
+                                <input type="hidden"   name="cleaning_tax" value="0">
+                                <input type="checkbox" name="cleaning_tax" id="cleaning_tax" value="1" class="form-checkbox"
+                                       @checked(old('cleaning_tax', $booking->exists ? $booking->cleaning_tax : (bool) config('finance.tax_declaration_defaults.cleaning', true)))>
+                                <span>Pulizie</span>
+                            </label>
+                            <label class="payment-table__check">
+                                <input type="hidden"   name="linen_tax" value="0">
+                                <input type="checkbox" name="linen_tax" id="linen_tax" value="1" class="form-checkbox"
+                                       @checked(old('linen_tax', $booking->exists ? $booking->linen_tax : (bool) config('finance.tax_declaration_defaults.linen', true)))>
+                                <span>Biancheria</span>
+                            </label>
+                            <label class="payment-table__check">
+                                <input type="hidden"   name="parking_tax" value="0">
+                                <input type="checkbox" name="parking_tax" id="parking_tax" value="1" class="form-checkbox"
+                                       @checked(old('parking_tax', $booking->exists ? $booking->parking_tax : (bool) config('finance.tax_declaration_defaults.parking', false)))>
+                                <span>Posto auto</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 @endif
