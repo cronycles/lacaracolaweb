@@ -227,11 +227,18 @@
                                 <label class="form-label" for="parking_paid" style="margin:0;cursor:pointer">Posto auto incassato</label>
                             </div>
                             <div>
-                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria/parcheggio</label>
+                                <label class="form-label" for="services_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione pulizie/biancheria</label>
                                 <input type="date" id="services_paid_at" name="services_paid_at" class="form-input"
                                        value="{{ old('services_paid_at', $booking->services_paid_at?->format('Y-m-d')) }}"
                                        style="font-size:.85rem;padding:.25rem .5rem">
                                 @error('services_paid_at') <div class="form-error">{{ $message }}</div> @enderror
+                            </div>
+                            <div>
+                                <label class="form-label" for="parking_paid_at" style="font-size:.75rem;color:#6b7f89;margin-bottom:.2rem">Data imputazione parcheggio</label>
+                                <input type="date" id="parking_paid_at" name="parking_paid_at" class="form-input"
+                                       value="{{ old('parking_paid_at', $booking->parking_paid_at?->format('Y-m-d')) }}"
+                                       style="font-size:.85rem;padding:.25rem .5rem">
+                                @error('parking_paid_at') <div class="form-error">{{ $message }}</div> @enderror
                             </div>
                         </div>
                     </div>

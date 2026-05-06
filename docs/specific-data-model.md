@@ -104,7 +104,8 @@ Individual stay/reservation records linked to a primary guest.
 | `linen_paid`   | BOOLEAN          | Biancheria marcata come pagata (default: false)    |
 | `parking_amount` | DECIMAL(8,2)   | Costo posto auto (ingresso) associato alla prenotazione (nullable, default 10€/notte) |
 | `parking_paid` | BOOLEAN          | Posto auto marcato come incassato (default: false) |
-| `services_paid_at` | DATE         | Data di imputazione contabile di pulizie+biancheria+parcheggio (nullable, default: checkout) |
+| `parking_paid_at` | DATE          | Data di imputazione contabile del parcheggio (nullable, default: checkout) |
+| `services_paid_at` | DATE         | Data di imputazione contabile di pulizie+biancheria (nullable, default: checkout) |
 | `created_at`   | TIMESTAMP        |                                                    |
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |

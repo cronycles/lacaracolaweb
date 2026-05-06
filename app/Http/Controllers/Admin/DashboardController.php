@@ -25,7 +25,7 @@ class DashboardController extends Controller
             ->sum('income_amount');
 
         $parkingIncome = Booking::whereNull('canceled_at')
-            ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
+            ->whereYear(\DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
             ->where('parking_paid', true)
             ->whereNotNull('parking_amount')
             ->sum('parking_amount');

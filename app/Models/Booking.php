@@ -34,6 +34,7 @@ class Booking extends Model
         'linen_paid',
         'parking_amount',
         'parking_paid',
+        'parking_paid_at',
         'services_paid_at',
     ];
 
@@ -53,8 +54,7 @@ class Booking extends Model
         'linen_amount'     => 'decimal:2',
         'linen_paid'       => 'boolean',
         'parking_amount'   => 'decimal:2',
-        'parking_paid'     => 'boolean',
-        'services_paid_at' => 'date',
+        'parking_paid'     => 'boolean',        'parking_paid_at'  => 'date',        'services_paid_at' => 'date',
     ];
 
     public function person(): BelongsTo
