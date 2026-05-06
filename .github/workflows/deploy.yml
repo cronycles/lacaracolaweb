@@ -35,8 +35,11 @@ jobs:
         shell: bash
         run: |
           RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+            -X POST \
             -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update?repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}")
+            -H "Content-Type: application/json" \
+            -d "{\"repository_root\": \"${{ secrets.CPANEL_REPOSITORY_ROOT }}\"}" \
+            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update")
 
           HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
           BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
@@ -56,8 +59,11 @@ jobs:
         shell: bash
         run: |
           RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+            -X POST \
             -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create?repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}")
+            -H "Content-Type: application/json" \
+            -d "{\"repository_root\": \"${{ secrets.CPANEL_REPOSITORY_ROOT }}\"}" \
+            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create")
 
           HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
           BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
