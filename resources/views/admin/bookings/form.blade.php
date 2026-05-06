@@ -249,6 +249,46 @@
                     </p>
                 @endif
 
+                @if(auth()->user()->hasPermission('view_accounting'))
+                {{-- Tax declaration --}}
+                <div style="background-color:#f8fafb;border:1px solid #e0e8ec;border-radius:.375rem;padding:.75rem;margin-top:.75rem">
+                    <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6b7f89;margin-bottom:.5rem">
+                        Dichiarazione dei redditi
+                    </div>
+                    <p style="font-size:.78rem;color:#6b7f89;margin-bottom:.6rem;margin-top:0">
+                        Le voci selezionate compariranno nella
+                        <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C" target="_blank">dichiarazione dei redditi</a>
+                        se il relativo pagamento risulta già incassato/pagato.
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:.5rem 1.5rem">
+                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
+                            <input type="hidden"   name="income_tax" value="0">
+                            <input type="checkbox" name="income_tax" id="income_tax" value="1" class="form-checkbox"
+                                   @checked(old('income_tax', $booking->exists ? $booking->income_tax : (bool) config('finance.tax_declaration_defaults.income', true)))>
+                            <span style="font-size:.875rem">Incasso</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
+                            <input type="hidden"   name="cleaning_tax" value="0">
+                            <input type="checkbox" name="cleaning_tax" id="cleaning_tax" value="1" class="form-checkbox"
+                                   @checked(old('cleaning_tax', $booking->exists ? $booking->cleaning_tax : (bool) config('finance.tax_declaration_defaults.cleaning', true)))>
+                            <span style="font-size:.875rem">Pulizie</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
+                            <input type="hidden"   name="linen_tax" value="0">
+                            <input type="checkbox" name="linen_tax" id="linen_tax" value="1" class="form-checkbox"
+                                   @checked(old('linen_tax', $booking->exists ? $booking->linen_tax : (bool) config('finance.tax_declaration_defaults.linen', true)))>
+                            <span style="font-size:.875rem">Biancheria</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
+                            <input type="hidden"   name="parking_tax" value="0">
+                            <input type="checkbox" name="parking_tax" id="parking_tax" value="1" class="form-checkbox"
+                                   @checked(old('parking_tax', $booking->exists ? $booking->parking_tax : (bool) config('finance.tax_declaration_defaults.parking', false)))>
+                            <span style="font-size:.875rem">Posto auto</span>
+                        </label>
+                    </div>
+                </div>
+                @endif
+
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
                     <button type="submit" class="btn btn--primary">
                         {{ $booking->exists ? 'Salva modifiche' : 'Crea prenotazione' }}

@@ -201,99 +201,62 @@
                 <div class="a-card" style="margin-top:1.25rem">
                     <div class="a-card__title">Dichiarazione dei redditi</div>
                     <p style="font-size:.8rem;color:#6b7f89;margin-bottom:.75rem">
-                        Le voci selezionate appariranno nella pagina
-                        <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C">Dichiarazione redditi</a>.
-                        Solo le voci già incassate/pagate contribuiscono ai totali.
+                        Le voci marcate compariranno nella
+                        <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C">dichiarazione dei redditi</a>
+                        se il relativo pagamento è già incassato/pagato.
+                        Per modificare i flag usa
+                        @if(auth()->user()->hasPermission('manage_bookings'))
+                            <a href="{{ route('admin.bookings.edit', $booking) }}" style="color:#30596C">Modifica prenotazione</a>.
+                        @else
+                            la pagina di modifica prenotazione.
+                        @endif
                     </p>
-
-                    <form method="POST" action="{{ route('admin.bookings.update', $booking) }}">
-                        @csrf
-                        @method('PUT')
-
-                        {{-- Pass through all required booking fields as hidden to satisfy validation --}}
-                        <input type="hidden" name="person_id"    value="{{ $booking->person_id }}">
-                        <input type="hidden" name="checkin"      value="{{ $booking->checkin->format('Y-m-d') }}">
-                        <input type="hidden" name="checkout"     value="{{ $booking->checkout->format('Y-m-d') }}">
-                        <input type="hidden" name="adults"       value="{{ $booking->adults }}">
-                        <input type="hidden" name="children"     value="{{ $booking->children ?? 0 }}">
-                        <input type="hidden" name="babies"       value="{{ $booking->babies ?? 0 }}">
-                        @if($booking->pets !== null)
-                        <input type="hidden" name="pets"         value="{{ $booking->pets }}">
-                        @endif
-                        <input type="hidden" name="source"       value="{{ $booking->source }}">
-                        @if($booking->external_ref)
-                        <input type="hidden" name="external_ref" value="{{ $booking->external_ref }}">
-                        @endif
-                        @if($booking->notes)
-                        <input type="hidden" name="notes"        value="{{ $booking->notes }}">
-                        @endif
-                        <input type="hidden" name="income_paid"     value="{{ $booking->income_paid ? 1 : 0 }}">
-                        @if($booking->income_paid_at)
-                        <input type="hidden" name="income_paid_at"  value="{{ $booking->income_paid_at->format('Y-m-d') }}">
-                        @endif
+                    <div style="display:flex;flex-wrap:wrap;gap:.5rem 1.5rem">
                         @if($booking->income_amount !== null)
-                        <input type="hidden" name="income_amount"   value="{{ $booking->income_amount }}">
+                            <span style="display:flex;align-items:center;gap:.35rem;font-size:.875rem">
+                                @if($booking->income_tax)
+                                    <span style="color:#2e7d32;font-size:1rem">✓</span>
+                                @else
+                                    <span style="color:#9e9e9e;font-size:1rem">✗</span>
+                                @endif
+                                Incasso
+                                <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }})</span>
+                            </span>
                         @endif
-                        <input type="hidden" name="cleaning_paid"   value="{{ $booking->cleaning_paid ? 1 : 0 }}">
                         @if($booking->cleaning_amount !== null)
-                        <input type="hidden" name="cleaning_amount" value="{{ $booking->cleaning_amount }}">
+                            <span style="display:flex;align-items:center;gap:.35rem;font-size:.875rem">
+                                @if($booking->cleaning_tax)
+                                    <span style="color:#2e7d32;font-size:1rem">✓</span>
+                                @else
+                                    <span style="color:#9e9e9e;font-size:1rem">✗</span>
+                                @endif
+                                Pulizie
+                                <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }})</span>
+                            </span>
                         @endif
-                        <input type="hidden" name="linen_paid"      value="{{ $booking->linen_paid ? 1 : 0 }}">
                         @if($booking->linen_amount !== null)
-                        <input type="hidden" name="linen_amount"    value="{{ $booking->linen_amount }}">
-                        @endif
-                        <input type="hidden" name="parking_paid"    value="{{ $booking->parking_paid ? 1 : 0 }}">
-                        @if($booking->parking_paid_at)
-                        <input type="hidden" name="parking_paid_at" value="{{ $booking->parking_paid_at->format('Y-m-d') }}">
+                            <span style="display:flex;align-items:center;gap:.35rem;font-size:.875rem">
+                                @if($booking->linen_tax)
+                                    <span style="color:#2e7d32;font-size:1rem">✓</span>
+                                @else
+                                    <span style="color:#9e9e9e;font-size:1rem">✗</span>
+                                @endif
+                                Biancheria
+                                <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->linen_amount, 2, ',', '.') }})</span>
+                            </span>
                         @endif
                         @if($booking->parking_amount !== null)
-                        <input type="hidden" name="parking_amount"  value="{{ $booking->parking_amount }}">
+                            <span style="display:flex;align-items:center;gap:.35rem;font-size:.875rem">
+                                @if($booking->parking_tax)
+                                    <span style="color:#2e7d32;font-size:1rem">✓</span>
+                                @else
+                                    <span style="color:#9e9e9e;font-size:1rem">✗</span>
+                                @endif
+                                Posto auto
+                                <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->parking_amount, 2, ',', '.') }})</span>
+                            </span>
                         @endif
-                        @if($booking->services_paid_at)
-                        <input type="hidden" name="services_paid_at" value="{{ $booking->services_paid_at->format('Y-m-d') }}">
-                        @endif
-
-                        <div style="display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;margin-bottom:1rem">
-                            @if($booking->income_amount !== null)
-                                <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                                    <input type="hidden"   name="income_tax" value="0">
-                                    <input type="checkbox" name="income_tax" value="1" class="form-checkbox"
-                                           @checked($booking->income_tax)>
-                                    <span style="font-size:.9rem">Incasso</span>
-                                    <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }})</span>
-                                </label>
-                            @endif
-                            @if($booking->cleaning_amount !== null)
-                                <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                                    <input type="hidden"   name="cleaning_tax" value="0">
-                                    <input type="checkbox" name="cleaning_tax" value="1" class="form-checkbox"
-                                           @checked($booking->cleaning_tax)>
-                                    <span style="font-size:.9rem">Pulizie</span>
-                                    <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->cleaning_amount, 2, ',', '.') }})</span>
-                                </label>
-                            @endif
-                            @if($booking->linen_amount !== null)
-                                <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                                    <input type="hidden"   name="linen_tax" value="0">
-                                    <input type="checkbox" name="linen_tax" value="1" class="form-checkbox"
-                                           @checked($booking->linen_tax)>
-                                    <span style="font-size:.9rem">Biancheria</span>
-                                    <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->linen_amount, 2, ',', '.') }})</span>
-                                </label>
-                            @endif
-                            @if($booking->parking_amount !== null)
-                                <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer">
-                                    <input type="hidden"   name="parking_tax" value="0">
-                                    <input type="checkbox" name="parking_tax" value="1" class="form-checkbox"
-                                           @checked($booking->parking_tax)>
-                                    <span style="font-size:.9rem">Posto auto</span>
-                                    <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->parking_amount, 2, ',', '.') }})</span>
-                                </label>
-                            @endif
-                        </div>
-
-                        <button type="submit" class="btn btn--primary btn--sm">Salva</button>
-                    </form>
+                    </div>
                 </div>
             @endif
         @endif
