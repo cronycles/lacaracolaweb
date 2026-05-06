@@ -107,3 +107,21 @@ Do **not** override Laravel's `can()` method. Use `hasPermission()` and `isSuper
 1. Add to `PermissionSeeder` / `RoleSeeder`
 2. Add `permission:<slug>` middleware to the relevant route group in `routes/admin.php`
 3. Add `@if(auth()->user()->hasPermission(...))` in affected Blade templates
+
+# Tax Declaration (Dichiarazione dei redditi)
+
+## Controller
+`TaxDeclarationController@index` — `GET /admin/dichiarazione-redditi?year=YYYY`
+- Protected by `permission:view_accounting` middleware (same group as Contabilità).
+- Named route: `admin.tax-declaration.index`.
+
+## Query logic
+- Booking income: flagged with `income_tax = true`, paid (`income_paid = true`), date from `COALESCE(income_paid_at, checkout)`.
+- Booking parking: flagged with `parking_tax = true`, paid (`parking_paid = true`), date from `COALESCE(parking_paid_at, checkout)`.
+- Booking cleaning/linen: flagged with `cleaning_tax`/`linen_tax = true`, paid, date from `COALESCE(services_paid_at, checkout)`.
+- `financial_entries`: flagged with `tax_declaration = true`, any type; `entry_date` used for year assignment.
+- Only flagged+paid items count toward totals (cash-basis). Flagged+unpaid items appear in the table with "Da pagare" status.
+
+## Config defaults
+`config/finance.php` key `tax_declaration_defaults`: `income`, `cleaning`, `linen` default `true`; `parking` defaults `false`.
+Applied at `BookingController::store()` and via migration for existing rows.

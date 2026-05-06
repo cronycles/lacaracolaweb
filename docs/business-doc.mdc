@@ -45,6 +45,13 @@ alwaysApply: true
 - Manual Interhome PDF import with booking/block creation.
 - Admin settings persisted in DB: only `booking_mode` and `booking_external_url`.
 - Admin password change available in private area.
+- Tax declaration page (`/admin/dichiarazione-redditi`):
+    - Accessible with `view_accounting` permission.
+    - Displays only booking/entry items flagged for the declaration and their paid status.
+    - Year tabs filter by year (same logic as Contabilità page).
+    - Totale entrate and Totale uscite boxes show only flagged **and paid** items (cash-basis).
+    - Per-booking flags (income, cleaning, linen, parking) configured via `finance.php` defaults; overridable per-booking in the booking detail page.
+    - Per-entry flag `tax_declaration` set in the financial entry create/edit form.
 
 ## Multilingual
 - Supported locales: it, en, fr, de.

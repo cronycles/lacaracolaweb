@@ -106,6 +106,10 @@ Individual stay/reservation records linked to a primary guest.
 | `parking_paid` | BOOLEAN          | Posto auto marcato come incassato (default: false) |
 | `parking_paid_at` | DATE          | Data di imputazione contabile del parcheggio (nullable, default: checkout) |
 | `services_paid_at` | DATE         | Data di imputazione contabile di pulizie+biancheria (nullable, default: checkout) |
+| `income_tax`   | BOOLEAN          | Incasso incluso nella dichiarazione dei redditi (default from config: true) |
+| `cleaning_tax` | BOOLEAN          | Pulizie incluse nella dichiarazione dei redditi (default from config: true) |
+| `linen_tax`    | BOOLEAN          | Biancheria inclusa nella dichiarazione dei redditi (default from config: true) |
+| `parking_tax`  | BOOLEAN          | Posto auto incluso nella dichiarazione dei redditi (default from config: false) |
 | `created_at`   | TIMESTAMP        |                                                    |
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |
@@ -140,6 +144,7 @@ Financial records for extra money movements not linked directly to a booking.
 | `description`| TEXT              | Descrizione opzionale                                       |
 | `amount`     | DECIMAL(8,2)      | Importo in EUR                                              |
 | `entry_date` | DATE              | Data dell'operazione                                        |
+| `tax_declaration` | BOOLEAN      | Includi nella dichiarazione dei redditi (default: false)    |
 | `created_at` | TIMESTAMP         |                                                            |
 | `updated_at` | TIMESTAMP         |                                                            |
 
@@ -147,6 +152,7 @@ Financial records for extra money movements not linked directly to a booking.
 
 - Usata per tracciare ingressi/uscite extra non direttamente legate a una prenotazione.
 - `type` determina se la voce contribuisce agli ingressi o alle uscite.
+- `tax_declaration = true` include la voce nella pagina Dichiarazione dei redditi.
 - Viene inclusa nel calcolo dei totali finanziari nella dashboard.
 
 **Relations:**

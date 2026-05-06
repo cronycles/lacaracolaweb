@@ -23,4 +23,17 @@ return [
         'ingresso'       => 'Ingresso Puntuale',
         'altro'          => 'Altro',
     ],
+
+    /*
+     * Default values for the "Dichiarazione dei redditi" flags on new bookings.
+     * income, cleaning, linen default to true (typically declared on tax return).
+     * parking defaults to false (usually not declared as rental income).
+     * Override any value here to change the default for all future bookings.
+     */
+    'tax_declaration_defaults' => [
+        'income'   => true,
+        'cleaning' => true,
+        'linen'    => true,
+        'parking'  => false,
+    ],
 ];

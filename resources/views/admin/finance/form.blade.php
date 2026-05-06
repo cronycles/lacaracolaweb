@@ -75,6 +75,17 @@
                     @error('description') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                {{-- Tax declaration --}}
+                <div class="form-group">
+                    <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+                        <input type="hidden"   name="tax_declaration" value="0">
+                        <input type="checkbox" name="tax_declaration" value="1" id="tax_declaration" class="form-checkbox"
+                               @checked(old('tax_declaration', $entry->tax_declaration ?? false))>
+                        <span class="form-label" style="margin:0">Includi nella dichiarazione dei redditi</span>
+                    </label>
+                    @error('tax_declaration') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
                     <button type="submit" class="btn btn--primary">
                         {{ $entry->exists ? 'Salva modifiche' : 'Aggiungi voce' }}

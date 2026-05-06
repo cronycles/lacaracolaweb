@@ -72,6 +72,20 @@ class BookingController extends Controller
 
         $booking = Booking::create($data);
 
+        // Apply tax declaration defaults from config
+        $defaults = config('finance.tax_declaration_defaults', [
+            'income'   => true,
+            'cleaning' => true,
+            'linen'    => true,
+            'parking'  => false,
+        ]);
+        $booking->update([
+            'income_tax'   => $defaults['income'],
+            'cleaning_tax' => $defaults['cleaning'],
+            'linen_tax'    => $defaults['linen'],
+            'parking_tax'  => $defaults['parking'],
+        ]);
+
         // Automatically create availability block
         AvailabilityBlock::create([
             'start_date' => $data['checkin'],
@@ -208,6 +222,10 @@ class BookingController extends Controller
             'parking_paid'     => ['nullable', 'boolean'],
             'parking_paid_at'  => ['nullable', 'date'],
             'services_paid_at' => ['nullable', 'date'],
+            'income_tax'       => ['nullable', 'boolean'],
+            'cleaning_tax'     => ['nullable', 'boolean'],
+            'linen_tax'        => ['nullable', 'boolean'],
+            'parking_tax'      => ['nullable', 'boolean'],
         ]);
     }
 

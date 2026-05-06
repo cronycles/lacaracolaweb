@@ -36,6 +36,10 @@ class Booking extends Model
         'parking_paid',
         'parking_paid_at',
         'services_paid_at',
+        'income_tax',
+        'cleaning_tax',
+        'linen_tax',
+        'parking_tax',
     ];
 
     protected $casts = [
@@ -54,7 +58,13 @@ class Booking extends Model
         'linen_amount'     => 'decimal:2',
         'linen_paid'       => 'boolean',
         'parking_amount'   => 'decimal:2',
-        'parking_paid'     => 'boolean',        'parking_paid_at'  => 'date',        'services_paid_at' => 'date',
+        'parking_paid'     => 'boolean',
+        'parking_paid_at'  => 'date',
+        'services_paid_at' => 'date',
+        'income_tax'       => 'boolean',
+        'cleaning_tax'     => 'boolean',
+        'linen_tax'        => 'boolean',
+        'parking_tax'      => 'boolean',
     ];
 
     public function person(): BelongsTo

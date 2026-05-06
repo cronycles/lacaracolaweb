@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\PricingController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StayDiscountRuleController;
+use App\Http\Controllers\Admin\TaxDeclarationController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -100,6 +101,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::resource('contabilita', FinancialEntryController::class)
             ->parameters(['contabilita' => 'entry'])
             ->names('finance');
+        Route::get('/dichiarazione-redditi', [TaxDeclarationController::class, 'index'])->name('tax-declaration.index');
     });
 
     // ── manage_pricing ───────────────────────────────────────────────────────

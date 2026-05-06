@@ -40,6 +40,18 @@
         </div>
     </div>
 
+    {{-- Tab nav: Contabilità / Dichiarazione redditi --}}
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap">
+        <a href="{{ route('admin.finance.index') }}"
+           class="btn btn--sm btn--primary">
+            Contabilità
+        </a>
+        <a href="{{ route('admin.tax-declaration.index') }}"
+           class="btn btn--sm btn--outline">
+            Dichiarazione redditi
+        </a>
+    </div>
+
     {{-- Toolbar: anno + nuova voce --}}
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
         <div style="font-size:1rem;font-weight:700;color:#1a2e3a">Contabilità</div>

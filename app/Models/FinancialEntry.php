@@ -14,11 +14,13 @@ class FinancialEntry extends Model
         'description',
         'amount',
         'entry_date',
+        'tax_declaration',
     ];
 
     protected $casts = [
-        'amount'     => 'decimal:2',
-        'entry_date' => 'date',
+        'amount'          => 'decimal:2',
+        'entry_date'      => 'date',
+        'tax_declaration' => 'boolean',
     ];
 
     public function isIncome(): bool
