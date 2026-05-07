@@ -176,4 +176,34 @@
         font-size: 1.5rem;
         color: var(--color-primary);
     }
+
+    &__close {
+        position: absolute;
+        top: var(--space-4);
+        right: var(--space-4);
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--color-text-muted);
+        padding: var(--space-2);
+        transition: color var(--transition-fast);
+
+        &:hover {
+            color: var(--color-primary);
+        }
+    }
+
+    &__admin-link {
+        font-size: 1.2rem;
+        line-height: 1;
+        color: var(--color-text-muted);
+        font-family: inherit;
+        transition: color var(--transition-fast);
+
+        &:hover {
+            color: var(--color-primary);
+        }
+    }
 }

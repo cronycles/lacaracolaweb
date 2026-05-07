@@ -8,6 +8,12 @@ export function initMobileNav(): void {
 
     if (!burger || !mobileMenu) return;
 
+    const close = (): void => {
+        mobileMenu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    };
+
     const toggle = (): void => {
         const isOpen = mobileMenu.classList.toggle('open');
         burger.setAttribute('aria-expanded', String(isOpen));
@@ -17,11 +23,14 @@ export function initMobileNav(): void {
 
     burger.addEventListener('click', toggle);
 
-    // Close on backdrop click or link click
+    // Close button inside mobile menu
+    const closeBtn = mobileMenu.querySelector<HTMLButtonElement>('.nav-mobile__close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', close);
+    }
+
+    // Close on link click
     mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.remove('open');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', close);
     });
 }

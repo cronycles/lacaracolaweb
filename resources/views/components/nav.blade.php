@@ -62,6 +62,7 @@
 
 {{-- Mobile menu --}}
 <nav class="nav-mobile" id="mobile-menu" aria-label="Mobile navigation">
+    <button class="nav-mobile__close" aria-label="{{ __('app.apartment_gallery_close') }}">&#x2715;</button>
     <a href="{{ route_locale('home') }}">{{ __('app.nav_home') }}</a>
     <a href="{{ route_locale('apartment') }}">{{ __('app.nav_apartment') }}</a>
     <a href="{{ route_locale('map') }}">{{ __('app.nav_map') }}</a>
@@ -70,6 +71,8 @@
     <a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a>
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
+    {{-- Admin area link (mobile) --}}
+    <a href="/admin" class="nav-mobile__admin-link" aria-label="Admin area">🔒</a>
     {{-- Language switcher: flat buttons inside mobile menu --}}
     <div class="lang-switcher-mobile">
         @foreach(['it','en','fr','de'] as $locale)
