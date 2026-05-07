@@ -3,7 +3,7 @@
 @section('title', 'Calendario disponibilità')
 
 @section('content')
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
+    <div class="cal-page-layout">
 
         {{-- Left: event list --}}
         <div>

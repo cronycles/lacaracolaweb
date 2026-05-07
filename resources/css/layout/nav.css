@@ -164,6 +164,8 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-8);
+    padding: var(--space-8) var(--space-4);
+    overflow-y: auto;
 
     &.open {
         display: flex;

@@ -554,20 +554,147 @@ body {
 }
 
 /* Mobile responsive sidebar */
+/* ------------------------------------------------------------------
+   Desktop: admin-sidebar__top is transparent (display:contents),
+   admin-nav-toggle is hidden, admin-nav-collapse is a normal flex col.
+   ------------------------------------------------------------------ */
+.admin-sidebar__top { display: contents; }
+.admin-nav-toggle { display: none; }
+.admin-nav-collapse {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Table horizontal scroll wrapper */
+.a-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Calendar page two-column layout */
+.cal-page-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
 @media (max-width: 768px) {
     body { flex-direction: column; }
+
+    /* ── Sidebar: sticky top bar + collapsible nav ── */
     .admin-sidebar {
         width: 100%;
         min-height: auto;
         height: auto;
-        position: static;
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: visible;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        flex-direction: column;
+        overflow: hidden;
     }
-    .admin-sidebar__brand { white-space: nowrap; }
-    .admin-nav { display: flex; flex-direction: row; padding: 0; }
-    .admin-nav li a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+
+    .admin-sidebar__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .admin-sidebar__brand {
+        padding: .6rem 1rem;
+        font-size: 1rem;
+    }
+
+    .admin-sidebar__brand__logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .admin-nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        background: none;
+        border: none;
+        color: var(--admin-sidebar-text);
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: color .15s;
+    }
+    .admin-nav-toggle:hover { color: #fff; }
+
+    /* Collapsed: hide the nav */
+    .admin-nav-collapse {
+        display: none;
+        max-height: calc(100vh - 56px);
+        overflow-y: auto;
+    }
+
+    /* Open: show the nav */
+    .admin-sidebar.is-open .admin-nav-collapse {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Vertical nav items (restore from horizontal fallback) */
+    .admin-nav {
+        flex-direction: column;
+        padding: .5rem 0;
+    }
+    .admin-nav li a {
+        white-space: normal;
+        border-left: 3px solid transparent;
+        border-bottom: none;
+    }
     .admin-nav li a:hover,
-    .admin-nav li a.active { border-left-color: transparent; border-bottom-color: var(--admin-sidebar-active); }
+    .admin-nav li a.active {
+        border-left-color: var(--admin-sidebar-active);
+        border-bottom-color: transparent;
+    }
+    .admin-sidebar__footer { display: block; }
+
+    /* ── Main content ── */
+    .admin-content { padding: 1rem .875rem; }
+    .admin-topbar { padding: .6rem 1rem; }
+    .admin-topbar__title { font-size: .9rem; }
+
+    /* Hide email in topbar on mobile (saves space) */
+    .admin-topbar > span:last-child { display: none; }
+
+    /* ── Tables: make them scroll on their own ── */
+    .a-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .a-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    /* ── Calendar page: stack vertically ── */
+    .cal-page-layout { grid-template-columns: 1fr; }
+
+    /* ── Stats grids: 2 cols max on mobile ── */
+    .stats-grid--hero {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+    .stat-card--hero { padding: 1.1rem 1rem; }
+    .stat-card--hero .stat-card__number { font-size: 1.75rem; }
+
+    /* ── Dashboard banner: wrap nicely ── */
+    .dashboard-banner { flex-wrap: wrap; gap: .75rem; }
+    .dashboard-banner__action { width: 100%; text-align: center; }
+
+    /* ── Booking header row (title + button): stack ── */
+    .page-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .5rem;
+    }
 }

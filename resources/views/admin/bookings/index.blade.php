@@ -3,7 +3,7 @@
 @section('title', 'Prenotazioni')
 
 @section('content')
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <div class="page-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <h1 style="font-size:1.1rem;font-weight:700">Prenotazioni</h1>
         <a href="{{ route('admin.bookings.create') }}" class="btn btn--primary">+ Nuova prenotazione</a>
     </div>
@@ -12,6 +12,7 @@
         @if ($items->isEmpty())
             <p style="color:#6b7f89;font-size:.875rem">Nessuna prenotazione registrata.</p>
         @else
+            <div class="a-table-wrap">
             <table class="a-table">
                 <thead>
                     <tr>
@@ -129,6 +130,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>{{-- /a-table-wrap --}}
 
             <div class="pagination-wrap">
                 {{ $items->links() }}

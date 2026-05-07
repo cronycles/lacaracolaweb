@@ -9,15 +9,21 @@
 </head>
 <body>
     {{-- Sidebar navigation --}}
-    <aside class="admin-sidebar">
-        <a href="{{ route('admin.dashboard') }}" class="admin-sidebar__brand">
-            <img src="{{ asset('images/brand/logo-symbol-gold.svg') }}" alt="La Caracola" class="admin-sidebar__brand__logo">
-            <div>
-                La Caracola
-                <span>Pannello di controllo</span>
-            </div>
-        </a>
+    <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar__top">
+            <a href="{{ route('admin.dashboard') }}" class="admin-sidebar__brand">
+                <img src="{{ asset('images/brand/logo-symbol-gold.svg') }}" alt="La Caracola" class="admin-sidebar__brand__logo">
+                <div>
+                    La Caracola
+                    <span>Pannello di controllo</span>
+                </div>
+            </a>
+            <button class="admin-nav-toggle" type="button" aria-label="Apri menu" aria-expanded="false" id="admin-nav-toggle">
+                <span class="admin-nav-toggle__icon">☰</span>
+            </button>
+        </div>
 
+        <div class="admin-nav-collapse" id="admin-nav-collapse">
         <ul class="admin-nav">
             <li>
                 <a href="{{ route('admin.dashboard') }}" @class(['active' => request()->routeIs('admin.dashboard')])>
@@ -103,6 +109,7 @@
                 </button>
             </form>
         </div>
+        </div>{{-- /admin-nav-collapse --}}
     </aside>
 
     {{-- Main area --}}
@@ -126,5 +133,23 @@
         </main>
     </div>
     @stack('scripts')
+    <script>
+    (function(){
+        var toggle = document.getElementById('admin-nav-toggle');
+        var sidebar = document.getElementById('admin-sidebar');
+        if (!toggle || !sidebar) return;
+        toggle.addEventListener('click', function(){
+            var open = sidebar.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        // close sidebar when a nav link is tapped on mobile
+        sidebar.querySelectorAll('.admin-nav a').forEach(function(a){
+            a.addEventListener('click', function(){
+                sidebar.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    })();
+    </script>
 </body>
 </html>
