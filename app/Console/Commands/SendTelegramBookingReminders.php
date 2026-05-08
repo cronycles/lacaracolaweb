@@ -24,29 +24,37 @@ class SendTelegramBookingReminders extends Command
         $checkoutDate = Carbon::today()->addDays($checkoutLeadDays)->toDateString();
 
         // Arrival reminders
-        $arrivals = Booking::with('person')
-            ->whereNull('canceled_at')
-            ->whereNull('deleted_at')
-            ->whereDate('checkin', $checkinDate)
-            ->get();
+        if ($checkinLeadDays > 0) {
+            $arrivals = Booking::with('person')
+                ->whereNull('canceled_at')
+                ->whereNull('deleted_at')
+                ->whereDate('checkin', $checkinDate)
+                ->get();
 
-        foreach ($arrivals as $booking) {
-            $text = $this->buildArrivalMessage($booking);
-            $telegram->sendToAllRecipients($text);
-            $this->line("Arrival reminder sent for booking #{$booking->id}");
+            foreach ($arrivals as $booking) {
+                $text = $this->buildArrivalMessage($booking);
+                $telegram->sendToAllRecipients($text);
+                $this->line("Arrival reminder sent for booking #{$booking->id}");
+            }
+        } else {
+            $this->line('Arrival reminders disabled (checkin_lead_days = 0).');
         }
 
         // Departure reminders
-        $departures = Booking::with('person')
-            ->whereNull('canceled_at')
-            ->whereNull('deleted_at')
-            ->whereDate('checkout', $checkoutDate)
-            ->get();
+        if ($checkoutLeadDays > 0) {
+            $departures = Booking::with('person')
+                ->whereNull('canceled_at')
+                ->whereNull('deleted_at')
+                ->whereDate('checkout', $checkoutDate)
+                ->get();
 
-        foreach ($departures as $booking) {
-            $text = $this->buildDepartureMessage($booking);
-            $telegram->sendToAllRecipients($text);
-            $this->line("Departure reminder sent for booking #{$booking->id}");
+            foreach ($departures as $booking) {
+                $text = $this->buildDepartureMessage($booking);
+                $telegram->sendToAllRecipients($text);
+                $this->line("Departure reminder sent for booking #{$booking->id}");
+            }
+        } else {
+            $this->line('Departure reminders disabled (checkout_lead_days = 0).');
         }
 
         return self::SUCCESS;
