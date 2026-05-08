@@ -21,6 +21,7 @@ return [
     |
     | How many days before check-in / check-out the daily reminder command
     | should send its notification. Change these values directly here.
+    | if the values are 0 the reminders will not be sent at all.
     |
     */
 
