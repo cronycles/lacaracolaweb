@@ -28,6 +28,12 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Availability request endpoint: `POST /{locale}/{availability-slug}`
   - supports JSON and form submit
   - sends owner email (`BookingRequestMail`), with non-blocking fallback on mail errors
+- Telegram webhook: `POST /api/telegram/webhook/{secret}` (stateless, no CSRF)
+  - Receives updates from Telegram; logs `chat_id` for initial recipient setup.
+  - Secret validated against `config('telegram.webhook_secret')`.
+- Booking Telegram notify: `POST /admin/prenotazioni/{id}/notify-telegram` (requires `manage_bookings`)
+  - Sends booking summary to all users with a non-null `telegram_chat_id`.
+  - Returns JSON `{"sent": true|false}`.
 
 # Domain invariants
 - Canceled booking state is `canceled_at != null`.
@@ -40,6 +46,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - `BookingCreationService`: creates booking + person + availability block.
 - `PricingQuoteService`: single pricing engine (public quote + admin simulator).
 - `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
+- `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients resolved from `users.telegram_chat_id`.
 
 # Configuration and precedence
 - Source of truth booking defaults: `config/apartment.php`.

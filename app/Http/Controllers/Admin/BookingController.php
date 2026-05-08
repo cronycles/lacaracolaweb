@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
+use App\Services\TelegramService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -93,7 +95,7 @@ class BookingController extends Controller
             'booking_id' => $booking->id,
         ]);
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Prenotazione aggiunta.');
+        return redirect()->route('admin.bookings.show', $booking)->with('success', 'Prenotazione aggiunta.');
     }
 
     public function show(Booking $prenotazioni): View
@@ -143,6 +145,51 @@ class BookingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Prenotazione segnata come cancellata. Giorni liberati.');
+    }
+
+    public function notifyTelegram(Booking $prenotazioni, TelegramService $telegram): JsonResponse
+    {
+        $prenotazioni->load('person');
+
+        $recipients = \App\Models\User::whereNotNull('telegram_chat_id')->count();
+
+        if ($recipients === 0) {
+            return response()->json(['sent' => false, 'reason' => 'no_recipients']);
+        }
+
+        $text = $this->buildBookingMessage($prenotazioni);
+        $telegram->sendToAllRecipients($text);
+
+        return response()->json(['sent' => true]);
+    }
+
+    private function buildBookingMessage(Booking $booking): string
+    {
+        $person = $booking->person;
+
+        $lines   = [];
+        $lines[] = "\u{1F3E0} Prenotazione \u{2014} {$person->full_name}";
+
+        if (! empty($person->phone)) {
+            $lines[] = "\u{1F4DE} {$person->phone}";
+        }
+
+        $lines[] = "\u{1F4C5} Check-in: {$booking->checkin->format('d/m/Y')}  Check-out: {$booking->checkout->format('d/m/Y')}";
+
+        $guests = "\u{1F465} Adulti: {$booking->adults}";
+        if ($booking->children) {
+            $guests .= "  Bambini: {$booking->children}";
+        }
+        if ($booking->pets) {
+            $guests .= "  Animali: {$booking->pets}";
+        }
+        $lines[] = $guests;
+
+        if (! empty($booking->notes)) {
+            $lines[] = "\u{1F4DD} Note: {$booking->notes}";
+        }
+
+        return implode("\n", $lines);
     }
 
     public function restore(Booking $prenotazioni): RedirectResponse

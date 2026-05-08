@@ -117,6 +117,12 @@ MAIL_FROM_NAME="La Caracola"
 
 ADMIN_EMAIL=YOUR_ADMIN_EMAIL
 ADMIN_PASSWORD=YOUR_ADMIN_PASSWORD
+
+# Telegram Bot (optional — omit if not using notifications)
+TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
+TELEGRAM_WEBHOOK_SECRET=YOUR_RANDOM_SECRET
+TELEGRAM_CHECKIN_LEAD_DAYS=1
+TELEGRAM_CHECKOUT_LEAD_DAYS=1
 ```
 
 ## APP_KEY generation
@@ -221,6 +227,35 @@ php -r "require '/home/lacaraco/lacaracola-app/vendor/autoload.php'; $app = requ
 3. Test admin login
 4. Test booking form
 5. Check storage/logs/laravel.log for errors
+
+## Telegram Bot setup
+
+After first deploy with `TELEGRAM_BOT_TOKEN` configured:
+
+1. **Register the webhook** with Telegram (once per environment):
+
+```bash
+curl -X POST "https://api.telegram.org/bot<YOUR_TOKEN>/setWebhook" \
+  -d "url=https://lacaracolaandora.com/api/telegram/webhook/<YOUR_WEBHOOK_SECRET>"
+```
+
+2. **Discover recipient `chat_id`s**: Share the bot link `https://t.me/LaCaracolaAndoraBot` with each user. Ask them to send any message to the bot.
+
+3. **Read the log**: After each message, check `storage/logs/telegram.log` for a `Telegram message` entry containing the `chat_id`.
+
+4. **Save the `chat_id`**: In the admin panel under **Gestione Utenti**, edit the user and paste their `chat_id` in the **Telegram Chat ID** field. Save.
+
+From that point the user will receive all Telegram notifications automatically.
+
+### Scheduled reminders
+
+The daily reminder command (`telegram:send-reminders`) requires a cron entry. In cPanel Cron Jobs, add:
+
+```
+0 8 * * * cd /home/lacaraco/lacaracola-app && php artisan schedule:run >> /dev/null 2>&1
+```
+
+(adjust the hour to your preference)
 
 ## Troubleshooting
 

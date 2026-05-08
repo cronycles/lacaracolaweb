@@ -68,6 +68,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::middleware('permission:manage_bookings')->group(function () {
         Route::patch('/prenotazioni/{prenotazioni}/annulla', [BookingController::class, 'cancel'])->name('bookings.cancel');
         Route::patch('/prenotazioni/{prenotazioni}/ripristina', [BookingController::class, 'restore'])->name('bookings.restore');
+        Route::post('/prenotazioni/{prenotazioni}/notify-telegram', [BookingController::class, 'notifyTelegram'])->name('bookings.notify-telegram');
         Route::get('/prenotazioni/{prenotazioni}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
         Route::put('/prenotazioni/{prenotazioni}', [BookingController::class, 'update'])->name('bookings.update');
         Route::patch('/prenotazioni/{prenotazioni}', [BookingController::class, 'update']);

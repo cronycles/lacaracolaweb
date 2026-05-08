@@ -8,6 +8,12 @@
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Prenotazioni</a>
             @if(auth()->user()->hasPermission('manage_bookings'))
                 <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--primary btn--sm">Modifica</a>
+                <button type="button" class="btn btn--outline btn--sm"
+                        id="btn-telegram-notify"
+                        data-url="{{ route('admin.bookings.notify-telegram', $booking) }}"
+                        title="Invia notifica Telegram a tutti i destinatari configurati">
+                    ✈ Telegram
+                </button>
                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
                       onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
                     @csrf
@@ -16,6 +22,12 @@
                 </form>
             @endif
         </div>
+
+        @if(session('success'))
+            <div class="flash flash--success" style="margin-bottom:.75rem">{{ session('success') }}</div>
+        @endif
+
+        <div id="telegram-toast" style="display:none;margin-bottom:.75rem"></div>
 
         <div class="a-card">
             <div class="a-card__title">Dati prenotazione</div>
@@ -262,3 +274,58 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const btn = document.getElementById('btn-telegram-notify');
+    if (!btn) return;
+
+    const toast = document.getElementById('telegram-toast');
+
+    function showToast(message, success) {
+        toast.textContent = message;
+        toast.style.display = 'block';
+        toast.style.padding = '.6rem 1rem';
+        toast.style.borderRadius = '6px';
+        toast.style.fontSize = '.875rem';
+        toast.style.background = success ? '#d1fae5' : '#fee2e2';
+        toast.style.color = success ? '#065f46' : '#991b1b';
+        toast.style.border = '1px solid ' + (success ? '#6ee7b7' : '#fca5a5');
+        setTimeout(() => { toast.style.display = 'none'; }, 5000);
+    }
+
+    btn.addEventListener('click', function () {
+        if (!window.confirm('Inviare la notifica Telegram della prenotazione a tutti i destinatari configurati?')) {
+            return;
+        }
+
+        btn.disabled = true;
+
+        fetch(btn.dataset.url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.sent) {
+                showToast('✓ Notifica Telegram inviata.', true);
+            } else if (data.reason === 'no_recipients') {
+                showToast('Nessun destinatario configurato. Aggiungi un Telegram Chat ID negli utenti.', false);
+            } else {
+                showToast('Invio completato (controlla i log per dettagli).', true);
+            }
+        })
+        .catch(() => {
+            showToast('Errore di rete durante l\'invio.', false);
+        })
+        .finally(() => {
+            btn.disabled = false;
+        });
+    });
+})();
+</script>
+@endpush

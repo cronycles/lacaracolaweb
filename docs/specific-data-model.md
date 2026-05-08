@@ -28,6 +28,7 @@ Admin accounts for the apartment management system. Supports multiple users with
 | `name`       | VARCHAR(255) | Admin display name                        |
 | `email`      | VARCHAR(255) | Unique, used for login                    |
 | `password`   | VARCHAR(255) | Hashed (Laravel bcrypt)                   |
+| `telegram_chat_id` | VARCHAR(64) | Telegram chat ID for notifications (nullable) |
 | `created_at` | TIMESTAMP    |                                           |
 | `updated_at` | TIMESTAMP    |                                           |
 

@@ -32,17 +32,19 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role_id'  => ['nullable', 'exists:roles,id'],
+            'name'             => ['required', 'string', 'max:255'],
+            'email'            => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password'         => ['required', 'string', 'min:8', 'confirmed'],
+            'role_id'          => ['nullable', 'exists:roles,id'],
+            'telegram_chat_id' => ['nullable', 'string', 'max:64'],
         ]);
 
         User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role_id'  => $data['role_id'] ?? null,
+            'name'             => $data['name'],
+            'email'            => $data['email'],
+            'password'         => Hash::make($data['password']),
+            'role_id'          => $data['role_id'] ?? null,
+            'telegram_chat_id' => $data['telegram_chat_id'] ?? null,
         ]);
 
         return redirect()->route('admin.users.index')
@@ -78,12 +80,14 @@ class UserController extends Controller
     public function update(Request $request, User $utenti): RedirectResponse
     {
         $data = $request->validate([
-            'role_id'       => ['nullable', 'exists:roles,id'],
-            'permissions'   => ['nullable', 'array'],
-            'permissions.*' => ['exists:permissions,id'],
+            'role_id'          => ['nullable', 'exists:roles,id'],
+            'telegram_chat_id' => ['nullable', 'string', 'max:64'],
+            'permissions'      => ['nullable', 'array'],
+            'permissions.*'    => ['exists:permissions,id'],
         ]);
 
-        $utenti->role_id = $data['role_id'] ?? null;
+        $utenti->role_id          = $data['role_id'] ?? null;
+        $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;
         $utenti->save();
 
         // Reload role permissions after potential role change

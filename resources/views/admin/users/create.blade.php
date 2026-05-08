@@ -62,6 +62,19 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="telegram_chat_id">Telegram Chat ID</label>
+                    <input type="text" id="telegram_chat_id" name="telegram_chat_id" class="form-input"
+                           value="{{ old('telegram_chat_id') }}"
+                           placeholder="Lascia vuoto; aggiorna dopo aver ricevuto il primo messaggio dal bot">
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.3rem">
+                        L'utente deve inviare un messaggio al bot @LaCaracolaAndoraBot; il chat_id apparirà in <code>storage/logs/telegram.log</code>.
+                    </div>
+                    @error('telegram_chat_id')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div style="display:flex;gap:.75rem;margin-top:1.25rem">
                     <button type="submit" class="btn btn--primary">Crea utente</button>
                     <a href="{{ route('admin.users.index') }}" class="btn btn--outline">Annulla</a>
