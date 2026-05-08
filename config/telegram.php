@@ -20,11 +20,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | How many days before check-in / check-out the daily reminder command
-    | should send its notification. Both default to 1 day.
+    | should send its notification. Change these values directly here.
     |
     */
 
-    'checkin_lead_days'  => (int) env('TELEGRAM_CHECKIN_LEAD_DAYS', 1),
-    'checkout_lead_days' => (int) env('TELEGRAM_CHECKOUT_LEAD_DAYS', 1),
+    'checkin_lead_days'  => 1,
+    'checkout_lead_days' => 1,
 
 ];
