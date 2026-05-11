@@ -11,12 +11,14 @@ use Illuminate\Console\Command;
 
 class SendTelegramBookingReminders extends Command
 {
-    protected $signature = 'telegram:send-reminders';
+    protected $signature = 'telegram:send-reminders {--type= : Which reminders to send: checkin, checkout, or omit for both}';
 
     protected $description = 'Send Telegram arrival and departure reminders to configured recipients.';
 
     public function handle(TelegramService $telegram): int
     {
+        $type = $this->option('type');
+
         $checkinLeadDays  = (int) config('telegram.checkin_lead_days', 1);
         $checkoutLeadDays = (int) config('telegram.checkout_lead_days', 1);
 
@@ -24,7 +26,7 @@ class SendTelegramBookingReminders extends Command
         $checkoutDate = Carbon::today()->addDays($checkoutLeadDays)->toDateString();
 
         // Arrival reminders
-        if ($checkinLeadDays > 0) {
+        if (($type === null || $type === 'checkin') && $checkinLeadDays > 0) {
             $arrivals = Booking::with('person')
                 ->whereNull('canceled_at')
                 ->whereNull('deleted_at')
@@ -36,12 +38,12 @@ class SendTelegramBookingReminders extends Command
                 $telegram->sendToAllRecipients($text);
                 $this->line("Arrival reminder sent for booking #{$booking->id}");
             }
-        } else {
+        } elseif ($type === null || $type === 'checkin') {
             $this->line('Arrival reminders disabled (checkin_lead_days = 0).');
         }
 
         // Departure reminders
-        if ($checkoutLeadDays > 0) {
+        if (($type === null || $type === 'checkout') && $checkoutLeadDays > 0) {
             $departures = Booking::with('person')
                 ->whereNull('canceled_at')
                 ->whereNull('deleted_at')
@@ -53,7 +55,7 @@ class SendTelegramBookingReminders extends Command
                 $telegram->sendToAllRecipients($text);
                 $this->line("Departure reminder sent for booking #{$booking->id}");
             }
-        } else {
+        } elseif ($type === null || $type === 'checkout') {
             $this->line('Departure reminders disabled (checkout_lead_days = 0).');
         }
 
