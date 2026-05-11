@@ -82,11 +82,26 @@ class DashboardController extends Controller
             'global_balance'   => $globalBalance,
 
             // Current booking (guests in the apartment right now)
-            'current_booking'  => Booking::whereNull('canceled_at')
-                                         ->where('checkin', '<=', today())
-                                         ->where('checkout', '>', today())
-                                         ->with('person')
-                                         ->first(),
+            // Considers checkin_time and checkout_time from config so that
+            // a guest arriving today is only "home" from checkin_time onwards,
+            // and a guest departing today is "gone" from checkout_time onwards.
+            'current_booking'  => (static function (): ?Booking {
+                $now          = now();
+                $checkinTime  = config('apartment.booking.checkin_time', '15:00');
+                $checkoutTime = config('apartment.booking.checkout_time', '10:00');
+
+                return Booking::whereNull('canceled_at')
+                    ->whereDate('checkin', '<=', $now->toDateString())
+                    ->whereDate('checkout', '>=', $now->toDateString())
+                    ->with('person')
+                    ->get()
+                    ->first(static function (Booking $booking) use ($now, $checkinTime, $checkoutTime): bool {
+                        $checkinAt  = \Carbon\Carbon::parse($booking->checkin->toDateString() . ' ' . $checkinTime);
+                        $checkoutAt = \Carbon\Carbon::parse($booking->checkout->toDateString() . ' ' . $checkoutTime);
+
+                        return $now->gte($checkinAt) && $now->lt($checkoutAt);
+                    });
+            })(),
 
             // Cleaning / linen payment summary (visible to all with view_bookings)
             'cleaning_unpaid'  => Booking::whereNull('canceled_at')
