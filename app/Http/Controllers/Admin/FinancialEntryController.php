@@ -39,6 +39,12 @@ class FinancialEntryController extends Controller
             ->whereNotNull('linen_amount')
             ->sum('linen_amount');
 
+        $bookingParking = Booking::whereNull('canceled_at')
+            ->whereYear(\DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->sum('parking_amount');
+
         $bookingExpenses = $bookingCleaning + $bookingLinen;
 
         $extraIncome = FinancialEntry::where('type', 'income')
@@ -50,9 +56,10 @@ class FinancialEntryController extends Controller
             ->sum('amount');
 
         $totals = [
-            'income'           => $bookingIncome + $extraIncome,
+            'income'           => $bookingIncome + $bookingParking + $extraIncome,
             'expenses'         => $bookingExpenses + $extraExpenses,
             'booking_income'   => $bookingIncome,
+            'booking_parking'  => $bookingParking,
             'booking_expenses' => $bookingExpenses,
             'extra_income'     => $extraIncome,
             'extra_expenses'   => $extraExpenses,
@@ -69,6 +76,11 @@ class FinancialEntryController extends Controller
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
+        $globalBookingParking = Booking::whereNull('canceled_at')
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->sum('parking_amount');
+
         $globalBookingExpenses = Booking::whereNull('canceled_at')
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
@@ -77,7 +89,7 @@ class FinancialEntryController extends Controller
         $globalExtraIncome   = FinancialEntry::where('type', 'income')->sum('amount');
         $globalExtraExpenses = FinancialEntry::where('type', 'expense')->sum('amount');
 
-        $globalBalance = ($globalBookingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
+        $globalBalance = ($globalBookingIncome + $globalBookingParking + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
 
         // ── Balance at start of selected year (all previous years combined) ──
 
@@ -86,6 +98,12 @@ class FinancialEntryController extends Controller
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
+
+        $prevBookingParking = Booking::whereNull('canceled_at')
+            ->whereRaw('YEAR(COALESCE(parking_paid_at, checkout)) < ?', [$year])
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->sum('parking_amount');
 
         $prevBookingExpenses = Booking::whereNull('canceled_at')
             ->whereRaw('YEAR(COALESCE(services_paid_at, checkout)) < ?', [$year])
@@ -96,7 +114,7 @@ class FinancialEntryController extends Controller
         $prevExtraIncome   = FinancialEntry::where('type', 'income')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
         $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
 
-        $previousBalance = (float) ($prevBookingIncome + $prevExtraIncome) - ($prevBookingExpenses + $prevExtraExpenses);
+        $previousBalance = (float) ($prevBookingIncome + $prevBookingParking + $prevExtraIncome) - ($prevBookingExpenses + $prevExtraExpenses);
 
         // ── Monthly breakdown ────────────────────────────────────────────────
 
@@ -108,6 +126,13 @@ class FinancialEntryController extends Controller
                 ->where('income_paid', true)
                 ->whereNotNull('income_amount')
                 ->sum('income_amount');
+
+            $bPark = Booking::whereNull('canceled_at')
+                ->whereYear(\DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
+                ->whereMonth(\DB::raw('COALESCE(parking_paid_at, checkout)'), $m)
+                ->where('parking_paid', true)
+                ->whereNotNull('parking_amount')
+                ->sum('parking_amount');
 
             $bExp = Booking::whereNull('canceled_at')
                 ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
@@ -127,7 +152,7 @@ class FinancialEntryController extends Controller
                 ->sum('amount');
 
             $monthlyData[$m] = [
-                'income'   => $bInc + $eInc,
+                'income'   => $bInc + $bPark + $eInc,
                 'expenses' => $bExp + $eExp,
             ];
         }
@@ -186,6 +211,31 @@ class FinancialEntryController extends Controller
             ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
             ->with('person')
             ->get();
+
+        // 4. Booking parking payments
+        $bookingParkingRows = Booking::whereNull('canceled_at')
+            ->where('parking_paid', true)
+            ->whereNotNull('parking_amount')
+            ->whereYear(\DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
+            ->with('person')
+            ->get();
+
+        foreach ($bookingParkingRows as $booking) {
+            $date       = $booking->parking_paid_at ?? $booking->checkout;
+            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
+                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+
+            $movements->push([
+                'date'           => $date,
+                'type'           => 'income',
+                'category_label' => 'Posto auto',
+                'description'    => $bookingRef,
+                'amount'         => (float) $booking->parking_amount,
+                'source'         => 'booking_parking',
+                'entry'          => null,
+                'booking_id'     => $booking->id,
+            ]);
+        }
 
         foreach ($bookingServiceRows as $booking) {
             $date       = $booking->services_paid_at ?? $booking->checkout;
