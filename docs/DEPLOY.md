@@ -190,6 +190,24 @@ Admin seeder fallback:
 php artisan db:seed --class=AdminUserSeeder --force
 ```
 
+## Laravel Scheduler — cPanel Cron Job
+
+The Laravel scheduler must be triggered every minute by a system cron job.
+Without this, scheduled commands (including Telegram reminders) never run.
+
+In cPanel → **Cron Jobs**, add the following entry (every minute):
+
+```
+* * * * * /opt/cpanel/ea-php84/root/usr/bin/php /home/lacaraco/lacaracola-app/artisan schedule:run >> /dev/null 2>&1
+```
+
+To verify the scheduler is working, run manually from the cPanel terminal:
+
+```bash
+cd /home/lacaraco/lacaracola-app
+php artisan schedule:run --verbose
+```
+
 ## SSL and HTTPS
 
 After DNS points to SupportHost:
