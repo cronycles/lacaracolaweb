@@ -223,7 +223,7 @@ class FinancialEntryController extends Controller
             ->where('parking_paid', true)
             ->whereNotNull('parking_amount')
             ->whereYear(\DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingParkingRows as $booking) {
@@ -240,6 +240,9 @@ class FinancialEntryController extends Controller
                 'source'         => 'booking_parking',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
