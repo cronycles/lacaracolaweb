@@ -32,6 +32,7 @@
         "vite-plugin-full-reload": "^1.2.0"
     },
     "dependencies": {
+        "flatpickr": "^4.6.13",
         "leaflet": "^1.9.4"
     }
 }

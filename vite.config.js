@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/components/calendar.css',
                 'resources/css/auth/login.css',
                 'resources/ts/app.ts',
+                'resources/ts/admin.ts',
                 'resources/js/app.js',
             ],
             refresh: [
