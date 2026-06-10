@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FinancialAttachmentController;
 use App\Http\Controllers\Admin\FinancialEntryController;
 use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\NewsletterController;
@@ -103,6 +104,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             ->parameters(['contabilita' => 'entry'])
             ->names('finance');
         Route::get('/dichiarazione-redditi', [TaxDeclarationController::class, 'index'])->name('tax-declaration.index');
+
+        // Attachment routes (upload/download/delete for FinancialEntry and Booking)
+        Route::post('/allegati/{type}/{id}', [FinancialAttachmentController::class, 'store'])
+            ->where('type', 'entry|booking')
+            ->name('finance.attachments.store');
+        Route::get('/allegati/{attachment}/download', [FinancialAttachmentController::class, 'download'])
+            ->name('finance.attachments.download');
+        Route::delete('/allegati/{attachment}', [FinancialAttachmentController::class, 'destroy'])
+            ->name('finance.attachments.destroy');
     });
 
     // ── manage_pricing ───────────────────────────────────────────────────────

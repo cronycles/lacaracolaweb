@@ -162,7 +162,7 @@ class FinancialEntryController extends Controller
         $movements = collect();
 
         // 1. Extra financial entries
-        foreach (FinancialEntry::whereYear('entry_date', $year)->get() as $entry) {
+        foreach (FinancialEntry::whereYear('entry_date', $year)->with('attachments')->get() as $entry) {
             $movements->push([
                 'date'           => $entry->entry_date,
                 'type'           => $entry->type,
@@ -172,6 +172,9 @@ class FinancialEntryController extends Controller
                 'source'         => 'entry',
                 'entry'          => $entry,
                 'booking_id'     => null,
+                'model_type'     => 'entry',
+                'model_id'       => $entry->id,
+                'attachments'    => $entry->attachments,
             ]);
         }
 
@@ -180,7 +183,7 @@ class FinancialEntryController extends Controller
             ->whereYear(\DB::raw('COALESCE(income_paid_at, checkout)'), $year)
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingIncomeRows as $booking) {
@@ -196,6 +199,9 @@ class FinancialEntryController extends Controller
                 'source'         => 'booking_income',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
@@ -209,7 +215,7 @@ class FinancialEntryController extends Controller
                 });
             })
             ->whereYear(\DB::raw('COALESCE(services_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         // 4. Booking parking payments
@@ -252,6 +258,9 @@ class FinancialEntryController extends Controller
                     'source'         => 'booking_cleaning',
                     'entry'          => null,
                     'booking_id'     => $booking->id,
+                    'model_type'     => 'booking',
+                    'model_id'       => $booking->id,
+                    'attachments'    => $booking->attachments,
                 ]);
             }
 
@@ -265,6 +274,9 @@ class FinancialEntryController extends Controller
                     'source'         => 'booking_linen',
                     'entry'          => null,
                     'booking_id'     => $booking->id,
+                    'model_type'     => 'booking',
+                    'model_id'       => $booking->id,
+                    'attachments'    => $booking->attachments,
                 ]);
             }
         }
@@ -329,6 +341,8 @@ class FinancialEntryController extends Controller
 
     public function edit(FinancialEntry $entry): View
     {
+        $entry->load('attachments');
+
         return view('admin.finance.form', compact('entry'));
     }
 

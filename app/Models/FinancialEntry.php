@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class FinancialEntry extends Model
 {
@@ -31,5 +32,10 @@ class FinancialEntry extends Model
     public function isExpense(): bool
     {
         return $this->type === 'expense';
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(FinancialAttachment::class, 'attachable');
     }
 }

@@ -132,6 +132,7 @@
             @yield('content')
         </main>
     </div>
+    @stack('dialogs')
     @stack('scripts')
     <script>
     (function(){

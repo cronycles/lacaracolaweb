@@ -85,11 +85,13 @@
                             <th>Descrizione</th>
                             <th style="text-align:right">Importo</th>
                             <th style="text-align:right">Saldo</th>
+                            <th style="text-align:center">Allegati</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($movements as $movement)
+                            @php $dialogId = 'att-dialog-' . $movement['model_type'] . '-' . $movement['model_id']; @endphp
                             <tr>
                                 <td style="white-space:nowrap">{{ $movement['date']->format('d/m/Y') }}</td>
                                 <td>
@@ -106,6 +108,16 @@
                                 </td>
                                 <td style="text-align:right;font-weight:700;color:{{ $movement['running_balance'] >= 0 ? '#1976d2' : '#c62828' }}">
                                     € {{ number_format($movement['running_balance'], 2, ',', '.') }}
+                                </td>
+                                <td style="text-align:center;white-space:nowrap">
+                                    @php $attCount = $movement['attachments']->count(); @endphp
+                                    <button type="button"
+                                            onclick="document.getElementById('{{ $dialogId }}').showModal()"
+                                            class="btn btn--outline btn--sm"
+                                            style="{{ $attCount > 0 ? 'color:#1565c0;border-color:#1565c0;font-weight:700' : 'color:#6b7f89' }}"
+                                            title="Gestisci allegati">
+                                        📎{{ $attCount > 0 ? ' ' . $attCount : '' }}
+                                    </button>
                                 </td>
                                 <td style="white-space:nowrap">
                                     @if ($movement['source'] === 'entry')
@@ -218,3 +230,85 @@
         </div>
     </div>
 @endsection
+
+@push('dialogs')
+    {{-- Attachment dialogs — one per unique model (entries + bookings) --}}
+    @php
+        // Collect unique (model_type, model_id) combinations to avoid duplicate dialogs
+        // (e.g. a booking can appear as cleaning + linen in the same year)
+        $renderedDialogs = [];
+    @endphp
+    @foreach ($movements as $movement)
+        @php
+            $key = $movement['model_type'] . '-' . $movement['model_id'];
+            if (in_array($key, $renderedDialogs)) continue;
+            $renderedDialogs[] = $key;
+            $dialogId = 'att-dialog-' . $key;
+        @endphp
+        <dialog id="{{ $dialogId }}" style="border:none;border-radius:10px;padding:0;max-width:520px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18)">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #e0e8ed;display:flex;align-items:center;justify-content:space-between">
+                <div style="font-weight:700;font-size:1rem;color:#1a2e3a">
+                    Allegati — {{ $movement['category_label'] }}
+                    <span style="font-weight:400;font-size:.8rem;color:#6b7f89;margin-left:.4rem">
+                        {{ $movement['date']->format('d/m/Y') }}
+                    </span>
+                </div>
+                <button type="button" onclick="this.closest('dialog').close()"
+                        style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7f89;line-height:1">×</button>
+            </div>
+
+            <div style="padding:1rem 1.5rem">
+                {{-- Existing attachments --}}
+                @if ($movement['attachments']->isEmpty())
+                    <p style="color:#6b7f89;font-size:.875rem;margin:0 0 1rem">Nessun allegato.</p>
+                @else
+                    <ul style="list-style:none;margin:0 0 1rem;padding:0;display:flex;flex-direction:column;gap:.4rem">
+                        @foreach ($movement['attachments'] as $att)
+                            <li style="display:flex;align-items:center;gap:.6rem;background:#f7fafb;border:1px solid #e0e8ed;border-radius:6px;padding:.5rem .75rem">
+                                <span style="font-size:.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ $att->original_name }}">
+                                    {{ $att->original_name }}
+                                </span>
+                                <span style="font-size:.75rem;color:#6b7f89;white-space:nowrap">
+                                    {{ $att->size ? round($att->size / 1024) . ' KB' : '' }}
+                                </span>
+                                <a href="{{ route('admin.finance.attachments.download', $att) }}"
+                                   class="btn btn--outline btn--sm" style="white-space:nowrap">Scarica</a>
+                                <form method="POST"
+                                      action="{{ route('admin.finance.attachments.destroy', $att) }}"
+                                      onsubmit="return confirm('Eliminare {{ $att->original_name }}?')"
+                                      style="display:inline;margin:0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn--danger btn--sm">✕</button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                {{-- Upload new attachment --}}
+                <form method="POST"
+                      action="{{ route('admin.finance.attachments.store', ['type' => $movement['model_type'], 'id' => $movement['model_id']]) }}"
+                      enctype="multipart/form-data"
+                      style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                    @csrf
+                    <input type="file" name="attachment"
+                           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+                           style="font-size:.85rem;flex:1;min-width:0"
+                           required>
+                    <button type="submit" class="btn btn--primary btn--sm" style="white-space:nowrap">Carica</button>
+                </form>
+                <p style="font-size:.75rem;color:#6b7f89;margin:.4rem 0 0">PDF, immagini, Word, Excel — max 10 MB</p>
+            </div>
+        </dialog>
+    @endforeach
+
+    <script>
+        // Close dialog when clicking on backdrop
+        document.querySelectorAll('dialog').forEach(function (d) {
+            d.addEventListener('click', function (e) {
+                if (e.target === d) d.close();
+            });
+        });
+    </script>
+@endpush

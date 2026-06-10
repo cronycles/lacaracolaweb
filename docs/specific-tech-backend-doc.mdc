@@ -127,6 +127,29 @@ Do **not** override Laravel's `can()` method. Use `hasPermission()` and `isSuper
 - Booking parking: flagged with `parking_tax = true`, paid (`parking_paid = true`), date from `COALESCE(parking_paid_at, checkout)`.
 - Booking cleaning/linen: flagged with `cleaning_tax`/`linen_tax = true`, paid, date from `COALESCE(services_paid_at, checkout)`.
 - `financial_entries`: flagged with `tax_declaration = true`, any type; `entry_date` used for year assignment.
+
+# Financial Attachments
+
+Polymorphic file attachments for financial movements. Documents (invoices, receipts, etc.) can be attached to either a `FinancialEntry` or a `Booking`.
+
+## Endpoints (all under `permission:view_accounting`)
+- `POST   /admin/allegati/{type}/{id}` — upload a file (`type` = `entry` | `booking`)
+- `GET    /admin/allegati/{attachment}/download` — serve file download (private disk)
+- `DELETE /admin/allegati/{attachment}` — delete file + DB record
+
+## Storage
+- Private disk (`local`): files saved to `storage/app/private/finance-attachments/{type}s/{id}/{uuid}.{ext}`
+- Never publicly accessible; served only via authenticated controller
+- Accepted: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX — max 10 MB
+
+## Model & relations
+- `FinancialAttachment` model with `morphTo('attachable')`
+- `FinancialEntry` and `Booking` both have `morphMany(FinancialAttachment::class, 'attachable')`
+- Delete attachment → physically removes file from disk before deleting DB record
+
+## UX
+- In `finance/index`: each movement row has a 📎 icon button; count shown if > 0; clicking opens a native `<dialog>` modal with list + upload form
+- In `finance/form` (edit only): attachment section rendered below the main form card
 - Only flagged+paid items count toward totals (cash-basis). Flagged+unpaid items appear in the table with "Da pagare" status.
 
 ## Config defaults

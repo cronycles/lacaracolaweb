@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
@@ -75,6 +76,11 @@ class Booking extends Model
     public function availabilityBlock(): HasOne
     {
         return $this->hasOne(AvailabilityBlock::class);
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(FinancialAttachment::class, 'attachable');
     }
 
     /** Guests occupying bed spaces */

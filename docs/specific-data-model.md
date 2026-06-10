@@ -162,6 +162,36 @@ Financial records for extra money movements not linked directly to a booking.
 
 ---
 
+### 5. **financial_attachments**
+
+Documents attached to a financial movement (either a `FinancialEntry` or a `Booking`).
+
+| Field             | Type         | Notes                                                        |
+| ----------------- | ------------ | ------------------------------------------------------------ |
+| `id`              | BIGINT PK    | Auto-increment                                               |
+| `attachable_type` | VARCHAR(255) | Polymorphic parent class (e.g. `App\Models\FinancialEntry`)  |
+| `attachable_id`   | BIGINT       | Polymorphic parent ID                                        |
+| `original_name`   | VARCHAR(255) | Original file name as uploaded by the user                   |
+| `stored_path`     | VARCHAR(500) | Relative path inside `storage/app/private/`                  |
+| `mime_type`       | VARCHAR(100) | MIME type of the file (nullable)                             |
+| `size`            | BIGINT UNSIGNED | File size in bytes (nullable)                              |
+| `created_at`      | TIMESTAMP    |                                                              |
+| `updated_at`      | TIMESTAMP    |                                                              |
+
+**Notes:**
+
+- Files are stored in `storage/app/private/finance-attachments/{type}s/{id}/` (private, non web-accessible).
+- Accessed only via `GET /admin/allegati/{attachment}/download` (requires `view_accounting` permission).
+- Accepted formats: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX — max 10 MB.
+- Deleting an attachment also physically removes the file from disk.
+- Index on `(attachable_type, attachable_id)` for efficient polymorphic lookups.
+
+**Relations:**
+
+- N → 1 `financial_entries` OR `bookings` (polymorphic via `attachable`)
+
+---
+
 ### 5. **availability_blocks**
 
 Explicit date ranges when the apartment is unavailable (booked, maintenance, or manual owner block).
@@ -385,6 +415,9 @@ people (1) ──→ (N) bookings
 bookings (N) ──→ (1) people
 bookings (1) ──→ (1) availability_blocks (optional)
 availability_blocks (N) ──→ (1) bookings (optional)
+
+financial_entries (1) ──→ (N) financial_attachments (polymorphic)
+bookings (1) ──→ (N) financial_attachments (polymorphic)
 
 pricing_rules: standalone (recurring annual rules)
 stay_discount_rules: standalone (tiered discount rules)

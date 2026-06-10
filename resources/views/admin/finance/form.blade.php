@@ -94,5 +94,52 @@
                 </div>
             </form>
         </div>
+
+        {{-- Allegati — solo per voci già salvate --}}
+        @if ($entry->exists)
+            <div class="a-card" style="margin-top:1.25rem">
+                <div class="a-card__title">Allegati</div>
+
+                @if ($entry->attachments->isEmpty())
+                    <p style="color:#6b7f89;font-size:.875rem;margin-bottom:1rem">Nessun allegato.</p>
+                @else
+                    <ul style="list-style:none;margin:0 0 1rem;padding:0;display:flex;flex-direction:column;gap:.4rem">
+                        @foreach ($entry->attachments as $att)
+                            <li style="display:flex;align-items:center;gap:.6rem;background:#f7fafb;border:1px solid #e0e8ed;border-radius:6px;padding:.5rem .75rem">
+                                <span style="font-size:.875rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ $att->original_name }}">
+                                    {{ $att->original_name }}
+                                </span>
+                                <span style="font-size:.75rem;color:#6b7f89;white-space:nowrap">
+                                    {{ $att->size ? round($att->size / 1024) . ' KB' : '' }}
+                                </span>
+                                <a href="{{ route('admin.finance.attachments.download', $att) }}"
+                                   class="btn btn--outline btn--sm">Scarica</a>
+                                <form method="POST"
+                                      action="{{ route('admin.finance.attachments.destroy', $att) }}"
+                                      onsubmit="return confirm('Eliminare {{ $att->original_name }}?')"
+                                      style="display:inline;margin:0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn--danger btn--sm">✕</button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                <form method="POST"
+                      action="{{ route('admin.finance.attachments.store', ['type' => 'entry', 'id' => $entry->id]) }}"
+                      enctype="multipart/form-data"
+                      style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                    @csrf
+                    <input type="file" name="attachment"
+                           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+                           style="font-size:.875rem;flex:1;min-width:0"
+                           required>
+                    <button type="submit" class="btn btn--primary btn--sm">Carica allegato</button>
+                </form>
+                <p style="font-size:.75rem;color:#6b7f89;margin:.4rem 0 0">PDF, immagini, Word, Excel — max 10 MB</p>
+            </div>
+        @endif
     </div>
 @endsection
