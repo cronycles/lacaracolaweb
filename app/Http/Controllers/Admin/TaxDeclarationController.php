@@ -78,6 +78,7 @@ class TaxDeclarationController extends Controller
         // 1. Extra financial entries (flagged)
         $entries = FinancialEntry::where('tax_declaration', true)
             ->whereYear('entry_date', $year)
+            ->with('attachments')
             ->get();
 
         foreach ($entries as $entry) {
@@ -91,6 +92,9 @@ class TaxDeclarationController extends Controller
                 'source'         => 'entry',
                 'entry'          => $entry,
                 'booking_id'     => null,
+                'model_type'     => 'entry',
+                'model_id'       => $entry->id,
+                'attachments'    => $entry->attachments,
             ]);
         }
 
@@ -99,7 +103,7 @@ class TaxDeclarationController extends Controller
             ->where('income_tax', true)
             ->whereNotNull('income_amount')
             ->whereYear(DB::raw('COALESCE(income_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingIncomeRows as $booking) {
@@ -116,6 +120,9 @@ class TaxDeclarationController extends Controller
                 'source'         => 'booking',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
@@ -124,7 +131,7 @@ class TaxDeclarationController extends Controller
             ->where('parking_tax', true)
             ->whereNotNull('parking_amount')
             ->whereYear(DB::raw('COALESCE(parking_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingParkingRows as $booking) {
@@ -141,6 +148,9 @@ class TaxDeclarationController extends Controller
                 'source'         => 'booking',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
@@ -149,7 +159,7 @@ class TaxDeclarationController extends Controller
             ->where('cleaning_tax', true)
             ->whereNotNull('cleaning_amount')
             ->whereYear(DB::raw('COALESCE(services_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingCleaningRows as $booking) {
@@ -166,6 +176,9 @@ class TaxDeclarationController extends Controller
                 'source'         => 'booking',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
@@ -174,7 +187,7 @@ class TaxDeclarationController extends Controller
             ->where('linen_tax', true)
             ->whereNotNull('linen_amount')
             ->whereYear(DB::raw('COALESCE(services_paid_at, checkout)'), $year)
-            ->with('person')
+            ->with(['person', 'attachments'])
             ->get();
 
         foreach ($bookingLinenRows as $booking) {
@@ -191,6 +204,9 @@ class TaxDeclarationController extends Controller
                 'source'         => 'booking',
                 'entry'          => null,
                 'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
             ]);
         }
 
