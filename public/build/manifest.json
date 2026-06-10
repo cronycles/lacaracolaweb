@@ -45,6 +45,15 @@
     "src": "resources/js/app.js",
     "isEntry": true
   },
+  "resources/ts/admin.ts": {
+    "file": "assets/admin-BCbxAjI3.js",
+    "name": "admin",
+    "src": "resources/ts/admin.ts",
+    "isEntry": true,
+    "css": [
+      "assets/admin-CksuuEqD.css"
+    ]
+  },
   "resources/ts/app.ts": {
     "file": "assets/app-DTC8vfx4.js",
     "name": "app",
