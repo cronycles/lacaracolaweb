@@ -25,6 +25,18 @@
                     </div>
                 </div>
             </div>
+            <div class="review-card">
+                <div class="review-card__stars">★★★★★</div>
+                <p class="review-card__text">
+                    "We were warmly welcomed by S. despite our slight delay. The apartment is wonderfully close to the beach and was well equipped and clean. Since we were there in the low season, parking was not a problem; otherwise, we were offered the option to book a parking space on site, which we would definitely recommend during the summer months. The fact that we were also asked in advance to take photos of our IDs, and that there was an additional cash deposit on site, was a little confusing at first, but in the end everything went very smoothly. We would definitely book the apartment again!"
+                </p>
+                <div class="review-card__author">
+                    <div>
+                        <p class="review-card__author-name">Franziska</p>
+                        <p class="review-card__author-source">{{ __('app.reviews_source', ['source' => 'Interhome']) }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
