@@ -121,6 +121,7 @@ class CalendarController extends Controller
             'bookings' => $bookings,
             'blocks' => $blocks,
             'today' => Carbon::today()->format('Y-m-d'),
+            'todayCarbon' => Carbon::today(),
             'months' => $months,
             'bookedDays' => $bookedDays,
             'arrivalDays' => $arrivalDays,

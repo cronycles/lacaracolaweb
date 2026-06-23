@@ -123,7 +123,6 @@
                     <ul class="event-list">
                         @foreach ($bookings as $booking)
                             @php
-                                $todayCarbon = \Carbon\Carbon::today();
                                 $isActive = !$booking->isCanceled() && $booking->checkin->lte($todayCarbon) && $booking->checkout->gt($todayCarbon);
                                 $isPast   = $booking->checkout->lte($todayCarbon);
                             @endphp
