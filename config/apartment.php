@@ -91,7 +91,7 @@ return [
         'parking_fee_per_day' => 10,
         // Optional cutoff date (YYYY-MM-DD). If set, prices are hidden from this date onwards.
         // Examples: null (always show), '2027-01-01' (hide prices for stays on/after 2027-01-01).
-        'hide_price_from' => '2027-01-01',
+        'hide_price_from' => '2027-09-01',
         // Informational check-in time shown to users/operations.
         'checkin_time'  => '15:00',
         // Informational check-out time shown to users/operations.
