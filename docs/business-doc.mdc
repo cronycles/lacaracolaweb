@@ -18,23 +18,26 @@ alwaysApply: true
 - Occupancy is computed from:
     - active bookings (not canceled),
     - manual blocks.
-- Public price estimate:
-    - uses recurring month/day pricing rules,
-    - applies stay discount only to stay cost,
-    - adds cleaning fee,
-    - displays only total to the user.
+- Public price estimate (linear amortisation model):
+    - uses recurring month/day pricing rules to sum nightly rates,
+    - adds fixed costs once per booking: cleaning fee + linen fee × guests,
+    - no percentage discounts; average per night decreases naturally as nights increase,
+    - total and per-night average shown; full breakdown (stay, cleaning, linen) shown to user.
 - If a price cutoff date is configured, no public estimate is shown from cutoff onward.
 - Minimum nights constraint is configured in `config/apartment.php` (default 3).
+- Maximum nights constraint is configured in `config/apartment.php` (default 28).
+- Linen fee is per-guest; quote endpoint accepts `guests` (total of adults + children).
 
 ## Admin flows
 - Access via email/password.
 - Availability management (manual blocks and calendar visibility).
 - Recurring pricing rule management (month/day).
-- Stay discount rule management by night range.
+- `admin/sconti-soggiorno` is a read-only informational page explaining the linear amortisation formula and fixed costs. No editable discount rules.
 - Price simulation in pricing page:
     - uses the same engine as public quote,
-    - shows full breakdown (base, discount, cleaning, total),
-    - updates automatically when dates are selected.
+    - accepts date range + guest count,
+    - shows full breakdown (stay subtotal, cleaning, linen, total, avg/night),
+    - updates automatically when dates or guest count change.
 - Booking management:
     - reversible logical cancellation via `canceled_at`,
     - canceled bookings remain in history but do not block availability,

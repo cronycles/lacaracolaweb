@@ -53,7 +53,8 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - `settings` DB only for:
   - `booking_mode`
   - `booking_external_url`
-- Do not use `settings` for `min_nights`, `cleaning_fee`, `hide_price_from`.
+- Do not use `settings` for `min_nights`, `max_nights`, `cleaning_fee`, `linen_fee_per_person`, `hide_price_from`.
+- `PricingQuoteService::calculate()` signature: `(string $checkin, string $checkout, int $guests = 1)`. Returns: `{available, nights, guests, stay_cents, cleaning_cents, linen_cents, total_cents, avg_per_night_cents}`. No discount logic.
 
 # Quick checklist before changing backend
 1. Confirm impacted endpoints/routes (`routes/web.php`, `routes/admin.php`).
