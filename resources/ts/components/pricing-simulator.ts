@@ -3,12 +3,12 @@ import { createDateRangePicker } from './date-picker';
 interface SimulationResponse {
     available: boolean;
     nights?: number;
+    guests?: number;
     stay_cents?: number;
-    discount_percent?: number;
-    discount_cents?: number;
-    discounted_stay_cents?: number;
     cleaning_cents?: number;
+    linen_cents?: number;
     total_cents?: number;
+    avg_per_night_cents?: number;
     message?: string;
 }
 
@@ -58,9 +58,13 @@ export function initPricingSimulator(): void {
 
         clearMessages();
 
+        const guestsInput = form.querySelector<HTMLInputElement>('#sim-guests');
+        const guests = Math.max(1, parseInt(guestsInput?.value ?? '2', 10) || 2);
+
         const payload = new FormData();
         payload.append('checkin', checkinInput.value);
         payload.append('checkout', checkoutInput.value);
+        payload.append('guests', String(guests));
 
         fetch(simulateUrl, {
             method: 'POST',
@@ -78,20 +82,15 @@ export function initPricingSimulator(): void {
                     return;
                 }
 
-                const nights = data.nights ?? 0;
-                const stay = data.stay_cents ?? 0;
-                const discountPercent = data.discount_percent ?? 0;
-                const discount = data.discount_cents ?? 0;
-                const discountedStay = data.discounted_stay_cents ?? stay;
-                const cleaning = data.cleaning_cents ?? 0;
-                const total = data.total_cents ?? 0;
+                const nights       = data.nights ?? 0;
+                const stay         = data.stay_cents ?? 0;
+                const cleaning     = data.cleaning_cents ?? 0;
+                const linen        = data.linen_cents ?? 0;
+                const avgPerNight  = data.avg_per_night_cents ?? 0;
+                const total        = data.total_cents ?? 0;
 
-                summaryEl.textContent = `${nights} notti · Totale ${formatCurrency(total)}`;
-                if (discount > 0 && discountPercent > 0) {
-                    breakdownEl.textContent = `Soggiorno base ${formatCurrency(stay)} · Sconto ${discountPercent}% (-${formatCurrency(discount)}) · Soggiorno scontato ${formatCurrency(discountedStay)} · Pulizie ${formatCurrency(cleaning)}`;
-                } else {
-                    breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)}`;
-                }
+                summaryEl.textContent = `${nights} notti · ${guests} ospiti · Totale ${formatCurrency(total)} · Media ${formatCurrency(avgPerNight)}/notte`;
+                breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)} · Biancheria ${formatCurrency(linen)}`;
 
                 resultBox.style.display = 'block';
             })

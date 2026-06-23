@@ -81,6 +81,8 @@ return [
     'booking' => [
         // Global minimum nights for public availability request form.
         'min_nights'    => 3,
+        // Global maximum nights allowed per booking (linear amortisation model).
+        'max_nights'    => 28,
         // Fixed cleaning fee (EUR) charged per booking (default pre-filled in admin form).
         'cleaning_fee'  => 100,
         // Fixed linen fee (EUR) per guest charged per booking (default pre-filled in admin form).

@@ -5,48 +5,41 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\PricingRule;
-use App\Models\StayDiscountRule;
 use Carbon\Carbon;
 
 class PricingQuoteService
 {
     /**
-    * @return array{available: bool, nights: int, stay_cents: int|null, discount_percent: int, discount_cents: int, discounted_stay_cents: int|null}
+     * Calculate the full price breakdown for a stay using the linear amortisation model.
+     *
+     * Formula: Total = fixed_costs + sum(nightly_rate per night)
+     *   fixed_costs = cleaning_fee + (linen_fee_per_person × guests)
+     *   avg_per_night = total / nights
+     *
+     * @return array{available: bool, nights: int, guests: int, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
      */
-    public function calculate(string $checkin, string $checkout): array
+    public function calculate(string $checkin, string $checkout, int $guests = 1): array
     {
         $checkinDate = Carbon::parse($checkin)->startOfDay();
         $checkoutDate = Carbon::parse($checkout)->startOfDay();
         $hidePriceFromDate = $this->resolveHidePriceFromDate();
         $nights = (int) $checkinDate->diffInDays($checkoutDate);
 
-        if ($nights <= 0) {
-            return [
-                'available' => false,
-                'nights' => 0,
-                'stay_cents' => null,
-                'discount_percent' => 0,
-                'discount_cents' => 0,
-                'discounted_stay_cents' => null,
-            ];
+        $minNights = (int) config('apartment.booking.min_nights', 3);
+        $maxNights = (int) config('apartment.booking.max_nights', 28);
+
+        if ($nights <= 0 || $nights < $minNights || $nights > $maxNights) {
+            return $this->unavailable($nights, $guests);
         }
 
-        $rules = PricingRule::query()
-            ->get();
+        $rules = PricingRule::query()->get();
 
-        $totalCents = 0;
+        $stayCents = 0;
         $cursor = $checkinDate->copy();
 
         while ($cursor->lt($checkoutDate)) {
             if ($hidePriceFromDate !== null && $cursor->greaterThanOrEqualTo($hidePriceFromDate)) {
-                return [
-                    'available' => false,
-                    'nights' => $nights,
-                    'stay_cents' => null,
-                    'discount_percent' => 0,
-                    'discount_cents' => 0,
-                    'discounted_stay_cents' => null,
-                ];
+                return $this->unavailable($nights, $guests);
             }
 
             $ruleForNight = $rules
@@ -55,57 +48,48 @@ class PricingQuoteService
                 ->first();
 
             if (! $ruleForNight) {
-                return [
-                    'available' => false,
-                    'nights' => $nights,
-                    'stay_cents' => null,
-                    'discount_percent' => 0,
-                    'discount_cents' => 0,
-                    'discounted_stay_cents' => null,
-                ];
+                return $this->unavailable($nights, $guests);
             }
 
-            $totalCents += (int) $ruleForNight->price_per_night;
+            $stayCents += (int) $ruleForNight->price_per_night;
             $cursor->addDay();
         }
 
-        $discountRule = StayDiscountRule::query()
-            ->active()
-            ->forNights($nights)
-            ->orderBy('priority')
-            ->orderByDesc('min_nights')
-            ->first();
+        // Fixed costs (calculated once per booking, independent of nights)
+        $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
+        $linenCentsPerPerson = ((int) config('apartment.booking.linen_fee_per_person', 0)) * 100;
+        $linenCents = $linenCentsPerPerson * max(1, $guests);
 
-        $discountPercent = $discountRule?->discount_percent ?? 0;
-        $discountCentsRaw = $discountPercent > 0
-            ? (int) round(($totalCents * $discountPercent) / 100)
-            : 0;
-
-        $discountCents = $this->roundToTenCents($discountCentsRaw);
-
-        $discountedStayCents = max(0, $totalCents - $discountCents);
+        $totalCents = $stayCents + $cleaningCents + $linenCents;
+        $avgPerNightCents = $nights > 0 ? (int) round($totalCents / $nights) : 0;
 
         return [
             'available' => true,
             'nights' => $nights,
-            'stay_cents' => $totalCents,
-            'discount_percent' => (int) $discountPercent,
-            'discount_cents' => $discountCents,
-            'discounted_stay_cents' => $discountedStayCents,
+            'guests' => $guests,
+            'stay_cents' => $stayCents,
+            'cleaning_cents' => $cleaningCents,
+            'linen_cents' => $linenCents,
+            'total_cents' => $totalCents,
+            'avg_per_night_cents' => $avgPerNightCents,
         ];
     }
 
-    private function roundToTenCents(int $cents): int
+    /**
+     * @return array{available: bool, nights: int, guests: int, stay_cents: null, cleaning_cents: null, linen_cents: null, total_cents: null, avg_per_night_cents: null}
+     */
+    private function unavailable(int $nights, int $guests): array
     {
-        $lastDigit = abs($cents) % 10;
-
-        if ($lastDigit <= 5) {
-            return $cents - ($cents >= 0 ? $lastDigit : -$lastDigit);
-        }
-
-        $delta = 10 - $lastDigit;
-
-        return $cents + ($cents >= 0 ? $delta : -$delta);
+        return [
+            'available' => false,
+            'nights' => $nights,
+            'guests' => $guests,
+            'stay_cents' => null,
+            'cleaning_cents' => null,
+            'linen_cents' => null,
+            'total_cents' => null,
+            'avg_per_night_cents' => null,
+        ];
     }
 
     private function matchesMonthDayRule(Carbon $date, PricingRule $rule): bool

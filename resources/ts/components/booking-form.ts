@@ -16,13 +16,13 @@ interface ApiResponse {
 
 interface QuoteResponse {
     available: boolean;
-    stay_cents?: number;
-    discount_percent?: number;
-    discount_cents?: number;
-    discounted_stay_cents?: number;
-    cleaning_cents?: number;
-    total_cents?: number;
     nights?: number;
+    stay_cents?: number;
+    cleaning_cents?: number;
+    linen_cents?: number;
+    total_cents?: number;
+    avg_per_night_cents?: number;
+    guests?: number;
     message: string;
 }
 
@@ -136,10 +136,16 @@ export function initBookingForm(): void {
             return;
         }
 
+        const adultsEl   = form.querySelector<HTMLSelectElement>('[name="adults"]');
+        const childrenEl = form.querySelector<HTMLSelectElement>('[name="children"]');
+        const guests = (parseInt(adultsEl?.value ?? '1', 10) || 1)
+                     + (parseInt(childrenEl?.value ?? '0', 10) || 0);
+
         const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
         const payload = new FormData();
         payload.append('checkin', checkin.value);
         payload.append('checkout', checkout.value);
+        payload.append('guests', String(guests));
 
         fetch(quoteUrl, {
             method: 'POST',
@@ -161,7 +167,27 @@ export function initBookingForm(): void {
                     return;
                 }
 
-                showPriceMessage(formatCurrency(data.total_cents), data.message);
+                const nights       = data.nights ?? 0;
+                const stay         = data.stay_cents ?? 0;
+                const cleaning     = data.cleaning_cents ?? 0;
+                const linen        = data.linen_cents ?? 0;
+                const avgPerNight  = data.avg_per_night_cents ?? 0;
+                const total        = data.total_cents;
+
+                const stayLabel    = form.dataset['priceStayLabel']    ?? 'Soggiorno';
+                const cleanLabel   = form.dataset['priceCleaningLabel'] ?? 'Pulizie';
+                const linenLabel   = form.dataset['priceLinenLabel']   ?? 'Biancheria';
+                const avgLabel     = form.dataset['priceAvgLabel']     ?? 'Media/notte';
+
+                const detail = [
+                    `${nights} notti`,
+                    `${stayLabel} ${formatCurrency(stay)}`,
+                    `${cleanLabel} ${formatCurrency(cleaning)}`,
+                    `${linenLabel} ${formatCurrency(linen)}`,
+                    `${avgLabel} ${formatCurrency(avgPerNight)}`,
+                ].join(' · ');
+
+                showPriceMessage(formatCurrency(total), detail);
             })
             .catch(() => {
                 hidePrice();
@@ -179,6 +205,10 @@ export function initBookingForm(): void {
 
     checkin?.addEventListener('change', scheduleQuote);
     checkout?.addEventListener('change', scheduleQuote);
+
+    // Re-fetch quote when guest count changes (affects linen fee)
+    form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', scheduleQuote);
+    form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', scheduleQuote);
 
     // --- Date range picker integration ---
 

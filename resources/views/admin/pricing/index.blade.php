@@ -35,10 +35,16 @@
 
                 <div id="pricing-sim-dp-popup" class="dp-popup" hidden role="dialog" aria-label="Calendar"></div>
             </div>
+
+            <div style="margin-top:.75rem;display:flex;align-items:center;gap:.5rem">
+                <label for="sim-guests" style="font-size:.85rem;color:#374151;white-space:nowrap">Numero ospiti:</label>
+                <input type="number" id="sim-guests" name="guests" min="1" max="12" value="2"
+                       style="width:70px;padding:.3rem .5rem;border:1px solid var(--admin-border);border-radius:.375rem;font-size:.9rem">
+            </div>
         </form>
 
         <div id="pricing-sim-result" style="margin-top:1rem;display:none;border:1px solid var(--admin-border);border-radius:.5rem;padding:.9rem;background:#f9fafb">
-            <p style="font-size:.85rem;color:#6b7f89;margin-bottom:.35rem">Dettaglio simulazione</p>
+            <p style="font-size:.85rem;color:#6b7f89;margin-bottom:.35rem">Dettaglio simulazione (Ammortamento Lineare)</p>
             <p id="pricing-sim-summary" style="font-weight:600;margin-bottom:.4rem">—</p>
             <p id="pricing-sim-breakdown" style="font-size:.9rem;color:#374151">—</p>
         </div>
@@ -49,7 +55,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:.75rem;flex-wrap:wrap">
         <h1 style="font-size:1.1rem;font-weight:700">Regole di prezzo</h1>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-            <a href="{{ route('admin.stay-discounts.index') }}" class="btn btn--outline">Sconti soggiorno</a>
+            <a href="{{ route('admin.stay-discounts.index') }}" class="btn btn--outline">Formula prezzi</a>
             <a href="{{ route('admin.pricing.create') }}" class="btn btn--primary">+ Nuova regola</a>
         </div>
     </div>

@@ -21,12 +21,15 @@ class BookingController extends Controller
         $data = $request->validate([
             'checkin'  => ['required', 'date', 'after_or_equal:today'],
             'checkout' => ['required', 'date', 'after:checkin'],
+            'guests'   => ['nullable', 'integer', 'min:1', 'max:12'],
         ]);
 
         $checkin = new \DateTimeImmutable($data['checkin']);
         $checkout = new \DateTimeImmutable($data['checkout']);
         $nights = (int) $checkin->diff($checkout)->days;
         $minNights = (int) config('apartment.booking.min_nights', 3);
+        $maxNights = (int) config('apartment.booking.max_nights', 28);
+        $guests = max(1, (int) ($data['guests'] ?? 1));
 
         if ($nights < $minNights) {
             return response()->json([
@@ -35,7 +38,14 @@ class BookingController extends Controller
             ]);
         }
 
-        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout']);
+        if ($nights > $maxNights) {
+            return response()->json([
+                'available' => false,
+                'message' => __('app.error_max_nights', ['nights' => $maxNights]),
+            ]);
+        }
+
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
 
         if (! $quote['available']) {
             return response()->json([
@@ -44,22 +54,15 @@ class BookingController extends Controller
             ]);
         }
 
-        $stayCents = (int) ($quote['stay_cents'] ?? 0);
-        $discountPercent = (int) ($quote['discount_percent'] ?? 0);
-        $discountCents = (int) ($quote['discount_cents'] ?? 0);
-        $discountedStayCents = (int) ($quote['discounted_stay_cents'] ?? $stayCents);
-        $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
-        $totalCents = $discountedStayCents + $cleaningCents;
-
         return response()->json([
             'available' => true,
-            'stay_cents' => $stayCents,
-            'discount_percent' => $discountPercent,
-            'discount_cents' => $discountCents,
-            'discounted_stay_cents' => $discountedStayCents,
-            'cleaning_cents' => $cleaningCents,
-            'total_cents' => $totalCents,
             'nights' => $quote['nights'],
+            'guests' => $quote['guests'],
+            'stay_cents' => $quote['stay_cents'],
+            'cleaning_cents' => $quote['cleaning_cents'],
+            'linen_cents' => $quote['linen_cents'],
+            'total_cents' => $quote['total_cents'],
+            'avg_per_night_cents' => $quote['avg_per_night_cents'],
             'message' => __('app.booking_price_detail', ['nights' => $quote['nights']]),
         ]);
     }
