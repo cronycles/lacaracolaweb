@@ -14,6 +14,7 @@ class PricingRule extends Model
         'end_month',
         'end_day',
         'price_per_night',
+        'note',
     ];
 
     protected $casts = [

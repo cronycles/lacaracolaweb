@@ -93,6 +93,7 @@
                     <tr>
                         <th>Periodo ricorrente</th>
                         <th>€ / notte</th>
+                        <th>Nota</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -101,6 +102,7 @@
                         <tr>
                             <td style="font-weight:600">{{ $rule->period_label }}</td>
                             <td>{{ number_format($rule->price_euros, 2, ',', '.') }} €</td>
+                            <td style="font-size:.85rem;color:#6b7f89">{{ $rule->note ?? '—' }}</td>
                             <td style="white-space:nowrap">
                                 <a href="{{ route('admin.pricing.edit', $rule) }}" class="btn btn--outline btn--sm">Modifica</a>
                                 <form method="POST" action="{{ route('admin.pricing.destroy', $rule) }}"

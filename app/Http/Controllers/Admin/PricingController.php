@@ -149,6 +149,7 @@ class PricingController extends Controller
             'end_month'       => ['required', 'integer', 'min:1', 'max:12'],
             'end_day'         => ['required', 'integer', 'min:1', 'max:31'],
             'price_per_night' => ['required', 'integer', 'min:1', 'max:99999'],
+            'note'            => ['nullable', 'string', 'max:1000'],
         ]);
 
         $errors = new MessageBag();

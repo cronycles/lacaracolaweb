@@ -79,6 +79,14 @@
                     @error('price_per_night') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="note">Nota (opzionale)</label>
+                    <textarea id="note" name="note" class="form-input" rows="3"
+                              maxlength="1000"
+                              placeholder="Es. Alta stagione, prezzi di mercato luglio…">{{ old('note', $rule->note ?? '') }}</textarea>
+                    @error('note') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
                     <button type="submit" class="btn btn--primary">
                         {{ $rule->exists ? 'Salva modifiche' : 'Crea regola' }}
