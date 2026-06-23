@@ -19,6 +19,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // --- Locale switch ---
 Route::post('/locale', [LocaleController::class, 'switch'])->name('locale.switch');
+Route::get('/locale', [LocaleController::class, 'set'])->name('locale.set');
 
 // --- Map of URL slugs per locale ---
 $routeConfig = config('routes');
