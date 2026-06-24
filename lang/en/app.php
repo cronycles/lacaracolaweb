@@ -199,6 +199,7 @@ return [
     'reviews_title'    => 'What Our Guests Say',
     'reviews_subtitle' => 'Real reviews.',
     'reviews_source'   => 'Via :source',
+    'reviews_empty'    => 'No reviews yet.',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Account Security',

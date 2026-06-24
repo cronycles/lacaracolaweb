@@ -198,6 +198,7 @@ return [
     'reviews_title'    => 'Ce que Disent nos Hôtes',
     'reviews_subtitle' => 'Avis réels.',
     'reviews_source'   => 'Via :source',
+    'reviews_empty'    => "Aucun avis pour l'instant.",
 
     'footer_desc'    => 'Appartement de vacances en bord de mer à Andora, Savona. Ligurie, Italie.',
     'footer_links'   => 'Liens Utiles',

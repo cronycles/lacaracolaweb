@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FinancialAttachmentController;
@@ -144,6 +145,17 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::middleware('permission:manage_users')->group(function () {
         Route::resource('utenti', UserController::class)->names('users');
+    });
+
+    // ── manage_reviews ───────────────────────────────────────────────────────
+
+    Route::middleware('permission:manage_reviews')->group(function () {
+        Route::get('/recensioni', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/recensioni/prenotazione/{booking}/crea', [ReviewController::class, 'create'])->name('reviews.create');
+        Route::post('/recensioni/prenotazione/{booking}', [ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/recensioni/{review}/modifica', [ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::put('/recensioni/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/recensioni/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 });
 

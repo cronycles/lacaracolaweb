@@ -47,5 +47,6 @@
 
         &-name { font-weight: 600; font-size: 0.9rem; }
         &-source { font-size: 0.8rem; color: var(--color-text-muted); }
+        &-date { font-size: 0.8rem; color: var(--color-text-muted); }
     }
 }

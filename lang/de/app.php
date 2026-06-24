@@ -200,6 +200,7 @@ return [
     'reviews_title'    => 'Was Unsere Gäste Sagen',
     'reviews_subtitle' => 'Echte Bewertungen.',
     'reviews_source'   => 'Über :source',
+    'reviews_empty'    => 'Noch keine Bewertungen.',
 
     // --- Footer ---
     'footer_desc'      => 'Ferienwohnung am Meer in Andora, Savona. Ligurien, Italien.',

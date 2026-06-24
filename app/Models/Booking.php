@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 class Booking extends Model
 {
     use SoftDeletes;
@@ -81,6 +80,11 @@ class Booking extends Model
     public function attachments(): MorphMany
     {
         return $this->morphMany(FinancialAttachment::class, 'attachable');
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
     }
 
     /** Guests occupying bed spaces */

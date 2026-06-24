@@ -207,6 +207,7 @@ return [
     'reviews_title'    => 'Cosa Dicono i Nostri Ospiti',
     'reviews_subtitle' => 'Recensioni reali.',
     'reviews_source'   => 'Via :source',
+    'reviews_empty'    => 'Nessuna recensione ancora disponibile.',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Sicurezza Account',

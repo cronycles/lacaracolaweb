@@ -24,6 +24,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_settings',  'description' => 'Accede e modifica le impostazioni generali'],
             ['name' => 'manage_newsletter','description' => 'Gestisce le iscrizioni alla newsletter'],
             ['name' => 'manage_users',     'description' => 'Gestisce gli utenti admin (non delegabile via override)'],
+            ['name' => 'manage_reviews',   'description' => 'Gestisce le recensioni pubbliche'],
         ];
 
         foreach ($permissions as $data) {

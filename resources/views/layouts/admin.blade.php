@@ -78,6 +78,13 @@
                 </a>
             </li>
             @endif
+            @if(auth()->user()->hasPermission('manage_reviews'))
+            <li>
+                <a href="{{ route('admin.reviews.index') }}" @class(['active' => request()->routeIs('admin.reviews*')])>
+                    ⭐ Recensioni
+                </a>
+            </li>
+            @endif
             @if(auth()->user()->hasPermission('manage_settings'))
             <li>
                 <a href="{{ route('admin.settings') }}" @class(['active' => request()->routeIs('admin.settings*')])>
