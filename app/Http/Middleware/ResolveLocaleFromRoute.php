@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 
 /**
  * Extracts locale from URL prefix and resolves the user's preferred locale.
- * Priority: route parameter (URL prefix) > session > Accept-Language header > Italian fallback.
+ * Priority: URL path prefix (/en/, /it/ …) > session > Accept-Language header > Italian fallback.
  */
 class ResolveLocaleFromRoute
 {
@@ -21,24 +21,21 @@ class ResolveLocaleFromRoute
 
     public function handle(Request $request, Closure $next): mixed
     {
-        // Extract locale from route if present (e.g. {locale}/appartamento)
-        $locale = $request->route('locale');
-
-        // If no route locale, try session or browser preference
-        if (!$locale || !in_array($locale, self::SUPPORTED, true)) {
-            // 1. Explicit session value (set by language switcher)
-            if ($session = Session::get(self::SESSION_KEY)) {
-                $locale = $this->validate($session);
-            }
-            // 2. Browser Accept-Language header (primary language only)
-            else {
-                $accepted = $request->getLanguages();
-                if (!empty($accepted)) {
-                    $primary = strtolower(substr($accepted[0], 0, 2));
-                    $locale = in_array($primary, self::SUPPORTED, true) ? $primary : self::FALLBACK;
-                } else {
-                    $locale = self::FALLBACK;
-                }
+        // Extract locale from URL path prefix (e.g. /en/apartment → 'en')
+        $urlSegment = $request->segment(1);
+        if ($urlSegment && in_array($urlSegment, self::SUPPORTED, true)) {
+            $locale = $urlSegment;
+        }
+        // If no URL locale prefix, try session or browser preference
+        elseif ($session = Session::get(self::SESSION_KEY)) {
+            $locale = $this->validate($session);
+        } else {
+            $accepted = $request->getLanguages();
+            if (!empty($accepted)) {
+                $primary = strtolower(substr($accepted[0], 0, 2));
+                $locale = in_array($primary, self::SUPPORTED, true) ? $primary : self::FALLBACK;
+            } else {
+                $locale = self::FALLBACK;
             }
         }
 
