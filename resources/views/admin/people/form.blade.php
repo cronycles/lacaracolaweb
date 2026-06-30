@@ -18,6 +18,9 @@
                     @method('PUT')
                 @endif
                 <input type="hidden" name="return_to" value="{{ $returnTo ?? route('admin.people.index') }}">
+                @if (!empty($attachBookingId))
+                    <input type="hidden" name="attach_booking_id" value="{{ $attachBookingId }}">
+                @endif
 
                 <div class="form-row">
                     <div class="form-group">

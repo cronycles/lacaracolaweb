@@ -100,9 +100,18 @@ class BookingController extends Controller
 
     public function show(Booking $prenotazioni): View
     {
-        $prenotazioni->load('person');
+        $prenotazioni->load('person', 'additionalGuests');
 
-        return view('admin.bookings.show', ['booking' => $prenotazioni]);
+        // People that can be added as additional guests (exclude the primary guest)
+        $selectablePeople = Person::orderBy('last_name')
+            ->orderBy('first_name')
+            ->where('id', '!=', $prenotazioni->person_id)
+            ->get();
+
+        return view('admin.bookings.show', [
+            'booking'          => $prenotazioni,
+            'selectablePeople' => $selectablePeople,
+        ]);
     }
 
     public function edit(Booking $prenotazioni): View

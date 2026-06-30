@@ -145,25 +145,33 @@
             {{-- Add guest form --}}
             @if(auth()->user()->hasPermission('manage_bookings'))
                 <div style="margin-top:.75rem">
+                    @if(session('success'))
+                        <div class="alert alert--success" style="margin-bottom:.5rem;font-size:.85rem">{{ session('success') }}</div>
+                    @endif
+                    @error('person_id')
+                        <div class="alert alert--error" style="margin-bottom:.5rem;font-size:.85rem">{{ $message }}</div>
+                    @enderror
                     <form method="POST" action="{{ route('admin.bookings.guests.store', $booking) }}"
                           style="display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap">
                         @csrf
                         <div class="form-group" style="flex:1;min-width:200px;margin:0">
-                            <label class="form-label" for="guest-person-search" style="font-size:.8rem">
-                                Aggiungi ospite (cerca per nome o cognome)
-                            </label>
-                            <input type="text" id="guest-person-search"
-                                   class="form-input" style="font-size:.875rem"
-                                   placeholder="Nome cognome…"
-                                   autocomplete="off"
-                                   data-booking-guest-search>
-                            <input type="hidden" name="person_id" id="guest-person-id">
+                            <label class="form-label" for="guest-person-add" style="font-size:.8rem">Aggiungi ospite esistente</label>
+                            <select id="guest-person-add" name="person_id" class="form-input" style="font-size:.875rem" required>
+                                <option value="">— seleziona —</option>
+                                @foreach ($selectablePeople as $p)
+                                    @unless ($booking->additionalGuests->contains('id', $p->id))
+                                        <option value="{{ $p->id }}">{{ $p->full_name }}</option>
+                                    @endunless
+                                @endforeach
+                            </select>
                         </div>
-                        <button type="submit" class="btn btn--outline btn--sm"
-                                style="white-space:nowrap">+ Aggiungi</button>
+                        <button type="submit" class="btn btn--outline btn--sm" style="white-space:nowrap">+ Aggiungi</button>
                     </form>
-                    <div id="guest-search-results"
-                         style="background:#fff;border:1px solid #cdd8dc;border-radius:4px;max-width:320px;display:none;position:absolute;z-index:100">
+                    <div style="margin-top:.5rem;font-size:.85rem">
+                        <a href="{{ route('admin.people.create', ['attach_booking_id' => $booking->id]) }}"
+                           style="color:#30596C">
+                            + Crea nuovo ospite e aggiungilo a questa prenotazione
+                        </a>
                     </div>
                 </div>
             @endif
@@ -367,73 +375,6 @@
         @endif
     </div>
 
-@push('scripts')
-<script>
-(function () {
-    const searchInput = document.querySelector('[data-booking-guest-search]');
-    const personIdInput = document.getElementById('guest-person-id');
-    const resultsBox = document.getElementById('guest-search-results');
-
-    if (!searchInput || !personIdInput || !resultsBox) return;
-
-    let debounceTimer;
-
-    searchInput.addEventListener('input', function () {
-        clearTimeout(debounceTimer);
-        const query = this.value.trim();
-        personIdInput.value = '';
-
-        if (query.length < 2) {
-            resultsBox.style.display = 'none';
-            resultsBox.innerHTML = '';
-            return;
-        }
-
-        debounceTimer = setTimeout(() => {
-            fetch('/admin/ospiti?q=' + encodeURIComponent(query) + '&format=json', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (!data.length) {
-                    resultsBox.innerHTML = '<div style="padding:.5rem .75rem;font-size:.85rem;color:#6b7f89">Nessun risultato</div>';
-                    resultsBox.style.display = 'block';
-                    return;
-                }
-                resultsBox.innerHTML = data.map(p =>
-                    `<div style="padding:.4rem .75rem;cursor:pointer;font-size:.875rem"
-                          data-id="${p.id}" data-name="${p.full_name}"
-                          onmousedown="event.preventDefault()"
-                          class="guest-result-item">
-                        ${p.full_name}${p.birth_date ? ' <span style="color:#6b7f89;font-size:.8rem">(' + p.birth_date + ')</span>' : ''}
-                    </div>`
-                ).join('');
-                resultsBox.style.display = 'block';
-
-                resultsBox.querySelectorAll('.guest-result-item').forEach(item => {
-                    item.addEventListener('click', function () {
-                        personIdInput.value = this.dataset.id;
-                        searchInput.value = this.dataset.name;
-                        resultsBox.style.display = 'none';
-                    });
-                    item.addEventListener('mouseover', function () {
-                        this.style.background = '#f0f5f7';
-                    });
-                    item.addEventListener('mouseout', function () {
-                        this.style.background = '';
-                    });
-                });
-            })
-            .catch(() => {});
-        }, 250);
-    });
-
-    searchInput.addEventListener('blur', () => {
-        setTimeout(() => { resultsBox.style.display = 'none'; }, 150);
-    });
-})();
-</script>
-@endpush
 @endsection
 
 @push('scripts')

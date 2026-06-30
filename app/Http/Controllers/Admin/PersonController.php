@@ -59,7 +59,16 @@ class PersonController extends Controller
 
     public function create(): View
     {
-        return view('admin.people.form', ['person' => new Person()]);
+        $attachBookingId = request()->integer('attach_booking_id') ?: null;
+        $returnTo = $attachBookingId
+            ? route('admin.bookings.show', $attachBookingId)
+            : null;
+
+        return view('admin.people.form', [
+            'person'          => new Person(),
+            'returnTo'        => $returnTo,
+            'attachBookingId' => $attachBookingId,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -69,6 +78,18 @@ class PersonController extends Controller
         unset($data['newsletter_subscribed']);
         $person = Person::create($data);
         $this->syncNewsletterPreference($person, $newsletterSubscribed);
+
+        // If invoked from a booking page, attach the new person and redirect back
+        $attachBookingId = $request->integer('attach_booking_id') ?: null;
+        if ($attachBookingId) {
+            $booking = Booking::find($attachBookingId);
+            if ($booking && $booking->person_id !== $person->id) {
+                $booking->additionalGuests()->syncWithoutDetaching([$person->id]);
+            }
+            return redirect()
+                ->route('admin.bookings.show', $attachBookingId)
+                ->with('success', "{$person->full_name} creato e aggiunto alla prenotazione.");
+        }
 
         return redirect()->route('admin.people.show', $person)->with('success', 'Ospite aggiunto.');
     }
