@@ -9,7 +9,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-B2-lTSXd.css",
+    "file": "assets/app-CSd7hmBu.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -46,7 +46,7 @@
     "isEntry": true
   },
   "resources/ts/admin.ts": {
-    "file": "assets/admin-BCbxAjI3.js",
+    "file": "assets/admin-B0cmg_h1.js",
     "name": "admin",
     "src": "resources/ts/admin.ts",
     "isEntry": true,
@@ -55,7 +55,7 @@
     ]
   },
   "resources/ts/app.ts": {
-    "file": "assets/app-DTC8vfx4.js",
+    "file": "assets/app-DctfzIS-.js",
     "name": "app",
     "src": "resources/ts/app.ts",
     "isEntry": true

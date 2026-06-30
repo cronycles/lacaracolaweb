@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FinancialAttachmentController;
 use App\Http\Controllers\Admin\FinancialEntryController;
+use App\Http\Controllers\Admin\GuestReportingController;
 use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PersonController;
@@ -75,6 +76,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/prenotazioni/{prenotazioni}', [BookingController::class, 'update'])->name('bookings.update');
         Route::patch('/prenotazioni/{prenotazioni}', [BookingController::class, 'update']);
         Route::delete('/prenotazioni/{prenotazioni}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
+        // ── Guest Reporting (Segnalazione Ospiti) ────────────────────────────
+        // History must be before {prenotazioni} wildcard
+        Route::get('/guest-reporting', [GuestReportingController::class, 'index'])->name('guest-reporting.index');
+        Route::get('/prenotazioni/{prenotazioni}/guest-reporting', [GuestReportingController::class, 'show'])->name('guest-reporting.show');
+        Route::post('/prenotazioni/{prenotazioni}/guest-reporting/test', [GuestReportingController::class, 'saveAndTest'])->name('guest-reporting.test');
+        Route::post('/prenotazioni/{prenotazioni}/guest-reporting/send', [GuestReportingController::class, 'saveAndSend'])->name('guest-reporting.send');
     });
 
     // ── manage_people ────────────────────────────────────────────────────────

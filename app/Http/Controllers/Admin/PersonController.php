@@ -114,16 +114,26 @@ class PersonController extends Controller
 
     private function validated(Request $request, ?int $ignoreId = null): array
     {
+        $countryCodes = array_keys(config('apartment.guest_countries', []));
+
         return $request->validate([
             'first_name'      => ['required', 'string', 'max:80'],
             'last_name'       => ['required', 'string', 'max:80'],
             'email'           => ['nullable', 'email', 'max:150', "unique:people,email,{$ignoreId}"],
             'phone'           => ['nullable', 'string', 'max:30'],
             'birth_date'      => ['nullable', 'date'],
-            'country_code'    => ['nullable', 'string', 'max:10', Rule::in(array_keys(config('apartment.guest_countries', [])))],
-            'document_type'   => ['nullable', 'string', 'max:30'],
+            'country_code'    => ['nullable', 'string', 'max:10', Rule::in($countryCodes)],
+            'document_type'   => ['nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
             'document_number' => ['nullable', 'string', 'max:60'],
             'newsletter_subscribed' => ['nullable', 'boolean'],
+            // Guest reporting fields
+            'gender'                       => ['nullable', 'string', Rule::in(['M', 'F'])],
+            'birth_municipality'           => ['nullable', 'string', 'max:100'],
+            'birth_province'               => ['nullable', 'string', 'max:2'],
+            'birth_country_code'           => ['nullable', 'string', Rule::in($countryCodes)],
+            'nationality_code'             => ['nullable', 'string', Rule::in($countryCodes)],
+            'document_issue_place'         => ['nullable', 'string', 'max:100'],
+            'document_issue_country_code'  => ['nullable', 'string', Rule::in($countryCodes)],
         ]);
     }
 

@@ -24,6 +24,14 @@ class Person extends Model
         'newsletter_subscribed',
         'newsletter_subscribed_at',
         'newsletter_opted_out',
+        // Guest reporting fields
+        'gender',
+        'birth_municipality',
+        'birth_province',
+        'birth_country_code',
+        'nationality_code',
+        'document_issue_place',
+        'document_issue_country_code',
     ];
 
     protected $casts = [

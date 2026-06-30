@@ -71,11 +71,17 @@
                 </div>
 
                 <div class="form-row">
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="document_type">Tipo documento</label>
-                        <input type="text" id="document_type" name="document_type" class="form-input"
-                               value="{{ old('document_type', $person->document_type) }}" maxlength="30"
-                               placeholder="CI / Passaporto / Patente">
+                        <select id="document_type" name="document_type" class="form-input">
+                            <option value="">Seleziona tipo</option>
+                            <option value="passport" @selected(old('document_type', $person->document_type) === 'passport')>Passaporto</option>
+                            <option value="id_card" @selected(old('document_type', $person->document_type) === 'id_card')>Carta d'identità</option>
+                            <option value="driving_license" @selected(old('document_type', $person->document_type) === 'driving_license')>Patente di guida</option>
+                            <option value="residence_permit" @selected(old('document_type', $person->document_type) === 'residence_permit')>Permesso di soggiorno</option>
+                            <option value="other" @selected(old('document_type', $person->document_type) === 'other')>Altro</option>
+                        </select>
                         @error('document_type') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
@@ -92,6 +98,91 @@
                                @checked(old('newsletter_subscribed', $person->newsletter_subscribed))>
                         <span class="form-label" style="margin:0">Iscritto alla newsletter</span>
                     </label>
+                </div>
+
+                {{-- ── Dati per segnalazione ospiti (Alloggiati Web / Polizia di Stato) ── --}}
+                <div class="a-card__title" style="margin-top:1.5rem;margin-bottom:1rem;font-size:.9rem;text-transform:uppercase;letter-spacing:.05em;opacity:.7">Dati per segnalazione ospiti</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="gender">Sesso</label>
+                        <select id="gender" name="gender" class="form-input">
+                            <option value="">—</option>
+                            <option value="M" @selected(old('gender', $person->gender) === 'M')>Maschio</option>
+                            <option value="F" @selected(old('gender', $person->gender) === 'F')>Femmina</option>
+                        </select>
+                        @error('gender') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="nationality_code">Nazionalità</label>
+                        <select id="nationality_code" name="nationality_code" class="form-input">
+                            <option value="">Seleziona nazionalità</option>
+                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                                <option value="{{ $code }}" @selected(old('nationality_code', $person->nationality_code) === $code)>
+                                    {{ $code }} - {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('nationality_code') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="birth_country_code">Stato di nascita</label>
+                        <select id="birth_country_code" name="birth_country_code" class="form-input"
+                                data-reporting-birth-country>
+                            <option value="">Seleziona stato</option>
+                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                                <option value="{{ $code }}" @selected(old('birth_country_code', $person->birth_country_code) === $code)>
+                                    {{ $code }} - {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('birth_country_code') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group" id="birth_province_group"
+                         style="{{ old('birth_country_code', $person->birth_country_code) !== 'IT' ? 'display:none' : '' }}">
+                        <label class="form-label" for="birth_province">Provincia di nascita</label>
+                        <input type="text" id="birth_province" name="birth_province" class="form-input"
+                               value="{{ old('birth_province', $person->birth_province) }}"
+                               maxlength="2" placeholder="Es: GE">
+                        @error('birth_province') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="birth_municipality">Comune / Città di nascita</label>
+                    {{-- Populated dynamically by people-reporting-fields.ts when birth_country_code == IT --}}
+                    <input type="text" id="birth_municipality" name="birth_municipality" class="form-input"
+                           value="{{ old('birth_municipality', $person->birth_municipality) }}"
+                           maxlength="100"
+                           placeholder="{{ old('birth_country_code', $person->birth_country_code) === 'IT' ? 'Es: Genova' : 'Città di nascita' }}"
+                           data-reporting-birth-municipality
+                           data-current-value="{{ old('birth_municipality', $person->birth_municipality) }}">
+                    @error('birth_municipality') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="document_issue_country_code">Stato rilascio documento</label>
+                        <select id="document_issue_country_code" name="document_issue_country_code" class="form-input">
+                            <option value="">Seleziona stato</option>
+                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                                <option value="{{ $code }}" @selected(old('document_issue_country_code', $person->document_issue_country_code) === $code)>
+                                    {{ $code }} - {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('document_issue_country_code') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="document_issue_place">Luogo rilascio documento</label>
+                        <input type="text" id="document_issue_place" name="document_issue_place" class="form-input"
+                               value="{{ old('document_issue_place', $person->document_issue_place) }}"
+                               maxlength="100" placeholder="Comune o città">
+                        @error('document_issue_place') <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
