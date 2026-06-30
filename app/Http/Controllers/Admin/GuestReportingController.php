@@ -32,7 +32,7 @@ class GuestReportingController extends Controller
     /** Show the send form pre-filled with the booking's guest data. */
     public function show(Booking $prenotazioni): View
     {
-        $prenotazioni->load('person', 'guestReports');
+        $prenotazioni->load('person', 'additionalGuests', 'guestReports');
 
         $lastReport = $prenotazioni->guestReports->sortByDesc('submitted_at')->first();
 
@@ -107,22 +107,28 @@ class GuestReportingController extends Controller
         $data = $request->validate([
             'guests'                                      => ['required', 'array', 'min:1'],
             'guests.*.person_id'                          => ['required', 'integer', 'exists:people,id'],
-            'guests.*.tipo_alloggiato'                    => ['required', 'string', Rule::in(['16', '17', '18', '19'])],
-            'guests.*.gender'                             => ['required', 'string', Rule::in(['M', 'F'])],
-            'guests.*.birth_date'                         => ['required', 'date'],
-            'guests.*.birth_municipality'                 => ['required', 'string', 'max:100'],
+            'guests.*.include'                            => ['sometimes', 'nullable'],
+            'guests.*.tipo_alloggiato'                    => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19'])],
+            'guests.*.gender'                             => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['M', 'F'])],
+            'guests.*.birth_date'                         => ['required_if:guests.*.include,1', 'nullable', 'date'],
+            'guests.*.birth_municipality'                 => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:100'],
             'guests.*.birth_province'                     => ['nullable', 'string', 'max:2'],
-            'guests.*.birth_country_code'                 => ['required', 'string', Rule::in($countryCodes)],
-            'guests.*.nationality_code'                   => ['required', 'string', Rule::in($countryCodes)],
-            'guests.*.document_type'                      => ['required', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
-            'guests.*.document_number'                    => ['required', 'string', 'max:60'],
-            'guests.*.document_issue_place'               => ['required', 'string', 'max:100'],
-            'guests.*.document_issue_country_code'        => ['required', 'string', Rule::in($countryCodes)],
+            'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
+            'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
+            'guests.*.document_type'                      => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
+            'guests.*.document_number'                    => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:60'],
+            'guests.*.document_issue_place'               => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:100'],
+            'guests.*.document_issue_country_code'        => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
         ]);
 
         $guestRecords = [];
 
         foreach ($data['guests'] as $guestData) {
+            // Skip guests deselected via the "Includi" checkbox
+            if (empty($guestData['include'])) {
+                continue;
+            }
+
             // Persist updated person fields permanently
             $person = Person::findOrFail((int) $guestData['person_id']);
             $person->update([
@@ -152,6 +158,12 @@ class GuestReportingController extends Controller
                 documentIssuePlace:        $guestData['document_issue_place'],
                 documentIssueCountryCode:  $guestData['document_issue_country_code'],
             );
+        }
+
+        if (empty($guestRecords)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'guests' => ['Seleziona almeno un ospite da includere nell\'invio.'],
+            ]);
         }
 
         return $guestRecords;

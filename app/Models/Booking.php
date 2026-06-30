@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -91,6 +92,28 @@ class Booking extends Model
     public function guestReports(): HasMany
     {
         return $this->hasMany(GuestReport::class);
+    }
+
+    /**
+     * Additional guests linked to this booking (excludes the primary person).
+     * The primary guest is always $this->person.
+     */
+    public function additionalGuests(): BelongsToMany
+    {
+        return $this->belongsToMany(Person::class, 'booking_person')
+            ->withTimestamps();
+    }
+
+    /**
+     * All guests for Alloggiati purposes: primary person + additional guests.
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\Person>
+     */
+    public function allGuests(): \Illuminate\Support\Collection
+    {
+        return collect([$this->person])
+            ->merge($this->additionalGuests)
+            ->unique('id');
     }
 
     /** Guests occupying bed spaces */

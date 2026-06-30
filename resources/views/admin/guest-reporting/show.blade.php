@@ -50,7 +50,7 @@
 
     {{-- Guest forms --}}
     @php
-        $guests = collect([$booking->person]);
+        $guests = $booking->allGuests();
         $countryCodes = config('apartment.guest_countries', []);
         $tipoOptions = [
             '16' => '16 — Italiano capofamiglia / capo gruppo',
@@ -72,8 +72,19 @@
             @endphp
 
             <div class="a-card" style="margin-bottom:1.25rem">
-                <div class="a-card__title">
-                    Ospite {{ $i + 1 }}: {{ $guest->full_name }}
+                <div class="a-card__title" style="display:flex;align-items:center;gap:.75rem">
+                    <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;flex-shrink:0">
+                        <input type="checkbox" name="guests[{{ $i }}][include]" value="1"
+                               checked
+                               data-guest-include-checkbox="{{ $i }}"
+                               style="width:1rem;height:1rem">
+                        <span>Includi</span>
+                    </label>
+                    <span>Ospite {{ $i + 1 }}: {{ $guest->full_name }}
+                        @if($i === 0)
+                            <span class="badge badge--outline" style="font-size:.7rem;margin-left:.35rem">Capogruppo</span>
+                        @endif
+                    </span>
                     <a href="{{ route('admin.people.edit', $guest) }}" class="btn btn--outline btn--sm" style="margin-left:auto"
                        target="_blank">Modifica profilo</a>
                 </div>

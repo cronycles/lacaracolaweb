@@ -9,12 +9,13 @@ use App\Models\Booking;
 use App\Models\Person;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PersonController extends Controller
 {
-    public function index(Request $request): View|RedirectResponse
+    public function index(Request $request): View|RedirectResponse|JsonResponse
     {
         $query = Person::query();
 
@@ -28,6 +29,17 @@ class PersonController extends Controller
                   ->orWhere('last_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
             });
+        }
+
+        // JSON autocomplete endpoint (used by booking guest-search widget)
+        if ($request->expectsJson() || $request->input('format') === 'json') {
+            $people = $query->orderBy('last_name')->limit(10)->get();
+
+            return response()->json($people->map(fn (Person $p) => [
+                'id'         => $p->id,
+                'full_name'  => $p->full_name,
+                'birth_date' => $p->birth_date?->format('d/m/Y'),
+            ]));
         }
 
         $people = $query->orderBy('last_name')->paginate(25)->withQueryString();

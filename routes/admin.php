@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\BookingGuestController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -83,6 +84,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/prenotazioni/{prenotazioni}/guest-reporting', [GuestReportingController::class, 'show'])->name('guest-reporting.show');
         Route::post('/prenotazioni/{prenotazioni}/guest-reporting/test', [GuestReportingController::class, 'saveAndTest'])->name('guest-reporting.test');
         Route::post('/prenotazioni/{prenotazioni}/guest-reporting/send', [GuestReportingController::class, 'saveAndSend'])->name('guest-reporting.send');
+
+        // ── Booking additional guests (pivot) ────────────────────────────────
+        Route::post('/prenotazioni/{prenotazioni}/ospiti', [BookingGuestController::class, 'store'])->name('bookings.guests.store');
+        Route::delete('/prenotazioni/{prenotazioni}/ospiti/{person}', [BookingGuestController::class, 'destroy'])->name('bookings.guests.destroy');
     });
 
     // ── manage_people ────────────────────────────────────────────────────────
