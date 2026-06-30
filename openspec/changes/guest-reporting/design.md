@@ -232,3 +232,52 @@ That is all. The `GuestReportingController`, all views, the `GuestReport` model,
 - Read from `config/guest-reporting.php` directly — it receives its config block as a constructor argument.
 - Access the database.
 - Throw unhandled exceptions to the controller — catch transport/API errors internally and return `SubmissionResult::success = false` with a descriptive message.
+
+---
+
+## D14 — Multi-Guest Support (booking_person pivot)
+
+> Decision added 2026-06-30 after initial implementation.
+
+### Problem
+A booking can have multiple adults, but the original implementation only sent the primary guest (`booking->person`). The guest-reporting form must allow the admin to select all guests in a booking.
+
+### Decision: pivot table (Option A)
+
+A `booking_person` pivot table links a booking to zero or more additional guests. The primary guest (`bookings.person_id`) is always the capogruppo and is never stored in the pivot.
+
+```
+bookings
+  id ─────────────────┐
+  person_id ──▶ people│  (capogruppo, immutable FK)
+                      │
+booking_person        │
+  booking_id ─────────┘
+  person_id ──▶ people  (ospiti aggiuntivi)
+  created_at / updated_at
+```
+
+**Rejected alternatives:**
+- *Option B — `booking_guests` join model*: unnecessary complexity for a simple N:M.
+- *Option C — JSON column on bookings*: loses relational integrity, can't be queried.
+
+### New methods on `Booking`
+
+```php
+additionalGuests(): BelongsToMany   // pivot only
+allGuests(): Collection             // capogruppo + pivot, unique by id
+```
+
+### Invariant
+`allGuests()` always has the capogruppo as the first element (index 0). The view uses this to apply the correct default `tipo_alloggiato` (16 for Italian capogruppo, 18 for foreign).
+
+### "Includi in questo invio" checkbox
+Each guest in `guest-reporting/show.blade.php` has a checkbox (checked by default). Deselected guests are skipped by `validateAndPersistGuests()`. If zero guests are included after filtering, a `ValidationException` is thrown before any SOAP call is made.
+
+### Admin workflow
+1. Open booking detail → "Ospiti della prenotazione" section.
+2. Search people by name (AJAX autocomplete on `GET /admin/ospiti?format=json&q=...`).
+3. Click "Aggiungi" to attach via `POST /prenotazioni/{id}/ospiti`.
+4. Click "Rimuovi" to detach via `DELETE /prenotazioni/{id}/ospiti/{person}`.
+5. Navigate to "Segnala ospiti" → all guests appear; deselect any to exclude from the SOAP payload.
+

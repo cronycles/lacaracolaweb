@@ -81,3 +81,18 @@
 
 - [x] 14.1 Update `docs/specific-data-model.md`: add 7 new columns to the `people` entity; add the full `guest_reports` entity description
 - [x] 14.2 Update `docs/specific-tech-backend-doc.mdc`: add `GuestReportingManager` and `PoliziaStatoAlloggiatiDriver` to the service map; add `GuestReportingController` endpoints to the route documentation; document the Driver/Strategy pattern
+
+## 15. Multi-Guest Support (booking_person pivot)
+
+> Added after the initial implementation to support multiple guests per booking.
+
+- [x] 15.1 Create migration `2026_06_30_000003_create_booking_person_table.php`: pivot table `booking_person` with `booking_id` (FK bookings CASCADE), `person_id` (FK people RESTRICT), composite primary key `(booking_id, person_id)`, timestamps
+- [x] 15.2 Add `additionalGuests(): BelongsToMany` relation to `Booking` model (table `booking_person`, `withTimestamps()`)
+- [x] 15.3 Add `allGuests(): Collection` helper to `Booking` model — returns `collect([$this->person])->merge($this->additionalGuests)->unique('id')`
+- [x] 15.4 Create `app/Http/Controllers/Admin/BookingGuestController.php` with `store()` (syncWithoutDetaching, prevents re-adding primary guest) and `destroy()` (detach)
+- [x] 15.5 Add routes in `routes/admin.php` inside `manage_bookings` group: `POST /prenotazioni/{prenotazioni}/ospiti` (bookings.guests.store) and `DELETE /prenotazioni/{prenotazioni}/ospiti/{person}` (bookings.guests.destroy)
+- [x] 15.6 Add JSON autocomplete branch to `PersonController::index()`: when `?format=json` or `Accept: application/json`, returns up to 10 people as `[{id, full_name, birth_date}]` (used by booking-show autocomplete widget)
+- [x] 15.7 Add "Ospiti della prenotazione" section to `resources/views/admin/bookings/show.blade.php`: shows capogruppo (read-only), list of additional guests with remove button (DELETE form), add-guest form with live AJAX search autocomplete, inline JS for the search widget
+- [x] 15.8 Update `GuestReportingController::show()` to eager-load `additionalGuests` in addition to `person` and `guestReports`
+- [x] 15.9 Update `resources/views/admin/guest-reporting/show.blade.php`: change `$guests` from `collect([$booking->person])` to `$booking->allGuests()`; add per-guest "Includi in questo invio" checkbox (checked by default); guests deselected via checkbox are skipped during validation and persistence
+- [x] 15.10 Update `validateAndPersistGuests()` in `GuestReportingController`: skip guests where `include` flag is falsy; validate required fields only for included guests (`required_if`); throw `ValidationException` if zero guests are included
