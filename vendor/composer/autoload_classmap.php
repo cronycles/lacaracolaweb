@@ -9,6 +9,7 @@ return array(
     'App\\Console\\Commands\\SendTelegramBookingReminders' => $baseDir . '/app/Console/Commands/SendTelegramBookingReminders.php',
     'App\\Contracts\\GuestReportingDriverInterface' => $baseDir . '/app/Contracts/GuestReportingDriverInterface.php',
     'App\\Http\\Controllers\\Admin\\BookingController' => $baseDir . '/app/Http/Controllers/Admin/BookingController.php',
+    'App\\Http\\Controllers\\Admin\\BookingGuestController' => $baseDir . '/app/Http/Controllers/Admin/BookingGuestController.php',
     'App\\Http\\Controllers\\Admin\\CalendarController' => $baseDir . '/app/Http/Controllers/Admin/CalendarController.php',
     'App\\Http\\Controllers\\Admin\\DashboardController' => $baseDir . '/app/Http/Controllers/Admin/DashboardController.php',
     'App\\Http\\Controllers\\Admin\\FinancialAttachmentController' => $baseDir . '/app/Http/Controllers/Admin/FinancialAttachmentController.php',

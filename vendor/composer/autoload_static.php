@@ -529,6 +529,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Console\\Commands\\SendTelegramBookingReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendTelegramBookingReminders.php',
         'App\\Contracts\\GuestReportingDriverInterface' => __DIR__ . '/../..' . '/app/Contracts/GuestReportingDriverInterface.php',
         'App\\Http\\Controllers\\Admin\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BookingController.php',
+        'App\\Http\\Controllers\\Admin\\BookingGuestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BookingGuestController.php',
         'App\\Http\\Controllers\\Admin\\CalendarController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/CalendarController.php',
         'App\\Http\\Controllers\\Admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardController.php',
         'App\\Http\\Controllers\\Admin\\FinancialAttachmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/FinancialAttachmentController.php',
