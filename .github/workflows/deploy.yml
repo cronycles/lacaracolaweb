@@ -35,7 +35,6 @@ jobs:
         shell: bash
         run: |
           RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
-            -G \
             -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
             --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
             "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update")
@@ -58,7 +57,6 @@ jobs:
         shell: bash
         run: |
           RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
-            -G \
             -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
             --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
             "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create")
