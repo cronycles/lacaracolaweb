@@ -1,9 +1,13 @@
 /**
  * People reporting fields — conditional UI for guest reporting data.
  *
- * When birth_country_code changes:
- *  - IT  → show birth_province field; optionally hint for municipality
- *  - other → hide birth_province field; plain text municipality
+ * Birth country logic:
+ *  - IT  → show birth_province field; datalist for municipality
+ *  - other → hide birth_province; plain text municipality
+ *
+ * Document issue country logic:
+ *  - IT  → show document_issue_place (Italian municipality needed for Codice Belfiore)
+ *  - other → hide document_issue_place (country code alone is enough)
  */
 
 interface MunicipalityEntry {
@@ -83,3 +87,37 @@ function initPeopleReportingFields(): void {
 }
 
 export { initPeopleReportingFields };
+
+function initDocumentIssueFields(): void {
+    const issueCountrySelect = document.querySelector<HTMLSelectElement>('[data-reporting-issue-country]');
+    const issuePlaceGroup = document.getElementById('document_issue_place_group');
+    const issuePlaceInput = document.querySelector<HTMLInputElement>('[data-reporting-issue-municipality]');
+
+    if (!issueCountrySelect || !issuePlaceGroup) return;
+
+    function update(countryCode: string): void {
+        const isItaly = countryCode === 'IT';
+        issuePlaceGroup!.style.display = isItaly ? '' : 'none';
+        if (issuePlaceInput) {
+            if (isItaly) {
+                // Add datalist for Italian comuni (reuse the one created by birth-country logic if present)
+                const existingDatalist = document.getElementById('comuni-datalist');
+                if (existingDatalist) {
+                    issuePlaceInput.setAttribute('list', 'comuni-datalist');
+                }
+                issuePlaceInput.placeholder = 'Es: Genova';
+            } else {
+                issuePlaceInput.removeAttribute('list');
+                issuePlaceInput.value = '';
+            }
+        }
+    }
+
+    update(issueCountrySelect.value);
+
+    issueCountrySelect.addEventListener('change', () => {
+        update(issueCountrySelect.value);
+    });
+}
+
+export { initDocumentIssueFields };

@@ -165,7 +165,7 @@ class PersonController extends Controller
             'birth_province'               => ['nullable', 'string', 'max:2'],
             'birth_country_code'           => ['nullable', 'string', Rule::in($countryCodes)],
             'nationality_code'             => ['nullable', 'string', Rule::in($countryCodes)],
-            'document_issue_place'         => ['nullable', 'string', 'max:100'],
+            'document_issue_place'         => ['nullable', 'string', 'max:100', 'required_if:document_issue_country_code,IT'],
             'document_issue_country_code'  => ['nullable', 'string', Rule::in($countryCodes)],
         ]);
     }

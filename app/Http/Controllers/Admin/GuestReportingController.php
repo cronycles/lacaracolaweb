@@ -117,7 +117,7 @@ class GuestReportingController extends Controller
             'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.document_type'                      => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
             'guests.*.document_number'                    => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:60'],
-            'guests.*.document_issue_place'               => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:100'],
+            'guests.*.document_issue_place'               => ['nullable', 'string', 'max:100', 'required_if:guests.*.document_issue_country_code,IT'],
             'guests.*.document_issue_country_code'        => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
         ]);
 

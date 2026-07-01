@@ -104,7 +104,7 @@
                 </div>
 
                 {{-- ── Dati per segnalazione ospiti (Alloggiati Web / Polizia di Stato) ── --}}
-                <div class="a-card__title" style="margin-top:1.5rem;margin-bottom:1rem;font-size:.9rem;text-transform:uppercase;letter-spacing:.05em;opacity:.7">Dati per segnalazione ospiti</div>
+                <hr style="margin:1.5rem 0;border:none;border-top:1px solid #e0e8ec">
 
                 <div class="form-row">
                     <div class="form-group">
@@ -169,7 +169,8 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="document_issue_country_code">Stato rilascio documento</label>
-                        <select id="document_issue_country_code" name="document_issue_country_code" class="form-input">
+                        <select id="document_issue_country_code" name="document_issue_country_code" class="form-input"
+                                data-reporting-issue-country>
                             <option value="">Seleziona stato</option>
                             @foreach (config('apartment.guest_countries', []) as $code => $name)
                                 <option value="{{ $code }}" @selected(old('document_issue_country_code', $person->document_issue_country_code) === $code)>
@@ -179,11 +180,12 @@
                         </select>
                         @error('document_issue_country_code') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="document_issue_place">Luogo rilascio documento</label>
+                    <div class="form-group" id="document_issue_place_group">
+                        <label class="form-label" for="document_issue_place">Comune rilascio documento</label>
                         <input type="text" id="document_issue_place" name="document_issue_place" class="form-input"
                                value="{{ old('document_issue_place', $person->document_issue_place) }}"
-                               maxlength="100" placeholder="Comune o città">
+                               maxlength="100" placeholder="Es: Genova"
+                               data-reporting-issue-municipality>
                         @error('document_issue_place') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
