@@ -56,7 +56,7 @@ class GuestReportingController extends Controller
             'guests_count'   => count($guests),
             'guests_payload' => array_map(fn (GuestRecord $g) => (array) $g, $guests),
             'soap_response'  => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
-            'error_message'  => $result->success ? null : $result->message,
+            'error_message'  => $result->message,
             'submitted_at'   => now(),
         ]);
 
@@ -80,7 +80,7 @@ class GuestReportingController extends Controller
             'guests_count'   => count($guests),
             'guests_payload' => array_map(fn (GuestRecord $g) => (array) $g, $guests),
             'soap_response'  => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
-            'error_message'  => $result->success ? null : $result->message,
+            'error_message'  => $result->message,
             'submitted_at'   => now(),
         ]);
 

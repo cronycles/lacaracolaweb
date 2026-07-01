@@ -259,7 +259,7 @@
                         <th>Modalità</th>
                         <th>Stato</th>
                         <th>N° ospiti</th>
-                        <th>Messaggio</th>
+                        <th>Messaggio / Risposta servizio</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -281,7 +281,17 @@
                                 @endif
                             </td>
                             <td style="text-align:center">{{ $report->guests_count }}</td>
-                            <td style="font-size:.8rem;color:#6b7f89">{{ $report->error_message ?? '—' }}</td>
+                            <td style="font-size:.8rem">
+                                @if ($report->error_message)
+                                    <div style="margin-bottom:.35rem">{{ $report->error_message }}</div>
+                                @endif
+                                @if ($report->soap_response)
+                                    <details>
+                                        <summary style="cursor:pointer;color:#30596C;font-size:.78rem">Risposta completa servizio</summary>
+                                        <pre style="margin:.4rem 0 0;padding:.5rem;background:#f5f8fa;border-radius:4px;font-size:.72rem;overflow-x:auto;max-width:480px;white-space:pre-wrap;word-break:break-all">{{ json_encode($report->soap_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                    </details>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
