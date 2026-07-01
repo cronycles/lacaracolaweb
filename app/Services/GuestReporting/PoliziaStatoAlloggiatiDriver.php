@@ -143,16 +143,25 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             throw new RuntimeException('Alloggiati Web GenerateToken failed: ' . $e->getMessage(), 0, $e);
         }
 
-        $response = $result->GenerateTokenResult ?? null;
+        // Verified response structure:
+        //   $result->GenerateTokenResult->{token, issued, expires}
+        //   $result->result->{esito, ErroreCod, ErroreDes, ErroreDettaglio}
+        $tokenResult = $result->GenerateTokenResult ?? null;
+        $token       = (string) ($tokenResult->token ?? '');
 
-        if (! $response || (int) ($response->esito ?? -1) !== 0) {
-            $desc = $response->descrizione ?? 'unknown error';
+        if ($token === '') {
+            $res  = $result->result ?? null;
+            $desc = ($res->ErroreDes ?? '') ?: ($res->ErroreDettaglio ?? '') ?: 'token vuoto — verificare utente/password/ws_key';
             throw new RuntimeException("Alloggiati Web authentication error: {$desc}");
         }
 
-        $token = (string) $response->tokenInfo->token;
+        // Use expiry from response (minus 5-minute safety margin); fallback: 55 min
+        $expiresStr = $tokenResult->expires ?? null;
+        $ttlSeconds = $expiresStr
+            ? max(60, (int) (strtotime($expiresStr) - time()) - 300)
+            : 55 * 60;
 
-        Cache::put($this->cacheKey, $token, now()->addMinutes(55));
+        Cache::put($this->cacheKey, $token, now()->addSeconds($ttlSeconds));
 
         return $token;
     }
