@@ -98,7 +98,7 @@
                         </select>
                         @error('birth_country_code') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="form-group" id="birth_province_group"
+                    <div class="form-group" id="birth_province_group" data-birth-province-group
                          style="{{ old('birth_country_code', $person->birth_country_code) !== 'IT' ? 'display:none' : '' }}">
                         <label class="form-label" for="birth_province">Provincia di nascita</label>
                         <input type="text" id="birth_province" name="birth_province" class="form-input"
@@ -158,7 +158,7 @@
                         </select>
                         @error('document_issue_country_code') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="form-group" id="document_issue_place_group"
+                    <div class="form-group" id="document_issue_place_group" data-document-issue-place-group
                          style="{{ old('document_issue_country_code', $person->document_issue_country_code) !== 'IT' ? 'display:none' : '' }}">
                         <label class="form-label" for="document_issue_place">Comune di rilascio</label>
                         <input type="text" id="document_issue_place" name="document_issue_place" class="form-input"

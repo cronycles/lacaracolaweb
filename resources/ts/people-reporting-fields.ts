@@ -1,21 +1,20 @@
 /**
  * People reporting fields — conditional UI for guest reporting data.
  *
+ * Works for both the single-person edit form (one instance per page) and the
+ * multi-guest reporting form (N instances per page).  All lookups are scoped to
+ * the nearest `.a-card` ancestor so each guest row is independent.
+ *
  * Birth country logic:
- *  - IT  → show birth_province field; datalist for municipality
- *  - other → hide birth_province; plain text municipality
+ *  - IT  → show birth_province field; attach datalist for municipality
+ *  - other → hide birth_province; plain text municipality; clear value
  *
  * Document issue country logic:
- *  - IT  → show document_issue_place (Italian municipality needed for Codice Belfiore)
- *  - other → hide document_issue_place (country code alone is enough)
+ *  - IT  → show document_issue_place (Italian municipality needed for Alloggiati code)
+ *  - other → hide document_issue_place (country code alone is sufficient)
  */
 
-interface MunicipalityEntry {
-    name: string;
-    code: string;
-}
-
-// Lightweight list built from ItalianMunicipalities::all() keys (names only — no codes needed client-side)
+// Lightweight list of Italian capoluogo names (enough for the datalist suggestions).
 const ITALIAN_COMUNI: string[] = [
     'Agrigento','Alessandria','Ancona','Andora','Aosta','Arezzo','Ascoli Piceno',
     'Asti','Avellino','Bari','Barletta','Belluno','Benevento','Bergamo','Biella',
@@ -34,89 +33,107 @@ const ITALIAN_COMUNI: string[] = [
     'Vicenza','Viterbo',
 ];
 
+/** Create the shared comuni datalist once and attach it to the document body. */
+function ensureComuni(): void {
+    if (document.getElementById('comuni-datalist')) return;
+    const dl = document.createElement('datalist');
+    dl.id = 'comuni-datalist';
+    ITALIAN_COMUNI.forEach((name) => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        dl.appendChild(opt);
+    });
+    document.body.appendChild(dl);
+}
+
+/**
+ * Initialise birth-country → municipality/province logic for every guest row.
+ * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
+ * Looks for:
+ *   [data-reporting-birth-country]   — the country <select>
+ *   [data-reporting-birth-municipality] — the municipality <input>
+ *   [data-birth-province-group]      — wrapper div to show/hide province field
+ */
 function initPeopleReportingFields(): void {
-    const birthCountrySelect = document.querySelector<HTMLSelectElement>('[data-reporting-birth-country]');
-    const birthMunicipalityInput = document.querySelector<HTMLInputElement>('[data-reporting-birth-municipality]');
-    const birthProvinceGroup = document.getElementById('birth_province_group');
+    document.querySelectorAll<HTMLSelectElement>('[data-reporting-birth-country]').forEach((countrySelect) => {
+        // Scope to the nearest card so each guest row is independent.
+        const card = countrySelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
+        const municipalityInput = card.querySelector<HTMLInputElement>('[data-reporting-birth-municipality]');
+        const provinceGroup     = card.querySelector<HTMLElement>('[data-birth-province-group]');
 
-    if (!birthCountrySelect || !birthMunicipalityInput) return;
+        if (!municipalityInput) return;
 
-    function updateFieldsForCountry(countryCode: string): void {
-        const isItaly = countryCode === 'IT';
+        function update(countryCode: string): void {
+            const isItaly = countryCode === 'IT';
 
-        // Show/hide province group
-        if (birthProvinceGroup) {
-            birthProvinceGroup.style.display = isItaly ? '' : 'none';
-        }
+            if (provinceGroup) provinceGroup.style.display = isItaly ? '' : 'none';
 
-        // Update municipality placeholder
-        birthMunicipalityInput!.placeholder = isItaly ? 'Es: Genova' : 'Città di nascita';
-
-        // Add/remove datalist for Italian comuni
-        const existingDatalist = document.getElementById('comuni-datalist');
-        if (isItaly) {
-            if (!existingDatalist) {
-                const dl = document.createElement('datalist');
-                dl.id = 'comuni-datalist';
-                ITALIAN_COMUNI.forEach((name) => {
-                    const opt = document.createElement('option');
-                    opt.value = name;
-                    dl.appendChild(opt);
-                });
-                document.body.appendChild(dl);
+            // Update the associated <label> text if present
+            const label = municipalityInput!.labels?.[0] as HTMLLabelElement | undefined;
+            if (label) {
+                const hasAsterisk = label.textContent?.trimEnd().endsWith('*') ?? false;
+                label.textContent = (isItaly ? 'Comune di nascita' : 'Città di nascita') + (hasAsterisk ? ' *' : '');
             }
-            birthMunicipalityInput!.setAttribute('list', 'comuni-datalist');
-        } else {
-            birthMunicipalityInput!.removeAttribute('list');
-        }
-    }
 
-    // Initial state
-    updateFieldsForCountry(birthCountrySelect.value);
+            municipalityInput!.placeholder = isItaly ? 'Es: Genova' : 'Es: Monaco';
 
-    // On change
-    birthCountrySelect.addEventListener('change', () => {
-        updateFieldsForCountry(birthCountrySelect.value);
-        // Clear municipality when switching away from IT to avoid stale commune names
-        if (birthCountrySelect.value !== 'IT') {
-            const currentValue = birthMunicipalityInput!.getAttribute('data-current-value') ?? '';
-            // Only clear if it was an Italian comune (simple heuristic: clear always on country change)
-            birthMunicipalityInput!.value = '';
+            if (isItaly) {
+                ensureComuni();
+                municipalityInput!.setAttribute('list', 'comuni-datalist');
+            } else {
+                municipalityInput!.removeAttribute('list');
+            }
         }
+
+        // Set initial state
+        update(countrySelect.value);
+
+        countrySelect.addEventListener('change', () => {
+            update(countrySelect.value);
+            // Clear stale Italian comune name when switching away from IT
+            if (countrySelect.value !== 'IT') {
+                municipalityInput!.value = '';
+            }
+        });
     });
 }
 
 export { initPeopleReportingFields };
 
+/**
+ * Initialise document-issue-country → issue-place logic for every guest row.
+ * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
+ * Looks for:
+ *   [data-reporting-issue-country]      — the issue country <select>
+ *   [data-document-issue-place-group]   — wrapper div to show/hide the place field
+ *   [data-reporting-issue-municipality] — the issue place <input>
+ */
 function initDocumentIssueFields(): void {
-    const issueCountrySelect = document.querySelector<HTMLSelectElement>('[data-reporting-issue-country]');
-    const issuePlaceGroup = document.getElementById('document_issue_place_group');
-    const issuePlaceInput = document.querySelector<HTMLInputElement>('[data-reporting-issue-municipality]');
+    document.querySelectorAll<HTMLSelectElement>('[data-reporting-issue-country]').forEach((issueCountrySelect) => {
+        const card            = issueCountrySelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
+        const issuePlaceGroup = card.querySelector<HTMLElement>('[data-document-issue-place-group]');
+        const issuePlaceInput = card.querySelector<HTMLInputElement>('[data-reporting-issue-municipality]');
 
-    if (!issueCountrySelect || !issuePlaceGroup) return;
+        if (!issuePlaceGroup) return;
 
-    function update(countryCode: string): void {
-        const isItaly = countryCode === 'IT';
-        issuePlaceGroup!.style.display = isItaly ? '' : 'none';
-        if (issuePlaceInput) {
-            if (isItaly) {
-                // Add datalist for Italian comuni (reuse the one created by birth-country logic if present)
-                const existingDatalist = document.getElementById('comuni-datalist');
-                if (existingDatalist) {
+        function update(countryCode: string): void {
+            const isItaly = countryCode === 'IT';
+            issuePlaceGroup!.style.display = isItaly ? '' : 'none';
+            if (issuePlaceInput) {
+                if (isItaly) {
+                    ensureComuni();
                     issuePlaceInput.setAttribute('list', 'comuni-datalist');
+                    issuePlaceInput.placeholder = 'Es: Genova';
+                } else {
+                    issuePlaceInput.removeAttribute('list');
+                    issuePlaceInput.value = '';
                 }
-                issuePlaceInput.placeholder = 'Es: Genova';
-            } else {
-                issuePlaceInput.removeAttribute('list');
-                issuePlaceInput.value = '';
             }
         }
-    }
 
-    update(issueCountrySelect.value);
-
-    issueCountrySelect.addEventListener('change', () => {
         update(issueCountrySelect.value);
+
+        issueCountrySelect.addEventListener('change', () => update(issueCountrySelect.value));
     });
 }
 

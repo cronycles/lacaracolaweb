@@ -133,7 +133,7 @@
                         </select>
                         @error("guests.{$i}.birth_country_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="form-group" id="birth_province_group_{{ $i }}"
+                    <div class="form-group" id="birth_province_group_{{ $i }}" data-birth-province-group
                          style="{{ old("guests.{$i}.birth_country_code", $guest->birth_country_code) !== 'IT' ? 'display:none' : '' }}">
                         <label class="form-label" for="guests_{{ $i }}_birth_province">Provincia *</label>
                         <input type="text" id="guests_{{ $i }}_birth_province"
@@ -210,7 +210,8 @@
                         <label class="form-label" for="guests_{{ $i }}_document_issue_country_code">Stato rilascio doc. *</label>
                         <select id="guests_{{ $i }}_document_issue_country_code"
                                 name="guests[{{ $i }}][document_issue_country_code]"
-                                class="form-input" required>
+                                class="form-input" required
+                                data-reporting-issue-country>
                             <option value="">Seleziona</option>
                             @foreach ($countryCodes as $code => $name)
                                 <option value="{{ $code }}"
@@ -221,12 +222,15 @@
                         </select>
                         @error("guests.{$i}.document_issue_country_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="guests_{{ $i }}_document_issue_place">Luogo rilascio doc. *</label>
+                    <div class="form-group" data-document-issue-place-group
+                         style="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) !== 'IT' ? 'display:none' : '' }}">
+                        <label class="form-label" for="guests_{{ $i }}_document_issue_place">Luogo rilascio doc.</label>
                         <input type="text" id="guests_{{ $i }}_document_issue_place"
                                name="guests[{{ $i }}][document_issue_place]" class="form-input"
                                value="{{ old("guests.{$i}.document_issue_place", $guest->document_issue_place) }}"
-                               maxlength="100" required>
+                               maxlength="100"
+                               data-reporting-issue-municipality
+                               placeholder="Es: Genova">
                         @error("guests.{$i}.document_issue_place") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
