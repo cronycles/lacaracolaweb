@@ -99,8 +99,7 @@ if [[ "$RUN_ARTISAN" == "1" ]]; then
 
     if [[ -f "$APP_DIR/artisan" && -f "$APP_DIR/.env" ]]; then
         "$PHP_BIN" artisan migrate --force
-        "$PHP_BIN" artisan db:seed --class=PermissionSeeder --force
-        "$PHP_BIN" artisan db:seed --class=RoleSeeder --force
+        "$PHP_BIN" artisan db:seed --force
         "$PHP_BIN" artisan optimize:clear || true
         "$PHP_BIN" artisan config:cache
         "$PHP_BIN" artisan route:cache
