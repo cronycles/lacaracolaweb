@@ -64,21 +64,42 @@ class Person extends Model
 
     public function getCountryFlagAttribute(): ?string
     {
-        if (! $this->country_code) {
+        return $this->isoToFlag($this->country_code);
+    }
+
+    public function getNationalityDisplayAttribute(): ?string
+    {
+        if (! $this->nationality_code) {
             return null;
         }
 
-        return match ($this->country_code) {
-            'IT' => '🇮🇹',
-            'FR' => '🇫🇷',
-            'DE' => '🇩🇪',
-            'ES' => '🇪🇸',
-            'GB' => '🇬🇧',
-            'IE' => '🇮🇪',
-            'NL' => '🇳🇱',
-            'CH' => '🇨🇭',
-            default => null,
-        };
+        $countryName = Country::where('iso2', $this->nationality_code)->value('name_it');
+
+        if (! $countryName) {
+            return $this->nationality_code;
+        }
+
+        return "{$this->nationality_code} - {$countryName}";
+    }
+
+    public function getNationalityFlagAttribute(): ?string
+    {
+        return $this->isoToFlag($this->nationality_code);
+    }
+
+    private function isoToFlag(?string $isoCode): ?string
+    {
+        if (! $isoCode || strlen($isoCode) !== 2) {
+            return null;
+        }
+
+        $code = strtoupper($isoCode);
+        if (! ctype_alpha($code)) {
+            return null;
+        }
+
+        // Regional indicator symbols: A=🇦 (U+1F1E6), offset from ord('A')=65 is 127397
+        return mb_chr(127397 + ord($code[0])) . mb_chr(127397 + ord($code[1]));
     }
 
     public function autoSubscribeToNewsletter(): void

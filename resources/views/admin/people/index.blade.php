@@ -31,7 +31,8 @@
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Telefono</th>
-                        <th>Paese</th>
+                        <th>Paese residenza</th>
+                        <th>Nazionalità</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -50,6 +51,15 @@
                                 @if ($person->country_flag)
                                     <span title="{{ $person->country_display }}" aria-label="{{ $person->country_display }}" style="font-size:1.1rem;line-height:1">
                                         {{ $person->country_flag }}
+                                    </span>
+                                @else
+                                    —
+                                @endif
+                            </td>
+                            <td>
+                                @if ($person->nationality_flag)
+                                    <span title="{{ $person->nationality_display }}" aria-label="{{ $person->nationality_display }}" style="font-size:1.1rem;line-height:1">
+                                        {{ $person->nationality_flag }}
                                     </span>
                                 @else
                                     —

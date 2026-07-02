@@ -42,8 +42,22 @@
                         <td>{{ $person->birth_date?->format('d/m/Y') ?? '—' }}</td>
                     </tr>
                     <tr>
-                        <th>Paese</th>
-                        <td>{{ $person->country_display ?? '—' }}</td>
+                        <th>Paese di residenza</th>
+                        <td>
+                            @if ($person->country_flag)
+                                <span style="font-size:1.1rem;margin-right:.3rem">{{ $person->country_flag }}</span>
+                            @endif
+                            {{ $person->country_display ?? '—' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Nazionalità</th>
+                        <td>
+                            @if ($person->nationality_flag)
+                                <span style="font-size:1.1rem;margin-right:.3rem">{{ $person->nationality_flag }}</span>
+                            @endif
+                            {{ $person->nationality_display ?? '—' }}
+                        </td>
                     </tr>
                     <tr>
                         <th>Documento</th>
