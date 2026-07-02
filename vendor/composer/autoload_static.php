@@ -551,6 +551,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Http\\Controllers\\Public\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/BookingController.php',
         'App\\Http\\Controllers\\Public\\ExperiencesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ExperiencesController.php',
         'App\\Http\\Controllers\\Public\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/HomeController.php',
+        'App\\Http\\Controllers\\Public\\LegacyRedirectController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/LegacyRedirectController.php',
         'App\\Http\\Controllers\\Public\\MapController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/MapController.php',
         'App\\Http\\Controllers\\Public\\ReviewsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ReviewsController.php',
         'App\\Http\\Controllers\\Public\\RulesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/RulesController.php',

@@ -31,6 +31,7 @@ return array(
     'App\\Http\\Controllers\\Public\\BookingController' => $baseDir . '/app/Http/Controllers/Public/BookingController.php',
     'App\\Http\\Controllers\\Public\\ExperiencesController' => $baseDir . '/app/Http/Controllers/Public/ExperiencesController.php',
     'App\\Http\\Controllers\\Public\\HomeController' => $baseDir . '/app/Http/Controllers/Public/HomeController.php',
+    'App\\Http\\Controllers\\Public\\LegacyRedirectController' => $baseDir . '/app/Http/Controllers/Public/LegacyRedirectController.php',
     'App\\Http\\Controllers\\Public\\MapController' => $baseDir . '/app/Http/Controllers/Public/MapController.php',
     'App\\Http\\Controllers\\Public\\ReviewsController' => $baseDir . '/app/Http/Controllers/Public/ReviewsController.php',
     'App\\Http\\Controllers\\Public\\RulesController' => $baseDir . '/app/Http/Controllers/Public/RulesController.php',
