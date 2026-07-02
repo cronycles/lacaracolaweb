@@ -156,3 +156,32 @@ Polymorphic file attachments for financial movements. Documents (invoices, recei
 ## Config defaults
 `config/finance.php` key `tax_declaration_defaults`: `income`, `cleaning`, `linen` default `true`; `parking` defaults `false`.
 Applied at `BookingController::store()` and via migration for existing rows.
+
+---
+
+## Guest Reporting — Alloggiati Web
+
+Comunicazione obbligatoria degli ospiti alla Polizia di Stato tramite SOAP.
+**Documentazione tecnica completa**: [`docs/AlloggiatiWeb/INTEGRATION.md`](./AlloggiatiWeb/INTEGRATION.md) — leggere quello prima di toccare qualsiasi file in questo modulo.
+
+### File coinvolti
+| File | Responsabilità |
+|---|---|
+| `app/Services/GuestReporting/PoliziaStatoAlloggiatiDriver.php` | UNICO punto che conosce SOAP, formato record, e mapping codici |
+| `app/Services/GuestReporting/GuestRecord.php` | DTO immutabile (dati di un ospite) |
+| `app/Services/GuestReporting/GuestReportingServiceInterface.php` | Interfaccia — il controller dipende solo da questa |
+| `app/Services/GuestReporting/Data/ItalianMunicipalities.php` | Lookup nome comune → codice 9-digit (carica `docs/AlloggiatiWeb/comuni.csv`) |
+| `app/Http/Controllers/Admin/GuestReportingController.php` | Valida form, costruisce `GuestRecord[]`, chiama driver |
+| `resources/views/admin/guest-reporting/show.blade.php` | Form ospiti |
+| `docs/AlloggiatiWeb/` | Tabelle CSV ufficiali (comuni, stati, documenti, tipo_alloggiato) + `INTEGRATION.md` |
+| `scripts/test-soap5.php` | Script standalone per test SOAP senza Laravel avviato |
+
+### Regole chiave
+- Il driver riceve solo `GuestRecord[]` — non tocca mai modelli Eloquent.
+- `GuestRecord` richiede `arrivalDate` (`d/m/Y` da `$booking->checkin->format('d/m/Y')`) e `stayNights` (da `$booking->nights`).
+- Tipo alloggiato `19` e `20`: i campi documento nel record vengono scritti come spazi dal driver (anche se il form li raccoglie).
+- Nascita estera: comune e provincia restano spazi; solo `statoBirth` (9-digit da `stati.csv`) è obbligatorio.
+- `ElencoSchedine` SOAP: deve essere `['string' => [$rec1, ...]]` — mai una stringa concatenata.
+- Codici paesi: 9-digit da `stati.csv` (es. ITALIA=`100000100`, GERMANIA=`100000216`).
+- Per aggiungere un paese mancante: cercare in `docs/AlloggiatiWeb/stati.csv` e aggiungere a `countryIsoToAlloggiati()`.
+
