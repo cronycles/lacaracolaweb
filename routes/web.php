@@ -8,6 +8,7 @@ use App\Http\Controllers\Public\ReviewsController;
 use App\Http\Controllers\Public\RulesController;
 use App\Http\Controllers\Public\UsefulPlacesController;
 use App\Http\Controllers\Public\BookingController;
+use App\Http\Controllers\Public\LegacyRedirectController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Admin\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -48,38 +49,13 @@ foreach ($locales as $locale) {
 }
 
 // --- Redirect old URLs without locale prefix (for SEO and backward compatibility) ---
-// When a user accesses the old URL, redirect to the localized URL with their preferred locale
-Route::redirect('/appartamento', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('apartment', [], $locale), 301);
-});
-Route::redirect('/dove-siamo', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('map', [], $locale), 301);
-});
-Route::redirect('/esperienze', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('experiences', [], $locale), 301);
-});
-Route::redirect('/recensioni', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('reviews', [], $locale), 301);
-});
-Route::redirect('/regole-casa', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('rules', [], $locale), 301);
-});
-Route::redirect('/posti-utili', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('useful-places', [], $locale), 301);
-});
-Route::redirect('/disponibilita', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('booking.thanks', [], $locale), 301);
-}, 301);
+Route::get('/appartamento', [LegacyRedirectController::class, 'appartamento']);
+Route::get('/dove-siamo', [LegacyRedirectController::class, 'doveSiamo']);
+Route::get('/esperienze', [LegacyRedirectController::class, 'esperienze']);
+Route::get('/recensioni', [LegacyRedirectController::class, 'recensioni']);
+Route::get('/regole-casa', [LegacyRedirectController::class, 'regoleCasa']);
+Route::get('/posti-utili', [LegacyRedirectController::class, 'postiUtili']);
+Route::get('/disponibilita', [LegacyRedirectController::class, 'disponibilita']);
 
 // --- Fallback: redirect root to localized home ---
-Route::get('/', function () {
-    $locale = session('locale', 'it');
-    return redirect(route_locale('home', [], $locale), 307);
-});
+Route::get('/', [LegacyRedirectController::class, 'home']);
