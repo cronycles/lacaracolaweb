@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Person;
 use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use Illuminate\Http\RedirectResponse;
@@ -68,6 +69,7 @@ class PersonController extends Controller
         return view('admin.people.form', [
             'person'          => new Person(),
             'comuniNames'     => ItalianMunicipalities::allValidNames(),
+            'countries'       => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
             'returnTo'        => $returnTo,
             'attachBookingId' => $attachBookingId,
         ]);
@@ -108,6 +110,7 @@ class PersonController extends Controller
         return view('admin.people.form', [
             'person'      => $ospiti,
             'comuniNames' => ItalianMunicipalities::allValidNames(),
+            'countries'   => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
             'returnTo'    => $this->resolveReturnTo(request(), $ospiti),
         ]);
     }
@@ -150,7 +153,7 @@ class PersonController extends Controller
 
     private function validated(Request $request, ?int $ignoreId = null): array
     {
-        $countryCodes = array_keys(config('apartment.guest_countries', []));
+        $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
 
         return $request->validate([
             'first_name'      => ['required', 'string', 'max:80'],

@@ -64,7 +64,7 @@
                         <label class="form-label" for="country_code">Paese di residenza</label>
                         <select id="country_code" name="country_code" class="form-input">
                             <option value="">Seleziona</option>
-                            @foreach (config('apartment.guest_countries', []) as $countryCode => $countryName)
+                            @foreach ($countries as $countryCode => $countryName)
                                 <option value="{{ $countryCode }}" @selected(old('country_code', $person->country_code) === $countryCode)>
                                     {{ $countryName }}
                                 </option>
@@ -76,7 +76,7 @@
                         <label class="form-label" for="nationality_code">Nazionalità</label>
                         <select id="nationality_code" name="nationality_code" class="form-input">
                             <option value="">Seleziona</option>
-                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}" @selected(old('nationality_code', $person->nationality_code) === $code)>
                                     {{ $name }}
                                 </option>
@@ -94,7 +94,7 @@
                         <select id="birth_country_code" name="birth_country_code" class="form-input"
                                 data-reporting-birth-country>
                             <option value="">Seleziona</option>
-                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}" @selected(old('birth_country_code', $person->birth_country_code) === $code)>
                                     {{ $name }}
                                 </option>
@@ -154,7 +154,7 @@
                         <select id="document_issue_country_code" name="document_issue_country_code" class="form-input"
                                 data-reporting-issue-country>
                             <option value="">Seleziona</option>
-                            @foreach (config('apartment.guest_countries', []) as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}" @selected(old('document_issue_country_code', $person->document_issue_country_code) === $code)>
                                     {{ $name }}
                                 </option>

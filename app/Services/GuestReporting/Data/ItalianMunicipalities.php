@@ -4,31 +4,19 @@ declare(strict_types=1);
 
 namespace App\Services\GuestReporting\Data;
 
+use App\Models\Municipality;
+
 /**
- * Lookup table: Italian municipality name → 9-digit Alloggiati Web code.
+ * Lookup helper: Italian municipality name → 9-digit Alloggiati Web code.
  *
- * Data is loaded lazily from resources/data/AlloggiatiWeb/comuni.csv (11 295 entries).
- * CSV format: Codice,Descrizione,Provincia,DataFineVal
- *   - Codice: 9-digit Alloggiati Web code
- *   - Descrizione: municipality name (uppercase)
- *   - Provincia: 2-char province abbreviation
- *   - DataFineVal: empty = currently valid; non-empty = historical/merged entry
- *
+ * Data lives in the `municipalities` DB table (seeded from comuni.csv, 11 295 entries).
  * Lookup strategy:
- *   1. Normalise input name to lowercase.
- *   2. If multiple entries share the same normalised name, prefer non-expired ones.
- *   3. If a province is given and multiple non-expired entries still match, use it
- *      to pick the exact one.
+ *   1. Normalise input name to lowercase for a case-insensitive match.
+ *   2. Prefer non-expired entries (expires_at IS NULL).
+ *   3. If a province is supplied and multiple matches exist, use it to disambiguate.
  */
 class ItalianMunicipalities
 {
-    /**
-     * Loaded index: normalised name → list of entries (non-expired first).
-     *
-     * @var array<string, list<array{code: string, province: string, expired: bool}>>|null
-     */
-    private static ?array $index = null;
-
     /**
      * Return a sorted list of all currently-valid municipality names (title-cased).
      * Used by views to render the full comuni datalist and by JS for client-side validation.
@@ -37,18 +25,11 @@ class ItalianMunicipalities
      */
     public static function allValidNames(): array
     {
-        $index = self::loadIndex();
-        $names = [];
-        foreach ($index as $key => $entries) {
-            foreach ($entries as $entry) {
-                if (! $entry['expired']) {
-                    $names[] = mb_convert_case($key, MB_CASE_TITLE);
-                    break;
-                }
-            }
-        }
-        sort($names);
-        return $names;
+        return Municipality::whereNull('expires_at')
+            ->orderBy('name')
+            ->pluck('name')
+            ->map(fn (string $n) => mb_convert_case($n, MB_CASE_TITLE, 'UTF-8'))
+            ->all();
     }
 
     /**
@@ -60,78 +41,25 @@ class ItalianMunicipalities
      */
     public static function findCode(string $name, ?string $province = null): ?string
     {
-        $index = self::loadIndex();
-        $key   = mb_strtolower(trim($name));
+        $normalised = mb_strtolower(trim($name));
 
-        $entries = $index[$key] ?? [];
-        if (empty($entries)) {
-            return null;
-        }
+        $query = Municipality::whereRaw('LOWER(name) = ?', [$normalised]);
 
-        // Try to disambiguate by province when there are multiple matches
-        if ($province !== null && count($entries) > 1) {
-            $prov = mb_strtoupper(trim($province));
-            foreach ($entries as $entry) {
-                if ($entry['province'] === $prov) {
-                    return $entry['code'];
-                }
+        // With province: try exact match first
+        if ($province !== null) {
+            $match = (clone $query)
+                ->where('province', mb_strtoupper(trim($province)))
+                ->orderByRaw('CASE WHEN expires_at IS NULL THEN 0 ELSE 1 END')
+                ->value('code');
+
+            if ($match !== null) {
+                return $match;
             }
         }
 
-        // Return first entry (non-expired entries sorted first)
-        return $entries[0]['code'];
-    }
-
-    /**
-     * @return array<string, list<array{code: string, province: string, expired: bool}>>
-     */
-    private static function loadIndex(): array
-    {
-        if (self::$index !== null) {
-            return self::$index;
-        }
-
-        self::$index = [];
-        $csvPath = resource_path('data/AlloggiatiWeb/comuni.csv');
-
-        if (! file_exists($csvPath)) {
-            return self::$index;
-        }
-
-        $fh = fopen($csvPath, 'r');
-        if ($fh === false) {
-            return self::$index;
-        }
-
-        // Skip header row: Codice,Descrizione,Provincia,DataFineVal
-        fgetcsv($fh);
-
-        while (($row = fgetcsv($fh)) !== false) {
-            if (count($row) < 3) {
-                continue;
-            }
-
-            [$code, $description, $province] = $row;
-            $dataFineVal = $row[3] ?? '';
-
-            $key     = mb_strtolower(trim($description));
-            $expired = $dataFineVal !== '';
-
-            self::$index[$key][] = [
-                'code'     => $code,
-                'province' => mb_strtoupper(trim($province)),
-                'expired'  => $expired,
-            ];
-        }
-
-        fclose($fh);
-
-        // Sort each entry list: non-expired first, then expired
-        foreach (self::$index as &$entries) {
-            usort($entries, static fn ($a, $b) => ($a['expired'] ? 1 : 0) - ($b['expired'] ? 1 : 0));
-        }
-        unset($entries);
-
-        return self::$index;
+        // Prefer non-expired, then fall back to any (historical)
+        return $query
+            ->orderByRaw('CASE WHEN expires_at IS NULL THEN 0 ELSE 1 END')
+            ->value('code');
     }
 }

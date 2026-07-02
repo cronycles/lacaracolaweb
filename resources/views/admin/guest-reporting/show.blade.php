@@ -55,14 +55,6 @@
     {{-- Guest forms --}}
     @php
         $guests = $booking->allGuests();
-        $countryCodes = config('apartment.guest_countries', []);
-        $tipoOptions = [
-            '16' => '16 — Ospite singolo',
-            '17' => '17 — Capo famiglia',
-            '18' => '18 — Capo gruppo',
-            '19' => '19 — Familiare (doc non obbligatori)',
-            '20' => '20 — Membro gruppo (doc non obbligatori)',
-        ];
     @endphp
 
     <form id="guest-reporting-form" method="POST">
@@ -101,10 +93,11 @@
                         <label class="form-label" for="guests_{{ $i }}_tipo_alloggiato">Tipo alloggiato *</label>
                         <select id="guests_{{ $i }}_tipo_alloggiato" name="guests[{{ $i }}][tipo_alloggiato]"
                                 class="form-input" required>
-                            @foreach ($tipoOptions as $val => $label)
-                                <option value="{{ $val }}"
-                                        @selected(old("guests.{$i}.tipo_alloggiato", $defaultTipo) === $val)>
-                                    {{ $label }}
+                            @foreach ($guestTypes as $guestType)
+                                <option value="{{ $guestType->code }}"
+                                        @selected(old("guests.{$i}.tipo_alloggiato", $defaultTipo) === $guestType->code)>
+                                    {{ $guestType->code }} — {{ $guestType->name_it }}
+                                    @unless($guestType->requires_document) (doc non obbligatori) @endunless
                                 </option>
                             @endforeach
                         </select>
@@ -128,7 +121,7 @@
                         <select id="guests_{{ $i }}_nationality_code" name="guests[{{ $i }}][nationality_code]"
                                 class="form-input" required>
                             <option value="">Seleziona</option>
-                            @foreach ($countryCodes as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}"
                                         @selected(old("guests.{$i}.nationality_code", $guest->nationality_code) === $code)>
                                     {{ $code }} - {{ $name }}
@@ -154,7 +147,7 @@
                         <select id="guests_{{ $i }}_birth_country_code" name="guests[{{ $i }}][birth_country_code]"
                                 class="form-input" required data-reporting-birth-country>
                             <option value="">Seleziona</option>
-                            @foreach ($countryCodes as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}"
                                         @selected(old("guests.{$i}.birth_country_code", $guest->birth_country_code) === $code)>
                                     {{ $code }} - {{ $name }}
@@ -217,7 +210,7 @@
                                 class="form-input" required
                                 data-reporting-issue-country>
                             <option value="">Seleziona</option>
-                            @foreach ($countryCodes as $code => $name)
+                            @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}"
                                         @selected(old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) === $code)>
                                     {{ $code }} - {{ $name }}

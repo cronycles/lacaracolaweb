@@ -398,6 +398,65 @@ Log entries for PDF imports from Interhome platform (one entry per import sessio
 - Used for audit trail and debugging import issues
 - Bookings imported from Interhome get `source = 'interhome'` and `external_ref = '<interhome-reservation-number>'`
 
+---
+
+### 14. **countries** *(lookup — no timestamps)*
+
+Reference table seeded from `resources/data/AlloggiatiWeb/stati.csv` (236 rows). Single source of truth for country selection in all forms (person form, guest-reporting).
+
+| Field             | Type         | Notes                                             |
+| ----------------- | ------------ | ------------------------------------------------- |
+| `id`              | BIGINT PK    | Auto-increment                                    |
+| `iso2`            | CHAR(2)      | ISO 3166-1 alpha-2 code (nullable, unique). NULL for countries not yet mapped. |
+| `name_it`         | VARCHAR(150) | Italian name (title-cased)                        |
+| `alloggiati_code` | CHAR(9)      | 9-digit Alloggiati Web code (nullable, unique)    |
+
+**Notes:**
+
+- Seeded once from `stati.csv`; re-seed with `CountriesSeeder` if needed.
+- Forms filter `whereNotNull('iso2')` — currently 89 countries are selectable.
+- `alloggiati_code` is the driver-specific code; no other driver needs to know it.
+- `Person.country_code`, `birth_country_code`, `nationality_code`, `document_issue_country_code` all store `iso2` values.
+
+---
+
+### 15. **municipalities** *(lookup — no timestamps)*
+
+Reference table seeded from `resources/data/AlloggiatiWeb/comuni.csv` (11 294 rows). Used for Italian municipality lookup by `ItalianMunicipalities` helper.
+
+| Field        | Type         | Notes                                              |
+| ------------ | ------------ | -------------------------------------------------- |
+| `id`         | BIGINT PK    | Auto-increment                                     |
+| `code`       | CHAR(9)      | 9-digit Alloggiati Web code                        |
+| `name`       | VARCHAR(150) | Municipality name (UPPERCASE, as in official CSV)  |
+| `province`   | CHAR(2)      | 2-char province abbreviation                       |
+| `expires_at` | DATE         | NULL = currently valid; non-NULL = historical entry |
+
+**Notes:**
+
+- `expires_at IS NULL` → comune attivo; `IS NOT NULL` → comune storico (fuso/rinominato).
+- Lookup via `ItalianMunicipalities::findCode($name, $province)` — case-insensitive, prefers active entries.
+- Indexed on `(name, province)` and `code`.
+
+---
+
+### 16. **guest_types** *(lookup — no timestamps)*
+
+Reference table for AlloggiatiWeb guest type codes (5 rows, seeded from `tipo_alloggiato.csv`).
+
+| Field               | Type       | Notes                                          |
+| ------------------- | ---------- | ---------------------------------------------- |
+| `id`                | BIGINT PK  | Auto-increment                                 |
+| `code`              | CHAR(2)    | AlloggiatiWeb code: 16–20 (unique)             |
+| `name_it`           | VARCHAR(80)| Human-readable Italian label                   |
+| `requires_document` | BOOLEAN    | False for types 19 (Familiare) and 20 (Membro gruppo) |
+
+**Notes:**
+
+- Used to populate the "Tipo alloggiato" dropdown in the guest-reporting form.
+- `requires_document` reflects the AlloggiatiWeb spec: types 19/20 must have blank document fields.
+
+
 **Relations:**
 
 - None (audit log only)
@@ -423,6 +482,9 @@ pricing_rules: standalone (recurring annual rules)
 stay_discount_rules: standalone (tiered discount rules)
 settings: standalone (key-value configuration)
 interhome_pdf_import_logs: standalone (audit log)
+countries: standalone lookup (seeded from stati.csv)
+municipalities: standalone lookup (seeded from comuni.csv)
+guest_types: standalone lookup (seeded from tipo_alloggiato.csv)
 ```
 
 ---

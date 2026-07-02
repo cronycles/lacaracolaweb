@@ -148,31 +148,44 @@ Il mapping completo ISO-2 → 9-digit è in `PoliziaStatoAlloggiatiDriver::count
 
 ```
 app/Services/GuestReporting/
-├── PoliziaStatoAlloggiatiDriver.php   ← UNICO punto che conosce SOAP + record format + codici
+├── PoliziaStatoAlloggiatiDriver.php   ← UNICO punto che conosce SOAP + record format
+│                                        Country lookup: Country::where('iso2', ...)->value('alloggiati_code')
+│                                        Municipality lookup: delegato a ItalianMunicipalities
 ├── GuestRecord.php                    ← DTO immutabile con i dati di un ospite
 ├── GuestReportingServiceInterface.php ← Interfaccia che il driver implementa
 └── Data/
-    └── ItalianMunicipalities.php      ← Lookup nome comune → codice 9-digit (da comuni.csv)
+    └── ItalianMunicipalities.php      ← Lookup nome comune → codice 9-digit (da DB municipalities)
+
+app/Models/
+├── Country.php                        ← Tabella countries (seeded da stati.csv)
+├── Municipality.php                   ← Tabella municipalities (seeded da comuni.csv)
+└── GuestType.php                      ← Tabella guest_types (seeded da tipo_alloggiato.csv)
 
 app/Http/Controllers/Admin/
 └── GuestReportingController.php       ← Valida input form, costruisce GuestRecord[], chiama driver
+                                         Passa $countries e $guestTypes alla view
 
 resources/views/admin/guest-reporting/
-└── show.blade.php                     ← Form con tipo alloggiato (16-20), dati ospite, doc
+└── show.blade.php                     ← Form con $guestTypes (tipo alloggiato), $countries (stati),
+                                         dati ospite, doc
+
+database/seeders/
+├── CountriesSeeder.php                ← Popola countries da stati.csv (236 righe)
+├── MunicipalitiesSeeder.php           ← Popola municipalities da comuni.csv (11 294 righe)
+└── GuestTypesSeeder.php               ← Popola guest_types (5 righe hardcoded)
 
 docs/AlloggiatiWeb/                    ← Tabelle ufficiali + questa documentazione
 ├── INTEGRATION.md                     ← Questo file
 ├── TracciatoRecord.png                ← Spec ufficiale campi del record (fonte primaria)
-├── stati.csv                          ← Codici 9-digit paesi
-├── comuni.csv                         ← Codici 9-digit comuni italiani
-├── documenti.csv                      ← Codici 5-char tipi documento
-├── tipo_alloggiato.csv                ← Codici tipo alloggiato
-├── MANUALEALBERGHI.pdf                ← Manuale utente Alloggiati Web
-└── MANUALEWS.pdf                      ← Manuale tecnico web service
+├── stati.csv   → DB countries         (fonte per il seeder)
+├── comuni.csv  → DB municipalities    (fonte per il seeder)
+├── tipo_alloggiato.csv → DB guest_types (fonte per il seeder)
+├── documenti.csv                      ← Codici documenti (mapping hardcoded nel driver)
+├── MANUALEALBERGHI.pdf
+└── MANUALEWS.pdf
 
 scripts/
 └── test-soap5.php                     ← Script di test SOAP standalone (fuori da Laravel)
-                                          Usa credenziali da .env, testa Test() API con record reali
 ```
 
 ### `PoliziaStatoAlloggiatiDriver` — responsabilità interne

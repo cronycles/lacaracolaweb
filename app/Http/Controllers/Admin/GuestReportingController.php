@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Admin;
 use App\Contracts\GuestReportingDriverInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\GuestReport;
+use App\Models\GuestType;
 use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Models\Person;
 use App\Services\GuestReporting\GuestRecord;
@@ -41,6 +43,8 @@ class GuestReportingController extends Controller
             'booking'     => $prenotazioni,
             'lastReport'  => $lastReport,
             'comuniNames' => ItalianMunicipalities::allValidNames(),
+            'countries'   => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'guestTypes'  => GuestType::orderBy('code')->get(),
         ]);
     }
 
@@ -104,7 +108,7 @@ class GuestReportingController extends Controller
      */
     private function validateAndPersistGuests(Request $request, Booking $booking): array
     {
-        $countryCodes = array_keys(config('apartment.guest_countries', []));
+        $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
 
         $data = $request->validate([
             'guests'                                      => ['required', 'array', 'min:1'],

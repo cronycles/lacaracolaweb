@@ -131,19 +131,6 @@ return [
         'booking' => env('BOOKING_LISTING_URL', ''),
     ],
 
-    // Allowed guest countries shown in admin people form (ISO-like code => label).
-    'guest_countries' => [
-        'IT' => 'Italia',
-        'FR' => 'Francia',
-        'DE' => 'Germania',
-        'ES' => 'Spagna',
-        'GB-SCT' => 'Scozia',
-        'GB' => 'Gran Bretagna',
-        'IE' => 'Irlanda',
-        'NL' => 'Paesi Bassi',
-        'CH' => 'Svizzera',
-    ],
-
     // --- Images ---
     // Change these paths when real photos are available.
     // All paths are relative to public/ — use asset() helper in views.

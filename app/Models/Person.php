@@ -53,9 +53,9 @@ class Person extends Model
             return null;
         }
 
-        $countryName = config("apartment.guest_countries.{$this->country_code}");
+        $countryName = Country::where('iso2', $this->country_code)->value('name_it');
 
-        if (! is_string($countryName) || $countryName === '') {
+        if (! $countryName) {
             return $this->country_code;
         }
 
