@@ -29,6 +29,7 @@ declare global {
     interface Window {
         COMUNI_VALIDI?: string[];
         COUNTRIES_MAP?: Record<string, string>;
+        COUNTRIES_DIAL?: Record<string, string>;
     }
 }
 

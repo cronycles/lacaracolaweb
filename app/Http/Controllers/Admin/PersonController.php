@@ -70,6 +70,7 @@ class PersonController extends Controller
             'person'          => new Person(),
             'comuniNames'     => ItalianMunicipalities::allValidNames(),
             'countries'       => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'countriesDial'   => Country::whereNotNull('iso2')->whereNotNull('dial_code')->orderBy('name_it')->pluck('dial_code', 'iso2')->toArray(),
             'returnTo'        => $returnTo,
             'attachBookingId' => $attachBookingId,
         ]);
@@ -108,10 +109,11 @@ class PersonController extends Controller
     public function edit(Person $ospiti): View
     {
         return view('admin.people.form', [
-            'person'      => $ospiti,
-            'comuniNames' => ItalianMunicipalities::allValidNames(),
-            'countries'   => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
-            'returnTo'    => $this->resolveReturnTo(request(), $ospiti),
+            'person'        => $ospiti,
+            'comuniNames'   => ItalianMunicipalities::allValidNames(),
+            'countries'     => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'countriesDial' => Country::whereNotNull('iso2')->whereNotNull('dial_code')->orderBy('name_it')->pluck('dial_code', 'iso2')->toArray(),
+            'returnTo'      => $this->resolveReturnTo(request(), $ospiti),
         ]);
     }
 
@@ -160,6 +162,7 @@ class PersonController extends Controller
             'last_name'       => ['required', 'string', 'max:80'],
             'email'           => ['nullable', 'email', 'max:150', "unique:people,email,{$ignoreId}"],
             'phone'           => ['nullable', 'string', 'max:30'],
+            'phone_prefix'    => ['nullable', 'string', 'max:10'],
             'birth_date'      => ['nullable', 'date'],
             'country_code'    => ['nullable', 'string', 'max:10', Rule::in($countryCodes)],
             'document_type'   => ['nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],

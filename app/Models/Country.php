@@ -10,5 +10,5 @@ class Country extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['iso2', 'name_it', 'alloggiati_code'];
+    protected $fillable = ['iso2', 'name_it', 'alloggiati_code', 'dial_code'];
 }

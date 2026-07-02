@@ -17,6 +17,7 @@ class Person extends Model
         'last_name',
         'email',
         'phone',
+        'phone_prefix',
         'birth_date',
         'country_code',
         'document_type',

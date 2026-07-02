@@ -5,6 +5,7 @@
 @push('scripts')
 <script>window.COMUNI_VALIDI = @json($comuniNames);</script>
 <script>window.COUNTRIES_MAP = @json($countries);</script>
+<script>window.COUNTRIES_DIAL = @json($countriesDial);</script>
 @endpush
 
 @section('content')
@@ -173,8 +174,15 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="phone">Telefono</label>
-                        <input type="text" id="phone" name="phone" class="form-input"
-                               value="{{ old('phone', $person->phone) }}" maxlength="30">
+                        <div class="phone-prefix-wrap" data-phone-prefix-wrap>
+                            <input type="hidden" name="phone_prefix"
+                                   data-phone-prefix
+                                   data-current-value="{{ old('phone_prefix', $person->phone_prefix) }}">
+                            <input type="text" id="phone" name="phone" class="form-input"
+                                   data-phone-number
+                                   value="{{ old('phone', $person->phone) }}" maxlength="30"
+                                   placeholder="Es: 333 123 4567">
+                        </div>
                         @error('phone') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
