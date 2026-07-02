@@ -352,6 +352,11 @@ body {
     font-size: 1.1rem;
     line-height: 1;
 }
+.phone-prefix__placeholder {
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: .55;
+}
 .phone-prefix__code {
     font-size: .8rem;
     font-weight: 600;

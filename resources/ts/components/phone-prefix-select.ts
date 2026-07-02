@@ -105,8 +105,8 @@ class PhonePrefixSelect {
         this.options = options;
         const match = initialDial
             ? options.find((o) => o.dial === initialDial)
-            : options.find((o) => o.iso2 === 'IT');
-        this._commit(match ?? options[0] ?? null);
+            : null;
+        this._commit(match ?? null);
     }
 
     // ── Private ─────────────────────────────────────────────────────────────
@@ -126,7 +126,10 @@ class PhonePrefixSelect {
                 `<span class="phone-prefix__chevron">▾</span>`;
             this.trigger.setAttribute('aria-label', `Prefisso: ${this.selected.name} ${this.selected.dial}`);
         } else {
-            this.trigger.innerHTML = `<span class="phone-prefix__code">+?</span><span class="phone-prefix__chevron">▾</span>`;
+            this.trigger.innerHTML =
+                `<span class="phone-prefix__placeholder">🌐</span>` +
+                `<span class="phone-prefix__chevron">▾</span>`;
+            this.trigger.setAttribute('aria-label', 'Seleziona prefisso');
         }
     }
 
