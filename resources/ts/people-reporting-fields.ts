@@ -6,16 +6,18 @@
  * the nearest `.a-card` ancestor so each guest row is independent.
  *
  * Birth country logic:
- *  - IT  → show birth_province field; attach datalist for municipality; enforce valid comune
- *  - other → hide birth_province; plain text municipality; clear validity
+ *  - IT  → show birth_province field; enable ComboSelect for municipality (locked to comuni list)
+ *  - other → hide birth_province; plain text municipality
  *
  * Document issue country logic:
- *  - IT  → show document_issue_place; enforce valid comune
+ *  - IT  → show document_issue_place; enable ComboSelect (locked to comuni list)
  *  - other → hide document_issue_place (country code alone is sufficient)
  *
  * window.COMUNI_VALIDI must be set by the Blade view (via @json) before this runs.
- * If absent, falls back to a short capoluogo list for datalist suggestions only.
+ * If absent, falls back to a short capoluogo list.
  */
+
+import { ComboSelect } from './components/combo-select';
 
 declare global {
     interface Window {
@@ -42,40 +44,8 @@ const ITALIAN_COMUNI_FALLBACK: string[] = [
     'Vicenza','Viterbo',
 ];
 
-/** Create the shared comuni datalist once (full list from server when available). */
-function ensureComuni(): void {
-    if (document.getElementById('comuni-datalist')) return;
-    const names = window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
-    const dl = document.createElement('datalist');
-    dl.id = 'comuni-datalist';
-    names.forEach((name) => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        dl.appendChild(opt);
-    });
-    document.body.appendChild(dl);
-}
-
-/** Lazy-built Set of lowercase valid comune names for O(1) lookups. */
-let _validSet: Set<string> | null = null;
-function getValidSet(): Set<string> {
-    if (_validSet) return _validSet;
-    const names = window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
-    _validSet = new Set(names.map((n) => n.toLowerCase()));
-    return _validSet;
-}
-
-/** Update setCustomValidity on a municipality input based on current country. */
-function validateMunicipality(input: HTMLInputElement, countryCode: string): void {
-    const val = input.value.trim();
-    if (countryCode !== 'IT' || val === '') {
-        input.setCustomValidity('');
-        return;
-    }
-    const valid = getValidSet().has(val.toLowerCase());
-    input.setCustomValidity(
-        valid ? '' : `"${val}" non è un comune italiano valido. Selezionare il nome dalla lista.`,
-    );
+function getComuniList(): string[] {
+    return window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
 }
 
 /**
@@ -89,47 +59,38 @@ function initPeopleReportingFields(): void {
         const provinceGroup     = card.querySelector<HTMLElement>('[data-birth-province-group]');
 
         if (!municipalityInput) return;
+        const mi = municipalityInput; // stable non-null ref for closures
+
+        const comboSelect = new ComboSelect(mi);
+        const initialValue = mi.getAttribute('data-current-value') ?? mi.value;
 
         function update(countryCode: string): void {
             const isItaly = countryCode === 'IT';
 
             if (provinceGroup) provinceGroup.style.display = isItaly ? '' : 'none';
 
-            // Update the associated <label> text
-            const label = municipalityInput!.labels?.[0] as HTMLLabelElement | undefined;
+            // Update the associated <label> text (label is now on the wrapper)
+            const label = mi.closest('.form-group')?.querySelector('label');
             if (label) {
                 const hasAsterisk = label.textContent?.trimEnd().endsWith('*') ?? false;
                 label.textContent = (isItaly ? 'Comune di nascita' : 'Città di nascita') + (hasAsterisk ? ' *' : '');
             }
 
-            municipalityInput!.placeholder = isItaly ? 'Es: Genova' : 'Es: Monaco';
+            mi.placeholder = isItaly ? 'Cerca comune...' : 'Es: Monaco';
 
             if (isItaly) {
-                ensureComuni();
-                municipalityInput!.setAttribute('list', 'comuni-datalist');
+                comboSelect.enable(getComuniList(), comboSelect.getValue() || initialValue);
             } else {
-                municipalityInput!.removeAttribute('list');
+                comboSelect.disable();
             }
-
-            // Re-run validation when country changes
-            validateMunicipality(municipalityInput!, countryCode);
         }
-
-        // Validate on blur so user sees the error immediately after leaving the field
-        municipalityInput.addEventListener('blur', () => {
-            validateMunicipality(municipalityInput, countrySelect.value);
-        });
-        // Clear validity while the user is typing so the browser tooltip doesn't flicker
-        municipalityInput.addEventListener('input', () => {
-            municipalityInput.setCustomValidity('');
-        });
 
         update(countrySelect.value);
 
         countrySelect.addEventListener('change', () => {
             update(countrySelect.value);
             if (countrySelect.value !== 'IT') {
-                municipalityInput!.value = '';
+                mi.value = '';
             }
         });
     });
@@ -149,29 +110,21 @@ function initDocumentIssueFields(): void {
 
         if (!issuePlaceGroup) return;
 
+        const comboSelect    = issuePlaceInput ? new ComboSelect(issuePlaceInput) : null;
+        const initialValue   = issuePlaceInput?.getAttribute('data-current-value') ?? issuePlaceInput?.value ?? '';
+
         function update(countryCode: string): void {
             const isItaly = countryCode === 'IT';
             issuePlaceGroup!.style.display = isItaly ? '' : 'none';
-            if (issuePlaceInput) {
+            if (comboSelect && issuePlaceInput) {
                 if (isItaly) {
-                    ensureComuni();
-                    issuePlaceInput.setAttribute('list', 'comuni-datalist');
-                    issuePlaceInput.placeholder = 'Es: Genova';
+                    issuePlaceInput.placeholder = 'Cerca comune...';
+                    comboSelect.enable(getComuniList(), comboSelect.getValue() || initialValue);
                 } else {
-                    issuePlaceInput.removeAttribute('list');
+                    comboSelect.disable();
                     issuePlaceInput.value = '';
                 }
-                validateMunicipality(issuePlaceInput, countryCode);
             }
-        }
-
-        if (issuePlaceInput) {
-            issuePlaceInput.addEventListener('blur', () => {
-                validateMunicipality(issuePlaceInput, issueCountrySelect.value);
-            });
-            issuePlaceInput.addEventListener('input', () => {
-                issuePlaceInput.setCustomValidity('');
-            });
         }
 
         update(issueCountrySelect.value);

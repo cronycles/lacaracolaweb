@@ -271,6 +271,46 @@ body {
     margin-top: .25rem;
 }
 
+/* ComboSelect — searchable locked select */
+.combo-select {
+    position: relative;
+}
+.combo-select__list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: #fff;
+    border: 1px solid #30596C;
+    border-top: none;
+    border-radius: 0 0 .375rem .375rem;
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,.08);
+}
+.combo-select__item {
+    padding: .45rem .75rem;
+    font-size: .875rem;
+    color: #1a2b34;
+    cursor: pointer;
+}
+.combo-select__item:hover,
+.combo-select__item--active {
+    background: #eef4f7;
+    color: #30596C;
+}
+.combo-select__no-results,
+.combo-select__hint {
+    padding: .45rem .75rem;
+    font-size: .8rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
 /* Stats */
 .stats-grid {
     display: grid;
