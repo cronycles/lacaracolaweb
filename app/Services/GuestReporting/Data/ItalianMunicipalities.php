@@ -5,143 +5,111 @@ declare(strict_types=1);
 namespace App\Services\GuestReporting\Data;
 
 /**
- * Lookup table: normalized Italian municipality name → Codice Belfiore (4 chars).
+ * Lookup table: Italian municipality name → 9-digit Alloggiati Web code.
  *
- * This file contains the ~80 most common Italian municipalities.
- * For a full list (~8 000 comuni), replace the array below with a complete
- * dataset from https://www.istat.it/it/archivio/6789 or similar official source.
+ * Data is loaded lazily from docs/AlloggiatiWeb/comuni.csv (11 295 entries).
+ * CSV format: Codice,Descrizione,Provincia,DataFineVal
+ *   - Codice: 9-digit Alloggiati Web code
+ *   - Descrizione: municipality name (uppercase)
+ *   - Provincia: 2-char province abbreviation
+ *   - DataFineVal: empty = currently valid; non-empty = historical/merged entry
  *
- * Keys are lowercase, accent-normalized municipality names.
- * Values are 4-char Codice Belfiore (used by Alloggiati Web).
- *
- * IMPORTANT: Verify these codes against the official Alloggiati Web documentation
- * before using in production.
+ * Lookup strategy:
+ *   1. Normalise input name to lowercase.
+ *   2. If multiple entries share the same normalised name, prefer non-expired ones.
+ *   3. If a province is given and multiple non-expired entries still match, use it
+ *      to pick the exact one.
  */
 class ItalianMunicipalities
 {
-    /** @return array<string, string> */
-    public static function all(): array
+    /**
+     * Loaded index: normalised name → list of entries (non-expired first).
+     *
+     * @var array<string, list<array{code: string, province: string, expired: bool}>>|null
+     */
+    private static ?array $index = null;
+
+    /**
+     * Find the 9-digit Alloggiati Web code for an Italian municipality.
+     *
+     * @param  string      $name      Municipality name (case-insensitive)
+     * @param  string|null $province  Optional 2-char province abbreviation for disambiguation
+     * @return string|null            9-digit code, or null if not found
+     */
+    public static function findCode(string $name, ?string $province = null): ?string
     {
-        return [
-            'agrigento'       => 'A089',
-            'alessandria'     => 'A182',
-            'ancona'          => 'A271',
-            'andora'          => 'A278',
-            'aosta'           => 'A326',
-            'arezzo'          => 'A390',
-            'ascoli piceno'   => 'A462',
-            'asti'            => 'A479',
-            'avellino'        => 'A509',
-            'bari'            => 'A662',
-            'barletta'        => 'A669',
-            'belluno'         => 'A757',
-            'benevento'       => 'A783',
-            'bergamo'         => 'A794',
-            'biella'          => 'A859',
-            'bologna'         => 'A944',
-            'bolzano'         => 'A952',
-            'brescia'         => 'B157',
-            'brindisi'        => 'B180',
-            'cagliari'        => 'B354',
-            'caltanissetta'   => 'B429',
-            'campobasso'      => 'B519',
-            'caserta'         => 'B963',
-            'catania'         => 'C351',
-            'catanzaro'       => 'C352',
-            'chieti'          => 'C632',
-            'como'            => 'C933',
-            'cosenza'         => 'D086',
-            'cremona'         => 'D150',
-            'crotone'         => 'D122',
-            'cuneo'           => 'D205',
-            'enna'            => 'C342',
-            'fermo'           => 'D542',
-            'ferrara'         => 'D548',
-            'firenze'         => 'D612',
-            'foggia'          => 'D643',
-            'forli'           => 'D704',
-            'frosinone'       => 'D810',
-            'genova'          => 'D969',
-            'gorizia'         => 'E098',
-            'grosseto'        => 'E202',
-            'imperia'         => 'E290',
-            'isernia'         => 'E335',
-            "l'aquila"        => 'A345',
-            'la spezia'       => 'E463',
-            'latina'          => 'E472',
-            'lecce'           => 'E492',
-            'lecco'           => 'E498',
-            'livorno'         => 'E625',
-            'lodi'            => 'E648',
-            'lucca'           => 'E715',
-            'macerata'        => 'E783',
-            'mantova'         => 'E897',
-            'massa'           => 'F023',
-            'matera'          => 'F052',
-            'messina'         => 'F158',
-            'milano'          => 'F205',
-            'modena'          => 'F257',
-            'monza'           => 'F704',
-            'napoli'          => 'F839',
-            'novara'          => 'F952',
-            'nuoro'           => 'F979',
-            'oristano'        => 'G113',
-            'padova'          => 'G224',
-            'palermo'         => 'G273',
-            'parma'           => 'G337',
-            'pavia'           => 'G388',
-            'perugia'         => 'G478',
-            'pesaro'          => 'G479',
-            'pescara'         => 'G482',
-            'piacenza'        => 'G535',
-            'pisa'            => 'G702',
-            'pistoia'         => 'G713',
-            'pordenone'       => 'G888',
-            'potenza'         => 'G942',
-            'prato'           => 'G999',
-            'ragusa'          => 'H163',
-            'ravenna'         => 'H199',
-            'reggio calabria' => 'H224',
-            'reggio emilia'   => 'H223',
-            'rieti'           => 'H282',
-            'rimini'          => 'H294',
-            'roma'            => 'H501',
-            'rovigo'          => 'H620',
-            'salerno'         => 'H703',
-            'sassari'         => 'I452',
-            'savona'          => 'I480',
-            'siena'           => 'I726',
-            'siracusa'        => 'I754',
-            'sondrio'         => 'I829',
-            'sud sardegna'    => 'M208',
-            'taranto'         => 'L049',
-            'teramo'          => 'L103',
-            'terni'           => 'L117',
-            'torino'          => 'L219',
-            'trapani'         => 'L331',
-            'trento'          => 'L378',
-            'treviso'         => 'L407',
-            'trieste'         => 'L424',
-            'udine'           => 'L483',
-            'varese'          => 'L682',
-            'venezia'         => 'L736',
-            'verbania'        => 'L746',
-            'vercelli'        => 'L750',
-            'verona'          => 'L781',
-            'vibo valentia'   => 'F537',
-            'vicenza'         => 'L840',
-            'viterbo'         => 'M082',
-        ];
+        $index = self::loadIndex();
+        $key   = mb_strtolower(trim($name));
+
+        $entries = $index[$key] ?? [];
+        if (empty($entries)) {
+            return null;
+        }
+
+        // Try to disambiguate by province when there are multiple matches
+        if ($province !== null && count($entries) > 1) {
+            $prov = mb_strtoupper(trim($province));
+            foreach ($entries as $entry) {
+                if ($entry['province'] === $prov) {
+                    return $entry['code'];
+                }
+            }
+        }
+
+        // Return first entry (non-expired entries sorted first)
+        return $entries[0]['code'];
     }
 
     /**
-     * Look up the Codice Belfiore for a municipality name.
-     * Normalizes input (lowercase, trim) before lookup.
+     * @return array<string, list<array{code: string, province: string, expired: bool}>>
      */
-    public static function findCode(string $municipalityName): ?string
+    private static function loadIndex(): array
     {
-        $normalized = mb_strtolower(trim($municipalityName));
+        if (self::$index !== null) {
+            return self::$index;
+        }
 
-        return self::all()[$normalized] ?? null;
+        self::$index = [];
+        $csvPath = base_path('docs/AlloggiatiWeb/comuni.csv');
+
+        if (! file_exists($csvPath)) {
+            return self::$index;
+        }
+
+        $fh = fopen($csvPath, 'r');
+        if ($fh === false) {
+            return self::$index;
+        }
+
+        // Skip header row: Codice,Descrizione,Provincia,DataFineVal
+        fgetcsv($fh);
+
+        while (($row = fgetcsv($fh)) !== false) {
+            if (count($row) < 3) {
+                continue;
+            }
+
+            [$code, $description, $province] = $row;
+            $dataFineVal = $row[3] ?? '';
+
+            $key     = mb_strtolower(trim($description));
+            $expired = $dataFineVal !== '';
+
+            self::$index[$key][] = [
+                'code'     => $code,
+                'province' => mb_strtoupper(trim($province)),
+                'expired'  => $expired,
+            ];
+        }
+
+        fclose($fh);
+
+        // Sort each entry list: non-expired first, then expired
+        foreach (self::$index as &$entries) {
+            usort($entries, static fn ($a, $b) => ($a['expired'] ? 1 : 0) - ($b['expired'] ? 1 : 0));
+        }
+        unset($entries);
+
+        return self::$index;
     }
 }

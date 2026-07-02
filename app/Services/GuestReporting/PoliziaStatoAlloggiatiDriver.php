@@ -18,42 +18,50 @@ use Throwable;
  *
  * This class is the ONLY place in the application that knows about:
  * - The SOAP service URL and WSDL
- * - The positional record format (Tabella 1 / Tabella 2)
- * - Country code mapping (ISO → Alloggiati ISTAT)
- * - Document type mapping (internal → Alloggiati codes)
- * - Municipality code lookup (name → Codice Belfiore)
+ * - The positional record format (TracciatoRecord.png — verified against official spec)
+ * - Country code mapping (ISO-2 → 9-digit Alloggiati code from stati.csv)
+ * - Document type mapping (internal → 5-char Alloggiati code from documenti.csv)
+ * - Municipality code lookup (name → 9-digit code from comuni.csv)
  * - Token caching
  *
- * IMPORTANT — Tracciato record:
- * The field positions are derived from the prompt specification. Verify against
- * the official Alloggiati Web technical manual before going to production.
- * All field boundaries are named constants to make corrections easy.
+ * RECORD FORMAT — 168 data chars per guest (no CRLF — ArrayOfString handles separation):
+ *   pos  0- 1 ( 2): Tipo Alloggiato        — Codice Tabella Tipo Alloggiati
+ *   pos  2-11 (10): Data Arrivo            — gg/mm/aaaa
+ *   pos 12-13 ( 2): Giorni Permanenza      — max 30
+ *   pos 14-63 (50): Cognome
+ *   pos 64-93 (30): Nome
+ *   pos 94    ( 1): Sesso                  — 1=M, 2=F
+ *   pos 95-104(10): Data Nascita           — gg/mm/aaaa
+ *   pos105-113( 9): Comune Nascita         — Codice Tabella Comuni (obbligatorio se IT)
+ *   pos114-115( 2): Provincia Nascita      — sigla (obbligatoria se IT)
+ *   pos116-124( 9): Stato Nascita          — Codice Tabella Stati
+ *   pos125-133( 9): Cittadinanza           — Codice Tabella Stati
+ *   pos134-138( 5): Tipo Documento         — Codice Tabella Documenti (blank per tipo 19-20)
+ *   pos139-158(20): Numero Documento       — (blank per tipo 19-20)
+ *   pos159-167( 9): Luogo Rilascio Doc     — Codice Tabella Stati o Comuni (blank per tipo 19-20)
  */
 class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 {
     private const WSDL = 'https://alloggiatiweb.poliziadistato.it/service/service.asmx?wsdl';
 
-    // Tabella 1 — single structure mode (no id_appartamento)
-    private const RECORD_LENGTH = 170;
-    // Tabella 2 — multi-apartment mode (id_appartamento set)
-    private const RECORD_LENGTH_APPARTAMENTI = 176;
+    // Record length — 168 data chars (no CR+LF: ArrayOfString handles separation)
+    private const RECORD_LENGTH = 168;
 
-    // Field positions for Tabella 1 (1-based, inclusive start/length pairs)
-    private const FIELD_TIPO_ALLOGGIATO_START  = 0;  private const FIELD_TIPO_ALLOGGIATO_LEN   = 2;
-    private const FIELD_COGNOME_START          = 2;  private const FIELD_COGNOME_LEN            = 50;
-    private const FIELD_NOME_START             = 52; private const FIELD_NOME_LEN               = 30;
-    private const FIELD_SESSO_START            = 82; private const FIELD_SESSO_LEN              = 1;
-    private const FIELD_DATA_NASCITA_START     = 83; private const FIELD_DATA_NASCITA_LEN       = 8;
-    private const FIELD_COMUNE_NASCITA_START   = 91; private const FIELD_COMUNE_NASCITA_LEN     = 4;
-    private const FIELD_PROVINCIA_NASCITA_START = 95; private const FIELD_PROVINCIA_NASCITA_LEN = 2;
-    private const FIELD_STATO_NASCITA_START    = 97; private const FIELD_STATO_NASCITA_LEN      = 3;
-    private const FIELD_CITTADINANZA_START     = 100; private const FIELD_CITTADINANZA_LEN      = 3;
-    private const FIELD_TIPO_DOC_START         = 103; private const FIELD_TIPO_DOC_LEN          = 3;
-    private const FIELD_NUM_DOC_START          = 106; private const FIELD_NUM_DOC_LEN           = 15;
-    private const FIELD_LUOGO_RIL_START        = 121; private const FIELD_LUOGO_RIL_LEN         = 4;
-    private const FIELD_FILLER_START           = 125; private const FIELD_FILLER_LEN            = 43;
-    // Tabella 2 only — apartment ID occupies positions 168–173 (0-based: 167–172), length 6
-    private const FIELD_ID_APPARTAMENTO_START  = 167; private const FIELD_ID_APPARTAMENTO_LEN   = 6;
+    // Field positions (0-indexed start, length) — from TracciatoRecord.png
+    private const FIELD_TIPO_ALLOGGIATO_START   = 0;   private const FIELD_TIPO_ALLOGGIATO_LEN   = 2;
+    private const FIELD_DATA_ARRIVO_START        = 2;   private const FIELD_DATA_ARRIVO_LEN        = 10;
+    private const FIELD_GIORNI_PERM_START        = 12;  private const FIELD_GIORNI_PERM_LEN        = 2;
+    private const FIELD_COGNOME_START            = 14;  private const FIELD_COGNOME_LEN            = 50;
+    private const FIELD_NOME_START               = 64;  private const FIELD_NOME_LEN               = 30;
+    private const FIELD_SESSO_START              = 94;  private const FIELD_SESSO_LEN              = 1;
+    private const FIELD_DATA_NASCITA_START       = 95;  private const FIELD_DATA_NASCITA_LEN       = 10;
+    private const FIELD_COMUNE_NASCITA_START     = 105; private const FIELD_COMUNE_NASCITA_LEN     = 9;
+    private const FIELD_PROVINCIA_NASCITA_START  = 114; private const FIELD_PROVINCIA_NASCITA_LEN  = 2;
+    private const FIELD_STATO_NASCITA_START      = 116; private const FIELD_STATO_NASCITA_LEN      = 9;
+    private const FIELD_CITTADINANZA_START       = 125; private const FIELD_CITTADINANZA_LEN       = 9;
+    private const FIELD_TIPO_DOC_START           = 134; private const FIELD_TIPO_DOC_LEN           = 5;
+    private const FIELD_NUM_DOC_START            = 139; private const FIELD_NUM_DOC_LEN            = 20;
+    private const FIELD_LUOGO_RIL_START          = 159; private const FIELD_LUOGO_RIL_LEN          = 9;
 
     private readonly string $utente;
     private readonly string $password;
@@ -170,77 +178,84 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     // Record building
     // -------------------------------------------------------------------------
 
-    /** Build the full ElencoSchedine string from an array of GuestRecords. */
-    private function buildElenco(array $guests): string
+    /**
+     * Build the ElencoSchedine array from an array of GuestRecords.
+     * The WSDL defines ElencoSchedine as ArrayOfString, so each record
+     * is a separate element (no CRLF joining needed).
+     *
+     * @param  GuestRecord[]  $guests
+     * @return array{string: string[]}
+     */
+    private function buildElenco(array $guests): array
     {
-        $lines = [];
+        $records = [];
         foreach ($guests as $guest) {
-            $lines[] = $this->buildRecord($guest);
+            $records[] = $this->buildRecord($guest);
         }
 
-        // CR+LF after every record except the last
-        return implode("\r\n", $lines);
+        return ['string' => $records];
     }
 
-    /** Format a single positional record (Tabella 1 or Tabella 2). */
+    /** Format a single positional record (168 chars, no CRLF). */
     private function buildRecord(GuestRecord $guest): string
     {
-        $useAppartamenti = $this->idAppartamento !== null;
-        $expectedLength  = $useAppartamenti ? self::RECORD_LENGTH_APPARTAMENTI : self::RECORD_LENGTH;
+        $record = str_repeat(' ', self::RECORD_LENGTH);
 
-        // Build a mutable byte buffer filled with spaces
-        $record = str_repeat(' ', $expectedLength - 2); // -2 reserved for CR+LF (not part of data)
+        $this->writeField($record, self::FIELD_TIPO_ALLOGGIATO_START, self::FIELD_TIPO_ALLOGGIATO_LEN,
+            $guest->tipoAlloggiato, true);
 
-        $this->writeField($record, self::FIELD_TIPO_ALLOGGIATO_START, self::FIELD_TIPO_ALLOGGIATO_LEN, $guest->tipoAlloggiato, true);
-        $this->writeField($record, self::FIELD_COGNOME_START, self::FIELD_COGNOME_LEN, mb_strtoupper($guest->lastName));
-        $this->writeField($record, self::FIELD_NOME_START, self::FIELD_NOME_LEN, mb_strtoupper($guest->firstName));
-        $this->writeField($record, self::FIELD_SESSO_START, self::FIELD_SESSO_LEN, mb_strtoupper($guest->gender));
+        $this->writeField($record, self::FIELD_DATA_ARRIVO_START, self::FIELD_DATA_ARRIVO_LEN,
+            $guest->arrivalDate);  // already in d/m/Y format
+
+        $this->writeField($record, self::FIELD_GIORNI_PERM_START, self::FIELD_GIORNI_PERM_LEN,
+            str_pad((string) min(30, max(1, $guest->stayNights)), 2, '0', STR_PAD_LEFT));
+
+        $this->writeField($record, self::FIELD_COGNOME_START, self::FIELD_COGNOME_LEN,
+            mb_strtoupper($guest->lastName));
+        $this->writeField($record, self::FIELD_NOME_START, self::FIELD_NOME_LEN,
+            mb_strtoupper($guest->firstName));
+
+        $this->writeField($record, self::FIELD_SESSO_START, self::FIELD_SESSO_LEN,
+            $this->genderToAlloggiati($guest->gender));
+
         $this->writeField($record, self::FIELD_DATA_NASCITA_START, self::FIELD_DATA_NASCITA_LEN,
-            date('dmY', strtotime($guest->birthDate)));
+            date('d/m/Y', strtotime($guest->birthDate)));
 
-        // Birth municipality/province/country
+        // Comune and provincia only for Italian births; foreign births use spaces
         if ($guest->birthCountryCode === 'IT') {
-            $municipalCode = ItalianMunicipalities::findCode($guest->birthMunicipality) ?? '    ';
+            $municipalCode = ItalianMunicipalities::findCode($guest->birthMunicipality, $guest->birthProvince) ?? str_repeat(' ', 9);
             $this->writeField($record, self::FIELD_COMUNE_NASCITA_START, self::FIELD_COMUNE_NASCITA_LEN, $municipalCode);
             $this->writeField($record, self::FIELD_PROVINCIA_NASCITA_START, self::FIELD_PROVINCIA_NASCITA_LEN,
                 mb_strtoupper($guest->birthProvince ?? ''));
         }
-        // For foreign citizens, commune and province remain spaces; only country code is set
 
         $this->writeField($record, self::FIELD_STATO_NASCITA_START, self::FIELD_STATO_NASCITA_LEN,
             $this->countryIsoToAlloggiati($guest->birthCountryCode));
         $this->writeField($record, self::FIELD_CITTADINANZA_START, self::FIELD_CITTADINANZA_LEN,
             $this->countryIsoToAlloggiati($guest->nationalityCode));
-        $this->writeField($record, self::FIELD_TIPO_DOC_START, self::FIELD_TIPO_DOC_LEN,
-            $this->documentTypeToAlloggiati($guest->documentType));
-        $this->writeField($record, self::FIELD_NUM_DOC_START, self::FIELD_NUM_DOC_LEN,
-            mb_strtoupper($guest->documentNumber));
 
-        // Document issue place
-        if ($guest->documentIssueCountryCode === 'IT') {
-            $issueCode = ItalianMunicipalities::findCode($guest->documentIssuePlace) ?? '    ';
-            $this->writeField($record, self::FIELD_LUOGO_RIL_START, self::FIELD_LUOGO_RIL_LEN, $issueCode);
-        } else {
-            $this->writeField($record, self::FIELD_LUOGO_RIL_START, self::FIELD_LUOGO_RIL_LEN,
-                $this->countryIsoToAlloggiati($guest->documentIssueCountryCode));
+        // Document fields: mandatory for tipo 16/17/18, blank for 19/20
+        if (in_array($guest->tipoAlloggiato, ['16', '17', '18'], true)) {
+            $this->writeField($record, self::FIELD_TIPO_DOC_START, self::FIELD_TIPO_DOC_LEN,
+                $this->documentTypeToAlloggiati($guest->documentType));
+            $this->writeField($record, self::FIELD_NUM_DOC_START, self::FIELD_NUM_DOC_LEN,
+                mb_strtoupper($guest->documentNumber));
+
+            if ($guest->documentIssueCountryCode === 'IT') {
+                $issueCode = ItalianMunicipalities::findCode($guest->documentIssuePlace, null) ?? str_repeat(' ', 9);
+                $this->writeField($record, self::FIELD_LUOGO_RIL_START, self::FIELD_LUOGO_RIL_LEN, $issueCode);
+            } else {
+                $this->writeField($record, self::FIELD_LUOGO_RIL_START, self::FIELD_LUOGO_RIL_LEN,
+                    $this->countryIsoToAlloggiati($guest->documentIssueCountryCode));
+            }
         }
+        // For tipo 19/20 doc fields remain spaces (already filled by str_repeat above)
 
-        // Apartment ID (Tabella 2 only)
-        if ($useAppartamenti) {
-            $this->writeField($record, self::FIELD_ID_APPARTAMENTO_START, self::FIELD_ID_APPARTAMENTO_LEN,
-                str_pad($this->idAppartamento, self::FIELD_ID_APPARTAMENTO_LEN, '0', STR_PAD_LEFT));
-        }
-
-        // Validate length (catches format bugs at test time)
-        $dataLength = $expectedLength - 2;
-        if (mb_strlen($record, '8bit') !== $dataLength) {
-            throw new RuntimeException(
-                sprintf(
-                    'Record length mismatch: expected %d data chars, got %d.',
-                    $dataLength,
-                    mb_strlen($record, '8bit')
-                )
-            );
+        if (mb_strlen($record, '8bit') !== self::RECORD_LENGTH) {
+            throw new RuntimeException(sprintf(
+                'Record length mismatch: expected %d, got %d.',
+                self::RECORD_LENGTH, mb_strlen($record, '8bit')
+            ));
         }
 
         return $record;
@@ -265,7 +280,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     // SOAP calls
     // -------------------------------------------------------------------------
 
-    private function callTestMethod(SoapClient $client, string $token, string $elenco): object
+    private function callTestMethod(SoapClient $client, string $token, array $elenco): object
     {
         if ($this->idAppartamento !== null) {
             return $client->GestioneAppartamenti_Test([
@@ -283,7 +298,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         ]);
     }
 
-    private function callSendMethod(SoapClient $client, string $token, string $elenco): object
+    private function callSendMethod(SoapClient $client, string $token, array $elenco): object
     {
         if ($this->idAppartamento !== null) {
             return $client->GestioneAppartamenti_Send([
@@ -309,7 +324,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     {
         $rawJson = json_encode($raw, JSON_UNESCAPED_UNICODE) ?: null;
 
-        // The result property name differs between Test and Send methods
+        // The result property name differs between Test/Send and GestioneAppartamenti variants
         $resultKey  = $mode === 'test' ? 'TestResult' : 'SendResult';
         $appartKey  = $mode === 'test' ? 'GestioneAppartamenti_TestResult' : 'GestioneAppartamenti_SendResult';
         $resultProp = $raw->{$resultKey} ?? $raw->{$appartKey} ?? null;
@@ -318,10 +333,16 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             return SubmissionResult::failure('Risposta SOAP non riconosciuta.', $rawJson);
         }
 
-        $esito      = (int) ($resultProp->esito ?? -1);
-        $descrizione = (string) ($resultProp->descrizione ?? '');
+        // The service returns esito as boolean (true = ok, false = error)
+        // and error detail in ErroreCod / ErroreDes / ErroreDettaglio
+        $esito       = $resultProp->esito ?? false;
+        $errorCod    = (string) ($resultProp->ErroreCod ?? '');
+        $errorDes    = (string) ($resultProp->ErroreDes ?? '');
+        $errorDetail = (string) ($resultProp->ErroreDettaglio ?? '');
 
-        // Parse per-row details
+        $isSuccess = $esito === true || $esito === 1 || ($esito !== false && (int) $esito === 0 && $errorCod === '');
+
+        // Parse per-row details (structure may vary)
         $rowDetails = [];
         $righe = $resultProp->DettaglioEsito ?? $resultProp->Risultato ?? null;
         if ($righe !== null) {
@@ -330,12 +351,12 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
                 $rowDetails[] = [
                     'row'         => (int) ($item->riga ?? 0),
                     'esito'       => (string) ($item->esito ?? ''),
-                    'descrizione' => (string) ($item->descrizione ?? ''),
+                    'descrizione' => (string) ($item->descrizione ?? $item->ErroreDes ?? ''),
                 ];
             }
         }
 
-        if ($esito === 0) {
+        if ($isSuccess) {
             $msg = $mode === 'test'
                 ? 'Bozza validata con successo.'
                 : 'Schedine inviate con successo.';
@@ -343,7 +364,9 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             return SubmissionResult::success($msg, $rowDetails, $rawJson);
         }
 
-        return SubmissionResult::failure($descrizione ?: "Errore SOAP (esito: {$esito}).", $rawJson);
+        $description = $errorDetail ?: $errorDes ?: "Errore servizio (cod: {$errorCod}).";
+
+        return SubmissionResult::failure($description, $rawJson);
     }
 
     // -------------------------------------------------------------------------
@@ -351,58 +374,134 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     // -------------------------------------------------------------------------
 
     /**
-     * Map ISO 3166-1 alpha-2 country code to Alloggiati Web ISTAT numeric code.
-     *
-     * @throws RuntimeException for unmapped codes
+     * Map ISO 3166-1 alpha-2 country code to the 9-digit Alloggiati Web code
+     * from the official stati.csv table.
      */
     private function countryIsoToAlloggiati(string $iso): string
     {
         $iso = mb_strtoupper(trim($iso));
 
+        // Source: docs/AlloggiatiWeb/stati.csv
         $map = [
-            'IT' => '100', 'DE' => '201', 'FR' => '202', 'ES' => '203',
-            'GB' => '204', 'IE' => '205', 'NL' => '206', 'CH' => '207',
-            'AT' => '208', 'BE' => '209', 'PT' => '210', 'SE' => '211',
-            'NO' => '212', 'DK' => '213', 'FI' => '214', 'PL' => '215',
-            'CZ' => '216', 'SK' => '217', 'HU' => '218', 'RO' => '219',
-            'BG' => '220', 'HR' => '221', 'SI' => '222', 'GR' => '223',
-            'LT' => '224', 'LV' => '225', 'EE' => '226', 'LU' => '227',
-            'MT' => '228', 'CY' => '229', 'IS' => '230', 'LI' => '231',
-            'MC' => '232', 'SM' => '233', 'VA' => '234', 'AL' => '235',
-            'BA' => '236', 'MK' => '237', 'RS' => '238', 'ME' => '239',
-            'XK' => '240', 'MD' => '241', 'UA' => '242', 'BY' => '243',
-            'RU' => '244', 'TR' => '245', 'AM' => '246', 'AZ' => '247',
-            'GE' => '248', 'US' => '401', 'CA' => '402', 'MX' => '403',
-            'BR' => '501', 'AR' => '502', 'CL' => '503', 'CO' => '504',
-            'VE' => '505', 'PE' => '506', 'AU' => '601', 'NZ' => '602',
-            'JP' => '701', 'CN' => '702', 'KR' => '703', 'IN' => '704',
-            'PK' => '705', 'BD' => '706', 'TH' => '707', 'VN' => '708',
-            'PH' => '709', 'MY' => '710', 'SG' => '711', 'ID' => '712',
-            'IL' => '713', 'SA' => '714', 'AE' => '715', 'IR' => '716',
-            'IQ' => '717', 'EG' => '801', 'MA' => '802', 'TN' => '803',
-            'DZ' => '804', 'LY' => '805', 'NG' => '806', 'ZA' => '807',
-            'KE' => '808', 'ET' => '809', 'GH' => '810', 'SN' => '811',
+            'AF' => '100000301', // AFGHANISTAN
+            'AL' => '100000201', // ALBANIA
+            'DZ' => '100000401', // ALGERIA
+            'AD' => '100000202', // ANDORRA
+            'AO' => '100000402', // ANGOLA (approximate)
+            'AR' => '100000602', // ARGENTINA
+            'AM' => '100000358', // ARMENIA
+            'AU' => '100000701', // AUSTRALIA
+            'AT' => '100000203', // AUSTRIA
+            'AZ' => '100000359', // AZERBAIGIAN
+            'BD' => '100000305', // BANGLADESH
+            'BY' => '100000256', // BIELORUSSIA
+            'BE' => '100000206', // BELGIO
+            'BA' => '100000252', // BOSNIA ED ERZEGOVINA
+            'BR' => '100000605', // BRASILE
+            'BG' => '100000209', // BULGARIA
+            'CA' => '100000509', // CANADA
+            'CL' => '100000606', // CILE
+            'CN' => '100000314', // CINA
+            'CO' => '100000608', // COLOMBIA
+            'KR' => '100000320', // COREA DEL SUD
+            'HR' => '100000250', // CROAZIA
+            'CY' => '100000315', // CIPRO
+            'CZ' => '100000257', // REPUBBLICA CECA
+            'DK' => '100000212', // DANIMARCA
+            'EG' => '100000419', // EGITTO
+            'AE' => '100000322', // EMIRATI ARABI UNITI
+            'EE' => '100000247', // ESTONIA
+            'FI' => '100000214', // FINLANDIA
+            'FR' => '100000215', // FRANCIA
+            'GE' => '100000360', // GEORGIA
+            'DE' => '100000216', // GERMANIA
+            'GH' => '100000423', // GHANA
+            'GR' => '100000220', // GRECIA
+            'HU' => '100000244', // UNGHERIA
+            'IS' => '100000223', // ISLANDA
+            'IN' => '100000330', // INDIA
+            'ID' => '100000331', // INDONESIA
+            'IR' => '100000332', // IRAN
+            'IQ' => '100000333', // IRAQ
+            'IE' => '100000221', // IRLANDA
+            'IL' => '100000334', // ISRAELE
+            'IT' => '100000100', // ITALIA
+            'JP' => '100000326', // GIAPPONE
+            'KE' => '100000428', // KENYA
+            'XK' => '100001002', // KOSOVO
+            'LV' => '100000248', // LETTONIA
+            'LI' => '100000225', // LIECHTENSTEIN
+            'LT' => '100000249', // LITUANIA
+            'LU' => '100000226', // LUSSEMBURGO
+            'MK' => '100000997', // MACEDONIA DEL NORD
+            'MY' => '100000767', // MALAYSIA
+            'MT' => '100000227', // MALTA
+            'MA' => '100000436', // MAROCCO
+            'MX' => '100000527', // MESSICO
+            'MD' => '100000254', // MOLDAVIA
+            'MC' => '100000229', // MONACO
+            'ME' => '100001001', // MONTENEGRO
+            'NL' => '100000232', // PAESI BASSI
+            'NZ' => '100000719', // NUOVA ZELANDA
+            'NG' => '100000443', // NIGERIA
+            'NO' => '100000231', // NORVEGIA
+            'PK' => '100000344', // PAKISTAN
+            'PE' => '100000615', // PERU'
+            'PH' => '100000323', // FILIPPINE
+            'PL' => '100000233', // POLONIA
+            'PT' => '100000234', // PORTOGALLO
+            'GB' => '100000219', // REGNO UNITO
+            'RO' => '100000235', // ROMANIA
+            'RU' => '100000245', // FEDERAZIONE RUSSA
+            'SM' => '100000236', // SAN MARINO
+            'SA' => '100000302', // ARABIA SAUDITA
+            'SN' => '100000450', // SENEGAL
+            'RS' => '100001000', // SERBIA
+            'SG' => '100000346', // SINGAPORE
+            'SK' => '100000255', // REPUBBLICA SLOVACCA
+            'SI' => '100000251', // SLOVENIA
+            'ZA' => '100000454', // SUDAFRICA
+            'ES' => '100000239', // SPAGNA
+            'SE' => '100000240', // SVEZIA
+            'CH' => '100000241', // SVIZZERA
+            'TH' => '100000349', // THAILANDIA
+            'TN' => '100000460', // TUNISIA
+            'TR' => '100000351', // TURCHIA
+            'UA' => '100000243', // UCRAINA
+            'US' => '100000536', // STATI UNITI D'AMERICA
+            'VA' => '100000246', // STATO DELLA CITTA' DEL VATICANO
+            'VE' => '100000619', // VENEZUELA
+            'VN' => '100000353', // VIETNAM
         ];
 
         if (! isset($map[$iso])) {
-            throw new RuntimeException("Unmapped ISO country code for Alloggiati Web: [{$iso}]. Add it to PoliziaStatoAlloggiatiDriver::\$countryIsoToAlloggiati().");
+            throw new RuntimeException(
+                "Unmapped ISO country code for Alloggiati Web: [{$iso}]. " .
+                "Add it to PoliziaStatoAlloggiatiDriver::\$countryIsoToAlloggiati() using docs/AlloggiatiWeb/stati.csv."
+            );
         }
 
         return $map[$iso];
     }
 
-    /**
-     * Map internal document type to Alloggiati Web 3-char code.
-     * Unknown types fall back to ALTR (altro).
-     */
+    /** Map internal document type to 5-char Alloggiati Web code (documenti.csv). */
     private function documentTypeToAlloggiati(string $type): string
     {
         return match ($type) {
-            'passport'         => 'APAT',
-            'id_card'          => 'CRIT',
-            'driving_license'  => 'PATO',
-            'residence_permit' => 'PPAI',
-            default            => 'ALTR',
+            'passport'         => 'PASOR', // PASSAPORTO ORDINARIO
+            'id_card'          => 'IDENT', // CARTA DI IDENTITA'
+            'driving_license'  => 'PATEN', // PATENTE DI GUIDA
+            default            => 'CERID', // CERTIFICATO D'IDENTITA' (fallback)
+        };
+    }
+
+    /** Map 'M'/'F' gender to Alloggiati Web code '1'/'2'. */
+    private function genderToAlloggiati(string $gender): string
+    {
+        return match (mb_strtoupper($gender)) {
+            'M' => '1',
+            'F' => '2',
+            default => throw new RuntimeException("Invalid gender value: [{$gender}]. Expected 'M' or 'F'."),
         };
     }
 

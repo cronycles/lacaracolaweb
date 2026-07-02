@@ -108,7 +108,7 @@ class GuestReportingController extends Controller
             'guests'                                      => ['required', 'array', 'min:1'],
             'guests.*.person_id'                          => ['required', 'integer', 'exists:people,id'],
             'guests.*.include'                            => ['sometimes', 'nullable'],
-            'guests.*.tipo_alloggiato'                    => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19'])],
+            'guests.*.tipo_alloggiato'                    => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19', '20'])],
             'guests.*.gender'                             => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['M', 'F'])],
             'guests.*.birth_date'                         => ['required_if:guests.*.include,1', 'nullable', 'date'],
             'guests.*.birth_municipality'                 => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:100'],
@@ -145,6 +145,8 @@ class GuestReportingController extends Controller
 
             $guestRecords[] = new GuestRecord(
                 tipoAlloggiato:            $guestData['tipo_alloggiato'],
+                arrivalDate:               $booking->checkin->format('d/m/Y'),
+                stayNights:                $booking->nights,
                 lastName:                  $person->last_name,
                 firstName:                 $person->first_name,
                 gender:                    $guestData['gender'],

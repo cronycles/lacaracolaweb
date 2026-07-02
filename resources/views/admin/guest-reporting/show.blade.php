@@ -53,10 +53,11 @@
         $guests = $booking->allGuests();
         $countryCodes = config('apartment.guest_countries', []);
         $tipoOptions = [
-            '16' => '16 — Italiano capofamiglia / capo gruppo',
-            '17' => '17 — Italiano familiare / membro gruppo',
-            '18' => '18 — Straniero capofamiglia / capo gruppo',
-            '19' => '19 — Straniero familiare / membro gruppo',
+            '16' => '16 — Ospite singolo',
+            '17' => '17 — Capo famiglia',
+            '18' => '18 — Capo gruppo',
+            '19' => '19 — Familiare (doc non obbligatori)',
+            '20' => '20 — Membro gruppo (doc non obbligatori)',
         ];
     @endphp
 
