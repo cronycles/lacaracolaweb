@@ -10,7 +10,7 @@ PHP_BIN_DEFAULT="/opt/cpanel/ea-php84/root/usr/bin/php"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP_DIR="${CPANEL_APP_ROOT:-$HOME/lacaracola-app}"
 WEB_DIR="${CPANEL_WEB_ROOT:-$HOME/public_html}"
-RUN_ARTISAN="${CPANEL_RUN_ARTISAN:-0}"
+RUN_ARTISAN="${CPANEL_RUN_ARTISAN:-1}"
 
 if [[ -x "$PHP_BIN_DEFAULT" ]]; then
     PHP_BIN="$PHP_BIN_DEFAULT"
