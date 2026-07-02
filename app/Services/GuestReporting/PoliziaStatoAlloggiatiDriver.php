@@ -340,33 +340,82 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         $errorDes    = (string) ($resultProp->ErroreDes ?? '');
         $errorDetail = (string) ($resultProp->ErroreDettaglio ?? '');
 
-        $isSuccess = $esito === true || $esito === 1 || ($esito !== false && (int) $esito === 0 && $errorCod === '');
+        $topLevelOk = $esito === true || $esito === 1 || ($esito !== false && (int) $esito === 0 && $errorCod === '');
 
-        // Parse per-row details (structure may vary)
-        $rowDetails = [];
-        $righe = $resultProp->DettaglioEsito ?? $resultProp->Risultato ?? null;
-        if ($righe !== null) {
-            $items = is_array($righe) ? $righe : [$righe];
-            foreach ($items as $item) {
-                $rowDetails[] = [
-                    'row'         => (int) ($item->riga ?? 0),
-                    'esito'       => (string) ($item->esito ?? ''),
-                    'descrizione' => (string) ($item->descrizione ?? $item->ErroreDes ?? ''),
-                ];
+        // Top-level failure (auth/transport error)
+        if (!$topLevelOk) {
+            $description = $errorDetail ?: $errorDes ?: "Errore servizio (cod: {$errorCod}).";
+            return SubmissionResult::failure($description, $rawJson);
+        }
+
+        // Alloggiati Web returns top-level TestResult/SendResult.esito=true to signal that
+        // the request was received, but the actual per-schedina validation results live in
+        // $raw->result->Dettaglio->EsitoOperazioneServizio and $raw->result->SchedineValide.
+        // We must check those to determine real success or failure.
+        $rowDetails   = [];
+        $resultData   = $raw->result ?? null;
+        $checkedNested = false;
+
+        if ($resultData !== null) {
+            $schedineValide = isset($resultData->SchedineValide) ? (int) $resultData->SchedineValide : null;
+            $esitoItems     = $resultData->Dettaglio->EsitoOperazioneServizio ?? null;
+
+            if ($esitoItems !== null) {
+                $checkedNested = true;
+                $items         = is_array($esitoItems) ? $esitoItems : [$esitoItems];
+                $errorMessages = [];
+
+                foreach ($items as $i => $item) {
+                    $rowEsito   = $item->esito ?? true;
+                    $rowOk      = $rowEsito === true || $rowEsito === 1;
+                    $rowErrDes  = (string) ($item->ErroreDettaglio ?? $item->ErroreDes ?? '');
+                    $rowErrCod  = (string) ($item->ErroreCod ?? '');
+
+                    $rowDetails[] = [
+                        'row'         => $i + 1,
+                        'esito'       => $rowOk ? '1' : '0',
+                        'descrizione' => $rowErrDes ?: ($rowErrCod ? "Errore cod: {$rowErrCod}" : ''),
+                    ];
+
+                    if (!$rowOk && $rowErrDes !== '') {
+                        $errorMessages[] = $rowErrDes;
+                    }
+                }
+
+                $hasRowErrors = !empty($errorMessages);
+                $noValidRows  = $schedineValide !== null && $schedineValide === 0;
+
+                if ($hasRowErrors || $noValidRows) {
+                    $description = $errorMessages
+                        ? implode('; ', array_unique($errorMessages))
+                        : ($schedineValide !== null
+                            ? "Nessuna schedina valida (SchedineValide: {$schedineValide})."
+                            : 'Schedine non accettate dal servizio.');
+                    return SubmissionResult::failure($description, $rawJson);
+                }
             }
         }
 
-        if ($isSuccess) {
-            $msg = $mode === 'test'
-                ? 'Bozza validata con successo.'
-                : 'Schedine inviate con successo.';
-
-            return SubmissionResult::success($msg, $rowDetails, $rawJson);
+        // Fallback: parse per-row details from the old response structure
+        if (!$checkedNested) {
+            $righe = $resultProp->DettaglioEsito ?? $resultProp->Risultato ?? null;
+            if ($righe !== null) {
+                $items = is_array($righe) ? $righe : [$righe];
+                foreach ($items as $item) {
+                    $rowDetails[] = [
+                        'row'         => (int) ($item->riga ?? 0),
+                        'esito'       => (string) ($item->esito ?? ''),
+                        'descrizione' => (string) ($item->descrizione ?? $item->ErroreDes ?? ''),
+                    ];
+                }
+            }
         }
 
-        $description = $errorDetail ?: $errorDes ?: "Errore servizio (cod: {$errorCod}).";
+        $msg = $mode === 'test'
+            ? 'Bozza validata con successo.'
+            : 'Schedine inviate con successo.';
 
-        return SubmissionResult::failure($description, $rawJson);
+        return SubmissionResult::success($msg, $rowDetails, $rawJson);
     }
 
     // -------------------------------------------------------------------------
