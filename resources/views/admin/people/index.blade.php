@@ -46,7 +46,7 @@
                                 </a>
                             </td>
                             <td>{{ $person->email ?? '—' }}</td>
-                            <td>{{ $person->phone ?? '—' }}</td>
+                            <td>{{ $person->phone_display ?? '—' }}</td>
                             <td>
                                 @if ($person->country_flag)
                                     <span title="{{ $person->country_display }}" aria-label="{{ $person->country_display }}" style="font-size:1.1rem;line-height:1">

@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>Telefono</th>
-                        <td>{{ $person->phone ?? '—' }}</td>
+                        <td>{{ $person->phone_display ?? '—' }}</td>
                     </tr>
                     <tr>
                         <th>Data di nascita</th>

@@ -48,6 +48,22 @@ class Person extends Model
         return "{$this->first_name} {$this->last_name}";
     }
 
+    /**
+     * Phone number with dial prefix, e.g. "+39 333 123 4567".
+     * Returns null when both phone and phone_prefix are absent.
+     */
+    public function getPhoneDisplayAttribute(): ?string
+    {
+        $prefix = $this->phone_prefix ? trim($this->phone_prefix) : null;
+        $number = $this->phone ? trim($this->phone) : null;
+
+        if ($prefix && $number) {
+            return "{$prefix} {$number}";
+        }
+
+        return $number ?? ($prefix ?? null);
+    }
+
     public function getCountryDisplayAttribute(): ?string
     {
         if (! $this->country_code) {
