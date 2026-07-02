@@ -4,6 +4,7 @@
 
 @push('scripts')
 <script>window.COMUNI_VALIDI = @json($comuniNames);</script>
+<script>window.COUNTRIES_MAP = @json($countries);</script>
 @endpush
 
 @section('content')
@@ -118,16 +119,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="guests_{{ $i }}_nationality_code">Nazionalità *</label>
-                        <select id="guests_{{ $i }}_nationality_code" name="guests[{{ $i }}][nationality_code]"
-                                class="form-input" required>
-                            <option value="">Seleziona</option>
-                            @foreach ($countries as $code => $name)
-                                <option value="{{ $code }}"
-                                        @selected(old("guests.{$i}.nationality_code", $guest->nationality_code) === $code)>
-                                    {{ $code }} - {{ $name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="guests_{{ $i }}_nationality_code"
+                               name="guests[{{ $i }}][nationality_code]" class="form-input" required
+                               data-country-combo
+                               data-current-value="{{ old("guests.{$i}.nationality_code", $guest->nationality_code) }}"
+                               autocomplete="off"
+                               placeholder="Cerca nazionalità...">
                         @error("guests.{$i}.nationality_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
@@ -144,16 +141,13 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="guests_{{ $i }}_birth_country_code">Stato di nascita *</label>
-                        <select id="guests_{{ $i }}_birth_country_code" name="guests[{{ $i }}][birth_country_code]"
-                                class="form-input" required data-reporting-birth-country>
-                            <option value="">Seleziona</option>
-                            @foreach ($countries as $code => $name)
-                                <option value="{{ $code }}"
-                                        @selected(old("guests.{$i}.birth_country_code", $guest->birth_country_code) === $code)>
-                                    {{ $code }} - {{ $name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="guests_{{ $i }}_birth_country_code"
+                               name="guests[{{ $i }}][birth_country_code]" class="form-input" required
+                               data-country-combo
+                               data-reporting-birth-country
+                               data-current-value="{{ old("guests.{$i}.birth_country_code", $guest->birth_country_code) }}"
+                               autocomplete="off"
+                               placeholder="Cerca stato...">
                         @error("guests.{$i}.birth_country_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group" id="birth_province_group_{{ $i }}" data-birth-province-group
@@ -205,18 +199,13 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="guests_{{ $i }}_document_issue_country_code">Stato rilascio doc. *</label>
-                        <select id="guests_{{ $i }}_document_issue_country_code"
-                                name="guests[{{ $i }}][document_issue_country_code]"
-                                class="form-input" required
-                                data-reporting-issue-country>
-                            <option value="">Seleziona</option>
-                            @foreach ($countries as $code => $name)
-                                <option value="{{ $code }}"
-                                        @selected(old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) === $code)>
-                                    {{ $code }} - {{ $name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="guests_{{ $i }}_document_issue_country_code"
+                               name="guests[{{ $i }}][document_issue_country_code]" class="form-input" required
+                               data-country-combo
+                               data-reporting-issue-country
+                               data-current-value="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) }}"
+                               autocomplete="off"
+                               placeholder="Cerca stato...">
                         @error("guests.{$i}.document_issue_country_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group" data-document-issue-place-group

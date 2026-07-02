@@ -8,11 +8,19 @@
  * In "inactive" mode the wrapper is transparent and the original input
  * behaves as a plain text field (free-text allowed).
  *
- * Usage:
+ * Usage (plain strings — label === value):
  *   const cs = new ComboSelect(inputEl);
- *   cs.enable(optionsList, currentValue);   // locked combobox
- *   cs.disable();                           // plain text again
+ *   cs.enable(stringList, currentValue);
+ *   cs.disable();
+ *
+ * Usage (label/value pairs — e.g. country code ↔ name):
+ *   cs.enable([{ label: 'Italia', value: 'IT' }, ...], currentValue);
  */
+
+export interface ComboOption {
+    label: string;
+    value: string;
+}
 
 const MAX_VISIBLE = 100; // max items to render in one go
 
@@ -25,7 +33,7 @@ export class ComboSelect {
     private readonly hidden: HTMLInputElement;
     private readonly list: HTMLUListElement;
 
-    private options: string[] = [];
+    private pairs: ComboOption[] = [];
     private committed: string = '';
     private isActive: boolean = false;
 
@@ -58,10 +66,16 @@ export class ComboSelect {
 
     // ── Public API ─────────────────────────────────────────────────────────
 
-    /** Switch to locked-combobox mode with the given option list. */
-    enable(options: string[], currentValue: string = ''): void {
+    /**
+     * Switch to locked-combobox mode.
+     * Accepts either a plain string list (label === value) or an array of
+     * {label, value} pairs (e.g. country name ↔ country code).
+     */
+    enable(options: string[] | ComboOption[], currentValue: string = ''): void {
         this.isActive = true;
-        this.options  = options;
+        this.pairs    = (options as Array<string | ComboOption>).map((o) =>
+            typeof o === 'string' ? { label: o, value: o } : o,
+        );
 
         // Hidden input takes over form submission
         this.searchInput.removeAttribute('name');
@@ -132,14 +146,16 @@ export class ComboSelect {
             if (!this.isActive) return;
             setTimeout(() => {
                 this._hide();
-                // Accept an exact match (case-insensitive), otherwise revert
-                const match = this.options.find(
-                    (o) => o.toLowerCase() === si.value.toLowerCase().trim(),
+                // Accept an exact label match (case-insensitive), otherwise revert display
+                const match = this.pairs.find(
+                    (p) => p.label.toLowerCase() === si.value.toLowerCase().trim(),
                 );
                 if (match) {
-                    this._commit(match);
+                    this._commit(match.value);
                 } else {
-                    si.value = this.committed;
+                    // Revert search input to the label of the currently committed value
+                    const committed = this.pairs.find((p) => p.value === this.committed);
+                    si.value = committed?.label ?? this.committed;
                 }
             }, 200);
         });
@@ -165,12 +181,15 @@ export class ComboSelect {
                 case 'Enter':
                     if (idx >= 0) {
                         e.preventDefault();
-                        this._commit(items[idx].textContent!);
+                        this._commit(items[idx].dataset.value!);
                     }
                     break;
                 case 'Escape':
-                    si.value = this.committed;
-                    this._hide();
+                    {
+                        const committed = this.pairs.find((p) => p.value === this.committed);
+                        si.value = committed?.label ?? this.committed;
+                        this._hide();
+                    }
                     break;
             }
         });
@@ -186,7 +205,7 @@ export class ComboSelect {
 
     private _renderList(filter: string): void {
         const low    = filter.toLowerCase().trim();
-        const all    = low ? this.options.filter((o) => o.toLowerCase().includes(low)) : this.options;
+        const all    = low ? this.pairs.filter((p) => p.label.toLowerCase().includes(low)) : this.pairs;
         const slice  = all.slice(0, MAX_VISIBLE);
         const extra  = all.length - MAX_VISIBLE;
 
@@ -202,11 +221,12 @@ export class ComboSelect {
 
         slice.forEach((opt) => {
             const li = document.createElement('li');
-            li.className   = 'combo-select__item';
-            li.textContent = opt;
+            li.className        = 'combo-select__item';
+            li.textContent      = opt.label;
+            li.dataset.value    = opt.value;
             li.addEventListener('mousedown', (e) => {
                 e.preventDefault(); // prevent blur from firing before commit
-                this._commit(opt);
+                this._commit(opt.value);
             });
             this.list.appendChild(li);
         });
@@ -227,11 +247,16 @@ export class ComboSelect {
         this.list.hidden = true;
     }
 
-    private _commit(val: string): void {
-        this.committed        = val;
-        this.searchInput.value = val;
-        this.hidden.value      = val;
+    private _commit(value: string): void {
+        const pair            = this.pairs.find((p) => p.value === value);
+        this.committed        = value;
+        this.searchInput.value = pair?.label ?? value;
+        this.hidden.value      = value;
+        // Keep data attribute in sync so external code can read the committed value
+        this.searchInput.dataset.comboValue = value;
         this.searchInput.setCustomValidity('');
         this._hide();
+        // Notify listeners that the value changed (mirrors native <select> behaviour)
+        this.searchInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 }

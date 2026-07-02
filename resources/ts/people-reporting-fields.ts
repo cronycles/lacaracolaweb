@@ -13,8 +13,14 @@
  *  - IT  → show document_issue_place; enable ComboSelect (locked to comuni list)
  *  - other → hide document_issue_place (country code alone is sufficient)
  *
+ * Country selects (Paese di residenza, Nazionalità, Paese di nascita, Paese di rilascio)
+ * are rendered as <input type="text" data-country-combo> and converted to ComboSelects
+ * by initCountryComboFields().  After that, the committed country code is available on
+ * the element via dataset.comboValue (kept in sync by ComboSelect._commit).
+ *
  * window.COMUNI_VALIDI must be set by the Blade view (via @json) before this runs.
- * If absent, falls back to a short capoluogo list.
+ * window.COUNTRIES_MAP must be set by the Blade view (via @json) before this runs.
+ * If absent, falls back to a short capoluogo/country list.
  */
 
 import { ComboSelect } from './components/combo-select';
@@ -22,6 +28,7 @@ import { ComboSelect } from './components/combo-select';
 declare global {
     interface Window {
         COMUNI_VALIDI?: string[];
+        COUNTRIES_MAP?: Record<string, string>;
     }
 }
 
@@ -48,13 +55,34 @@ function getComuniList(): string[] {
     return window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
 }
 
+/** Convert the COUNTRIES_MAP (code → name) to ComboOption pairs sorted by label. */
+function getCountriesList(): { label: string; value: string }[] {
+    const map = window.COUNTRIES_MAP ?? {};
+    return Object.entries(map).map(([value, label]) => ({ label, value }));
+}
+
+/**
+ * Initialise searchable ComboSelect for every <input data-country-combo> element.
+ * Must run before initPeopleReportingFields / initDocumentIssueFields so that
+ * dataset.comboValue is already populated when those functions read the country code.
+ */
+function initCountryComboFields(): void {
+    document.querySelectorAll<HTMLInputElement>('[data-country-combo]').forEach((input) => {
+        const cs = new ComboSelect(input);
+        const initialValue = input.dataset.currentValue ?? '';
+        cs.enable(getCountriesList(), initialValue);
+    });
+}
+
+export { initCountryComboFields };
+
 /**
  * Initialise birth-country → municipality/province logic for every guest row.
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
  */
 function initPeopleReportingFields(): void {
-    document.querySelectorAll<HTMLSelectElement>('[data-reporting-birth-country]').forEach((countrySelect) => {
-        const card = countrySelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
+    document.querySelectorAll<HTMLInputElement>('[data-reporting-birth-country]').forEach((countryEl) => {
+        const card = countryEl.closest<HTMLElement>('.a-card') ?? document.documentElement;
         const municipalityInput = card.querySelector<HTMLInputElement>('[data-reporting-birth-municipality]');
         const provinceGroup     = card.querySelector<HTMLElement>('[data-birth-province-group]');
 
@@ -63,6 +91,10 @@ function initPeopleReportingFields(): void {
 
         const comboSelect = new ComboSelect(mi);
         const initialValue = mi.getAttribute('data-current-value') ?? mi.value;
+
+        /** Read the committed country code, supporting both <select> and ComboSelect input. */
+        const getCountryCode = (): string =>
+            countryEl.dataset.comboValue ?? countryEl.value;
 
         function update(countryCode: string): void {
             const isItaly = countryCode === 'IT';
@@ -85,11 +117,11 @@ function initPeopleReportingFields(): void {
             }
         }
 
-        update(countrySelect.value);
+        update(getCountryCode());
 
-        countrySelect.addEventListener('change', () => {
-            update(countrySelect.value);
-            if (countrySelect.value !== 'IT') {
+        countryEl.addEventListener('change', () => {
+            update(getCountryCode());
+            if (getCountryCode() !== 'IT') {
                 mi.value = '';
             }
         });
@@ -103,8 +135,8 @@ export { initPeopleReportingFields };
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
  */
 function initDocumentIssueFields(): void {
-    document.querySelectorAll<HTMLSelectElement>('[data-reporting-issue-country]').forEach((issueCountrySelect) => {
-        const card            = issueCountrySelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
+    document.querySelectorAll<HTMLInputElement>('[data-reporting-issue-country]').forEach((issueCountryEl) => {
+        const card            = issueCountryEl.closest<HTMLElement>('.a-card') ?? document.documentElement;
         const issuePlaceGroup = card.querySelector<HTMLElement>('[data-document-issue-place-group]');
         const issuePlaceInput = card.querySelector<HTMLInputElement>('[data-reporting-issue-municipality]');
 
@@ -112,6 +144,10 @@ function initDocumentIssueFields(): void {
 
         const comboSelect    = issuePlaceInput ? new ComboSelect(issuePlaceInput) : null;
         const initialValue   = issuePlaceInput?.getAttribute('data-current-value') ?? issuePlaceInput?.value ?? '';
+
+        /** Read the committed country code, supporting both <select> and ComboSelect input. */
+        const getCountryCode = (): string =>
+            issueCountryEl.dataset.comboValue ?? issueCountryEl.value;
 
         function update(countryCode: string): void {
             const isItaly = countryCode === 'IT';
@@ -127,9 +163,9 @@ function initDocumentIssueFields(): void {
             }
         }
 
-        update(issueCountrySelect.value);
+        update(getCountryCode());
 
-        issueCountrySelect.addEventListener('change', () => update(issueCountrySelect.value));
+        issueCountryEl.addEventListener('change', () => update(getCountryCode()));
     });
 }
 
