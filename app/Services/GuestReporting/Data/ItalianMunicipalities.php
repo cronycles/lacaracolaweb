@@ -7,7 +7,7 @@ namespace App\Services\GuestReporting\Data;
 /**
  * Lookup table: Italian municipality name → 9-digit Alloggiati Web code.
  *
- * Data is loaded lazily from docs/AlloggiatiWeb/comuni.csv (11 295 entries).
+ * Data is loaded lazily from resources/data/AlloggiatiWeb/comuni.csv (11 295 entries).
  * CSV format: Codice,Descrizione,Provincia,DataFineVal
  *   - Codice: 9-digit Alloggiati Web code
  *   - Descrizione: municipality name (uppercase)
@@ -70,7 +70,7 @@ class ItalianMunicipalities
         }
 
         self::$index = [];
-        $csvPath = base_path('docs/AlloggiatiWeb/comuni.csv');
+        $csvPath = resource_path('data/AlloggiatiWeb/comuni.csv');
 
         if (! file_exists($csvPath)) {
             return self::$index;

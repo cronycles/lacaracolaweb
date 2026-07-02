@@ -430,7 +430,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     {
         $iso = mb_strtoupper(trim($iso));
 
-        // Source: docs/AlloggiatiWeb/stati.csv
+        // Source: resources/data/AlloggiatiWeb/stati.csv
         $map = [
             'AF' => '100000301', // AFGHANISTAN
             'AL' => '100000201', // ALBANIA
@@ -526,7 +526,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         if (! isset($map[$iso])) {
             throw new RuntimeException(
                 "Unmapped ISO country code for Alloggiati Web: [{$iso}]. " .
-                "Add it to PoliziaStatoAlloggiatiDriver::\$countryIsoToAlloggiati() using docs/AlloggiatiWeb/stati.csv."
+                "Add it to PoliziaStatoAlloggiatiDriver::\$countryIsoToAlloggiati() using resources/data/AlloggiatiWeb/stati.csv."
             );
         }
 
