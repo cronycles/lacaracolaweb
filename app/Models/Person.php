@@ -59,7 +59,7 @@ class Person extends Model
             return $this->country_code;
         }
 
-        return "{$this->country_code} - {$countryName}";
+        return $countryName;
     }
 
     public function getCountryFlagAttribute(): ?string
@@ -79,7 +79,7 @@ class Person extends Model
             return $this->nationality_code;
         }
 
-        return "{$this->nationality_code} - {$countryName}";
+        return $countryName;
     }
 
     public function getNationalityFlagAttribute(): ?string

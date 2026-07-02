@@ -60,16 +60,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Documento</th>
-                        <td>
-                            @if ($person->document_type || $person->document_number)
-                                {{ $person->document_type }} {{ $person->document_number }}
-                            @else
-                                —
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
                         <th>Newsletter</th>
                         <td>
                             @if ($person->newsletter_subscribed)
