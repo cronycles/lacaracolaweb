@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Person;
+use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -66,6 +67,7 @@ class PersonController extends Controller
 
         return view('admin.people.form', [
             'person'          => new Person(),
+            'comuniNames'     => ItalianMunicipalities::allValidNames(),
             'returnTo'        => $returnTo,
             'attachBookingId' => $attachBookingId,
         ]);
@@ -104,8 +106,9 @@ class PersonController extends Controller
     public function edit(Person $ospiti): View
     {
         return view('admin.people.form', [
-            'person' => $ospiti,
-            'returnTo' => $this->resolveReturnTo(request(), $ospiti),
+            'person'      => $ospiti,
+            'comuniNames' => ItalianMunicipalities::allValidNames(),
+            'returnTo'    => $this->resolveReturnTo(request(), $ospiti),
         ]);
     }
 
@@ -161,11 +164,27 @@ class PersonController extends Controller
             'newsletter_subscribed' => ['nullable', 'boolean'],
             // Guest reporting fields
             'gender'                       => ['nullable', 'string', Rule::in(['M', 'F'])],
-            'birth_municipality'           => ['nullable', 'string', 'max:100'],
+            'birth_municipality'           => [
+                'nullable', 'string', 'max:100',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('birth_country_code') === 'IT' && filled($value)
+                        && ItalianMunicipalities::findCode($value) === null) {
+                        $fail("'{$value}' non è un comune italiano riconosciuto. Verificare la dicitura.");
+                    }
+                },
+            ],
             'birth_province'               => ['nullable', 'string', 'max:2'],
             'birth_country_code'           => ['nullable', 'string', Rule::in($countryCodes)],
             'nationality_code'             => ['nullable', 'string', Rule::in($countryCodes)],
-            'document_issue_place'         => ['nullable', 'string', 'max:100', 'required_if:document_issue_country_code,IT'],
+            'document_issue_place'         => [
+                'nullable', 'string', 'max:100', 'required_if:document_issue_country_code,IT',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('document_issue_country_code') === 'IT' && filled($value)
+                        && ItalianMunicipalities::findCode($value) === null) {
+                        $fail("'{$value}' non è un comune italiano riconosciuto per il luogo di rilascio.");
+                    }
+                },
+            ],
             'document_issue_country_code'  => ['nullable', 'string', Rule::in($countryCodes)],
         ]);
     }

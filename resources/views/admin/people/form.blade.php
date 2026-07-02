@@ -2,6 +2,10 @@
 
 @section('title', $person->exists ? 'Modifica ospite' : 'Nuovo ospite')
 
+@push('scripts')
+<script>window.COMUNI_VALIDI = @json($comuniNames);</script>
+@endpush
+
 @section('content')
     <div style="max-width:680px">
         <div style="margin-bottom:1rem">

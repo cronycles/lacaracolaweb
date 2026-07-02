@@ -30,6 +30,28 @@ class ItalianMunicipalities
     private static ?array $index = null;
 
     /**
+     * Return a sorted list of all currently-valid municipality names (title-cased).
+     * Used by views to render the full comuni datalist and by JS for client-side validation.
+     *
+     * @return string[]
+     */
+    public static function allValidNames(): array
+    {
+        $index = self::loadIndex();
+        $names = [];
+        foreach ($index as $key => $entries) {
+            foreach ($entries as $entry) {
+                if (! $entry['expired']) {
+                    $names[] = mb_convert_case($key, MB_CASE_TITLE);
+                    break;
+                }
+            }
+        }
+        sort($names);
+        return $names;
+    }
+
+    /**
      * Find the 9-digit Alloggiati Web code for an Italian municipality.
      *
      * @param  string      $name      Municipality name (case-insensitive)

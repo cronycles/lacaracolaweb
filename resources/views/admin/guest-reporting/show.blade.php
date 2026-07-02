@@ -2,6 +2,10 @@
 
 @section('title', 'Segnalazione ospiti — Prenotazione #' . $booking->id)
 
+@push('scripts')
+<script>window.COMUNI_VALIDI = @json($comuniNames);</script>
+@endpush
+
 @section('content')
     <div style="margin-bottom:1rem">
         <a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn--outline btn--sm">← Torna alla prenotazione</a>
@@ -120,6 +124,32 @@
 
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="form-label" for="guests_{{ $i }}_nationality_code">Nazionalità *</label>
+                        <select id="guests_{{ $i }}_nationality_code" name="guests[{{ $i }}][nationality_code]"
+                                class="form-input" required>
+                            <option value="">Seleziona</option>
+                            @foreach ($countryCodes as $code => $name)
+                                <option value="{{ $code }}"
+                                        @selected(old("guests.{$i}.nationality_code", $guest->nationality_code) === $code)>
+                                    {{ $code }} - {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error("guests.{$i}.nationality_code") <div class="form-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="form-group">
+                        {{-- birth_date is read from Person.birth_date — shown read-only --}}
+                        <label class="form-label">Data di nascita</label>
+                        <input type="text" class="form-input" readonly
+                               value="{{ $guest->birth_date?->format('d/m/Y') ?? '—' }}"
+                               style="background:#f7f9fa">
+                        <input type="hidden" name="guests[{{ $i }}][birth_date]"
+                               value="{{ $guest->birth_date?->format('Y-m-d') ?? '' }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
                         <label class="form-label" for="guests_{{ $i }}_birth_country_code">Stato di nascita *</label>
                         <select id="guests_{{ $i }}_birth_country_code" name="guests[{{ $i }}][birth_country_code]"
                                 class="form-input" required data-reporting-birth-country>
@@ -153,32 +183,6 @@
                            data-reporting-birth-municipality
                            data-current-value="{{ old("guests.{$i}.birth_municipality", $guest->birth_municipality) }}">
                     @error("guests.{$i}.birth_municipality") <div class="form-error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="guests_{{ $i }}_nationality_code">Nazionalità *</label>
-                        <select id="guests_{{ $i }}_nationality_code" name="guests[{{ $i }}][nationality_code]"
-                                class="form-input" required>
-                            <option value="">Seleziona</option>
-                            @foreach ($countryCodes as $code => $name)
-                                <option value="{{ $code }}"
-                                        @selected(old("guests.{$i}.nationality_code", $guest->nationality_code) === $code)>
-                                    {{ $code }} - {{ $name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error("guests.{$i}.nationality_code") <div class="form-error">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="form-group">
-                        {{-- birth_date is read from Person.birth_date — shown read-only --}}
-                        <label class="form-label">Data di nascita</label>
-                        <input type="text" class="form-input" readonly
-                               value="{{ $guest->birth_date?->format('d/m/Y') ?? '—' }}"
-                               style="background:#f7f9fa">
-                        <input type="hidden" name="guests[{{ $i }}][birth_date]"
-                               value="{{ $guest->birth_date?->format('Y-m-d') ?? '' }}">
-                    </div>
                 </div>
 
                 <div class="form-row">

@@ -8,6 +8,7 @@ use App\Contracts\GuestReportingDriverInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\GuestReport;
+use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Models\Person;
 use App\Services\GuestReporting\GuestRecord;
 use Illuminate\Http\RedirectResponse;
@@ -37,8 +38,9 @@ class GuestReportingController extends Controller
         $lastReport = $prenotazioni->guestReports->sortByDesc('submitted_at')->first();
 
         return view('admin.guest-reporting.show', [
-            'booking'    => $prenotazioni,
-            'lastReport' => $lastReport,
+            'booking'     => $prenotazioni,
+            'lastReport'  => $lastReport,
+            'comuniNames' => ItalianMunicipalities::allValidNames(),
         ]);
     }
 
@@ -111,13 +113,31 @@ class GuestReportingController extends Controller
             'guests.*.tipo_alloggiato'                    => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19', '20'])],
             'guests.*.gender'                             => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['M', 'F'])],
             'guests.*.birth_date'                         => ['required_if:guests.*.include,1', 'nullable', 'date'],
-            'guests.*.birth_municipality'                 => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:100'],
+            'guests.*.birth_municipality'                 => [
+                'required_if:guests.*.include,1', 'nullable', 'string', 'max:100',
+                function ($attribute, $value, $fail) use ($request) {
+                    $idx = explode('.', $attribute)[1];
+                    if ($request->input("guests.{$idx}.birth_country_code") === 'IT'
+                        && filled($value) && ItalianMunicipalities::findCode($value) === null) {
+                        $fail("'{$value}' non è un comune italiano riconosciuto. Selezionare il nome dalla lista.");
+                    }
+                },
+            ],
             'guests.*.birth_province'                     => ['nullable', 'string', 'max:2'],
             'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.document_type'                      => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
             'guests.*.document_number'                    => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:60'],
-            'guests.*.document_issue_place'               => ['nullable', 'string', 'max:100', 'required_if:guests.*.document_issue_country_code,IT'],
+            'guests.*.document_issue_place'               => [
+                'nullable', 'string', 'max:100', 'required_if:guests.*.document_issue_country_code,IT',
+                function ($attribute, $value, $fail) use ($request) {
+                    $idx = explode('.', $attribute)[1];
+                    if ($request->input("guests.{$idx}.document_issue_country_code") === 'IT'
+                        && filled($value) && ItalianMunicipalities::findCode($value) === null) {
+                        $fail("'{$value}' non è un comune italiano riconosciuto per il luogo di rilascio.");
+                    }
+                },
+            ],
             'guests.*.document_issue_country_code'        => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
         ]);
 

@@ -6,16 +6,25 @@
  * the nearest `.a-card` ancestor so each guest row is independent.
  *
  * Birth country logic:
- *  - IT  → show birth_province field; attach datalist for municipality
- *  - other → hide birth_province; plain text municipality; clear value
+ *  - IT  → show birth_province field; attach datalist for municipality; enforce valid comune
+ *  - other → hide birth_province; plain text municipality; clear validity
  *
  * Document issue country logic:
- *  - IT  → show document_issue_place (Italian municipality needed for Alloggiati code)
+ *  - IT  → show document_issue_place; enforce valid comune
  *  - other → hide document_issue_place (country code alone is sufficient)
+ *
+ * window.COMUNI_VALIDI must be set by the Blade view (via @json) before this runs.
+ * If absent, falls back to a short capoluogo list for datalist suggestions only.
  */
 
-// Lightweight list of Italian capoluogo names (enough for the datalist suggestions).
-const ITALIAN_COMUNI: string[] = [
+declare global {
+    interface Window {
+        COMUNI_VALIDI?: string[];
+    }
+}
+
+// Fallback short list (capoluogo only) — used when window.COMUNI_VALIDI is not available.
+const ITALIAN_COMUNI_FALLBACK: string[] = [
     'Agrigento','Alessandria','Ancona','Andora','Aosta','Arezzo','Ascoli Piceno',
     'Asti','Avellino','Bari','Barletta','Belluno','Benevento','Bergamo','Biella',
     'Bologna','Bolzano','Brescia','Brindisi','Cagliari','Caltanissetta','Campobasso',
@@ -33,12 +42,13 @@ const ITALIAN_COMUNI: string[] = [
     'Vicenza','Viterbo',
 ];
 
-/** Create the shared comuni datalist once and attach it to the document body. */
+/** Create the shared comuni datalist once (full list from server when available). */
 function ensureComuni(): void {
     if (document.getElementById('comuni-datalist')) return;
+    const names = window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
     const dl = document.createElement('datalist');
     dl.id = 'comuni-datalist';
-    ITALIAN_COMUNI.forEach((name) => {
+    names.forEach((name) => {
         const opt = document.createElement('option');
         opt.value = name;
         dl.appendChild(opt);
@@ -46,17 +56,34 @@ function ensureComuni(): void {
     document.body.appendChild(dl);
 }
 
+/** Lazy-built Set of lowercase valid comune names for O(1) lookups. */
+let _validSet: Set<string> | null = null;
+function getValidSet(): Set<string> {
+    if (_validSet) return _validSet;
+    const names = window.COMUNI_VALIDI ?? ITALIAN_COMUNI_FALLBACK;
+    _validSet = new Set(names.map((n) => n.toLowerCase()));
+    return _validSet;
+}
+
+/** Update setCustomValidity on a municipality input based on current country. */
+function validateMunicipality(input: HTMLInputElement, countryCode: string): void {
+    const val = input.value.trim();
+    if (countryCode !== 'IT' || val === '') {
+        input.setCustomValidity('');
+        return;
+    }
+    const valid = getValidSet().has(val.toLowerCase());
+    input.setCustomValidity(
+        valid ? '' : `"${val}" non è un comune italiano valido. Selezionare il nome dalla lista.`,
+    );
+}
+
 /**
  * Initialise birth-country → municipality/province logic for every guest row.
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
- * Looks for:
- *   [data-reporting-birth-country]   — the country <select>
- *   [data-reporting-birth-municipality] — the municipality <input>
- *   [data-birth-province-group]      — wrapper div to show/hide province field
  */
 function initPeopleReportingFields(): void {
     document.querySelectorAll<HTMLSelectElement>('[data-reporting-birth-country]').forEach((countrySelect) => {
-        // Scope to the nearest card so each guest row is independent.
         const card = countrySelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
         const municipalityInput = card.querySelector<HTMLInputElement>('[data-reporting-birth-municipality]');
         const provinceGroup     = card.querySelector<HTMLElement>('[data-birth-province-group]');
@@ -68,7 +95,7 @@ function initPeopleReportingFields(): void {
 
             if (provinceGroup) provinceGroup.style.display = isItaly ? '' : 'none';
 
-            // Update the associated <label> text if present
+            // Update the associated <label> text
             const label = municipalityInput!.labels?.[0] as HTMLLabelElement | undefined;
             if (label) {
                 const hasAsterisk = label.textContent?.trimEnd().endsWith('*') ?? false;
@@ -83,14 +110,24 @@ function initPeopleReportingFields(): void {
             } else {
                 municipalityInput!.removeAttribute('list');
             }
+
+            // Re-run validation when country changes
+            validateMunicipality(municipalityInput!, countryCode);
         }
 
-        // Set initial state
+        // Validate on blur so user sees the error immediately after leaving the field
+        municipalityInput.addEventListener('blur', () => {
+            validateMunicipality(municipalityInput, countrySelect.value);
+        });
+        // Clear validity while the user is typing so the browser tooltip doesn't flicker
+        municipalityInput.addEventListener('input', () => {
+            municipalityInput.setCustomValidity('');
+        });
+
         update(countrySelect.value);
 
         countrySelect.addEventListener('change', () => {
             update(countrySelect.value);
-            // Clear stale Italian comune name when switching away from IT
             if (countrySelect.value !== 'IT') {
                 municipalityInput!.value = '';
             }
@@ -103,10 +140,6 @@ export { initPeopleReportingFields };
 /**
  * Initialise document-issue-country → issue-place logic for every guest row.
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.
- * Looks for:
- *   [data-reporting-issue-country]      — the issue country <select>
- *   [data-document-issue-place-group]   — wrapper div to show/hide the place field
- *   [data-reporting-issue-municipality] — the issue place <input>
  */
 function initDocumentIssueFields(): void {
     document.querySelectorAll<HTMLSelectElement>('[data-reporting-issue-country]').forEach((issueCountrySelect) => {
@@ -128,7 +161,17 @@ function initDocumentIssueFields(): void {
                     issuePlaceInput.removeAttribute('list');
                     issuePlaceInput.value = '';
                 }
+                validateMunicipality(issuePlaceInput, countryCode);
             }
+        }
+
+        if (issuePlaceInput) {
+            issuePlaceInput.addEventListener('blur', () => {
+                validateMunicipality(issuePlaceInput, issueCountrySelect.value);
+            });
+            issuePlaceInput.addEventListener('input', () => {
+                issuePlaceInput.setCustomValidity('');
+            });
         }
 
         update(issueCountrySelect.value);
@@ -138,3 +181,4 @@ function initDocumentIssueFields(): void {
 }
 
 export { initDocumentIssueFields };
+
