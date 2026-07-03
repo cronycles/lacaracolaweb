@@ -194,7 +194,7 @@
                             <input type="hidden" name="income_paid" value="0">
                             <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
                                    @checked(old('income_paid', $booking->income_paid ?? false))>
-                            <span>Incasso pagato</span>
+                            <span>Incasso ricevuto</span>
                         </label>
                         <div class="payment-table__date">
                             <input type="date" id="income_paid_at" name="income_paid_at" class="form-input"
