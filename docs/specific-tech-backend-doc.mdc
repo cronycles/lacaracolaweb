@@ -179,6 +179,11 @@ Comunicazione obbligatoria degli ospiti alla Polizia di Stato tramite SOAP.
 ### Regole chiave
 - Il driver riceve solo `GuestRecord[]` — non tocca mai modelli Eloquent.
 - `GuestRecord` richiede `arrivalDate` (`d/m/Y` da `$booking->checkin->format('d/m/Y')`) e `stayNights` (da `$booking->nights`).
+- **Tipo alloggiato — assegnazione automatica (non modificabile dall'utente):**
+  - 1 solo ospite → `16` (Ospite singolo)
+  - Più ospiti, primo ospite (capogruppo, `$i === 0`) → `18` (Capo gruppo)
+  - Più ospiti, ospiti successivi → `20` (Membro gruppo)
+  - Il campo è reso `disabled` nel form; il valore viene inviato tramite un `<input type="hidden">`.
 - Tipo alloggiato `19` e `20`: i campi documento nel record vengono scritti come spazi dal driver (anche se il form li raccoglie).
 - Nascita estera: comune e provincia restano spazi; solo `statoBirth` (9-digit da `stati.csv`) è obbligatorio.
 - `ElencoSchedine` SOAP: deve essere `['string' => [$rec1, ...]]` — mai una stringa concatenata.
