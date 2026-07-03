@@ -102,10 +102,10 @@ class BookingController extends Controller
     {
         $prenotazioni->load('person', 'additionalGuests');
 
-        // People that can be added as additional guests (exclude the primary guest)
-        $selectablePeople = Person::orderBy('last_name')
+        // People selectable as additional guests: never in any booking, or previously with this capogruppo
+        $selectablePeople = Person::selectableForCapogruppo($prenotazioni->person_id)
+            ->orderBy('last_name')
             ->orderBy('first_name')
-            ->where('id', '!=', $prenotazioni->person_id)
             ->get();
 
         return view('admin.bookings.show', [

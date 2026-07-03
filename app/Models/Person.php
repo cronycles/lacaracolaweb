@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Person extends Model
 {
@@ -149,5 +151,54 @@ class Person extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Scope: persone selezionabili come ospiti aggiuntivi per una prenotazione.
+     * Mostra solo:
+     *   (1) persone mai legate a nessuna prenotazione, oppure
+     *   (2) persone che hanno già condiviso una prenotazione con il capogruppo indicato.
+     */
+    public function scopeSelectableForCapogruppo(Builder $query, int $capoId): Builder
+    {
+        // Booking in cui il capogruppo era primary guest
+        $capoAsCapoIds = Booking::where('person_id', $capoId)->pluck('id');
+
+        // Booking in cui il capogruppo era ospite aggiunto
+        $capoAsGuestIds = DB::table('booking_person')
+            ->where('person_id', $capoId)
+            ->pluck('booking_id');
+
+        $capoBookingIds = $capoAsCapoIds->merge($capoAsGuestIds)->unique()->values();
+
+        // Persone che hanno condiviso quelle prenotazioni (escluso il capogruppo stesso)
+        $relatedIds = collect();
+        if ($capoBookingIds->isNotEmpty()) {
+            $relatedIds = $relatedIds->merge(
+                Booking::whereIn('id', $capoBookingIds)
+                    ->where('person_id', '!=', $capoId)
+                    ->pluck('person_id')
+            );
+            $relatedIds = $relatedIds->merge(
+                DB::table('booking_person')
+                    ->whereIn('booking_id', $capoBookingIds)
+                    ->where('person_id', '!=', $capoId)
+                    ->pluck('person_id')
+            );
+            $relatedIds = $relatedIds->unique()->values();
+        }
+
+        return $query->where('id', '!=', $capoId)
+            ->where(function (Builder $q) use ($relatedIds): void {
+                // Mai in nessuna prenotazione (né come capogruppo né come ospite)
+                $q->where(function (Builder $inner): void {
+                    $inner->whereDoesntHave('bookings')
+                          ->whereNotIn('id', DB::table('booking_person')->select('person_id'));
+                });
+                // Oppure ha già condiviso una prenotazione con questo capogruppo
+                if ($relatedIds->isNotEmpty()) {
+                    $q->orWhereIn('id', $relatedIds);
+                }
+            });
     }
 }

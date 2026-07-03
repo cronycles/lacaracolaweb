@@ -39,9 +39,9 @@ class GuestReportingController extends Controller
 
         $lastReport = $prenotazioni->guestReports->sortByDesc('submitted_at')->first();
 
-        $selectablePeople = Person::orderBy('last_name')
+        $selectablePeople = Person::selectableForCapogruppo($prenotazioni->person_id)
+            ->orderBy('last_name')
             ->orderBy('first_name')
-            ->where('id', '!=', $prenotazioni->person_id)
             ->get();
 
         return view('admin.guest-reporting.show', [
