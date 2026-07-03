@@ -255,15 +255,19 @@
                     @if(auth()->user()->hasPermission('view_accounting'))
                     @if ($booking->total_expenses !== null)
                         <tr>
-                            <th>Totale uscite</th>
-                            <td>€ {{ number_format($booking->total_expenses, 2, ',', '.') }}</td>
+                            <th>Pulizie / Biancheria</th>
+                            <td>
+                                <span style="font-size:.85rem;color:#6b7f89" title="Importo raccolto dall'ospite e pagato al fornitore (passaggio). Non incide sul saldo netto.">
+                                    € {{ number_format($booking->total_expenses, 2, ',', '.') }} (pass-through)
+                                </span>
+                            </td>
                         </tr>
                     @endif
-                    @if ($booking->income_amount !== null && $booking->total_expenses !== null)
+                    @if ($booking->income_amount !== null)
                         <tr>
                             <th>Saldo netto</th>
                             <td>
-                                @php $net = (float)$booking->income_amount + (float)($booking->parking_amount ?? 0) - $booking->total_expenses; @endphp
+                                @php $net = (float)$booking->income_amount + (float)($booking->parking_amount ?? 0); @endphp
                                 <strong style="color:{{ $net >= 0 ? '#2e7d32' : '#c62828' }}">
                                     € {{ number_format($net, 2, ',', '.') }}
                                 </strong>

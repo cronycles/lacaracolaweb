@@ -39,7 +39,8 @@ class DashboardController extends Controller
         $extraIncome   = FinancialEntry::where('type', 'income')->whereYear('entry_date', $year)->sum('amount');
         $extraExpenses = FinancialEntry::where('type', 'expense')->whereYear('entry_date', $year)->sum('amount');
 
-        $totalIncome   = $bookingIncome + $parkingIncome + $extraIncome;
+        // bookingExpenses = cleaning+linen paid = same amounts collected from guests (pass-through)
+        $totalIncome   = $bookingIncome + $parkingIncome + $bookingExpenses + $extraIncome;
         $totalExpenses = $bookingExpenses + $extraExpenses;
 
         // Cumulative all-time balance (no year filter)
@@ -61,7 +62,8 @@ class DashboardController extends Controller
         $globalExtraIncome   = FinancialEntry::where('type', 'income')->sum('amount');
         $globalExtraExpenses = FinancialEntry::where('type', 'expense')->sum('amount');
 
-        $globalBalance = ($globalBookingIncome + $globalParkingIncome + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
+        // globalBookingExpenses = all-time cleaning+linen paid = same amounts collected (pass-through)
+        $globalBalance = ($globalBookingIncome + $globalParkingIncome + $globalBookingExpenses + $globalExtraIncome) - ($globalBookingExpenses + $globalExtraExpenses);
 
         $stats = [
             'total_bookings'   => Booking::count(),

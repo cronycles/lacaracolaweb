@@ -67,7 +67,7 @@ class TaxDeclarationController extends Controller
             ->sum('amount');
 
         $totals = [
-            'income'   => (float) $incomeFromBookings + (float) $parkingFromBookings + (float) $extraIncome,
+            'income'   => (float) $incomeFromBookings + (float) $parkingFromBookings + (float) $cleaningFromBookings + (float) $linenFromBookings + (float) $extraIncome,
             'expenses' => (float) $cleaningFromBookings + (float) $linenFromBookings + (float) $extraExpenses,
         ];
 
@@ -166,6 +166,22 @@ class TaxDeclarationController extends Controller
             $date = $booking->services_paid_at ?? $booking->checkout;
             $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
                 . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            // Income: cleaning fee collected from guest (pass-through)
+            $movements->push([
+                'date'           => $date,
+                'type'           => 'income',
+                'category_label' => 'Pulizie (incasso)',
+                'description'    => $desc,
+                'amount'         => (float) $booking->cleaning_amount,
+                'included'       => (bool) $booking->cleaning_paid,
+                'source'         => 'booking',
+                'entry'          => null,
+                'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
+            ]);
+            // Expense: cleaning fee paid to cleaner (pass-through)
             $movements->push([
                 'date'           => $date,
                 'type'           => 'expense',
@@ -194,6 +210,22 @@ class TaxDeclarationController extends Controller
             $date = $booking->services_paid_at ?? $booking->checkout;
             $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
                 . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            // Income: linen fee collected from guest (pass-through)
+            $movements->push([
+                'date'           => $date,
+                'type'           => 'income',
+                'category_label' => 'Biancheria (incasso)',
+                'description'    => $desc,
+                'amount'         => (float) $booking->linen_amount,
+                'included'       => (bool) $booking->linen_paid,
+                'source'         => 'booking',
+                'entry'          => null,
+                'booking_id'     => $booking->id,
+                'model_type'     => 'booking',
+                'model_id'       => $booking->id,
+                'attachments'    => $booking->attachments,
+            ]);
+            // Expense: linen fee paid to provider (pass-through)
             $movements->push([
                 'date'           => $date,
                 'type'           => 'expense',
