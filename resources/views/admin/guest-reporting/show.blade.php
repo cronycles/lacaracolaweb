@@ -105,10 +105,9 @@
 
         @foreach ($guests as $i => $guest)
             @php
-                $isFirst = $i === 0;
-                $defaultTipo = ($guest->birth_country_code === 'IT' || $guest->nationality_code === 'IT')
-                    ? ($isFirst ? '16' : '17')
-                    : ($isFirst ? '18' : '19');
+                $isFirst    = $i === 0;
+                $isSingle   = $guests->count() === 1;
+                $defaultTipo = $isSingle ? '16' : ($isFirst ? '18' : '20');
                 $activeTipo  = old("guests.{$i}.tipo_alloggiato", $defaultTipo);
                 $requiresDoc = in_array($activeTipo, ['16', '17', '18'], true);
             @endphp
@@ -135,18 +134,19 @@
 
                 <div class="form-row">
                     <div class="form-group" style="flex:2">
-                        <label class="form-label" for="guests_{{ $i }}_tipo_alloggiato">Tipo alloggiato *</label>
-                        <select id="guests_{{ $i }}_tipo_alloggiato" name="guests[{{ $i }}][tipo_alloggiato]"
-                                class="form-input" required
+                        <label class="form-label" for="guests_{{ $i }}_tipo_alloggiato">Tipo alloggiato</label>
+                        <select id="guests_{{ $i }}_tipo_alloggiato"
+                                class="form-input" disabled
                                 data-tipo-alloggiato-select>
                             @foreach ($guestTypes as $guestType)
                                 <option value="{{ $guestType->code }}"
-                                        @selected(old("guests.{$i}.tipo_alloggiato", $defaultTipo) === $guestType->code)>
+                                        @selected($activeTipo === $guestType->code)>
                                     {{ $guestType->code }} — {{ $guestType->name_it }}
                                     @unless($guestType->requires_document) (doc non obbligatori) @endunless
                                 </option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="guests[{{ $i }}][tipo_alloggiato]" value="{{ $activeTipo }}">
                         @error("guests.{$i}.tipo_alloggiato") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
