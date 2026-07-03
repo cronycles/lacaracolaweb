@@ -188,15 +188,15 @@
                 <tbody>
                     @if(auth()->user()->hasPermission('view_accounting'))
                     <tr>
-                        <th style="width:160px">Incasso totale ricevuto</th>
+                        <th style="width:160px">Incasso ricevuto</th>
                         <td>
                             @if ($booking->income_amount !== null)
                                 <span class="badge badge--{{ $booking->income_paid ? 'paid' : 'unpaid' }}"
-                                      title="{{ $booking->income_paid ? 'Pagato' : 'Da pagare' }}">
+                                      title="{{ $booking->income_paid ? 'Incassato' : 'Da incassare' }}">
                                     € {{ number_format((float)$booking->income_amount, 2, ',', '.') }}
                                 </span>
                                 <span style="font-size:.8rem;color:#6b7f89;margin-left:.35rem">
-                                    {{ $booking->income_paid ? 'Pagato' : 'Da pagare' }}
+                                    {{ $booking->income_paid ? 'Incassato' : 'Da incassare' }}
                                 </span>
                             @else
                                 <span style="color:#6b7f89">—</span>
@@ -310,7 +310,7 @@
                                 @else
                                     <span style="color:#9e9e9e;font-size:1rem">✗</span>
                                 @endif
-                                Incasso Totale
+                                Incasso Ricevuto
                                 <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }})</span>
                             </span>
                         @endif
