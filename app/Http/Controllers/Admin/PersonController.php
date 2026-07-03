@@ -44,7 +44,20 @@ class PersonController extends Controller
             ]));
         }
 
-        $people = $query->orderBy('last_name')->paginate(25)->withQueryString();
+        $filter = $request->input('filter', '');
+
+        if ($filter === 'capogruppo') {
+            $query->whereHas('bookings');
+        } elseif ($filter === 'aggiuntivi') {
+            $query->whereDoesntHave('bookings')
+                  ->whereIn('id', \Illuminate\Support\Facades\DB::table('booking_person')->select('person_id'));
+        }
+
+        $people = $query
+            ->withCount('bookings')
+            ->orderBy('last_name')
+            ->paginate(25)
+            ->withQueryString();
 
         // Prevent false "empty" pages when query string contains an out-of-range page.
         if ($people->isEmpty() && $people->total() > 0 && $people->currentPage() > 1) {
@@ -52,11 +65,14 @@ class PersonController extends Controller
             if ($search !== '') {
                 $params['q'] = $search;
             }
+            if ($filter !== '') {
+                $params['filter'] = $filter;
+            }
 
             return redirect()->route('admin.people.index', $params);
         }
 
-        return view('admin.people.index', compact('people'));
+        return view('admin.people.index', compact('people', 'filter'));
     }
 
     public function create(): View
