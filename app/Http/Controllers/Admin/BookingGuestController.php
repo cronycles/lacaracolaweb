@@ -26,6 +26,12 @@ class BookingGuestController extends Controller
             return back()->with('error', 'Questo ospite è già il capogruppo della prenotazione.');
         }
 
+        // Prevent exceeding the total number of guests (1 primary + additional guests)
+        $currentTotal = 1 + $prenotazioni->additionalGuests()->count();
+        if ($currentTotal >= $prenotazioni->total_guests) {
+            return back()->with('error', "Non è possibile aggiungere altri ospiti: la prenotazione prevede al massimo {$prenotazioni->total_guests} persone.");
+        }
+
         // Sync avoids duplicates
         $prenotazioni->additionalGuests()->syncWithoutDetaching([$person->id]);
 
