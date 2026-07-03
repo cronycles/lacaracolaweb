@@ -151,28 +151,32 @@
                     @error('person_id')
                         <div class="alert alert--error" style="margin-bottom:.5rem;font-size:.85rem">{{ $message }}</div>
                     @enderror
-                    <form method="POST" action="{{ route('admin.bookings.guests.store', $booking) }}"
-                          style="display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap">
-                        @csrf
-                        <div class="form-group" style="flex:1;min-width:200px;margin:0">
-                            <label class="form-label" for="guest-person-add" style="font-size:.8rem">Aggiungi ospite esistente</label>
-                            <select id="guest-person-add" name="person_id" class="form-input" style="font-size:.875rem" required>
-                                <option value="">— seleziona —</option>
-                                @foreach ($selectablePeople as $p)
-                                    @unless ($booking->additionalGuests->contains('id', $p->id))
-                                        <option value="{{ $p->id }}">{{ $p->full_name }}</option>
-                                    @endunless
-                                @endforeach
-                            </select>
+                    @if((1 + $booking->additionalGuests->count()) < $booking->total_guests)
+                        <form method="POST" action="{{ route('admin.bookings.guests.store', $booking) }}"
+                              style="display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap">
+                            @csrf
+                            <div class="form-group" style="flex:1;min-width:200px;margin:0">
+                                <label class="form-label" for="guest-person-add" style="font-size:.8rem">Aggiungi ospite esistente</label>
+                                <select id="guest-person-add" name="person_id" class="form-input" style="font-size:.875rem" required>
+                                    <option value="">— seleziona —</option>
+                                    @foreach ($selectablePeople as $p)
+                                        @unless ($booking->additionalGuests->contains('id', $p->id))
+                                            <option value="{{ $p->id }}">{{ $p->full_name }}</option>
+                                        @endunless
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn--outline btn--sm" style="white-space:nowrap">+ Aggiungi</button>
+                        </form>
+                        <div style="margin-top:.5rem;font-size:.85rem">
+                            <a href="{{ route('admin.people.create', ['attach_booking_id' => $booking->id]) }}"
+                               style="color:#30596C">
+                                + Crea nuovo ospite e aggiungilo a questa prenotazione
+                            </a>
                         </div>
-                        <button type="submit" class="btn btn--outline btn--sm" style="white-space:nowrap">+ Aggiungi</button>
-                    </form>
-                    <div style="margin-top:.5rem;font-size:.85rem">
-                        <a href="{{ route('admin.people.create', ['attach_booking_id' => $booking->id]) }}"
-                           style="color:#30596C">
-                            + Crea nuovo ospite e aggiungilo a questa prenotazione
-                        </a>
-                    </div>
+                    @else
+                        <p style="font-size:.85rem;color:#666;margin:0">Numero massimo di ospiti raggiunto ({{ $booking->total_guests }} persone).</p>
+                    @endif
                 </div>
             @endif
         </div>
