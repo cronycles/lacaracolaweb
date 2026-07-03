@@ -343,17 +343,21 @@ class FinancialEntryController extends Controller
 
         $availableYears = $this->availableYears();
 
+        // Only include bookings that have already started (checkin <= today)
         $cleaningUnpaid = Booking::whereNull('canceled_at')
+            ->whereDate('checkin', '<=', today())
             ->whereNotNull('cleaning_amount')
             ->where('cleaning_paid', false)
             ->sum('cleaning_amount');
 
         $linenUnpaid = Booking::whereNull('canceled_at')
+            ->whereDate('checkin', '<=', today())
             ->whereNotNull('linen_amount')
             ->where('linen_paid', false)
             ->sum('linen_amount');
 
         $parkingUnpaid = Booking::whereNull('canceled_at')
+            ->whereDate('checkin', '<=', today())
             ->whereNotNull('parking_amount')
             ->where('parking_paid', false)
             ->sum('parking_amount');

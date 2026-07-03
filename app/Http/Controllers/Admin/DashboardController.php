@@ -106,15 +106,19 @@ class DashboardController extends Controller
             })(),
 
             // Cleaning / linen payment summary (visible to all with view_bookings)
+            // Only include bookings that have already started (checkin <= today)
             'cleaning_unpaid'  => Booking::whereNull('canceled_at')
+                                         ->whereDate('checkin', '<=', today())
                                          ->whereNotNull('cleaning_amount')
                                          ->where('cleaning_paid', false)
                                          ->sum('cleaning_amount'),
             'linen_unpaid'     => Booking::whereNull('canceled_at')
+                                         ->whereDate('checkin', '<=', today())
                                          ->whereNotNull('linen_amount')
                                          ->where('linen_paid', false)
                                          ->sum('linen_amount'),
             'parking_unpaid'   => Booking::whereNull('canceled_at')
+                                         ->whereDate('checkin', '<=', today())
                                          ->whereNotNull('parking_amount')
                                          ->where('parking_paid', false)
                                          ->sum('parking_amount'),
