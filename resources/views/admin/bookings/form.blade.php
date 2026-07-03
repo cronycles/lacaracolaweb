@@ -141,7 +141,7 @@
 
                 <div class="form-row form-row--2col">
                     <div class="form-group">
-                        <label class="form-label" for="income_amount">Incasso ricevuto (€)</label>
+                        <label class="form-label" for="income_amount">Incasso totale ricevuto (€)</label>
                         <input type="number" id="income_amount" name="income_amount" class="form-input"
                                value="{{ old('income_amount', $booking->income_amount) }}"
                                min="0" max="99999.99" step="0.01" placeholder="es. 850.00">
