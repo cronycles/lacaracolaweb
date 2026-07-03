@@ -235,4 +235,21 @@ class GuestReportingController extends Controller
 
         return $guestRecords;
     }
+
+    /** Delete one or more guest report history rows belonging to the given booking. */
+    public function destroyReports(Request $request, Booking $prenotazioni): RedirectResponse
+    {
+        $data = $request->validate([
+            'report_ids'   => ['required', 'array', 'min:1'],
+            'report_ids.*' => ['required', 'integer'],
+        ]);
+
+        GuestReport::where('booking_id', $prenotazioni->id)
+            ->whereIn('id', $data['report_ids'])
+            ->delete();
+
+        return redirect()
+            ->route('admin.guest-reporting.show', $prenotazioni)
+            ->with('success', 'Righe eliminate dallo storico.');
+    }
 }

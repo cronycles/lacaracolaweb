@@ -33,14 +33,6 @@
         </div>
     </div>
 
-    {{-- Flash messages --}}
-    @if (session('success'))
-        <div class="alert alert--success" style="margin-bottom:1rem">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert--error" style="margin-bottom:1rem">{{ session('error') }}</div>
-    @endif
-
     {{-- Missing guests warning --}}
     @if ($missingCount > 0)
         <div class="a-card" style="margin-bottom:1.25rem;border-color:#f59e0b;background:#fffbeb">
@@ -71,27 +63,6 @@
                        style="color:#30596C">+ Crea nuovo ospite e aggiungilo a questa prenotazione</a>
                 </div>
             @endif
-        </div>
-    @endif
-
-    {{-- Per-row SOAP details (shown after test/send) --}}
-    @if (session('row_details') && count(session('row_details')) > 0)
-        <div class="a-card" style="margin-bottom:1.25rem">
-            <div class="a-card__title">Dettaglio risposta per riga</div>
-            <table class="a-table">
-                <thead>
-                    <tr><th>Riga</th><th>Esito</th><th>Descrizione</th></tr>
-                </thead>
-                <tbody>
-                    @foreach (session('row_details') as $row)
-                        <tr>
-                            <td>{{ $row['row'] }}</td>
-                            <td>{{ $row['esito'] }}</td>
-                            <td>{{ $row['descrizione'] }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
         </div>
     @endif
 
@@ -300,52 +271,83 @@
 
     {{-- Submission history for this booking --}}
     @if ($booking->guestReports->isNotEmpty())
-        <div class="a-card" style="margin-top:2rem">
-            <div class="a-card__title">Storico invii per questa prenotazione</div>
-            <table class="a-table">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Modalità</th>
-                        <th>Stato</th>
-                        <th>N° ospiti</th>
-                        <th>Messaggio / Risposta servizio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($booking->guestReports->sortByDesc('submitted_at') as $report)
+        <form method="POST" action="{{ route('admin.guest-reporting.reports.destroy', $booking) }}"
+              id="storico-delete-form">
+            @csrf
+            @method('DELETE')
+            <div class="a-card" style="margin-top:2rem">
+                <div class="a-card__title" style="display:flex;justify-content:space-between;align-items:center">
+                    <span>Storico invii per questa prenotazione</span>
+                    <button type="submit" form="storico-delete-form" class="btn btn--outline btn--sm"
+                            style="color:#dc2626;border-color:#dc2626"
+                            onclick="return document.querySelectorAll('#storico-delete-form input[name=\'report_ids[]\']:checked').length > 0 || (alert('Seleziona almeno una riga.'), false)">
+                        Elimina selezionati
+                    </button>
+                </div>
+                <table class="a-table">
+                    <thead>
                         <tr>
-                            <td style="white-space:nowrap">{{ $report->submitted_at->format('d/m/Y H:i') }}</td>
-                            <td>
-                                @if ($report->mode === 'test')
-                                    <span class="badge badge--outline">Test</span>
-                                @else
-                                    <span class="badge badge--primary">Invio</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($report->status === 'success')
-                                    <span class="badge badge--success">Successo</span>
-                                @else
-                                    <span class="badge badge--error">Errore</span>
-                                @endif
-                            </td>
-                            <td style="text-align:center">{{ $report->guests_count }}</td>
-                            <td style="font-size:.8rem">
-                                @if ($report->error_message)
-                                    <div style="margin-bottom:.35rem">{{ $report->error_message }}</div>
-                                @endif
-                                @if ($report->soap_response)
-                                    <details>
-                                        <summary style="cursor:pointer;color:#30596C;font-size:.78rem">Risposta completa servizio</summary>
-                                        <pre style="margin:.4rem 0 0;padding:.5rem;background:#f5f8fa;border-radius:4px;font-size:.72rem;overflow-x:auto;max-width:480px;white-space:pre-wrap;word-break:break-all">{{ json_encode($report->soap_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                                    </details>
-                                @endif
-                            </td>
+                            <th style="width:2rem">
+                                <input type="checkbox" id="storico-select-all"
+                                       style="width:1rem;height:1rem;cursor:pointer"
+                                       title="Seleziona tutto">
+                            </th>
+                            <th>Data</th>
+                            <th>Modalità</th>
+                            <th>Stato</th>
+                            <th>N° ospiti</th>
+                            <th>Messaggio / Risposta servizio</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($booking->guestReports->sortByDesc('submitted_at') as $report)
+                            <tr>
+                                <td style="text-align:center">
+                                    <input type="checkbox" name="report_ids[]" value="{{ $report->id }}"
+                                           style="width:1rem;height:1rem;cursor:pointer">
+                                </td>
+                                <td style="white-space:nowrap">{{ $report->submitted_at->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    @if ($report->mode === 'test')
+                                        <span class="badge badge--outline">Test</span>
+                                    @else
+                                        <span class="badge badge--primary">Invio</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($report->status === 'success')
+                                        <span class="badge badge--success">Successo</span>
+                                    @else
+                                        <span class="badge badge--error">Errore</span>
+                                    @endif
+                                </td>
+                                <td style="text-align:center">{{ $report->guests_count }}</td>
+                                <td style="font-size:.8rem">
+                                    @if ($report->error_message)
+                                        <div style="margin-bottom:.35rem">{{ $report->error_message }}</div>
+                                    @endif
+                                    @if ($report->soap_response)
+                                        <details>
+                                            <summary style="cursor:pointer;color:#30596C;font-size:.78rem">Risposta completa servizio</summary>
+                                            <pre style="margin:.4rem 0 0;padding:.5rem;background:#f5f8fa;border-radius:4px;font-size:.72rem;overflow-x:auto;max-width:480px;white-space:pre-wrap;word-break:break-all">{{ json_encode($report->soap_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                        </details>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <script>
+            (function () {
+                var selectAll = document.getElementById('storico-select-all');
+                if (!selectAll) return;
+                selectAll.addEventListener('change', function () {
+                    document.querySelectorAll('#storico-delete-form input[name="report_ids[]"]')
+                        .forEach(function (cb) { cb.checked = selectAll.checked; });
+                });
+            })();
+        </script>
     @endif
 @endsection

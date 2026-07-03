@@ -84,6 +84,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/prenotazioni/{prenotazioni}/guest-reporting', [GuestReportingController::class, 'show'])->name('guest-reporting.show');
         Route::post('/prenotazioni/{prenotazioni}/guest-reporting/test', [GuestReportingController::class, 'saveAndTest'])->name('guest-reporting.test');
         Route::post('/prenotazioni/{prenotazioni}/guest-reporting/send', [GuestReportingController::class, 'saveAndSend'])->name('guest-reporting.send');
+        Route::delete('/prenotazioni/{prenotazioni}/guest-reporting/reports', [GuestReportingController::class, 'destroyReports'])->name('guest-reporting.reports.destroy');
 
         // ── Booking additional guests (pivot) ────────────────────────────────
         Route::post('/prenotazioni/{prenotazioni}/ospiti', [BookingGuestController::class, 'store'])->name('bookings.guests.store');
