@@ -32,8 +32,8 @@ return [
      */
     'tax_declaration_defaults' => [
         'income'   => true,
-        'cleaning' => true,
-        'linen'    => true,
+        'cleaning' => false,
+        'linen'    => false,
         'parking'  => false,
     ],
 ];
