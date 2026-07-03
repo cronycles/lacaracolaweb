@@ -28,7 +28,7 @@
             <div><strong>Notti:</strong> {{ $booking->nights }}</div>
             <div>
                 <strong>Persone:</strong> {{ $totalPeople }}
-                (adulti: {{ $booking->adults }}@if(($booking->children ?? 0) > 0), bambini: {{ $booking->children }}@endif@if(($booking->babies ?? 0) > 0), neonati: {{ $booking->babies }}@endif)
+                (adulti: {{ $booking->adults }}{{ ($booking->children ?? 0) > 0 ? ', bambini: ' . $booking->children : '' }}{{ ($booking->babies ?? 0) > 0 ? ', neonati: ' . $booking->babies : '' }})
             </div>
         </div>
     </div>
