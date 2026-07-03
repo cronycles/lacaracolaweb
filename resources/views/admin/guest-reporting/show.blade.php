@@ -12,6 +12,12 @@
         <a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn--outline btn--sm">← Torna alla prenotazione</a>
     </div>
 
+    @php
+        $allGuestsCount = $booking->allGuests()->count();
+        $missingCount   = $booking->total_guests - $allGuestsCount;
+        $totalPeople    = $booking->adults + ($booking->children ?? 0) + ($booking->babies ?? 0);
+    @endphp
+
     {{-- Booking summary --}}
     <div class="a-card" style="margin-bottom:1.25rem">
         <div class="a-card__title">Prenotazione #{{ $booking->id }}</div>
@@ -20,7 +26,10 @@
             <div><strong>Arrivo:</strong> {{ $booking->checkin->format('d/m/Y') }}</div>
             <div><strong>Partenza:</strong> {{ $booking->checkout->format('d/m/Y') }}</div>
             <div><strong>Notti:</strong> {{ $booking->nights }}</div>
-            <div><strong>Adulti:</strong> {{ $booking->adults }}</div>
+            <div>
+                <strong>Persone:</strong> {{ $totalPeople }}
+                (adulti: {{ $booking->adults }}@if(($booking->children ?? 0) > 0), bambini: {{ $booking->children }}@endif@if(($booking->babies ?? 0) > 0), neonati: {{ $booking->babies }}@endif)
+            </div>
         </div>
     </div>
 
@@ -30,6 +39,39 @@
     @endif
     @if (session('error'))
         <div class="alert alert--error" style="margin-bottom:1rem">{{ session('error') }}</div>
+    @endif
+
+    {{-- Missing guests warning --}}
+    @if ($missingCount > 0)
+        <div class="a-card" style="margin-bottom:1.25rem;border-color:#f59e0b;background:#fffbeb">
+            <div style="font-weight:600;color:#92400e;margin-bottom:.5rem">⚠️ Ospiti mancanti: {{ $missingCount }} person{{ $missingCount === 1 ? 'a' : 'e' }}</div>
+            <p style="font-size:.875rem;color:#78350f;margin-bottom:.75rem">
+                Sono presenti {{ $allGuestsCount }} ospiti su {{ $booking->total_guests }} previsti.
+                Non è possibile testare né inviare finché non vengono aggiunti tutti gli ospiti.
+            </p>
+            @if(auth()->user()->hasPermission('manage_bookings'))
+                <form method="POST" action="{{ route('admin.bookings.guests.store', $booking) }}"
+                      style="display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap">
+                    @csrf
+                    <div class="form-group" style="flex:1;min-width:200px;margin:0">
+                        <label class="form-label" for="missing-guest-add" style="font-size:.8rem">Aggiungi ospite esistente</label>
+                        <select id="missing-guest-add" name="person_id" class="form-input" style="font-size:.875rem" required>
+                            <option value="">— seleziona —</option>
+                            @foreach ($selectablePeople as $p)
+                                @unless ($booking->additionalGuests->contains('id', $p->id))
+                                    <option value="{{ $p->id }}">{{ $p->full_name }}</option>
+                                @endunless
+                            @endforeach
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn--outline btn--sm" style="white-space:nowrap">+ Aggiungi</button>
+                </form>
+                <div style="margin-top:.5rem;font-size:.85rem">
+                    <a href="{{ route('admin.people.create', ['attach_booking_id' => $booking->id]) }}"
+                       style="color:#30596C">+ Crea nuovo ospite e aggiungilo a questa prenotazione</a>
+                </div>
+            @endif
+        </div>
     @endif
 
     {{-- Per-row SOAP details (shown after test/send) --}}
@@ -224,18 +266,24 @@
         @endforeach
 
         {{-- Action buttons --}}
-        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-            <button type="submit" form="guest-reporting-form"
-                    formaction="{{ route('admin.guest-reporting.test', $booking) }}"
-                    class="btn btn--outline">
-                🔍 Testa bozza (senza inviare)
-            </button>
-            <button type="submit" form="guest-reporting-form"
-                    formaction="{{ route('admin.guest-reporting.send', $booking) }}"
-                    class="btn btn--primary"
-                    onclick="return confirm('Confermi l\'invio definitivo delle schedine alla Polizia di Stato?')">
-                📤 Invia definitivamente
-            </button>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+            @if ($missingCount > 0)
+                <p style="font-size:.875rem;color:#dc2626;margin:0">
+                    ⚠️ Aggiungi prima i {{ $missingCount }} ospiti mancanti per poter testare o inviare.
+                </p>
+            @else
+                <button type="submit" form="guest-reporting-form"
+                        formaction="{{ route('admin.guest-reporting.test', $booking) }}"
+                        class="btn btn--outline">
+                    🔍 Testa bozza (senza inviare)
+                </button>
+                <button type="submit" form="guest-reporting-form"
+                        formaction="{{ route('admin.guest-reporting.send', $booking) }}"
+                        class="btn btn--primary"
+                        onclick="return confirm('Confermi l\'invio definitivo delle schedine alla Polizia di Stato?')">
+                    📤 Invia definitivamente
+                </button>
+            @endif
         </div>
     </form>
 

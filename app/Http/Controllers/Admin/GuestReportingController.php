@@ -39,12 +39,18 @@ class GuestReportingController extends Controller
 
         $lastReport = $prenotazioni->guestReports->sortByDesc('submitted_at')->first();
 
+        $selectablePeople = Person::orderBy('last_name')
+            ->orderBy('first_name')
+            ->where('id', '!=', $prenotazioni->person_id)
+            ->get();
+
         return view('admin.guest-reporting.show', [
-            'booking'     => $prenotazioni,
-            'lastReport'  => $lastReport,
-            'comuniNames' => ItalianMunicipalities::allValidNames(),
-            'countries'   => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
-            'guestTypes'  => GuestType::orderBy('code')->get(),
+            'booking'          => $prenotazioni,
+            'lastReport'       => $lastReport,
+            'comuniNames'      => ItalianMunicipalities::allValidNames(),
+            'countries'        => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'guestTypes'       => GuestType::orderBy('code')->get(),
+            'selectablePeople' => $selectablePeople,
         ]);
     }
 
