@@ -32,6 +32,8 @@
            class="btn btn--sm {{ $filter === 'capogruppo' ? 'btn--primary' : 'btn--outline' }}">Solo capogruppo</a>
         <a href="{{ route('admin.people.index', array_filter(['q' => request('q'), 'filter' => 'aggiuntivi'])) }}"
            class="btn btn--sm {{ $filter === 'aggiuntivi' ? 'btn--primary' : 'btn--outline' }}">Solo ospiti aggiuntivi</a>
+        <a href="{{ route('admin.people.index', array_filter(['q' => request('q'), 'filter' => 'senza_prenotazioni'])) }}"
+           class="btn btn--sm {{ $filter === 'senza_prenotazioni' ? 'btn--primary' : 'btn--outline' }}">Senza prenotazioni</a>
     </div>
 
     <div class="a-card">

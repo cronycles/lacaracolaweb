@@ -49,8 +49,12 @@ class PersonController extends Controller
         if ($filter === 'capogruppo') {
             $query->whereHas('bookings');
         } elseif ($filter === 'aggiuntivi') {
+            // Persone che non sono capogruppo di nessuna prenotazione (corrispondono al badge "aggiuntivo" in lista)
+            $query->whereDoesntHave('bookings');
+        } elseif ($filter === 'senza_prenotazioni') {
+            // Persone mai legate ad alcuna prenotazione (né come capogruppo né come ospite aggiuntivo)
             $query->whereDoesntHave('bookings')
-                  ->whereIn('id', \Illuminate\Support\Facades\DB::table('booking_person')->select('person_id'));
+                  ->whereNotIn('id', \Illuminate\Support\Facades\DB::table('booking_person')->select('person_id'));
         }
 
         $people = $query
