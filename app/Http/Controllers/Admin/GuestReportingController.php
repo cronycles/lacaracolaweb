@@ -220,7 +220,7 @@ class GuestReportingController extends Controller
                 birthProvince:             $guestData['birth_province'] ?? null,
                 birthCountryCode:          $guestData['birth_country_code'],
                 nationalityCode:           $guestData['nationality_code'],
-                documentType:              $guestData['document_type'],
+                documentType:              $guestData['document_type'] ?? '',
                 documentNumber:            $guestData['document_number'] ?? '',
                 documentIssuePlace:        $guestData['document_issue_place'] ?? '',
                 documentIssueCountryCode:  $guestData['document_issue_country_code'] ?? '',
