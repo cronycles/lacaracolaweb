@@ -172,3 +172,42 @@ function initDocumentIssueFields(): void {
 
 export { initDocumentIssueFields };
 
+/**
+ * Show/hide the document fields block and toggle `required` on plain inputs
+ * based on the selected "Tipo alloggiato" for each guest row.
+ *
+ * - tipos 16/17/18 require a document → show block, set required
+ * - tipos 19/20 do not → hide block, remove required
+ *
+ * Must run after initCountryComboFields() so that ComboSelect wrappers are
+ * already in place (hidden-block suppresses required validation natively).
+ */
+function initDocumentTypeToggle(): void {
+    document.querySelectorAll<HTMLSelectElement>('[data-tipo-alloggiato-select]').forEach((tipoSelect) => {
+        const card     = tipoSelect.closest<HTMLElement>('.a-card') ?? document.documentElement;
+        const docGroup = card.querySelector<HTMLElement>('[data-document-fields-group]');
+
+        if (!docGroup) return;
+
+        // Plain inputs/selects that carry HTML5 required (not wrapped by ComboSelect)
+        const requiredFields = docGroup.querySelectorAll<HTMLElement>('[data-document-required-field]');
+
+        function update(tipo: string): void {
+            const requiresDoc = ['16', '17', '18'].includes(tipo);
+            docGroup!.style.display = requiresDoc ? '' : 'none';
+            requiredFields.forEach((field) => {
+                if (requiresDoc) {
+                    field.setAttribute('required', '');
+                } else {
+                    field.removeAttribute('required');
+                }
+            });
+        }
+
+        update(tipoSelect.value);
+        tipoSelect.addEventListener('change', () => update(tipoSelect.value));
+    });
+}
+
+export { initDocumentTypeToggle };
+

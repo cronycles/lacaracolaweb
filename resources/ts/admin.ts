@@ -6,7 +6,7 @@
 import flatpickr from 'flatpickr';
 import { Italian } from 'flatpickr/dist/l10n/it';
 import 'flatpickr/dist/flatpickr.min.css';
-import { initPeopleReportingFields, initDocumentIssueFields, initCountryComboFields } from './people-reporting-fields';
+import { initPeopleReportingFields, initDocumentIssueFields, initCountryComboFields, initDocumentTypeToggle } from './people-reporting-fields';
 import { initPhonePrefixSelects } from './components/phone-prefix-select';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,5 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initCountryComboFields();
     initPeopleReportingFields();
     initDocumentIssueFields();
+    initDocumentTypeToggle();
     initPhonePrefixSelects();
 });

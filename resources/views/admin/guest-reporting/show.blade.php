@@ -109,6 +109,8 @@
                 $defaultTipo = ($guest->birth_country_code === 'IT' || $guest->nationality_code === 'IT')
                     ? ($isFirst ? '16' : '17')
                     : ($isFirst ? '18' : '19');
+                $activeTipo  = old("guests.{$i}.tipo_alloggiato", $defaultTipo);
+                $requiresDoc = in_array($activeTipo, ['16', '17', '18'], true);
             @endphp
 
             <div class="a-card" style="margin-bottom:1.25rem">
@@ -135,7 +137,8 @@
                     <div class="form-group" style="flex:2">
                         <label class="form-label" for="guests_{{ $i }}_tipo_alloggiato">Tipo alloggiato *</label>
                         <select id="guests_{{ $i }}_tipo_alloggiato" name="guests[{{ $i }}][tipo_alloggiato]"
-                                class="form-input" required>
+                                class="form-input" required
+                                data-tipo-alloggiato-select>
                             @foreach ($guestTypes as $guestType)
                                 <option value="{{ $guestType->code }}"
                                         @selected(old("guests.{$i}.tipo_alloggiato", $defaultTipo) === $guestType->code)>
@@ -214,52 +217,60 @@
                     @error("guests.{$i}.birth_municipality") <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="guests_{{ $i }}_document_type">Tipo documento *</label>
-                        <select id="guests_{{ $i }}_document_type" name="guests[{{ $i }}][document_type]"
-                                class="form-input" required>
-                            <option value="">Seleziona tipo</option>
-                            <option value="passport" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'passport')>Passaporto</option>
-                            <option value="id_card" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'id_card')>Carta d'identità</option>
-                            <option value="driving_license" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'driving_license')>Patente di guida</option>
-                            <option value="residence_permit" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'residence_permit')>Permesso di soggiorno</option>
-                            <option value="other" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'other')>Altro</option>
-                        </select>
-                        @error("guests.{$i}.document_type") <div class="form-error">{{ $message }}</div> @enderror
+                <div data-document-fields-group
+                     @unless($requiresDoc) style="display:none" @endunless>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="guests_{{ $i }}_document_type">Tipo documento *</label>
+                            <select id="guests_{{ $i }}_document_type" name="guests[{{ $i }}][document_type]"
+                                    class="form-input"
+                                    data-document-required-field
+                                    @if($requiresDoc) required @endif>
+                                <option value="">Seleziona tipo</option>
+                                <option value="passport" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'passport')>Passaporto</option>
+                                <option value="id_card" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'id_card')>Carta d'identità</option>
+                                <option value="driving_license" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'driving_license')>Patente di guida</option>
+                                <option value="residence_permit" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'residence_permit')>Permesso di soggiorno</option>
+                                <option value="other" @selected(old("guests.{$i}.document_type", $guest->document_type) === 'other')>Altro</option>
+                            </select>
+                            @error("guests.{$i}.document_type") <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="guests_{{ $i }}_document_number">Numero documento *</label>
+                            <input type="text" id="guests_{{ $i }}_document_number"
+                                   name="guests[{{ $i }}][document_number]" class="form-input"
+                                   value="{{ old("guests.{$i}.document_number", $guest->document_number) }}"
+                                   maxlength="60"
+                                   data-document-required-field
+                                   @if($requiresDoc) required @endif>
+                            @error("guests.{$i}.document_number") <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="guests_{{ $i }}_document_number">Numero documento *</label>
-                        <input type="text" id="guests_{{ $i }}_document_number"
-                               name="guests[{{ $i }}][document_number]" class="form-input"
-                               value="{{ old("guests.{$i}.document_number", $guest->document_number) }}"
-                               maxlength="60" required>
-                        @error("guests.{$i}.document_number") <div class="form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="guests_{{ $i }}_document_issue_country_code">Stato rilascio doc. *</label>
-                        <input type="text" id="guests_{{ $i }}_document_issue_country_code"
-                               name="guests[{{ $i }}][document_issue_country_code]" class="form-input" required
-                               data-country-combo
-                               data-reporting-issue-country
-                               data-current-value="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) }}"
-                               autocomplete="off"
-                               placeholder="Cerca stato...">
-                        @error("guests.{$i}.document_issue_country_code") <div class="form-error">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="form-group" data-document-issue-place-group
-                         style="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) !== 'IT' ? 'display:none' : '' }}">
-                        <label class="form-label" for="guests_{{ $i }}_document_issue_place">Luogo rilascio doc.</label>
-                        <input type="text" id="guests_{{ $i }}_document_issue_place"
-                               name="guests[{{ $i }}][document_issue_place]" class="form-input"
-                               value="{{ old("guests.{$i}.document_issue_place", $guest->document_issue_place) }}"
-                               maxlength="100"
-                               data-reporting-issue-municipality
-                               placeholder="Es: Genova">
-                        @error("guests.{$i}.document_issue_place") <div class="form-error">{{ $message }}</div> @enderror
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="guests_{{ $i }}_document_issue_country_code">Stato rilascio doc. *</label>
+                            <input type="text" id="guests_{{ $i }}_document_issue_country_code"
+                                   name="guests[{{ $i }}][document_issue_country_code]" class="form-input"
+                                   data-country-combo
+                                   data-reporting-issue-country
+                                   data-current-value="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) }}"
+                                   autocomplete="off"
+                                   placeholder="Cerca stato..."
+                                   @if($requiresDoc) required @endif>
+                            @error("guests.{$i}.document_issue_country_code") <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="form-group" data-document-issue-place-group
+                             style="{{ old("guests.{$i}.document_issue_country_code", $guest->document_issue_country_code) !== 'IT' ? 'display:none' : '' }}">
+                            <label class="form-label" for="guests_{{ $i }}_document_issue_place">Luogo rilascio doc.</label>
+                            <input type="text" id="guests_{{ $i }}_document_issue_place"
+                                   name="guests[{{ $i }}][document_issue_place]" class="form-input"
+                                   value="{{ old("guests.{$i}.document_issue_place", $guest->document_issue_place) }}"
+                                   maxlength="100"
+                                   data-reporting-issue-municipality
+                                   placeholder="Es: Genova">
+                            @error("guests.{$i}.document_issue_place") <div class="form-error">{{ $message }}</div> @enderror
+                        </div>
                     </div>
                 </div>
             </div>

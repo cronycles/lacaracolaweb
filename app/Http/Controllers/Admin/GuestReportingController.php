@@ -136,19 +136,54 @@ class GuestReportingController extends Controller
             'guests.*.birth_province'                     => ['nullable', 'string', 'max:2'],
             'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
-            'guests.*.document_type'                      => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other'])],
-            'guests.*.document_number'                    => ['required_if:guests.*.include,1', 'nullable', 'string', 'max:60'],
-            'guests.*.document_issue_place'               => [
-                'nullable', 'string', 'max:100', 'required_if:guests.*.document_issue_country_code,IT',
+            'guests.*.document_type'                      => [
                 function ($attribute, $value, $fail) use ($request) {
                     $idx = explode('.', $attribute)[1];
-                    if ($request->input("guests.{$idx}.document_issue_country_code") === 'IT'
-                        && filled($value) && ItalianMunicipalities::findCode($value) === null) {
+                    if (! empty($request->input("guests.{$idx}.include"))
+                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
+                        && empty($value)) {
+                        $fail('Il tipo documento è obbligatorio per questo tipo di alloggiato.');
+                    }
+                },
+                'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other']),
+            ],
+            'guests.*.document_number'                    => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $idx = explode('.', $attribute)[1];
+                    if (! empty($request->input("guests.{$idx}.include"))
+                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
+                        && empty($value)) {
+                        $fail('Il numero documento è obbligatorio per questo tipo di alloggiato.');
+                    }
+                },
+                'nullable', 'string', 'max:60',
+            ],
+            'guests.*.document_issue_place'               => [
+                'nullable', 'string', 'max:100',
+                function ($attribute, $value, $fail) use ($request) {
+                    $idx = explode('.', $attribute)[1];
+                    if (! empty($request->input("guests.{$idx}.include"))
+                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
+                        && $request->input("guests.{$idx}.document_issue_country_code") === 'IT'
+                        && empty($value)) {
+                        $fail('Il luogo di rilascio è obbligatorio per documenti italiani.');
+                    }
+                    if (filled($value) && ItalianMunicipalities::findCode($value) === null) {
                         $fail("'{$value}' non è un comune italiano riconosciuto per il luogo di rilascio.");
                     }
                 },
             ],
-            'guests.*.document_issue_country_code'        => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
+            'guests.*.document_issue_country_code'        => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $idx = explode('.', $attribute)[1];
+                    if (! empty($request->input("guests.{$idx}.include"))
+                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
+                        && empty($value)) {
+                        $fail('Lo stato di rilascio del documento è obbligatorio per questo tipo di alloggiato.');
+                    }
+                },
+                'nullable', 'string', Rule::in($countryCodes),
+            ],
         ]);
 
         $guestRecords = [];
