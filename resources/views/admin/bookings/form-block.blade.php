@@ -20,7 +20,7 @@
                     <label class="form-label" for="reason">Tipo</label>
                     <select id="reason" name="reason" class="form-select" required>
                         <option value="owner" @selected(old('reason', $block->reason) === 'owner')>Uso proprietario</option>
-                        <option value="maintenance" @selected(old('reason', $block->reason) === 'maintenance')>Manutenzione</option>
+                        <option value="maintenance" @selected(old('reason', $block->reason) === 'maintenance')>Chiusa</option>
                     </select>
                     @error('reason') <div class="form-error">{{ $message }}</div> @enderror
                 </div>

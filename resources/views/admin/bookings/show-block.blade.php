@@ -25,7 +25,7 @@
                         <th style="width:160px">Tipo</th>
                         <td>
                             <span class="badge badge--{{ $block->reason }}">
-                                {{ $block->reason === 'owner' ? 'Uso proprietario' : 'Manutenzione' }}
+                                {{ $block->reason === 'owner' ? 'Uso proprietario' : 'Chiusa' }}
                             </span>
                         </td>
                     </tr>

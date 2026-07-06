@@ -114,7 +114,7 @@
                 <div class="cal-legend">
                     <span><span class="cal-legend__dot dot-booked"></span>Prenotazione</span>
                     <span><span class="cal-legend__dot dot-owner"></span>Uso proprietario</span>
-                    <span><span class="cal-legend__dot dot-maintenance"></span>Manutenzione</span>
+                    <span><span class="cal-legend__dot dot-maintenance"></span>Chiusa</span>
                 </div>
 
                 @if ($bookings->isEmpty() && $blocks->isEmpty())
@@ -217,7 +217,7 @@
                         <select id="reason" name="reason" class="form-select" required>
                             <option value="">— Seleziona —</option>
                             <option value="owner"       @selected(old('reason') === 'owner')>Uso proprietario</option>
-                            <option value="maintenance" @selected(old('reason') === 'maintenance')>Manutenzione</option>
+                            <option value="maintenance" @selected(old('reason') === 'maintenance')>Chiusa</option>
                         </select>
                         @error('reason')
                             <div class="form-error">{{ $message }}</div>

@@ -111,7 +111,7 @@
                                 </td>
                                 <td>
                                     <span class="badge badge--{{ $item->reason === 'owner' ? 'owner' : 'maintenance' }}">
-                                        {{ $item->reason === 'owner' ? 'Proprietario' : 'Manutenzione' }}
+                                        {{ $item->reason === 'owner' ? 'Proprietario' : 'Chiusa' }}
                                     </span>
                                 </td>
                                 <td>{{ $item->start_date->format('d/m/Y') }}</td>
