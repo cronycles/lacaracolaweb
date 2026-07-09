@@ -233,7 +233,6 @@ return [
 
     'footer_desc'  => 'Holiday apartment by the sea in Andora, Savona. Liguria, Italy.',,
     'footer_links' => 'Quick Links',
-    'footer_contact' => 'Contact',
-    'footer_legal' => '© :year La Caracola — All rights reserved.',
+    'footer_contact' => 'Contact',    'footer_book'  => 'Book',    'footer_legal' => '© :year La Caracola — All rights reserved.',
 
 ];

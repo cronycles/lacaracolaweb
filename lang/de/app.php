@@ -224,6 +224,7 @@ return [
     'footer_desc'      => 'Ferienwohnung am Meer in Andora, Savona. Ligurien, Italien.',
     'footer_links'     => 'Schnelllinks',
     'footer_contact'   => 'Kontakt',
+    'footer_book'      => 'Buchen',
     'footer_legal'     => '© :year La Caracola — Alle Rechte vorbehalten.',
 
     // --- Admin: Account Security ---

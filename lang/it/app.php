@@ -243,6 +243,7 @@ return [
     'footer_desc'      => 'Appartamento vacanza sul mare ad Andora, Savona. Liguria, Italia.',
     'footer_links'     => 'Link Utili',
     'footer_contact'   => 'Contatti',
+    'footer_book'      => 'Prenota',
     'footer_legal'     => '© :year La Caracola — Tutti i diritti riservati.',
 
 ];

@@ -220,8 +220,7 @@ return [
 
     'footer_desc'    => 'Appartement de vacances en bord de mer à Andora, Savona. Ligurie, Italie.',,
     'footer_links'   => 'Liens Utiles',
-    'footer_contact' => 'Contact',
-    'footer_legal'   => '© :year La Caracola — Tous droits réservés.',
+    'footer_contact' => 'Contact',    'footer_book'    => 'Réserver',    'footer_legal'   => '© :year La Caracola — Tous droits réservés.',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Sécurité du Compte',
