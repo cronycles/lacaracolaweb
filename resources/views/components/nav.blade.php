@@ -20,6 +20,7 @@
             <li><a href="{{ route_locale('experiences') }}"  class="nav__link @active('experiences')">{{ __('app.nav_experiences') }}</a></li>
             <li><a href="{{ route_locale('reviews') }}"      class="nav__link @active('reviews')">{{ __('app.nav_reviews') }}</a></li>
             <li><a href="{{ route_locale('home') }}#booking" class="nav__link @active('home')">{{ __('app.nav_booking') }}</a></li>
+            <li><a href="{{ route_locale('contact') }}"       class="nav__link @active('contact')">{{ __('app.nav_contact') }}</a></li>
         </ul>
 
         {{-- Language switcher dropdown --}}
@@ -69,6 +70,7 @@
     <a href="{{ route_locale('experiences') }}">{{ __('app.nav_experiences') }}</a>
     <a href="{{ route_locale('reviews') }}">{{ __('app.nav_reviews') }}</a>
     <a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a>
+    <a href="{{ route_locale('contact') }}">{{ __('app.nav_contact') }}</a>
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Admin area link (mobile) --}}

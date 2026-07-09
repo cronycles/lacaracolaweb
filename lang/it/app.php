@@ -225,6 +225,20 @@ return [
     'admin_password_error_mismatch'    => 'Le due password non corrispondono.',
     'admin_password_requirements'      => 'La nuova password deve essere diversa dalla precedente e contenere almeno 8 caratteri.',
 
+    // --- Contact form ---
+    'nav_contact'              => 'Contattaci',
+    'contact_title'            => 'Contattaci',
+    'contact_subtitle'         => 'Hai domande o vuoi saperne di più? Scrivici, ti risponderemo al più presto.',
+    'contact_meta_description' => 'Contatta La Caracola per informazioni sull\'appartamento vacanza ad Andora. Siamo a tua disposizione.',
+    'contact_name'             => 'Nome e Cognome',
+    'contact_email'            => 'Email',
+    'contact_subject'          => 'Oggetto (opzionale)',
+    'contact_message'          => 'Messaggio',
+    'contact_submit'           => 'Invia Messaggio',
+    'contact_note'             => 'Risponderemo entro 24 ore.',
+    'contact_thanks_title'     => 'Messaggio inviato!',
+    'contact_thanks_text'      => 'Grazie per averci scritto. Ti risponderemo al più presto all\'indirizzo email fornito.',
+
     // --- Footer ---
     'footer_desc'      => 'Appartamento vacanza sul mare ad Andora, Savona. Liguria, Italia.',
     'footer_links'     => 'Link Utili',

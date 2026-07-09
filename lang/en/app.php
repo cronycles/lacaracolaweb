@@ -217,7 +217,21 @@ return [
     'admin_password_error_mismatch'    => 'The two passwords do not match.',
     'admin_password_requirements'      => 'The new password must be different from the previous one and contain at least 8 characters.',
 
-    'footer_desc'  => 'Holiday apartment by the sea in Andora, Savona. Liguria, Italy.',
+    // --- Contact form ---
+    'nav_contact'              => 'Contact Us',
+    'contact_title'            => 'Contact Us',
+    'contact_subtitle'         => 'Have a question or want to know more? Drop us a message and we\'ll get back to you soon.',
+    'contact_meta_description' => 'Contact La Caracola for information about the holiday apartment in Andora. We are here to help.',
+    'contact_name'             => 'Full Name',
+    'contact_email'            => 'Email',
+    'contact_subject'          => 'Subject (optional)',
+    'contact_message'          => 'Message',
+    'contact_submit'           => 'Send Message',
+    'contact_note'             => 'We will reply within 24 hours.',
+    'contact_thanks_title'     => 'Message sent!',
+    'contact_thanks_text'      => 'Thank you for reaching out. We\'ll reply to the email address you provided as soon as possible.',
+
+    'footer_desc'  => 'Holiday apartment by the sea in Andora, Savona. Liguria, Italy.',,
     'footer_links' => 'Quick Links',
     'footer_contact' => 'Contact',
     'footer_legal' => '© :year La Caracola — All rights reserved.',

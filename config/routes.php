@@ -21,6 +21,7 @@ return [
             'useful_places'  => 'posti-utili',
             'availability'   => 'disponibilita',
             'thanks'         => 'disponibilita/grazie',
+            'contact'        => 'contattaci',
         ],
         'en' => [
             'home'           => '',
@@ -32,6 +33,7 @@ return [
             'useful_places'  => 'useful-places',
             'availability'   => 'availability',
             'thanks'         => 'availability/thank-you',
+            'contact'        => 'contact',
         ],
         'fr' => [
             'home'           => '',
@@ -43,6 +45,7 @@ return [
             'useful_places'  => 'lieux-utiles',
             'availability'   => 'disponibilite',
             'thanks'         => 'disponibilite/merci',
+            'contact'        => 'contactez-nous',
         ],
         'de' => [
             'home'           => '',
@@ -54,6 +57,7 @@ return [
             'useful_places'  => 'nutzliche-orte',
             'availability'   => 'verfugbarkeit',
             'thanks'         => 'verfugbarkeit/danke',
+            'contact'        => 'kontakt',
         ],
     ],
 ];

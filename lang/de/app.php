@@ -206,6 +206,20 @@ return [
     'reviews_source'   => 'Über :source',
     'reviews_empty'    => 'Noch keine Bewertungen.',
 
+    // --- Contact form ---
+    'nav_contact'              => 'Kontakt',
+    'contact_title'            => 'Kontakt',
+    'contact_subtitle'         => 'Haben Sie Fragen oder möchten Sie mehr erfahren? Schreiben Sie uns — wir antworten so schnell wie möglich.',
+    'contact_meta_description' => 'Kontaktieren Sie La Caracola für Informationen zur Ferienwohnung in Andora. Wir sind für Sie da.',
+    'contact_name'             => 'Vor- und Nachname',
+    'contact_email'            => 'E-Mail',
+    'contact_subject'          => 'Betreff (optional)',
+    'contact_message'          => 'Nachricht',
+    'contact_submit'           => 'Nachricht senden',
+    'contact_note'             => 'Wir antworten innerhalb von 24 Stunden.',
+    'contact_thanks_title'     => 'Nachricht gesendet!',
+    'contact_thanks_text'      => 'Vielen Dank für Ihre Nachricht. Wir melden uns so schnell wie möglich unter der angegebenen E-Mail-Adresse.',
+
     // --- Footer ---
     'footer_desc'      => 'Ferienwohnung am Meer in Andora, Savona. Ligurien, Italien.',
     'footer_links'     => 'Schnelllinks',

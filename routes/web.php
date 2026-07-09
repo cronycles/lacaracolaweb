@@ -8,6 +8,7 @@ use App\Http\Controllers\Public\ReviewsController;
 use App\Http\Controllers\Public\RulesController;
 use App\Http\Controllers\Public\UsefulPlacesController;
 use App\Http\Controllers\Public\BookingController;
+use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\LegacyRedirectController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Admin\LoginController;
@@ -41,6 +42,10 @@ foreach ($locales as $locale) {
         Route::get('/' . $slug['rules'], [RulesController::class, 'index'])->name('rules');
         Route::get('/' . $slug['useful_places'], [UsefulPlacesController::class, 'index'])->name('useful-places');
 
+        // Contact form
+        Route::get('/' . $slug['contact'], [ContactController::class, 'index'])->name('contact');
+        Route::post('/' . $slug['contact'], [ContactController::class, 'send'])->name('contact.send');
+
         // Booking availability request (flow B)
         Route::post('/' . $slug['availability'], [BookingController::class, 'requestAvailability'])->name('booking.request');
         Route::post('/' . $slug['availability'] . '/quote', [BookingController::class, 'quote'])->name('booking.quote');
@@ -56,6 +61,8 @@ Route::get('/recensioni', [LegacyRedirectController::class, 'recensioni']);
 Route::get('/regole-casa', [LegacyRedirectController::class, 'regoleCasa']);
 Route::get('/posti-utili', [LegacyRedirectController::class, 'postiUtili']);
 Route::get('/disponibilita', [LegacyRedirectController::class, 'disponibilita']);
+
+Route::get('/contattaci', [LegacyRedirectController::class, 'contattaci']);
 
 // --- Fallback: redirect root to localized home ---
 Route::get('/', [LegacyRedirectController::class, 'home']);
