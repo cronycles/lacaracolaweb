@@ -176,15 +176,9 @@
             </div>
             <div class="stat-card" style="border-left:4px solid #c62828">
                 <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    {!! $totals['cleaning_paid'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['cleaning_paid'], 2, ',', '.') }}
+                    {!! $totals['utilities'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['utilities'], 2, ',', '.') }}
                 </div>
-                <div class="stat-card__label">Pulizie pagate {{ $year }}</div>
-            </div>
-            <div class="stat-card" style="border-left:4px solid #c62828">
-                <div class="stat-card__number" style="color:#c62828;font-size:1.3rem">
-                    {!! $totals['linen_paid'] != 0 ? '−&nbsp;' : '' !!}€&nbsp;{{ number_format($totals['linen_paid'], 2, ',', '.') }}
-                </div>
-                <div class="stat-card__label">Biancheria pagata {{ $year }}</div>
+                <div class="stat-card__label">Utenze {{ $year }}</div>
             </div>
         </div>
     </div>

@@ -55,6 +55,11 @@ class FinancialEntryController extends Controller
             ->whereYear('entry_date', $year)
             ->sum('amount');
 
+        $utilitiesExpenses = FinancialEntry::where('type', 'expense')
+            ->where('category', 'utenze')
+            ->whereYear('entry_date', $year)
+            ->sum('amount');
+
         $totals = [
             'income'           => $bookingIncome + $bookingParking + $bookingCleaning + $bookingLinen + $extraIncome,
             'expenses'         => $bookingExpenses + $extraExpenses,
@@ -65,6 +70,7 @@ class FinancialEntryController extends Controller
             'extra_expenses'   => $extraExpenses,
             'cleaning_paid'    => $bookingCleaning,
             'linen_paid'       => $bookingLinen,
+            'utilities'        => $utilitiesExpenses,
         ];
 
         $totals['balance'] = $totals['income'] - $totals['expenses'];

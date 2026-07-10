@@ -8,6 +8,10 @@ Aggiungere una checkbox obbligatoria di accettazione legale subito sopra il bott
 2. Il sistema deve supportare dinamicamente la lingua corrente della rotta o della sessione (es: `/it/`, `/en/`, `/es/`, `/de/`, `/fr/`).
 3. Genera le chiavi di traduzione necessarie nei rispettivi file di lingua per i testi che seguono.
 4. "Aggiorna anche il controller dell'invio mail in modo che inserisca nel testo della notifica (sia per il proprietario che per l'ospite) la conferma dell'avvenuta accettazione dei termini e del contratto."
+5. Al proprietario arriva l'email di notifica e al cliente arriva un email che specifica bene che la prenotazione non è confermata e sta pendente del ok del proprietario. 
+6. devi poi crearmi un email (di nuovo con le regole che ha accettato etc) che dica che la prenotazione è confermata da parte mia e, per essere ufficializzata hanno 48 ore per effettuare il pagamento al iban XXXXXXX che gli fornisco con oggetto le date di prenotazione (l'oggetto glielo posso scrivere per copia incolla) e che la cancellazione è gratuita fino al giorno xxx e i soldi gli saranno rimborsati(14 giorni, sempre che la prenotazione non abbia gia passato quel limite). questa email sará legata alla prenotazione e la mandero con un click manuale (CCO anche a me). se entro 48 ore non pagano, la prenotazione si da per cancellata.
+7. Le email devono tutte avere il logo ufficiale, anche quelle che gia esistono e usare il branding ufficiale. cerca i colori del branding che sicuramente saranno nel css e documentali se non sono documentati. il logo è nelle immagini. se lo vuoi di dimensioni diverse me lo dici e te lo faccio
+
 
 ### Struttura dei link dinamici:
 Usa le funzioni di routing del progetto per fare in modo che i link puntino alla lingua corretta dell'utente:
