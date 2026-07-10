@@ -104,6 +104,9 @@ export function initPricingSimulator(): void {
     const triggerCheckin = document.getElementById('pricing-sim-trigger-checkin') as HTMLButtonElement | null;
     const triggerCheckout = document.getElementById('pricing-sim-trigger-checkout') as HTMLButtonElement | null;
 
+    const guestsInputEl = form.querySelector<HTMLInputElement>('#sim-guests');
+    guestsInputEl?.addEventListener('change', runSimulation);
+
     if (container && popup && triggerCheckin && triggerCheckout) {
         createDateRangePicker({
             container,
