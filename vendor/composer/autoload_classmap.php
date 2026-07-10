@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Commands\\SendTelegramBookingReminders' => $baseDir . '/app/Console/Commands/SendTelegramBookingReminders.php',
+    'App\\Console\\Commands\\SyncEasterPricingRule' => $baseDir . '/app/Console/Commands/SyncEasterPricingRule.php',
     'App\\Contracts\\GuestReportingDriverInterface' => $baseDir . '/app/Contracts/GuestReportingDriverInterface.php',
     'App\\Http\\Controllers\\Admin\\BookingController' => $baseDir . '/app/Http/Controllers/Admin/BookingController.php',
     'App\\Http\\Controllers\\Admin\\BookingGuestController' => $baseDir . '/app/Http/Controllers/Admin/BookingGuestController.php',
@@ -29,6 +30,7 @@ return array(
     'App\\Http\\Controllers\\LocaleController' => $baseDir . '/app/Http/Controllers/LocaleController.php',
     'App\\Http\\Controllers\\Public\\ApartmentController' => $baseDir . '/app/Http/Controllers/Public/ApartmentController.php',
     'App\\Http\\Controllers\\Public\\BookingController' => $baseDir . '/app/Http/Controllers/Public/BookingController.php',
+    'App\\Http\\Controllers\\Public\\ContactController' => $baseDir . '/app/Http/Controllers/Public/ContactController.php',
     'App\\Http\\Controllers\\Public\\ExperiencesController' => $baseDir . '/app/Http/Controllers/Public/ExperiencesController.php',
     'App\\Http\\Controllers\\Public\\HomeController' => $baseDir . '/app/Http/Controllers/Public/HomeController.php',
     'App\\Http\\Controllers\\Public\\LegacyRedirectController' => $baseDir . '/app/Http/Controllers/Public/LegacyRedirectController.php',
@@ -41,6 +43,7 @@ return array(
     'App\\Http\\Middleware\\ResolveLocaleFromRoute' => $baseDir . '/app/Http/Middleware/ResolveLocaleFromRoute.php',
     'App\\Http\\Middleware\\SetLocale' => $baseDir . '/app/Http/Middleware/SetLocale.php',
     'App\\Mail\\BookingRequestMail' => $baseDir . '/app/Mail/BookingRequestMail.php',
+    'App\\Mail\\ContactMail' => $baseDir . '/app/Mail/ContactMail.php',
     'App\\Models\\AvailabilityBlock' => $baseDir . '/app/Models/AvailabilityBlock.php',
     'App\\Models\\Booking' => $baseDir . '/app/Models/Booking.php',
     'App\\Models\\Country' => $baseDir . '/app/Models/Country.php',

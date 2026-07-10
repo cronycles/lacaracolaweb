@@ -527,6 +527,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
 
     public static $classMap = array (
         'App\\Console\\Commands\\SendTelegramBookingReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendTelegramBookingReminders.php',
+        'App\\Console\\Commands\\SyncEasterPricingRule' => __DIR__ . '/../..' . '/app/Console/Commands/SyncEasterPricingRule.php',
         'App\\Contracts\\GuestReportingDriverInterface' => __DIR__ . '/../..' . '/app/Contracts/GuestReportingDriverInterface.php',
         'App\\Http\\Controllers\\Admin\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BookingController.php',
         'App\\Http\\Controllers\\Admin\\BookingGuestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BookingGuestController.php',
@@ -549,6 +550,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Http\\Controllers\\LocaleController' => __DIR__ . '/../..' . '/app/Http/Controllers/LocaleController.php',
         'App\\Http\\Controllers\\Public\\ApartmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ApartmentController.php',
         'App\\Http\\Controllers\\Public\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/BookingController.php',
+        'App\\Http\\Controllers\\Public\\ContactController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ContactController.php',
         'App\\Http\\Controllers\\Public\\ExperiencesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ExperiencesController.php',
         'App\\Http\\Controllers\\Public\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/HomeController.php',
         'App\\Http\\Controllers\\Public\\LegacyRedirectController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/LegacyRedirectController.php',
@@ -561,6 +563,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Http\\Middleware\\ResolveLocaleFromRoute' => __DIR__ . '/../..' . '/app/Http/Middleware/ResolveLocaleFromRoute.php',
         'App\\Http\\Middleware\\SetLocale' => __DIR__ . '/../..' . '/app/Http/Middleware/SetLocale.php',
         'App\\Mail\\BookingRequestMail' => __DIR__ . '/../..' . '/app/Mail/BookingRequestMail.php',
+        'App\\Mail\\ContactMail' => __DIR__ . '/../..' . '/app/Mail/ContactMail.php',
         'App\\Models\\AvailabilityBlock' => __DIR__ . '/../..' . '/app/Models/AvailabilityBlock.php',
         'App\\Models\\Booking' => __DIR__ . '/../..' . '/app/Models/Booking.php',
         'App\\Models\\Country' => __DIR__ . '/../..' . '/app/Models/Country.php',
