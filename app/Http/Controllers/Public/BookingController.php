@@ -54,15 +54,13 @@ class BookingController extends Controller
             ]);
         }
 
+        // Only the total is exposed to the public: cost breakdown (stay, cleaning,
+        // linen, avg/night) is internal pricing data and must never reach the guest.
         return response()->json([
             'available' => true,
             'nights' => $quote['nights'],
             'guests' => $quote['guests'],
-            'stay_cents' => $quote['stay_cents'],
-            'cleaning_cents' => $quote['cleaning_cents'],
-            'linen_cents' => $quote['linen_cents'],
             'total_cents' => $quote['total_cents'],
-            'avg_per_night_cents' => $quote['avg_per_night_cents'],
             'message' => __('app.booking_price_detail', ['nights' => $quote['nights']]),
         ]);
     }

@@ -17,11 +17,7 @@ interface ApiResponse {
 interface QuoteResponse {
     available: boolean;
     nights?: number;
-    stay_cents?: number;
-    cleaning_cents?: number;
-    linen_cents?: number;
     total_cents?: number;
-    avg_per_night_cents?: number;
     guests?: number;
     message: string;
 }
@@ -167,27 +163,9 @@ export function initBookingForm(): void {
                     return;
                 }
 
-                const nights       = data.nights ?? 0;
-                const stay         = data.stay_cents ?? 0;
-                const cleaning     = data.cleaning_cents ?? 0;
-                const linen        = data.linen_cents ?? 0;
-                const avgPerNight  = data.avg_per_night_cents ?? 0;
-                const total        = data.total_cents;
-
-                const stayLabel    = form.dataset['priceStayLabel']    ?? 'Soggiorno';
-                const cleanLabel   = form.dataset['priceCleaningLabel'] ?? 'Pulizie';
-                const linenLabel   = form.dataset['priceLinenLabel']   ?? 'Biancheria';
-                const avgLabel     = form.dataset['priceAvgLabel']     ?? 'Media/notte';
-
-                const detail = [
-                    `${nights} notti`,
-                    `${stayLabel} ${formatCurrency(stay)}`,
-                    `${cleanLabel} ${formatCurrency(cleaning)}`,
-                    `${linenLabel} ${formatCurrency(linen)}`,
-                    `${avgLabel} ${formatCurrency(avgPerNight)}`,
-                ].join(' · ');
-
-                showPriceMessage(formatCurrency(total), detail);
+                // Only the total is shown to guests — the internal cost breakdown
+                // (stay/cleaning/linen/avg per night) is not public information.
+                showPriceMessage(formatCurrency(data.total_cents), data.message);
             })
             .catch(() => {
                 hidePrice();
