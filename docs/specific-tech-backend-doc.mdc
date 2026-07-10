@@ -40,13 +40,26 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Canceled bookings do not block public availability.
 - Booking restore is allowed only when no conflicts exist with active bookings or manual blocks.
 - Physical booking deletion removes linked `availability_block`.
-- Pricing is recurring by month/day only (no year).
+- Pricing is recurring by month/day by default (no year). A `pricing_rules.year` override makes a rule apply to one specific calendar year only, taking priority over recurring rules for that year (used for movable holidays — see "Movable holiday pricing" below).
 
 # Service map
 - `BookingCreationService`: creates booking + person + availability block.
 - `PricingQuoteService`: single pricing engine (public quote + admin simulator).
 - `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
 - `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients resolved from `users.telegram_chat_id`.
+
+# Movable holiday pricing (Easter/Pentecost)
+- Problem: `pricing_rules` are recurring by month/day, but Easter/Pentecost shift every year (lunar calendar) and can't be expressed as a fixed recurring window.
+- Fix: `pricing_rules.year` (nullable). When set, the rule matches only that year and outranks recurring rules for it (`PricingQuoteService::matchesRule` + priority sort).
+- **Easter is fully automatic**: `App\Console\Commands\SyncEasterPricingRule` (`php artisan pricing:sync-easter {year?}`) computes the real Easter Sunday date (Meeus/Jones/Butcher algorithm) and upserts a `year`-specific "Pasqua {year}" rule (default window: Easter Sunday −3/+2 days). Idempotent — matches by `year` + `note LIKE 'Pasqua %'`. Scheduled every 1st November for the following year (see Scheduled jobs below). No manual action needed unless the price or window width should change (`--price`, `--days-before`, `--days-after` options).
+- **Pentecost/Pfingstferien is NOT automatic**: the discount period tracked (`note` mentions "Vacanze Scuole Germania") follows German school holiday calendars, which vary per Bundesland and are not a fixed offset from Easter. This rule must be reviewed/updated manually every year (set a new `year`-specific row with the correct dates once the relevant Land's school calendar is published).
+
+# Scheduled jobs (`routes/console.php`)
+| Command | Schedule | Purpose |
+|---|---|---|
+| `SendTelegramBookingReminders --type=checkin` | daily at `apartment.booking.checkin_time` | Arrival reminders |
+| `SendTelegramBookingReminders --type=checkout` | daily at `apartment.booking.checkout_time` | Departure reminders |
+| `SyncEasterPricingRule` (`pricing:sync-easter`) | yearly, Nov 1st 03:00 | Creates/updates next year's Easter pricing rule |
 
 # Configuration and precedence
 - Source of truth booking defaults: `config/apartment.php`.

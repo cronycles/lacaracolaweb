@@ -43,8 +43,8 @@ class PricingQuoteService
             }
 
             $ruleForNight = $rules
-                ->filter(fn (PricingRule $rule): bool => $this->matchesMonthDayRule($cursor, $rule))
-                ->sortBy(fn (PricingRule $rule): int => $this->ruleSpanInDays($rule))
+                ->filter(fn (PricingRule $rule): bool => $this->matchesRule($cursor, $rule))
+                ->sortBy(fn (PricingRule $rule): string => sprintf('%d-%05d', $rule->year === null ? 1 : 0, $this->ruleSpanInDays($rule)))
                 ->first();
 
             if (! $ruleForNight) {
@@ -90,6 +90,16 @@ class PricingQuoteService
             'total_cents' => null,
             'avg_per_night_cents' => null,
         ];
+    }
+
+    /** Year-specific overrides only match their exact year; recurring rules (year=null) match every year. */
+    private function matchesRule(Carbon $date, PricingRule $rule): bool
+    {
+        if ($rule->year !== null && (int) $rule->year !== (int) $date->format('Y')) {
+            return false;
+        }
+
+        return $this->matchesMonthDayRule($date, $rule);
     }
 
     private function matchesMonthDayRule(Carbon $date, PricingRule $rule): bool

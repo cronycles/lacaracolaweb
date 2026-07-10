@@ -74,6 +74,20 @@ Because the main domain document root is public_html, Laravel app files are depl
 - Deployed Laravel app: /home/lacaraco/lacaracola-app
 - Web root: /home/lacaraco/public_html
 
+## Read-only access to the production database (local analysis/debugging)
+
+The production MySQL DB is not reachable directly; it's only reachable through an SSH tunnel. There is no local Docker DB mirroring production — `.env` (local, mysql driver) is preconfigured to point at the tunnel's local port.
+
+- Print the exact tunnel/app commands: `npm run start:dbprod -- --print`
+- Tunnel only (no local app/vite, e.g. to run `php artisan tinker` against production data):
+  ```
+  ssh -o ExitOnForwardFailure=yes -i ~/.ssh/id_rsa_supporthost -p 2299 -L 3307:localhost:3306 lacaraco@65.108.143.244 -N
+  ```
+- With the tunnel open, `php artisan tinker` / `php artisan migrate` in this repo operate on the **production** DB (`.env` → `DB_HOST=127.0.0.1`, `DB_PORT=3307`, `DB_DATABASE=lacaraco_lacaracolaweb`).
+- Treat this as production: read-only queries are safe to run freely; **always confirm with the project owner before writing data, changing schema, or running migrations** through this tunnel.
+- Close the SSH tunnel (kill the terminal) when done.
+- For local development without touching production data, use `npm run start:local` instead (`.env.local`, SQLite).
+
 ## Production environment file
 
 The production .env is not in Git. Keep it at:
@@ -265,13 +279,7 @@ From that point the user will receive all Telegram notifications automatically.
 
 ### Scheduled reminders
 
-The daily reminder command (`telegram:send-reminders`) requires a cron entry. In cPanel Cron Jobs, add:
-
-```
-0 8 * * * cd /home/lacaraco/lacaracola-app && php artisan schedule:run >> /dev/null 2>&1
-```
-
-(adjust the hour to your preference)
+The daily reminder command (`telegram:send-reminders`) runs via the Laravel scheduler — no separate cron entry needed. It's covered by the single every-minute cron job already set up in [Laravel Scheduler — cPanel Cron Job](#laravel-scheduler--cpanel-cron-job) above. Do not add a second `schedule:run` cron entry (e.g. a once-daily one): it would be redundant and could cause `dailyAt()`/`yearlyOn()` jobs to be missed if it doesn't run at the exact due minute.
 
 ## Troubleshooting
 

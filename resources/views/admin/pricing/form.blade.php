@@ -87,6 +87,19 @@
                     @error('note') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="year">Anno specifico (opzionale)</label>
+                    <input type="number" id="year" name="year" class="form-input"
+                           value="{{ old('year', $rule->year ?? '') }}"
+                           min="2020" max="2100" step="1"
+                           placeholder="Lascia vuoto per regola ricorrente ogni anno">
+                    <p style="font-size:.8rem;color:#6b7f89;margin-top:.25rem">
+                        Se impostato, la regola vale <strong>solo</strong> per quell'anno e ha priorità sulle regole
+                        ricorrenti (utile per feste mobili come Pasqua/Pentecoste, che cambiano data ogni anno).
+                    </p>
+                    @error('year') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
                 <div style="display:flex;gap:.75rem;margin-top:.5rem">
                     <button type="submit" class="btn btn--primary">
                         {{ $rule->exists ? 'Salva modifiche' : 'Crea regola' }}

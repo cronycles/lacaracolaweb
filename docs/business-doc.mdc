@@ -31,7 +31,8 @@ alwaysApply: true
 ## Admin flows
 - Access via email/password.
 - Availability management (manual blocks and calendar visibility).
-- Recurring pricing rule management (month/day).
+- Recurring pricing rule management (month/day). Optional `year` override on a rule makes it apply only to that specific year (and take priority over recurring rules), used for movable holidays (Easter/Pentecost) whose dates shift annually.
+- Easter's date/window is kept in sync automatically (`pricing:sync-easter`, scheduled yearly). Pentecost/Pfingstferien pricing must be reviewed manually every year (German school holiday dates aren't a fixed offset from Easter).
 - `admin/sconti-soggiorno` is a read-only informational page explaining the linear amortisation formula and fixed costs. No editable discount rules.
 - Price simulation in pricing page:
     - uses the same engine as public quote,

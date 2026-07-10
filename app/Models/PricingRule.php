@@ -15,6 +15,7 @@ class PricingRule extends Model
         'end_day',
         'price_per_night',
         'note',
+        'year',
     ];
 
     protected $casts = [
@@ -23,6 +24,7 @@ class PricingRule extends Model
         'end_month'       => 'integer',
         'end_day'         => 'integer',
         'price_per_night' => 'integer',
+        'year'            => 'integer',
     ];
 
     /** Price in euros (stored as cents) */
@@ -35,7 +37,8 @@ class PricingRule extends Model
     {
         $start = sprintf('%02d/%02d', $this->start_day, $this->start_month);
         $end = sprintf('%02d/%02d', $this->end_day, $this->end_month);
+        $label = "{$start} - {$end}";
 
-        return "{$start} - {$end}";
+        return $this->year !== null ? "{$label} (solo {$this->year})" : $label;
     }
 }

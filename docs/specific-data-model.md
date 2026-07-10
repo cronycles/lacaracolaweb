@@ -226,28 +226,31 @@ Explicit date ranges when the apartment is unavailable (booked, maintenance, or 
 
 Recurring annual pricing rules defining price per night for specific date ranges.
 
-Dates are stored as **month/day pairs (no year)** — rules repeat annually.
+Dates are stored as **month/day pairs (no year)** — rules repeat annually, unless a specific `year` override is set.
 
-| Field             | Type              | Notes                                      |
-| ----------------- | ----------------- | ------------------------------------------ |
-| `id`              | BIGINT PK         | Auto-increment                             |
-| `start_month`     | UNSIGNED TINYINT  | Start month (1-12)                         |
-| `start_day`       | UNSIGNED TINYINT  | Start day (1-31)                           |
-| `end_month`       | UNSIGNED TINYINT  | End month (1-12)                           |
-| `end_day`         | UNSIGNED TINYINT  | End day (1-31)                             |
-| `price_per_night` | UNSIGNED SMALLINT | Price in EUR cents (e.g., 10000 = €100.00) |
-| `created_at`      | TIMESTAMP         |                                            |
-| `updated_at`      | TIMESTAMP         |                                            |
+| Field             | Type              | Notes                                                              |
+| ----------------- | ----------------- | ------------------------------------------------------------------ |
+| `id`              | BIGINT PK         | Auto-increment                                                     |
+| `start_month`     | UNSIGNED TINYINT  | Start month (1-12)                                                 |
+| `start_day`       | UNSIGNED TINYINT  | Start day (1-31)                                                   |
+| `end_month`       | UNSIGNED TINYINT  | End month (1-12)                                                   |
+| `end_day`         | UNSIGNED TINYINT  | End day (1-31)                                                     |
+| `year`            | UNSIGNED SMALLINT | Nullable. If set, rule applies ONLY to that year (movable holidays)|
+| `price_per_night` | UNSIGNED SMALLINT | Price in EUR cents (e.g., 10000 = €100.00)                         |
+| `note`            | STRING/TEXT       | Nullable free-text label shown in admin (e.g. "Picco Estivo")      |
+| `created_at`      | TIMESTAMP         |                                                                     |
+| `updated_at`      | TIMESTAMP         |                                                                     |
 
 **Notes:**
 
-- Rules are recurring annually (e.g., Jun 01 - Aug 31 repeats every year)
-- Multiple rules can coexist; the system selects the most applicable rule for a given date
+- Rules are recurring annually by default (e.g., Jun 01 - Aug 31 repeats every year)
+- If `year` is set, the rule matches only that calendar year and **takes priority over recurring rules** for that year (used for movable holidays like Easter/Pentecost, whose month/day shifts every year and can't be expressed as a fixed recurring window)
+- Multiple rules can coexist; the system selects the most applicable rule for a given date: year-specific match first, then the most specific (narrowest date range) recurring rule
 - Prices are stored as cents (integers) to avoid float precision issues
-- When multiple rules overlap, the most specific (narrowest date range) is prioritized
 - Rules are set by admin in `/admin/prezzi`
 - Bulk adjustment available to apply a fixed EUR increase/decrease to all rules
-- Indexed on `(start_month, start_day, end_month, end_day)` for efficient range lookups
+- Indexed on `(start_month, start_day, end_month, end_day)` and `(year, start_month, start_day, end_month, end_day)` for efficient range lookups
+- The `pricing:sync-easter {year?}` Artisan command (scheduled yearly every Nov 1st, see `routes/console.php`) computes real Easter Sunday (Meeus/Jones/Butcher algorithm) and upserts a year-specific "Pasqua {year}" rule automatically. Pentecost/Pfingstferien is **not** auto-computed (depends on published German school holiday calendars, not a fixed offset from Easter) — must be reviewed/updated manually each year as a `year`-specific rule.
 
 **Relations:**
 
