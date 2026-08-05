@@ -128,7 +128,16 @@
     <span class="booking-form__field-error booking-form__field-error--center"
           data-error-for="_form" hidden aria-live="polite"></span>
 
-    <button type="submit" class="btn btn--primary booking-form__submit">
+    {{-- Mandatory legal consent: House Rules + Short-Term Tourist Lease Agreement --}}
+    <div class="booking-form__consent">
+        <label class="booking-form__consent-label">
+            <input type="checkbox" name="accepted_terms" value="1" required>
+            <span>{!! __('app.booking_terms_checkbox', ['rules_url' => route_locale('rules'), 'terms_url' => route_locale('terms')]) !!}</span>
+        </label>
+        <span class="booking-form__field-error" data-error-for="accepted_terms" hidden aria-live="polite"></span>
+    </div>
+
+    <button type="submit" class="btn btn--primary booking-form__submit" disabled>
         {{ __('app.booking_submit') }}
     </button>
 

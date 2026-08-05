@@ -87,6 +87,7 @@ Individual stay/reservation records linked to a primary guest.
 | -------------- | ---------------- | -------------------------------------------------- |
 | `id`           | BIGINT PK        | Auto-increment                                     |
 | `person_id`    | BIGINT FK        | References `people.id` (RESTRICT on delete)        |
+| `booking_request_id` | BIGINT FK  | References `booking_requests.id` (nullable, SET NULL on delete) |
 | `checkin`      | DATE             | Check-in date (inclusive)                          |
 | `checkout`     | DATE             | Check-out date (exclusive)                         |
 | `adults`       | UNSIGNED TINYINT | Number of adult guests (1-6)                       |
@@ -114,6 +115,7 @@ Individual stay/reservation records linked to a primary guest.
 | `created_at`   | TIMESTAMP        |                                                    |
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |
+| `confirmation_sent_at` | TIMESTAMP | When the "booking confirmed — pay within 48h" email was manually sent (nullable) |
 | `deleted_at`   | TIMESTAMP        | Soft delete timestamp (nullable)                   |
 
 **Notes:**
@@ -125,11 +127,47 @@ Individual stay/reservation records linked to a primary guest.
 - Availability blocks linked to canceled bookings can be safely deleted when the booking is fully deleted
 - Indexed on `(checkin, checkout)` for efficient range queries
 - `person_id` uses RESTRICT (not CASCADE) to prevent accidental deletion of bookings if a person is deleted
+- `booking_request_id` links a manually created admin booking back to the public availability request it originated from (for legal consent proof); set to NULL if the request is deleted
+- `confirmation_sent_at` prevents accidentally sending the payment-confirmation email twice; the send action warns before resending if already set
 
 **Relations:**
 
 - N → 1 `people` (primary guest)
+- N → 1 `booking_requests` (optional, originating public request)
 - 1 → 1 `availability_blocks` (optional, via `booking_id`)
+
+---
+
+### 3b. **booking_requests**
+
+Public "availability request" submissions (direct/private booking leads), kept as legal proof of consent to the House Rules and Short-Term Tourist Lease Agreement.
+
+| Field                | Type             | Notes                                              |
+| -------------------- | ---------------- | -------------------------------------------------- |
+| `id`                 | BIGINT PK        | Auto-increment                                     |
+| `name`               | VARCHAR(100)     | Requester name                                     |
+| `email`              | VARCHAR(150)     | Requester email                                    |
+| `phone`              | VARCHAR(30)      | Requester phone (nullable)                         |
+| `checkin`            | DATE             | Requested check-in date                            |
+| `checkout`           | DATE             | Requested check-out date                           |
+| `adults`             | UNSIGNED TINYINT | Number of adult guests                             |
+| `children`           | UNSIGNED TINYINT | Number of children (default: 0)                    |
+| `message`            | TEXT             | Free-text message from the requester (nullable)    |
+| `newsletter`         | BOOLEAN          | Newsletter opt-in (default: false)                 |
+| `terms_accepted_at`  | TIMESTAMP        | When the House Rules / Lease Agreement checkbox was accepted |
+| `ip_address`         | VARCHAR(45)      | Requester IP address at submission time (nullable) |
+| `user_agent`         | VARCHAR(255)     | Requester user agent at submission time (nullable) |
+| `created_at`         | TIMESTAMP        |                                                     |
+| `updated_at`         | TIMESTAMP        |                                                     |
+
+**Notes:**
+
+- `ip_address`/`user_agent` are stored solely as proof of legal consent for direct/private bookings; treat as personal data under GDPR (same handling as other guest data in this app).
+- Not soft-deleted; these are lightweight lead records, not reservations.
+
+**Relations:**
+
+- 1 → 1 `bookings` (optional; set once the owner manually creates the confirmed admin booking for this request)
 
 ---
 

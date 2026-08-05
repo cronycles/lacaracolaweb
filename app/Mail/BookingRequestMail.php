@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail;
 
+use App\Models\BookingRequest;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -24,7 +25,10 @@ class BookingRequestMail extends Mailable
      *   newsletter: bool|null,
      * } $requestData
      */
-    public function __construct(public readonly array $requestData) {}
+    public function __construct(
+        public readonly array $requestData,
+        public readonly ?BookingRequest $bookingRequest = null,
+    ) {}
 
     public function envelope(): Envelope
     {
@@ -40,6 +44,9 @@ class BookingRequestMail extends Mailable
     {
         return new Content(
             view: 'emails.booking-request',
+            with: [
+                'bookingRequest' => $this->bookingRequest,
+            ],
         );
     }
 }

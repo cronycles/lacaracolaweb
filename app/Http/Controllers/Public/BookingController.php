@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Mail\BookingRequestMail;
+use App\Mail\BookingRequestPendingMail;
+use App\Models\BookingRequest;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -88,6 +90,10 @@ class BookingController extends Controller
             'phone'      => ['nullable', 'string', 'max:30'],
             'message'    => ['nullable', 'string', 'max:1000'],
             'newsletter' => ['nullable', 'boolean'],
+            'accepted_terms' => ['required', 'accepted'],
+        ], [
+            'accepted_terms.required' => __('app.error_terms_required'),
+            'accepted_terms.accepted' => __('app.error_terms_required'),
         ]);
 
         // Validate minimum nights
@@ -109,10 +115,36 @@ class BookingController extends Controller
         // Store in session for thank-you page (non-AJAX fallback)
         session()->flash('booking_request', $data);
 
+        $bookingRequest = BookingRequest::create([
+            'name'              => $data['name'],
+            'email'             => $data['email'],
+            'phone'             => $data['phone'] ?? null,
+            'checkin'           => $data['checkin'],
+            'checkout'          => $data['checkout'],
+            'adults'            => $data['adults'],
+            'children'          => $data['children'] ?? 0,
+            'message'           => $data['message'] ?? null,
+            'newsletter'        => (bool) ($data['newsletter'] ?? false),
+            'terms_accepted_at' => now(),
+            'ip_address'        => $request->ip(),
+            'user_agent'        => substr((string) $request->userAgent(), 0, 255),
+        ]);
+
         try {
-            Mail::to(config('apartment.email'))->send(new BookingRequestMail($data));
+            Mail::to(config('apartment.email'))->send(new BookingRequestMail($data, $bookingRequest));
         } catch (\Throwable $e) {
             Log::error('BookingRequestMail failed to send', [
+                'error'   => $e->getMessage(),
+                'name'    => $data['name'],
+                'email'   => $data['email'],
+                'checkin' => $data['checkin'],
+            ]);
+        }
+
+        try {
+            Mail::to($data['email'])->send(new BookingRequestPendingMail($bookingRequest));
+        } catch (\Throwable $e) {
+            Log::error('BookingRequestPendingMail failed to send', [
                 'error'   => $e->getMessage(),
                 'name'    => $data['name'],
                 'email'   => $data['email'],

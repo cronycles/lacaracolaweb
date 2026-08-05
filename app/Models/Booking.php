@@ -17,6 +17,7 @@ class Booking extends Model
 
     protected $fillable = [
         'person_id',
+        'booking_request_id',
         'checkin',
         'checkout',
         'adults',
@@ -27,6 +28,7 @@ class Booking extends Model
         'external_ref',
         'notes',
         'canceled_at',
+        'confirmation_sent_at',
         'income_amount',
         'income_paid',
         'income_paid_at',
@@ -52,6 +54,7 @@ class Booking extends Model
         'babies'           => 'integer',
         'pets'             => 'integer',
         'canceled_at'      => 'datetime',
+        'confirmation_sent_at' => 'datetime',
         'income_amount'    => 'decimal:2',
         'income_paid'      => 'boolean',
         'income_paid_at'   => 'date',
@@ -72,6 +75,11 @@ class Booking extends Model
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
+    }
+
+    public function bookingRequest(): BelongsTo
+    {
+        return $this->belongsTo(BookingRequest::class);
     }
 
     public function availabilityBlock(): HasOne

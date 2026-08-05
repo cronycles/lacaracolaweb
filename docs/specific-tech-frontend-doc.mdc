@@ -35,6 +35,36 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   - payload: `checkin`, `checkout`
   - UI-consumed output: `available`, `total_cents`, `message`
 - Public UI shows only total (no technical breakdown).
+- A mandatory legal-consent checkbox (`accepted_terms`) sits right above the submit
+  button, linking to the House Rules and Terms pages via `route_locale('rules')`
+  / `route_locale('terms')`. The submit button (`resources/ts/components/booking-form.ts`)
+  stays `disabled` until the checkbox is checked; the server also validates
+  `accepted_terms => ['required', 'accepted']` as a defense-in-depth measure.
+
+## Brand identity (colors + logo)
+- Palette lives in `resources/css/tokens.css` (`:root`):
+  - `--color-primary: #30596C` (dark teal/blue — headings, primary buttons, links)
+  - `--color-primary-light: #4a7d94`, `--color-primary-dark: #1e3d4a`
+  - `--color-accent: #c7b772` (gold — highlights, borders, accents)
+  - `--color-accent-light: #d9cc98`
+  - `--color-text: #1a1a1a`, `--color-text-muted: #5a6a70`, `--color-border: #dde3e6`
+  - `--color-bg: #f8f9fa`, `--color-white: #ffffff`
+- Fonts: `--font-sans` (Inter, body), `--font-serif` (Playfair Display, headings),
+  `--font-brand` (Montserrat, brand wordmark contexts).
+- Logo files live in `public/images/brand/` (built from source assets in
+  `resources/images/logos/`):
+  - `logo-symbol-{blue,gold}.svg` / `@3x.png` — icon only (favicon, nav, admin sidebar).
+  - `logo-wordmark-{blue,gold}.svg` / `@3x.png` — icon + wordmark (used in transactional emails).
+  - Use `asset('images/brand/<file>')` to reference them; prefer the SVG on the
+    web and the `@3x.png` raster in HTML emails (email clients don't reliably
+    render SVG).
+- **Transactional emails**: all mailable views extend `resources/views/emails/layout.blade.php`,
+  which renders the `logo-wordmark-blue@3x.png` logo and inlines the brand colors
+  as literal hex values (email clients don't load external stylesheets or resolve
+  CSS custom properties, so `tokens.css` cannot be referenced directly — colors
+  must stay in sync manually if the palette changes).
+- If a different logo size/crop is needed, ask for a new export rather than
+  resizing the existing PNG/SVG in code.
 
 ## Admin pricing simulator
 - Module: `pricing-simulator.ts`.

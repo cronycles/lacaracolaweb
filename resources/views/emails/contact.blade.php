@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuovo messaggio di contatto — La Caracola</title>
-    <style>
-        body { font-family: Arial, sans-serif; color: #333; font-size: 15px; line-height: 1.6; }
-        .container { max-width: 600px; margin: 0 auto; padding: 24px; }
-        h1 { font-size: 20px; color: #1a5a5a; border-bottom: 2px solid #1a5a5a; padding-bottom: 8px; }
-        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-        th { text-align: left; font-weight: bold; width: 35%; color: #555; padding: 6px 0; vertical-align: top; }
-        td { padding: 6px 0; }
-        .section { margin-top: 20px; }
-        .section-title { font-weight: bold; color: #1a5a5a; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .message-box { background: #f5f5f5; border-left: 4px solid #1a5a5a; padding: 12px 16px; border-radius: 4px; margin-top: 8px; white-space: pre-wrap; }
-        .footer { margin-top: 32px; font-size: 12px; color: #888; border-top: 1px solid #eee; padding-top: 16px; }
-    </style>
-</head>
-<body>
-<div class="container">
+@extends('emails.layout')
+
+@section('title', 'Nuovo messaggio di contatto — La Caracola')
+
+@section('content')
 
     <h1>🐚 Nuovo messaggio di contatto — La Caracola</h1>
 
@@ -51,6 +36,5 @@
         Per rispondere, usa direttamente la Reply-To di questa email.
     </div>
 
-</div>
-</body>
-</html>
+@endsection
+

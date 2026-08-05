@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BookingConfirmedMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
@@ -13,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -154,6 +156,24 @@ class BookingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Prenotazione segnata come cancellata. Giorni liberati.');
+    }
+
+    /**
+     * Manually send the "booking confirmed — pay within 48h" email to the guest,
+     * with payment instructions and the free-cancellation deadline. BCCs the owner.
+     */
+    public function sendConfirmationEmail(Booking $prenotazioni): RedirectResponse
+    {
+        $prenotazioni->load('person', 'bookingRequest');
+
+        if (empty($prenotazioni->person->email)) {
+            return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
+        }
+
+        Mail::to($prenotazioni->person->email)->send(new BookingConfirmedMail($prenotazioni));
+        $prenotazioni->update(['confirmation_sent_at' => now()]);
+
+        return redirect()->back()->with('success', 'Email di conferma prenotazione inviata a ' . $prenotazioni->person->email . '.');
     }
 
     public function notifyTelegram(Booking $prenotazioni, TelegramService $telegram): JsonResponse

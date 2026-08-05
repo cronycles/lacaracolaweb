@@ -115,6 +115,20 @@ return [
         'key_loss_fee'        => '€150',
     ],
 
+    // --- Bank transfer payment instructions (used in the "booking confirmed" email) ---
+    'payment' => [
+        // Beneficiary name shown on the bank transfer.
+        'beneficiary' => env('APARTMENT_PAYMENT_BENEFICIARY', ''),
+        // IBAN for the bank transfer.
+        'iban'        => env('APARTMENT_PAYMENT_IBAN', ''),
+        // BIC/SWIFT code (optional, shown if set).
+        'bic'         => env('APARTMENT_PAYMENT_BIC', ''),
+        // Hours the guest has to pay after the confirmation email is sent.
+        'deadline_hours' => 48,
+        // Days before check-in until which cancellation is free (full refund).
+        'free_cancellation_days' => 14,
+    ],
+
     // --- INTERHOME integration ---
     'interhome' => [
         // Official Interhome listing code.
@@ -173,6 +187,16 @@ return [
         ['icon' => '🔑', 'title_key' => 'app.rules_checkout_title',    'text_key' => 'app.rules_checkout_text'],
         ['icon' => '⚠️', 'title_key' => 'app.rules_keys_title',        'text_key' => 'app.rules_keys_text'],
         ['icon' => '❗', 'title_key' => 'app.rules_warning_title',     'text_key' => 'app.rules_warning_text'],
+    ],
+
+    // --- Short-term tourist lease agreement (title + lang keys for title and body text per section) ---
+    'terms' => [
+        ['title_key' => 'app.terms_s1_title', 'text_key' => 'app.terms_s1_text'],
+        ['title_key' => 'app.terms_s2_title', 'text_key' => 'app.terms_s2_text'],
+        ['title_key' => 'app.terms_s3_title', 'text_key' => 'app.terms_s3_text'],
+        ['title_key' => 'app.terms_s4_title', 'text_key' => 'app.terms_s4_text'],
+        ['title_key' => 'app.terms_s5_title', 'text_key' => 'app.terms_s5_text'],
+        ['title_key' => 'app.terms_s6_title', 'text_key' => 'app.terms_s6_text'],
     ],
 
     // --- Useful nearby places (supermarkets / restaurants / health / essentials) ---

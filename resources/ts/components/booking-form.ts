@@ -29,6 +29,7 @@ export function initBookingForm(): void {
     const checkin   = form.querySelector<HTMLInputElement>('[name="checkin"]');
     const checkout  = form.querySelector<HTMLInputElement>('[name="checkout"]');
     const submitBtn = form.querySelector<HTMLButtonElement>('[type="submit"]');
+    const termsCheckbox = form.querySelector<HTMLInputElement>('[name="accepted_terms"]');
     const successEl = document.querySelector<HTMLElement>('#booking-success');
     const priceBox = form.querySelector<HTMLElement>('[data-price-box]');
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
@@ -95,6 +96,17 @@ export function initBookingForm(): void {
 
     checkin?.addEventListener('change',  validateDates);
     checkout?.addEventListener('change', validateDates);
+
+    // --- Legal consent checkbox: submit stays disabled until accepted ---
+
+    const updateSubmitAvailability = (): void => {
+        if (submitBtn && termsCheckbox) {
+            submitBtn.disabled = !termsCheckbox.checked;
+        }
+    };
+
+    termsCheckbox?.addEventListener('change', updateSubmitAvailability);
+    updateSubmitAvailability();
 
     const hidePrice = (): void => {
         if (priceBox) {
@@ -235,12 +247,13 @@ export function initBookingForm(): void {
 
     const setLoading = (loading: boolean): void => {
         if (!submitBtn) return;
-        submitBtn.disabled = loading;
         if (loading) {
+            submitBtn.disabled = true;
             submitBtn.dataset['originalText'] = submitBtn.textContent ?? '';
             submitBtn.textContent = form.dataset['labelLoading'] ?? '…';
         } else {
             submitBtn.textContent = submitBtn.dataset['originalText'] ?? submitBtn.textContent;
+            updateSubmitAvailability();
         }
     };
 

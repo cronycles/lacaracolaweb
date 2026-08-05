@@ -14,6 +14,14 @@
                         title="Invia notifica Telegram a tutti i destinatari configurati">
                     ✈ Telegram
                 </button>
+                <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}"
+                      class="js-confirm-send-mail"
+                      data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email di conferma già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : "Inviare l'email di conferma prenotazione con le istruzioni di pagamento?" }}">
+                    @csrf
+                    <button type="submit" class="btn btn--outline btn--sm" title="Invia email di conferma prenotazione con istruzioni di pagamento (48h) e scadenza cancellazione gratuita">
+                        📧 Invia conferma{{ $booking->confirmation_sent_at ? ' (già inviata)' : '' }}
+                    </button>
+                </form>
                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
                       onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
                     @csrf
@@ -386,6 +394,18 @@
 @endsection
 
 @push('scripts')
+<script>
+(function () {
+    document.querySelectorAll('.js-confirm-send-mail').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            const message = form.dataset.confirmMessage;
+            if (message && !window.confirm(message)) {
+                e.preventDefault();
+            }
+        });
+    });
+})();
+</script>
 <script>
 (function () {
     const btn = document.getElementById('btn-telegram-notify');

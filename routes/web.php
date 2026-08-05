@@ -6,6 +6,7 @@ use App\Http\Controllers\Public\MapController;
 use App\Http\Controllers\Public\ExperiencesController;
 use App\Http\Controllers\Public\ReviewsController;
 use App\Http\Controllers\Public\RulesController;
+use App\Http\Controllers\Public\TermsController;
 use App\Http\Controllers\Public\UsefulPlacesController;
 use App\Http\Controllers\Public\BookingController;
 use App\Http\Controllers\Public\ContactController;
@@ -40,6 +41,7 @@ foreach ($locales as $locale) {
         Route::get('/' . $slug['experiences'], [ExperiencesController::class, 'index'])->name('experiences');
         Route::get('/' . $slug['reviews'], [ReviewsController::class, 'index'])->name('reviews');
         Route::get('/' . $slug['rules'], [RulesController::class, 'index'])->name('rules');
+        Route::get('/' . $slug['terms'], [TermsController::class, 'index'])->name('terms');
         Route::get('/' . $slug['useful_places'], [UsefulPlacesController::class, 'index'])->name('useful-places');
 
         // Contact form

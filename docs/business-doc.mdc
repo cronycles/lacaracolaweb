@@ -27,6 +27,16 @@ alwaysApply: true
 - Minimum nights constraint is configured in `config/apartment.php` (default 3).
 - Maximum nights constraint is configured in `config/apartment.php` (default 28).
 - Linen fee is per-guest; quote endpoint accepts `guests` (total of adults + children).
+- Since stays are capped below 30 nights, every direct/private booking request
+  (i.e. not via Booking.com/Airbnb) requires the guest to explicitly accept the
+  House Rules and the Short-Term Tourist Lease Agreement (mandatory checkbox,
+  no submission without it). Acceptance is stored (`booking_requests` table)
+  as legal proof (timestamp + IP). After submission the guest receives a
+  "request pending owner confirmation" email — not a confirmed booking. Once
+  the owner is ready to confirm a stay (as a real admin `Booking`), they
+  manually send a "booking confirmed" email with payment instructions and a
+  48h payment deadline; if unpaid, the owner cancels the booking manually
+  (no automated cancellation job).
 
 ## Admin flows
 - Access via email/password.
