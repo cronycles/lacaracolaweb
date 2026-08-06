@@ -41,9 +41,15 @@ class HostKeeperViewTest extends TestCase
 
     public function test_income_amount_not_in_booking_show_for_host_keeper(): void
     {
-        $person = Person::factory()->create();
-        $booking = Booking::factory()->create([
+        $person = Person::create([
+            'first_name' => 'Anna',
+            'last_name'  => 'Verdi',
+        ]);
+        $booking = Booking::create([
             'person_id'     => $person->id,
+            'checkin'       => now()->addDays(10)->format('Y-m-d'),
+            'checkout'      => now()->addDays(15)->format('Y-m-d'),
+            'adults'        => 1,
             'income_amount' => 1500.00,
         ]);
 
