@@ -37,7 +37,7 @@ return [
     'booking_children'      => 'Bambini',
     'booking_name'          => 'Nome e Cognome',
     'booking_email'         => 'Email',
-    'booking_phone'         => 'Telefono (opzionale)',
+    'booking_phone'         => 'Telefono',
     'booking_message'       => 'Messaggio (opzionale)',
     'booking_newsletter'    => 'Voglio ricevere offerte e novità',
     'booking_submit'        => 'Invia Richiesta',

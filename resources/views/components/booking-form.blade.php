@@ -105,8 +105,9 @@
             <span class="booking-form__field-error" data-error-for="email" hidden aria-live="polite"></span>
         </div>
         <div class="booking-form__group">
-            <label for="phone">{{ __('app.booking_phone') }}</label>
-            <input type="tel" id="phone" name="phone" maxlength="30" autocomplete="tel">
+            <label for="phone">{{ __('app.booking_phone') }} *</label>
+            <input type="tel" id="phone" name="phone" required maxlength="30" autocomplete="tel">
+            <span class="booking-form__field-error" data-error-for="phone" hidden aria-live="polite"></span>
         </div>
     </div>
 
