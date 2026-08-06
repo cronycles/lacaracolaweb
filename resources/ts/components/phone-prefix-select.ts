@@ -41,6 +41,9 @@ function iso2ToFlag(iso2: string): string {
 
 const MAX_LIST = 120;
 
+/** ISO2 auto-selected when the guest starts typing a number without picking a country first. */
+const DEFAULT_ISO2 = 'IT';
+
 class PhonePrefixSelect {
     private readonly wrap: HTMLElement;
     private readonly phoneInput: HTMLInputElement;
@@ -191,6 +194,15 @@ class PhonePrefixSelect {
         this.trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             this.dropdown.hidden ? this._open() : this._close();
+        });
+
+        // Guard against submitting a phone number without a prefix: if the guest
+        // starts typing without ever opening the picker, silently default to IT
+        // instead of leaving prefixHidden empty (incomplete "phone" data).
+        this.phoneInput.addEventListener('input', () => {
+            if (this.selected || this.phoneInput.value.trim() === '') return;
+            const fallback = this.options.find((o) => o.iso2 === DEFAULT_ISO2);
+            if (fallback) this._commit(fallback);
         });
 
         // Filter list on search input

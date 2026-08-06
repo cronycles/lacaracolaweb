@@ -24,7 +24,8 @@ class BookingLegalConsentTest extends TestCase
             'children'   => 0,
             'name'       => 'Mario Rossi',
             'email'      => 'mario.rossi@example.com',
-            'phone'      => '+39 333 1234567',
+            'phone'      => '333 1234567',
+            'phone_prefix' => '+39',
             'message'    => 'Test message',
         ];
     }

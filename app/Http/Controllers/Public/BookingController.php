@@ -88,7 +88,7 @@ class BookingController extends Controller
             'name'       => ['required', 'string', 'max:100'],
             'email'      => ['required', 'email', 'max:150'],
             'phone'      => ['required', 'string', 'max:30'],
-            'phone_prefix'   => ['nullable', 'string', 'max:10'],
+            'phone_prefix'   => ['required', 'string', 'max:10'],
             'message'    => ['nullable', 'string', 'max:1000'],
             'newsletter' => ['nullable', 'boolean'],
             'accepted_terms' => ['required', 'accepted'],

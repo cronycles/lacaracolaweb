@@ -38,7 +38,12 @@ export function initBookingForm(): void {
 
     // --- Field error helpers ---
 
+    // The dial-code prefix is a hidden input with no error span of its own —
+    // show its validation errors on the visible "phone" field instead.
+    const errorFieldFor = (fieldName: string): string => (fieldName === 'phone_prefix' ? 'phone' : fieldName);
+
     const setFieldError = (fieldName: string, message: string): void => {
+        fieldName = errorFieldFor(fieldName);
         const span    = form.querySelector<HTMLElement>(`[data-error-for="${fieldName}"]`);
         const input   = form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
         const trigger = document.getElementById(`dp-trigger-${fieldName}`);

@@ -32,6 +32,7 @@ return [
         'name'     => 'nom',
         'email'    => 'e-mail',
         'phone'    => 'téléphone',
+        'phone_prefix' => 'indicatif téléphonique',
         'message'  => 'message',
         'current_password' => 'mot de passe actuel',
         'password' => 'mot de passe',
