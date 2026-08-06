@@ -10,7 +10,7 @@
         <p style="text-align:center;color:var(--color-text-muted)">{{ __('app.terms_subtitle') }}</p>
     </div>
 
-    <div class="rules-list">
+    <div class="rules-list rules-list--plain">
         @foreach(config('apartment.terms') as $section)
         <div class="rules-list__item">
             <div>
