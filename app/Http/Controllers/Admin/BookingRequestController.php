@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BookingRequestDeclinedMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\BookingRequest;
 use App\Services\BookingCreationService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class BookingRequestController extends Controller
@@ -60,14 +63,36 @@ class BookingRequestController extends Controller
             ->with('success', 'Richiesta confermata: completa i dati economici della prenotazione.');
     }
 
-    /** Decline a pending request: keeps the row (legal consent proof) but removes it from the queue. */
+    /** Decline a pending request: keeps the row (legal consent proof), removes it from the queue, notifies the guest. */
     public function decline(BookingRequest $bookingRequest): RedirectResponse
     {
         $bookingRequest->update(['declined_at' => now()]);
 
+        try {
+            Mail::to($bookingRequest->email)
+                ->locale($bookingRequest->locale ?? 'it')
+                ->send(new BookingRequestDeclinedMail($bookingRequest));
+        } catch (\Throwable $e) {
+            Log::error('BookingRequestDeclinedMail failed to send', [
+                'error'              => $e->getMessage(),
+                'booking_request_id' => $bookingRequest->id,
+                'email'              => $bookingRequest->email,
+            ]);
+        }
+
         return redirect()
             ->route('admin.booking-requests.index')
-            ->with('success', 'Richiesta rifiutata.');
+            ->with('success', 'Richiesta rifiutata: abbiamo avvisato l\'ospite via email.');
+    }
+
+    /** Permanently delete a request row (no email, no trace) — for cleanup/testing or requests the owner wants gone entirely. */
+    public function destroy(BookingRequest $bookingRequest): RedirectResponse
+    {
+        $bookingRequest->delete();
+
+        return redirect()
+            ->route('admin.booking-requests.index')
+            ->with('success', 'Richiesta eliminata.');
     }
 
     /** @return array{first_name: string, last_name: string, email: string|null, phone: string|null} */

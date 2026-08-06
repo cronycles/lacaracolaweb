@@ -51,7 +51,12 @@ alwaysApply: true
   exactly as when creating a booking manually today.
 - Declining a request removes it from the queue without creating a booking
   (e.g. the owner handled it directly by phone/WhatsApp, or turned it down) —
-  the original request record is kept, not deleted.
+  the original request record is kept, not deleted. The guest automatically
+  receives a polite decline email (no booking created, invited to reply
+  directly to the email for any question or to propose other dates).
+- The owner can also permanently delete a pending request (no email sent,
+  irreversible) — for test requests or ones the owner simply wants gone,
+  as opposed to declining which is the real "we said no to a guest" flow.
 
 ### Online check-in (guest self-service)
 - Every confirmed booking gets a persistent, unguessable check-in link (no

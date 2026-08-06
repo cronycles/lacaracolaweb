@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Mail\BookingRequestDeclinedMail;
 use App\Models\BookingRequest;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class BookingRequestConfirmationTest extends TestCase
@@ -145,6 +147,8 @@ class BookingRequestConfirmationTest extends TestCase
 
     public function test_declining_removes_request_from_queue_without_creating_a_booking(): void
     {
+        Mail::fake();
+
         $request = $this->makeRequest();
 
         $this->actingAs($this->admin)
@@ -159,6 +163,33 @@ class BookingRequestConfirmationTest extends TestCase
         $response->assertDontSee('Mario Rossi');
     }
 
+    public function test_declining_sends_a_polite_notification_email_to_the_guest(): void
+    {
+        Mail::fake();
+
+        $request = $this->makeRequest();
+
+        $this->actingAs($this->admin)->post(route('admin.booking-requests.decline', $request));
+
+        Mail::assertSent(BookingRequestDeclinedMail::class, function (BookingRequestDeclinedMail $mail) use ($request) {
+            return $mail->hasTo($request->email) && $mail->bookingRequest->is($request);
+        });
+    }
+
+    public function test_destroy_permanently_deletes_the_request_without_sending_any_email(): void
+    {
+        Mail::fake();
+
+        $request = $this->makeRequest();
+
+        $this->actingAs($this->admin)
+            ->delete(route('admin.booking-requests.destroy', $request))
+            ->assertRedirect(route('admin.booking-requests.index'));
+
+        $this->assertDatabaseMissing('booking_requests', ['id' => $request->id]);
+        Mail::assertNothingSent();
+    }
+
     public function test_users_without_manage_bookings_permission_cannot_access_or_act_on_the_queue(): void
     {
         $hostKeeperRole = Role::where('name', 'host_keeper')->first();
@@ -169,6 +200,7 @@ class BookingRequestConfirmationTest extends TestCase
         $this->actingAs($hostKeeper)->get(route('admin.booking-requests.index'))->assertRedirect('/admin/');
         $this->actingAs($hostKeeper)->post(route('admin.booking-requests.confirm', $request))->assertRedirect('/admin/');
         $this->actingAs($hostKeeper)->post(route('admin.booking-requests.decline', $request))->assertRedirect('/admin/');
+        $this->actingAs($hostKeeper)->delete(route('admin.booking-requests.destroy', $request))->assertRedirect('/admin/');
 
         $this->assertDatabaseCount('bookings', 0);
         $this->assertNull($request->fresh()->declined_at);

@@ -282,17 +282,24 @@ prenotazioni reali con un click, riusando i dati già presenti nella richiesta.
 ### File coinvolti
 | File | Responsabilità |
 |---|---|
-| `App\Http\Controllers\Admin\BookingRequestController` | `index` (coda), `confirm` (crea booking), `decline` (rifiuta) |
+| `App\Http\Controllers\Admin\BookingRequestController` | `index` (coda), `confirm` (crea booking), `decline` (rifiuta + email ospite), `destroy` (elimina definitivamente, nessuna email) |
 | `App\Services\BookingCreationService::findOrCreatePerson()` | Matching ospite condiviso con l'import Interhome (vedi Service map) |
 | `App\Services\BookingCreationService::previewMatch()` | Stessa ricerca di `findOrCreatePerson()` ma **read-only**, non crea/salva nulla — usata per l'anteprima nella coda |
 | `App\Models\BookingRequest::scopePending()` | `whereNull('declined_at')->whereDoesntHave('booking')` — definizione di "richiesta in attesa" |
+| `App\Mail\BookingRequestDeclinedMail` | Email cortese di rifiuto inviata all'ospite in `decline()`, con `->locale($bookingRequest->locale)` |
 | `resources/views/admin/booking-requests/index.blade.php` | Vista coda |
 
 ### Regole chiave
-- Rotte sotto `permission:manage_bookings`: `GET /admin/richieste`, `POST /admin/richieste/{bookingRequest}/conferma`, `POST /admin/richieste/{bookingRequest}/rifiuta`.
+- Rotte sotto `permission:manage_bookings`: `GET /admin/richieste`, `POST /admin/richieste/{bookingRequest}/conferma`, `POST /admin/richieste/{bookingRequest}/rifiuta`, `DELETE /admin/richieste/{bookingRequest}`.
 - `confirm()` NON invia l'email di conferma prenotazione — quella resta un'azione separata
   (`sendConfirmationEmail`, bottone esistente sulla pagina prenotazione) dopo che il proprietario
   ha eventualmente completato i dati economici.
+- `decline()` marca `declined_at` (mantiene la riga come prova del consenso legale) e invia
+  `BookingRequestDeclinedMail` all'ospite (fallimento invio loggato ma non bloccante, stesso
+  pattern try/catch di `BookingRequestMail`/`BookingRequestPendingMail`).
+- `destroy()` elimina definitivamente la riga (nessuna email, nessuna traccia) — pensata per
+  test/prove o richieste che il proprietario vuole rimuovere del tutto, distinta da `decline()`
+  che invece serve per il flusso reale con l'ospite.
 - Tutti i campi economici (`income_amount`, `cleaning_amount`, `linen_amount`, `parking_amount`)
   restano `NULL` sulla booking creata da `confirm()` — comportamento voluto, non un difetto:
   il proprietario li compila a mano dopo, come già avviene per le prenotazioni create manualmente.

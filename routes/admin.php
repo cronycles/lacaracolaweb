@@ -54,6 +54,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/richieste', [BookingRequestController::class, 'index'])->name('booking-requests.index');
         Route::post('/richieste/{bookingRequest}/conferma', [BookingRequestController::class, 'confirm'])->name('booking-requests.confirm');
         Route::post('/richieste/{bookingRequest}/rifiuta', [BookingRequestController::class, 'decline'])->name('booking-requests.decline');
+        Route::delete('/richieste/{bookingRequest}', [BookingRequestController::class, 'destroy'])->name('booking-requests.destroy');
     });
 
     // ── manage_calendar ──────────────────────────────────────────────────────

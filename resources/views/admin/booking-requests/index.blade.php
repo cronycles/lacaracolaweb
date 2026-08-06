@@ -60,9 +60,15 @@
                                     <button type="submit" class="btn btn--primary btn--sm">✓ Conferma</button>
                                 </form>
                                 <form method="POST" action="{{ route('admin.booking-requests.decline', $request) }}" style="display:inline"
-                                      onsubmit="return confirm('Rifiutare questa richiesta? Non verrà creata alcuna prenotazione.')">
+                                      onsubmit="return confirm('Rifiutare questa richiesta? Verrà inviata una email all\'ospite e non verrà creata alcuna prenotazione.')">
                                     @csrf
                                     <button type="submit" class="btn btn--outline btn--sm">✕ Rifiuta</button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.booking-requests.destroy', $request) }}" style="display:inline"
+                                      onsubmit="return confirm('Eliminare definitivamente questa richiesta? Non verrà inviata alcuna email e l\'azione non è reversibile.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn--outline btn--sm">🗑 Elimina</button>
                                 </form>
                             </td>
                         </tr>

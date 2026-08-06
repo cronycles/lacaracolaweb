@@ -80,9 +80,11 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 
 ## Admin: pending booking-requests queue
 - View: `resources/views/admin/booking-requests/index.blade.php` (table: requester,
-  contacts, dates, guests, message, guest-match preview, Conferma/Rifiuta buttons).
-  Reuses the shared admin table styles (`.a-card`, `.a-table`) — no new CSS for the
-  table itself.
+  contacts, dates, guests, message, guest-match preview, Conferma/Rifiuta/Elimina
+  buttons). Reuses the shared admin table styles (`.a-card`, `.a-table`) — no new
+  CSS for the table itself. "Elimina" uses `@method('DELETE')` + a stronger
+  `confirm()` copy (irreversible, no email) to distinguish it from "Rifiuta"
+  (sends the guest a decline email, keeps the row).
 - Nav entry: sidebar "📥 Richieste" (`resources/views/layouts/admin.blade.php`), visible
   only with `manage_bookings` permission, with a pending-count badge
   (`.admin-nav__badge` in `resources/css/admin.css`).
