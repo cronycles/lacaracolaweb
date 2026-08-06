@@ -568,6 +568,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Http\\Middleware\\ResolveLocaleFromRoute' => __DIR__ . '/../..' . '/app/Http/Middleware/ResolveLocaleFromRoute.php',
         'App\\Http\\Middleware\\SetLocale' => __DIR__ . '/../..' . '/app/Http/Middleware/SetLocale.php',
         'App\\Mail\\BookingConfirmedMail' => __DIR__ . '/../..' . '/app/Mail/BookingConfirmedMail.php',
+        'App\\Mail\\BookingRequestDeclinedMail' => __DIR__ . '/../..' . '/app/Mail/BookingRequestDeclinedMail.php',
         'App\\Mail\\BookingRequestMail' => __DIR__ . '/../..' . '/app/Mail/BookingRequestMail.php',
         'App\\Mail\\BookingRequestPendingMail' => __DIR__ . '/../..' . '/app/Mail/BookingRequestPendingMail.php',
         'App\\Mail\\CheckinReminderMail' => __DIR__ . '/../..' . '/app/Mail/CheckinReminderMail.php',
