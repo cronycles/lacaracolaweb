@@ -32,11 +32,26 @@ alwaysApply: true
   House Rules and the Short-Term Tourist Lease Agreement (mandatory checkbox,
   no submission without it). Acceptance is stored (`booking_requests` table)
   as legal proof (timestamp + IP). After submission the guest receives a
-  "request pending owner confirmation" email — not a confirmed booking. Once
-  the owner is ready to confirm a stay (as a real admin `Booking`), they
-  manually send a "booking confirmed" email with payment instructions and a
-  48h payment deadline; if unpaid, the owner cancels the booking manually
-  (no automated cancellation job).
+  "request pending owner confirmation" email — not a confirmed booking. The
+  owner reviews pending requests in the admin "Richieste" queue (see below)
+  and confirms or declines them from there; confirming creates the real
+  `Booking` automatically. The owner then manually sends the "booking
+  confirmed" email with payment instructions and a 48h payment deadline; if
+  unpaid, the owner cancels the booking manually (no automated cancellation job).
+
+### Pending availability requests (admin queue)
+- Every submitted availability request appears in a dedicated admin "Richieste"
+  page until the owner confirms or declines it — nothing is silently lost or
+  only reachable via the notification email.
+- Confirming a request automatically finds the matching guest profile (by
+  email, then phone, then exact full name) or creates a new one, then creates
+  the `Booking` with the request's dates/guests, linked back to the original
+  request. Pricing and services (cleaning/linen/parking) are intentionally left
+  empty — the owner fills them in on the booking page right after confirming,
+  exactly as when creating a booking manually today.
+- Declining a request removes it from the queue without creating a booking
+  (e.g. the owner handled it directly by phone/WhatsApp, or turned it down) —
+  the original request record is kept, not deleted.
 
 ### Online check-in (guest self-service)
 - Every confirmed booking gets a persistent, unguessable check-in link (no

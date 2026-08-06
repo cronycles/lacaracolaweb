@@ -34,41 +34,12 @@ class BookingCreationService
      */
     public function createFromParsed(array $data): Booking
     {
-        $person = null;
-
-        if (!empty($data['email'])) {
-            $person = Person::where('email', $data['email'])->first();
-        }
-
-        if (!$person && !empty($data['phone'])) {
-            $person = Person::where('phone', $data['phone'])->first();
-        }
-
-        if (!$person) {
-            $person = Person::where('first_name', $data['first_name'])
-                ->where('last_name', $data['last_name'])
-                ->first();
-        }
-
-        if (!$person) {
-            $person = Person::create([
-                'first_name' => $data['first_name'],
-                'last_name'  => $data['last_name'],
-                'email'      => $data['email'] ?? null,
-                'phone'      => $data['phone'] ?? null,
-            ]);
-        } else {
-            // Enrich existing guest when import brings missing contacts.
-            if (empty($person->email) && !empty($data['email'])) {
-                $person->email = $data['email'];
-            }
-            if (empty($person->phone) && !empty($data['phone'])) {
-                $person->phone = $data['phone'];
-            }
-            $person->save();
-        }
-
-        $person->autoSubscribeToNewsletter();
+        $person = $this->findOrCreatePerson([
+            'first_name' => $data['first_name'],
+            'last_name'  => $data['last_name'],
+            'email'      => $data['email'] ?? null,
+            'phone'      => $data['phone'] ?? null,
+        ]);
 
         $booking = Booking::create([
             'person_id'    => $person->id,
@@ -91,5 +62,82 @@ class BookingCreationService
         ]);
 
         return $booking;
+    }
+
+    /**
+     * Find an existing guest by email, then phone, then exact first+last
+     * name; create a new `Person` if none match. Enriches a matched
+     * person's missing email/phone from the given data, but never
+     * overwrites existing values.
+     *
+     * Shared by the Interhome PDF import flow (`createFromParsed`) and the
+     * admin booking-request confirmation flow, so both stay in sync.
+     *
+     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     */
+    public function findOrCreatePerson(array $data): Person
+    {
+        $person = $this->matchExistingPerson($data);
+
+        if (!$person) {
+            $person = Person::create([
+                'first_name' => $data['first_name'],
+                'last_name'  => $data['last_name'],
+                'email'      => $data['email'] ?? null,
+                'phone'      => $data['phone'] ?? null,
+            ]);
+        } else {
+            // Enrich existing guest when import brings missing contacts.
+            if (empty($person->email) && !empty($data['email'])) {
+                $person->email = $data['email'];
+            }
+            if (empty($person->phone) && !empty($data['phone'])) {
+                $person->phone = $data['phone'];
+            }
+            $person->save();
+        }
+
+        $person->autoSubscribeToNewsletter();
+
+        return $person;
+    }
+
+    /**
+     * Read-only preview of what `findOrCreatePerson()` would resolve to,
+     * without creating, saving, or enriching anything. Returns `null` when
+     * no existing `Person` matches (meaning a new one would be created).
+     *
+     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     */
+    public function previewMatch(array $data): ?Person
+    {
+        return $this->matchExistingPerson($data);
+    }
+
+    /**
+     * Look up an existing guest by email, then phone, then exact first+last
+     * name. Returns `null` if none match.
+     *
+     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     */
+    private function matchExistingPerson(array $data): ?Person
+    {
+        if (!empty($data['email'])) {
+            $person = Person::where('email', $data['email'])->first();
+            if ($person) {
+                return $person;
+            }
+        }
+
+        if (!empty($data['phone'])) {
+            $person = Person::where('phone', $data['phone'])->first();
+            if ($person) {
+                return $person;
+            }
+        }
+
+        return Person::where('first_name', $data['first_name'])
+            ->where('last_name', $data['last_name'])
+            ->first();
     }
 }

@@ -102,7 +102,7 @@ class BookingController extends Controller
 
     public function show(Booking $prenotazioni): View
     {
-        $prenotazioni->load('person', 'additionalGuests');
+        $prenotazioni->load('person', 'additionalGuests', 'bookingRequest');
 
         // People selectable as additional guests: never in any booking, or previously with this capogruppo
         $selectablePeople = Person::selectableForCapogruppo($prenotazioni->person_id)

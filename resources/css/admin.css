@@ -86,6 +86,17 @@ body {
     border-left-color: var(--admin-sidebar-active);
 }
 
+.admin-nav__badge {
+    margin-left: auto;
+    background: #c7b772;
+    color: #1a1a1a;
+    font-size: .7rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: .2rem .45rem;
+    border-radius: 9999px;
+}
+
 .admin-sidebar__footer {
     padding: 1rem;
     border-top: 1px solid rgba(255,255,255,.1);

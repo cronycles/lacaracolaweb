@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\BookingGuestController;
+use App\Http\Controllers\Admin\BookingRequestController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -48,6 +49,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         // Create (must be before {prenotazioni} wildcard)
         Route::get('/prenotazioni/create', [BookingController::class, 'create'])->name('bookings.create');
         Route::post('/prenotazioni', [BookingController::class, 'store'])->name('bookings.store');
+
+        // ── Pending booking requests queue ───────────────────────────────────
+        Route::get('/richieste', [BookingRequestController::class, 'index'])->name('booking-requests.index');
+        Route::post('/richieste/{bookingRequest}/conferma', [BookingRequestController::class, 'confirm'])->name('booking-requests.confirm');
+        Route::post('/richieste/{bookingRequest}/rifiuta', [BookingRequestController::class, 'decline'])->name('booking-requests.decline');
     });
 
     // ── manage_calendar ──────────────────────────────────────────────────────

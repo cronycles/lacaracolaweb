@@ -47,6 +47,17 @@
                 </a>
             </li>
             @endif
+            @if(auth()->user()->hasPermission('manage_bookings'))
+            <li>
+                <a href="{{ route('admin.booking-requests.index') }}" @class(['active' => request()->routeIs('admin.booking-requests*')])>
+                    📥 Richieste
+                    @php($pendingRequestsCount = \App\Models\BookingRequest::pending()->count())
+                    @if($pendingRequestsCount > 0)
+                        <span class="admin-nav__badge">{{ $pendingRequestsCount }}</span>
+                    @endif
+                </a>
+            </li>
+            @endif
             <li>
                 <a href="{{ route('admin.bookings.index') }}" @class(['active' => request()->routeIs('admin.bookings*')])>
                     🏠 Prenotazioni

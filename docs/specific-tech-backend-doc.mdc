@@ -51,7 +51,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Pricing is recurring by month/day by default (no year). A `pricing_rules.year` override makes a rule apply to one specific calendar year only, taking priority over recurring rules for that year (used for movable holidays — see "Movable holiday pricing" below).
 
 # Service map
-- `BookingCreationService`: creates booking + person + availability block.
+- `BookingCreationService`: creates booking + person + availability block from normalized data (Interhome import, admin booking-request confirmation). Guest matching (`findOrCreatePerson()`/`previewMatch()`: email → phone → exact first+last name → else create) is the single source of truth for "find or create this guest" — reused by both flows, never duplicated.
 - `PricingQuoteService`: single pricing engine (public quote + admin simulator).
 - `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
 - `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients resolved from `users.telegram_chat_id`.
@@ -270,4 +270,41 @@ presente. Copertura: `tests/Feature/GuestReportingValidationTest.php` (admin) e
 `Rule::requiredIf()`/`required_if` (mai una Closure semplice) per imporre l'obbligatorietà
 condizionale di un campo quando è presente anche `nullable` nello stesso array di regole;
 le Closure vanno bene solo per validazioni di formato/business logic su valori già presenti.
+
+---
+
+## Conferma richieste di disponibilità (`admin/richieste`)
+
+Colma il divario tra `BookingRequest` (creata dal form pubblico) e `Booking` (creata oggi
+sempre manualmente da zero in admin): mostra le richieste in attesa e le converte in
+prenotazioni reali con un click, riusando i dati già presenti nella richiesta.
+
+### File coinvolti
+| File | Responsabilità |
+|---|---|
+| `App\Http\Controllers\Admin\BookingRequestController` | `index` (coda), `confirm` (crea booking), `decline` (rifiuta) |
+| `App\Services\BookingCreationService::findOrCreatePerson()` | Matching ospite condiviso con l'import Interhome (vedi Service map) |
+| `App\Services\BookingCreationService::previewMatch()` | Stessa ricerca di `findOrCreatePerson()` ma **read-only**, non crea/salva nulla — usata per l'anteprima nella coda |
+| `App\Models\BookingRequest::scopePending()` | `whereNull('declined_at')->whereDoesntHave('booking')` — definizione di "richiesta in attesa" |
+| `resources/views/admin/booking-requests/index.blade.php` | Vista coda |
+
+### Regole chiave
+- Rotte sotto `permission:manage_bookings`: `GET /admin/richieste`, `POST /admin/richieste/{bookingRequest}/conferma`, `POST /admin/richieste/{bookingRequest}/rifiuta`.
+- `confirm()` NON invia l'email di conferma prenotazione — quella resta un'azione separata
+  (`sendConfirmationEmail`, bottone esistente sulla pagina prenotazione) dopo che il proprietario
+  ha eventualmente completato i dati economici.
+- Tutti i campi economici (`income_amount`, `cleaning_amount`, `linen_amount`, `parking_amount`)
+  restano `NULL` sulla booking creata da `confirm()` — comportamento voluto, non un difetto:
+  il proprietario li compila a mano dopo, come già avviene per le prenotazioni create manualmente.
+- `confirm()` reindirizza a `admin.bookings.edit` (non `.show`) perché il passo successivo tipico
+  è completare subito i dati economici.
+- Matching ospite: **stesso identico algoritmo** già in produzione per l'import PDF Interhome
+  (email esatta → telefono esatto → nome+cognome esatti → altrimenti crea nuovo `Person`,
+  arricchendo email/telefono mancanti su un match esistente). Rischio noto e accettato: un match
+  esatto su nome+cognome comune senza email/telefono può agganciare la persona sbagliata —
+  mitigato dall'anteprima nella coda e dal fatto che `person_id` resta modificabile dopo, dal form
+  di modifica prenotazione esistente.
+- `decline()` non cancella la riga `BookingRequest` (mantiene la prova di consenso legale già
+  raccolta) — imposta solo `declined_at`, che la esclude dalla coda tramite `scopePending()`.
+- Nessun matching fuzzy (Levenshtein/soundex) — solo match esatti, per coerenza con l'import Interhome.
 

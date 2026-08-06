@@ -131,7 +131,7 @@ Individual stay/reservation records linked to a primary guest.
 - Availability blocks linked to canceled bookings can be safely deleted when the booking is fully deleted
 - Indexed on `(checkin, checkout)` for efficient range queries
 - `person_id` uses RESTRICT (not CASCADE) to prevent accidental deletion of bookings if a person is deleted
-- `booking_request_id` links a manually created admin booking back to the public availability request it originated from (for legal consent proof); set to NULL if the request is deleted
+- `booking_request_id` links a booking back to the public availability request it originated from (for legal consent proof and traceability); set automatically when an admin confirms a pending request from the "Richieste" queue (see `docs/specific-tech-backend-doc.mdc` § Conferma richieste di disponibilità), or left NULL for bookings created directly/imported; set to NULL if the request is deleted
 - `confirmation_sent_at` prevents accidentally sending the payment-confirmation email twice; the send action warns before resending if already set
 - `checkin_token`/`checkin_token_expires_at` power the public online check-in link (see `docs/specific-tech-backend-doc.mdc` § Online check-in pubblico); not backfilled for existing bookings, generated on first need (e.g. when `BookingConfirmedMail` is sent)
 - `checkin_completed_at` is the single source of truth for "guest completed online check-in"; the guest can still edit data afterwards without clearing this flag
@@ -164,6 +164,7 @@ Public "availability request" submissions (direct/private booking leads), kept a
 | `ip_address`         | VARCHAR(45)      | Requester IP address at submission time (nullable) |
 | `user_agent`         | VARCHAR(255)     | Requester user agent at submission time (nullable) |
 | `locale`             | VARCHAR(5)       | Locale captured at submission time (nullable, e.g. `it`/`en`/`fr`/`de`) |
+| `declined_at`        | TIMESTAMP        | When the owner declined the request without creating a booking (nullable) |
 | `created_at`         | TIMESTAMP        |                                                     |
 | `updated_at`         | TIMESTAMP        |                                                     |
 
@@ -171,6 +172,7 @@ Public "availability request" submissions (direct/private booking leads), kept a
 
 - `ip_address`/`user_agent` are stored solely as proof of legal consent for direct/private bookings; treat as personal data under GDPR (same handling as other guest data in this app).
 - Not soft-deleted; these are lightweight lead records, not reservations.
+- "Pending" (awaiting owner action) means `declined_at IS NULL` AND no linked `Booking` exists (`BookingRequest::scopePending()`); declining keeps the row (and its consent proof) but removes it from the admin queue instead of deleting it.
 
 **Relations:**
 

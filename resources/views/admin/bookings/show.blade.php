@@ -114,6 +114,26 @@
             </table>
         </div>
 
+        @if ($booking->bookingRequest)
+            <div class="a-card" style="margin-top:1.25rem">
+                <div class="a-card__title">Richiesta originale</div>
+                <table class="a-table">
+                    <tbody>
+                        <tr>
+                            <th style="width:160px">Inviata il</th>
+                            <td>{{ $booking->bookingRequest->created_at->format('d/m/Y H:i') }}</td>
+                        </tr>
+                        @if ($booking->bookingRequest->message)
+                            <tr>
+                                <th>Messaggio</th>
+                                <td style="white-space:pre-line">{{ $booking->bookingRequest->message }}</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
         {{-- Additional guests (booking_person pivot) --}}
         <div class="a-card" style="margin-top:1.25rem">
             <div class="a-card__title" style="display:flex;align-items:center;justify-content:space-between">
