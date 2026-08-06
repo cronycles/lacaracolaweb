@@ -242,9 +242,9 @@ mai inviati automaticamente al driver AlloggiatiWeb (l'invio resta manuale da ad
 - Aggiunta compagno: stesso controllo del cap totale ospiti di `BookingGuestController::store`
   (`adults + children`), tramite `Booking::additionalGuests()->syncWithoutDetaching()`.
 - `CheckinController::confirm()` verifica il completamento dei campi richiesti leggendo
-  direttamente le colonne di `Person` (non passa dal validator di `store()` — nota: una regola
-  `nullable` in Laravel disattiva l'esecuzione delle Closure di validazione quando il valore è
-  null, quindi l'obbligatorietà reale del documento è garantita solo qui, non in `store()`).
+  direttamente le colonne di `Person` (non passa dal validator di `store()`), come controllo
+  di sicurezza aggiuntivo — ma da 2026-08-06 l'obbligatorietà del documento è comunque garantita
+  già in `store()` stesso (vedi "Insidia di validazione" sotto).
 - Editing consentito anche dopo la conferma, finché il token non è scaduto (`checkin_completed_at`
   non viene mai azzerato da `store()`).
 - Locale della pagina: `?lang=` override (non persistito in sessione) → `Booking.locale` →
@@ -252,4 +252,22 @@ mai inviati automaticamente al driver AlloggiatiWeb (l'invio resta manuale da ad
 - `BookingConfirmedMail` genera il token al volo se assente (`$booking->checkin_token ?: $booking->generateCheckinToken()`).
 - `config('apartment.checkin.reminder_lead_days', 7)` controlla l'anticipo del promemoria;
   `SendCheckinReminders` invia solo se `checkin_completed_at IS NULL` e `canceled_at IS NULL`.
+
+### Insidia di validazione: `nullable` disattiva le Closure custom (fix 2026-08-06)
+Una regola `nullable` in un array di regole Laravel disattiva **tutte le altre regole** per
+quel campo — incluse le Closure custom (`function ($attribute, $value, $fail) {...}`) — quando
+il valore è vuoto/null, perché le Closure non sono regole "implicite" (a differenza di
+`required`, `required_if`, `Rule::requiredIf()`, ecc., che vengono sempre valutate).
+Questo aveva reso di fatto inapplicata (solo lato client/JS) l'obbligatorietà del documento
+per i tipi alloggiato 16/17/18 sia nel form admin sia in quello pubblico, dato che
+`PersistsGuestReportingData` usava Closure per quel controllo. **Fix**: in
+`guestReportingValidationRules()` le regole per `document_type`/`document_number`/
+`document_issue_country_code`/`document_issue_place` sono ora generate esplicitamente per
+ogni indice ospite (`guests.{$idx}.campo`, non il wildcard `guests.*.campo`) usando
+`Rule::requiredIf($bool)` — regola implicita, quindi sempre valutata anche con `nullable`
+presente. Copertura: `tests/Feature/GuestReportingValidationTest.php` (admin) e
+`tests/Feature/CheckinFormTest.php` (pubblico). **Lezione generale**: usare sempre
+`Rule::requiredIf()`/`required_if` (mai una Closure semplice) per imporre l'obbligatorietà
+condizionale di un campo quando è presente anche `nullable` nello stesso array di regole;
+le Closure vanno bene solo per validazioni di formato/business logic su valori già presenti.
 
