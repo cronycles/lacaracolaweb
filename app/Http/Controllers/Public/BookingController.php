@@ -88,6 +88,7 @@ class BookingController extends Controller
             'name'       => ['required', 'string', 'max:100'],
             'email'      => ['required', 'email', 'max:150'],
             'phone'      => ['required', 'string', 'max:30'],
+            'phone_prefix'   => ['nullable', 'string', 'max:10'],
             'message'    => ['nullable', 'string', 'max:1000'],
             'newsletter' => ['nullable', 'boolean'],
             'accepted_terms' => ['required', 'accepted'],
@@ -95,6 +96,11 @@ class BookingController extends Controller
             'accepted_terms.required' => __('app.error_terms_required'),
             'accepted_terms.accepted' => __('app.error_terms_required'),
         ]);
+
+        // Combine dial prefix + number into a single formatted phone string,
+        // e.g. "+39 333 123 4567" (same format as the admin guest phone field).
+        $data['phone'] = trim(($data['phone_prefix'] ?? '') . ' ' . $data['phone']);
+        unset($data['phone_prefix']);
 
         // Validate minimum nights
         $checkin   = new \DateTimeImmutable($data['checkin']);

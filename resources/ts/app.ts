@@ -10,6 +10,7 @@ import { initGallery } from '@/components/gallery';
 import { initBookingForm } from '@/components/booking-form';
 import { initPricingSimulator } from '@/components/pricing-simulator';
 import { initMap } from '@/components/map';
+import { initPhonePrefixSelects } from '@/components/phone-prefix-select';
 
 // Run after DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,4 +21,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initBookingForm();
     initPricingSimulator();
     initMap();
+    initPhonePrefixSelects();
 });

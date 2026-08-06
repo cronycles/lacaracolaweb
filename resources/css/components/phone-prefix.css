@@ -1,0 +1,150 @@
+/* ── Phone Prefix Picker (public booking form) ───────────────────────────── */
+.phone-prefix-wrap {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+}
+
+/* The trigger button (flag + code + chevron) */
+.phone-prefix__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: 0 var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-right: none;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    font-size: .875rem;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--color-text);
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+    flex-shrink: 0;
+}
+.phone-prefix__trigger:hover {
+    background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
+}
+.phone-prefix__trigger:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(48, 89, 108, 0.15);
+    z-index: 1;
+    position: relative;
+}
+.phone-prefix__trigger[aria-expanded="true"] {
+    background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
+    border-color: var(--color-primary);
+}
+.phone-prefix__flag {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+.phone-prefix__placeholder {
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: .55;
+}
+.phone-prefix__code {
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--color-text);
+}
+.phone-prefix__chevron {
+    font-size: .65rem;
+    color: var(--color-text-muted);
+    margin-left: .1rem;
+}
+
+/* The phone number text input (right side) */
+.phone-prefix-wrap .phone-prefix__number {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    border-left: none;
+    flex: 1;
+    min-width: 0;
+}
+.phone-prefix__number:focus {
+    position: relative;
+    z-index: 1;
+}
+
+/* Dropdown panel */
+.phone-prefix__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 300;
+    width: min(280px, 90vw);
+    background: var(--color-white);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-top: .2rem;
+    overflow: hidden;
+}
+
+/* Search input inside dropdown */
+.phone-prefix__search {
+    display: block;
+    width: 100%;
+    padding: .55rem .75rem;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    font-size: .875rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    outline: none;
+    box-sizing: border-box;
+}
+.phone-prefix__search:focus {
+    background: var(--color-white);
+    border-bottom-color: var(--color-primary);
+}
+
+/* List of options */
+.phone-prefix__list {
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: .25rem 0;
+    list-style: none;
+    overscroll-behavior: contain;
+}
+.phone-prefix__item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem .75rem;
+    font-size: .85rem;
+    cursor: pointer;
+    color: var(--color-text);
+    outline: none;
+}
+.phone-prefix__item:hover,
+.phone-prefix__item:focus,
+.phone-prefix__item--selected {
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-white));
+    color: var(--color-primary);
+}
+.phone-prefix__item--selected {
+    font-weight: 600;
+}
+.phone-prefix__item-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.phone-prefix__item-code {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+.phone-prefix__no-results {
+    padding: .55rem .75rem;
+    font-size: .8rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}

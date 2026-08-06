@@ -1,5 +1,6 @@
 {{-- Booking availability request form component --}}
 {{-- Shared between home page (embedded) and standalone booking page --}}
+{{-- Requires $countries/$countriesDial (phone prefix picker) pushed by the parent view --}}
 
 {{-- Success message: hidden by default, shown in-place by JS after successful AJAX submission --}}
 <div id="booking-success" class="booking-form booking-form--success" hidden>
@@ -106,7 +107,10 @@
         </div>
         <div class="booking-form__group">
             <label for="phone">{{ __('app.booking_phone') }} *</label>
-            <input type="tel" id="phone" name="phone" required maxlength="30" autocomplete="tel">
+            <div class="phone-prefix-wrap" data-phone-prefix-wrap>
+                <input type="hidden" name="phone_prefix" data-phone-prefix data-current-value="{{ old('phone_prefix') }}">
+                <input type="tel" id="phone" name="phone" data-phone-number required maxlength="30" autocomplete="tel">
+            </div>
             <span class="booking-form__field-error" data-error-for="phone" hidden aria-live="polite"></span>
         </div>
     </div>

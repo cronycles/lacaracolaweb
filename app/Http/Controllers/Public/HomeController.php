@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\View\View;
@@ -19,8 +20,10 @@ class HomeController extends Controller
         $bookingMode        = Setting::get('booking_mode', 'form');
         $bookingExternalUrl = Setting::get('booking_external_url', '');
         $unavailableDates = $this->unavailableDatesForPublicCalendar();
+        $countries        = Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray();
+        $countriesDial    = Country::whereNotNull('iso2')->whereNotNull('dial_code')->orderBy('name_it')->pluck('dial_code', 'iso2')->toArray();
 
-        return view('public.home', compact('apartment', 'bookingMode', 'bookingExternalUrl', 'unavailableDates'));
+        return view('public.home', compact('apartment', 'bookingMode', 'bookingExternalUrl', 'unavailableDates', 'countries', 'countriesDial'));
     }
 
     /**

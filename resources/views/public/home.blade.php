@@ -3,6 +3,11 @@
 @section('title', config('apartment.seo.' . app()->getLocale() . '.title'))
 @section('description', config('apartment.seo.' . app()->getLocale() . '.description'))
 
+@push('scripts')
+<script>window.COUNTRIES_MAP = @json($countries);</script>
+<script>window.COUNTRIES_DIAL = @json($countriesDial);</script>
+@endpush
+
 @push('schema')
 <script type="application/ld+json">
 {
