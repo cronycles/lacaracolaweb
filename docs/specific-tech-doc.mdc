@@ -31,7 +31,7 @@ alwaysApply: true
 - Do not store values like `min_nights`, `cleaning_fee`, `hide_price_from` in `settings`.
 
 # Stable content in config
-- Branding, apartment data, amenities, house rules, useful places.
+- Branding, apartment data, amenities, house rules, short-term lease agreement terms, useful places.
 - Localized copy and metadata.
 - Stable lists supporting admin forms.
 
