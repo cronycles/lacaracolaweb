@@ -33,7 +33,8 @@ class BookingRequestConfirmationTest extends TestCase
     private function makeRequest(array $overrides = []): BookingRequest
     {
         return BookingRequest::create(array_merge([
-            'name'              => 'Mario Rossi',
+            'first_name'        => 'Mario',
+            'last_name'         => 'Rossi',
             'email'             => 'mario.rossi@example.com',
             'phone'             => '+39 333 1234567',
             'checkin'           => now()->addDays(10)->format('Y-m-d'),
@@ -48,10 +49,10 @@ class BookingRequestConfirmationTest extends TestCase
 
     public function test_pending_queue_lists_only_undeclined_unconfirmed_requests_oldest_first(): void
     {
-        $old = $this->makeRequest(['name' => 'Oldest Guest', 'created_at' => now()->subDays(3)]);
-        $declined = $this->makeRequest(['name' => 'Declined Guest', 'declined_at' => now()]);
-        $confirmed = $this->makeRequest(['name' => 'Confirmed Guest']);
-        $recent = $this->makeRequest(['name' => 'Recent Guest', 'created_at' => now()->subDay()]);
+        $old = $this->makeRequest(['first_name' => 'Oldest', 'last_name' => 'Guest', 'created_at' => now()->subDays(3)]);
+        $declined = $this->makeRequest(['first_name' => 'Declined', 'last_name' => 'Guest', 'declined_at' => now()]);
+        $confirmed = $this->makeRequest(['first_name' => 'Confirmed', 'last_name' => 'Guest']);
+        $recent = $this->makeRequest(['first_name' => 'Recent', 'last_name' => 'Guest', 'created_at' => now()->subDay()]);
 
         // Simulate an already-confirmed request (linked booking).
         $person = Person::create(['first_name' => 'Confirmed', 'last_name' => 'Guest']);

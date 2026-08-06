@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class BookingRequest extends Model
 {
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'checkin',
@@ -40,6 +41,12 @@ class BookingRequest extends Model
     public function booking(): HasOne
     {
         return $this->hasOne(Booking::class);
+    }
+
+    /** Full name helper, mirrors `Person::getFullNameAttribute()`. */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 
     /**

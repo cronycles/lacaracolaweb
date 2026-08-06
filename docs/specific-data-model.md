@@ -151,7 +151,8 @@ Public "availability request" submissions (direct/private booking leads), kept a
 | Field                | Type             | Notes                                              |
 | -------------------- | ---------------- | -------------------------------------------------- |
 | `id`                 | BIGINT PK        | Auto-increment                                     |
-| `name`               | VARCHAR(100)     | Requester name                                     |
+| `first_name`         | VARCHAR(100)     | Requester first name (min 3 chars, enforced in `BookingController::requestAvailability`) |
+| `last_name`          | VARCHAR(100)     | Requester last name (min 3 chars, enforced in `BookingController::requestAvailability`) |
 | `email`              | VARCHAR(150)     | Requester email                                    |
 | `phone`              | VARCHAR(30)      | Requester phone (nullable)                         |
 | `checkin`            | DATE             | Requested check-in date                            |
@@ -173,6 +174,7 @@ Public "availability request" submissions (direct/private booking leads), kept a
 - `ip_address`/`user_agent` are stored solely as proof of legal consent for direct/private bookings; treat as personal data under GDPR (same handling as other guest data in this app).
 - Not soft-deleted; these are lightweight lead records, not reservations.
 - "Pending" (awaiting owner action) means `declined_at IS NULL` AND no linked `Booking` exists (`BookingRequest::scopePending()`); declining keeps the row (and its consent proof) but removes it from the admin queue instead of deleting it.
+- `first_name`/`last_name` are passed as-is (no string splitting/guessing) into `BookingCreationService::findOrCreatePerson()` when the request is confirmed, mirroring `people.first_name`/`last_name`.
 
 **Relations:**
 

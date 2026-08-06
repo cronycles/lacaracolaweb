@@ -39,7 +39,11 @@
         <table>
             <tr>
                 <th>Nome</th>
-                <td>{{ $requestData['name'] }}</td>
+                <td>{{ $requestData['first_name'] }}</td>
+            </tr>
+            <tr>
+                <th>Cognome</th>
+                <td>{{ $requestData['last_name'] }}</td>
             </tr>
             <tr>
                 <th>Email</th>

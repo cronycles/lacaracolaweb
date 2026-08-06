@@ -85,7 +85,8 @@ class BookingController extends Controller
             'checkout'   => ['required', 'date', 'after:checkin'],
             'adults'     => ['required', 'integer', 'min:1', 'max:6'],
             'children'   => ['nullable', 'integer', 'min:0', 'max:6'],
-            'name'       => ['required', 'string', 'max:100'],
+            'first_name' => ['required', 'string', 'min:3', 'max:100'],
+            'last_name'  => ['required', 'string', 'min:3', 'max:100'],
             'email'      => ['required', 'email', 'max:150'],
             'phone'      => ['required', 'string', 'max:30'],
             'phone_prefix'   => ['required', 'string', 'max:10'],
@@ -122,7 +123,8 @@ class BookingController extends Controller
         session()->flash('booking_request', $data);
 
         $bookingRequest = BookingRequest::create([
-            'name'              => $data['name'],
+            'first_name'        => $data['first_name'],
+            'last_name'         => $data['last_name'],
             'email'             => $data['email'],
             'phone'             => $data['phone'] ?? null,
             'checkin'           => $data['checkin'],
@@ -141,10 +143,11 @@ class BookingController extends Controller
             Mail::to(config('apartment.email'))->send(new BookingRequestMail($data, $bookingRequest));
         } catch (\Throwable $e) {
             Log::error('BookingRequestMail failed to send', [
-                'error'   => $e->getMessage(),
-                'name'    => $data['name'],
-                'email'   => $data['email'],
-                'checkin' => $data['checkin'],
+                'error'      => $e->getMessage(),
+                'first_name' => $data['first_name'],
+                'last_name'  => $data['last_name'],
+                'email'      => $data['email'],
+                'checkin'    => $data['checkin'],
             ]);
         }
 
@@ -152,10 +155,11 @@ class BookingController extends Controller
             Mail::to($data['email'])->send(new BookingRequestPendingMail($bookingRequest));
         } catch (\Throwable $e) {
             Log::error('BookingRequestPendingMail failed to send', [
-                'error'   => $e->getMessage(),
-                'name'    => $data['name'],
-                'email'   => $data['email'],
-                'checkin' => $data['checkin'],
+                'error'      => $e->getMessage(),
+                'first_name' => $data['first_name'],
+                'last_name'  => $data['last_name'],
+                'email'      => $data['email'],
+                'checkin'    => $data['checkin'],
             ]);
         }
 

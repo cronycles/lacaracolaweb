@@ -18,7 +18,8 @@ class BookingRequestMail extends Mailable
      *   checkout: string,
      *   adults: int,
      *   children: int|null,
-     *   name: string,
+     *   first_name: string,
+     *   last_name: string,
      *   email: string,
      *   phone: string|null,
      *   message: string|null,
@@ -35,7 +36,7 @@ class BookingRequestMail extends Mailable
         return new Envelope(
             subject: 'Nuova richiesta disponibilità — La Caracola',
             replyTo: [
-                new Address($this->requestData['email'], $this->requestData['name']),
+                new Address($this->requestData['email'], trim("{$this->requestData['first_name']} {$this->requestData['last_name']}")),
             ],
         );
     }

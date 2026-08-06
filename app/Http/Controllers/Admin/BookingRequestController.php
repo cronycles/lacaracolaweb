@@ -73,11 +73,9 @@ class BookingRequestController extends Controller
     /** @return array{first_name: string, last_name: string, email: string|null, phone: string|null} */
     private function personData(BookingRequest $bookingRequest): array
     {
-        $nameParts = preg_split('/\s+/', trim($bookingRequest->name), 2) ?: [$bookingRequest->name];
-
         return [
-            'first_name' => $nameParts[0] ?? $bookingRequest->name,
-            'last_name'  => $nameParts[1] ?? '',
+            'first_name' => $bookingRequest->first_name,
+            'last_name'  => $bookingRequest->last_name,
             'email'      => $bookingRequest->email,
             'phone'      => $bookingRequest->phone,
         ];

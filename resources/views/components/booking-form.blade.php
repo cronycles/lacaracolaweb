@@ -93,10 +93,17 @@
     </div>
 
     {{-- Contact info --}}
-    <div class="booking-form__group" style="margin-top:.5rem">
-        <label for="name">{{ __('app.booking_name') }} *</label>
-        <input type="text" id="name" name="name" required maxlength="100" autocomplete="name">
-        <span class="booking-form__field-error" data-error-for="name" hidden aria-live="polite"></span>
+    <div class="booking-form__row" style="margin-top:.5rem">
+        <div class="booking-form__group">
+            <label for="first_name">{{ __('app.booking_first_name') }} *</label>
+            <input type="text" id="first_name" name="first_name" required minlength="3" maxlength="100" autocomplete="given-name">
+            <span class="booking-form__field-error" data-error-for="first_name" hidden aria-live="polite"></span>
+        </div>
+        <div class="booking-form__group">
+            <label for="last_name">{{ __('app.booking_last_name') }} *</label>
+            <input type="text" id="last_name" name="last_name" required minlength="3" maxlength="100" autocomplete="family-name">
+            <span class="booking-form__field-error" data-error-for="last_name" hidden aria-live="polite"></span>
+        </div>
     </div>
 
     <div class="booking-form__row" style="margin-top:.5rem">

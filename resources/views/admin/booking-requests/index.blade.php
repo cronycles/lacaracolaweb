@@ -36,7 +36,7 @@
                     @foreach ($requests as $request)
                         @php $match = $matches[$request->id]; @endphp
                         <tr>
-                            <td style="font-weight:600">{{ $request->name }}</td>
+                            <td style="font-weight:600">{{ $request->full_name }}</td>
                             <td style="font-size:.85rem">
                                 {{ $request->email }}
                                 @if($request->phone)<br>{{ $request->phone }}@endif
