@@ -59,6 +59,7 @@ return [
     'error_checkin_past'    => "La date d'arrivée ne peut pas être dans le passé.",
     'error_checkout_order'  => "Le départ doit être après l'arrivée.",
     'error_server'          => 'Une erreur est survenue. Veuillez réessayer.',
+    'error_phone_digits_only' => "Saisissez uniquement le numéro, sans l'indicatif international (à choisir dans le menu déroulant à côté).",
 
     // --- Date range picker ---
     'booking_checkin_placeholder'  => "Sélectionner l'arrivée",

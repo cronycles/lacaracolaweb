@@ -59,6 +59,7 @@ return [
     'error_checkin_past'    => 'Check-in date cannot be in the past.',
     'error_checkout_order'  => 'Check-out must be after check-in.',
     'error_server'          => 'An error occurred. Please try again.',
+    'error_phone_digits_only' => 'Enter only the number, without the international prefix (choose the prefix from the dropdown next to it).',
 
     // --- Date range picker ---
     'booking_checkin_placeholder'  => 'Select check-in',

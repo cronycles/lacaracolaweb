@@ -59,6 +59,7 @@ return [
     'error_checkin_past'    => 'Das Check-in-Datum kann nicht in der Vergangenheit liegen.',
     'error_checkout_order'  => 'Das Check-out muss nach dem Check-in liegen.',
     'error_server'          => 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
+    'error_phone_digits_only' => 'Geben Sie nur die Nummer ohne internationale Vorwahl ein (die Vorwahl bitte im Auswahlmenü daneben wählen).',
 
     // --- Date range picker ---
     'booking_checkin_placeholder'  => 'Ankunft wählen',

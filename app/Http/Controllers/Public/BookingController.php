@@ -88,7 +88,9 @@ class BookingController extends Controller
             'first_name' => ['required', 'string', 'min:3', 'max:100'],
             'last_name'  => ['required', 'string', 'min:3', 'max:100'],
             'email'      => ['required', 'email', 'max:150'],
-            'phone'      => ['required', 'string', 'max:30'],
+            // Digits only: the international dial code is already captured separately
+            // via phone_prefix, so guests must not re-type "+34" (or similar) here.
+            'phone'      => ['required', 'string', 'max:30', 'regex:/^[0-9][0-9\s\-]*$/'],
             'phone_prefix'   => ['required', 'string', 'max:10'],
             'message'    => ['nullable', 'string', 'max:1000'],
             'newsletter' => ['nullable', 'boolean'],
@@ -96,6 +98,7 @@ class BookingController extends Controller
         ], [
             'accepted_terms.required' => __('app.error_terms_required'),
             'accepted_terms.accepted' => __('app.error_terms_required'),
+            'phone.regex'             => __('app.error_phone_digits_only'),
         ]);
 
         // Combine dial prefix + number into a single formatted phone string,

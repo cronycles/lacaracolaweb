@@ -63,6 +63,7 @@ return [
     'error_checkin_past'    => 'La data di check-in non può essere nel passato.',
     'error_checkout_order'  => 'Il check-out deve essere successivo al check-in.',
     'error_server'          => 'Si è verificato un errore. Riprova tra qualche istante.',
+    'error_phone_digits_only' => 'Inserisci solo il numero, senza prefisso internazionale (il prefisso va scelto dal menu a tendina accanto).',
 
     // --- Date range picker ---
     'booking_checkin_placeholder'  => 'Seleziona arrivo',
