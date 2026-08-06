@@ -67,7 +67,7 @@
 
     @if ($bookingRequest)
     <div class="callout">
-        ✅ L'ospite ha accettato le <strong>Regole della Casa</strong> e lo <strong>Schema di Contratto di Locazione Turistica Breve</strong>
+        ✅ L'ospite ha accettato le <a href="{{ route_locale('rules') }}"><strong>Regole della Casa</strong></a> e il <a href="{{ route_locale('terms') }}"><strong>Contratto di Locazione ad Uso Turistico – La Caracola</strong></a>
         il {{ $bookingRequest->terms_accepted_at->translatedFormat('d F Y \a\l\l\e H:i') }}
         (IP: {{ $bookingRequest->ip_address ?? 'n/d' }}).
     </div>

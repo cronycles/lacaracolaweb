@@ -56,7 +56,11 @@
 
     @if ($booking->bookingRequest)
     <div class="callout">
-        {{ __('app.booking_confirmed_mail_terms', ['date' => $booking->bookingRequest->terms_accepted_at->translatedFormat('d F Y \a\l\l\e H:i')]) }}
+        {!! __('app.booking_confirmed_mail_terms', [
+            'date'      => $booking->bookingRequest->terms_accepted_at->translatedFormat('d F Y \a\l\l\e H:i'),
+            'rules_url' => route_locale('rules'),
+            'terms_url' => route_locale('terms'),
+        ]) !!}
     </div>
     @endif
 

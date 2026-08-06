@@ -12,9 +12,11 @@
     ]) }}</p>
 
     <div class="callout">
-        {{ __('app.booking_pending_mail_terms', [
-            'date' => $bookingRequest->terms_accepted_at->translatedFormat('d F Y \a\l\l\e H:i'),
-        ]) }}
+        {!! __('app.booking_pending_mail_terms', [
+            'date'      => $bookingRequest->terms_accepted_at->translatedFormat('d F Y \a\l\l\e H:i'),
+            'rules_url' => route_locale('rules'),
+            'terms_url' => route_locale('terms'),
+        ]) !!}
     </div>
 
     <div class="footer">

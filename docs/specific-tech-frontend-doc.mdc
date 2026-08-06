@@ -42,6 +42,19 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   / `route_locale('terms')`. The submit button (`resources/ts/components/booking-form.ts`)
   stays `disabled` until the checkbox is checked; the server also validates
   `accepted_terms => ['required', 'accepted']` as a defense-in-depth measure.
+- The Terms page (`route_locale('terms')`) is also linked from the site-wide
+  footer (`resources/views/components/footer.blade.php`, `app.nav_terms` key) —
+  previously only reachable from the booking form checkbox. The "request
+  pending" and "booking confirmed" guest emails (`booking-request-pending.blade.php`,
+  `booking-confirmed.blade.php`) render the House Rules/Terms acknowledgement
+  text with clickable links (`rules_url`/`terms_url` params via `route_locale()`),
+  same as the booking form checkbox.
+- The document name is standardized across the site/emails as
+  "Contratto di Locazione ad Uso Turistico – La Caracola" (see `terms_title`,
+  `nav_terms`, `booking_terms_checkbox`, `booking_pending_mail_terms`,
+  `booking_confirmed_mail_terms` in `lang/*/app.php`) — previously it was
+  inconsistently named "Schema di Contratto di Locazione ad Uso Turistico" /
+  "...Turistica Breve" / "Schema di Contratto" in different places.
 
 ## Public online check-in page
 - Route: `GET /check-in/{token}` (no locale prefix — token is the only identifier),

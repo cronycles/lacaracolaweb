@@ -13,6 +13,7 @@ return [
     'nav_reviews'      => 'Recensioni',
     'nav_booking'      => 'Disponibilità',
     'nav_rules'        => 'Regole della Casa',
+    'nav_terms'        => 'Contratto di Locazione ad Uso Turistico',
     'nav_useful'       => 'Posti Utili',
 
     // --- Hero ---
@@ -42,8 +43,8 @@ return [
     'booking_submit'        => 'Invia Richiesta',
     'booking_loading'       => 'Invio in corso…',
     'booking_note'          => 'Non è una prenotazione confermata. Ti risponderemo entro 24 ore.',
-    'booking_terms_checkbox' => 'Accetto le <a href=":rules_url" target="_blank" rel="noopener">Regole della Casa</a> e lo <a href=":terms_url" target="_blank" rel="noopener">Schema di Contratto di Locazione Turistica Breve</a> per questo soggiorno. Sono consapevole che la prenotazione sarà vincolante solo dopo la conferma scritta del proprietario e che prima dell\'arrivo sarà obbligatorio completare il check-in online inserendo i dati dei documenti d\'identità per le autorità.',
-    'error_terms_required'  => 'Devi accettare le Regole della Casa e lo Schema di Contratto per inviare la richiesta.',
+    'booking_terms_checkbox' => 'Accetto le <a href=":rules_url" target="_blank" rel="noopener">Regole della Casa</a> e il <a href=":terms_url" target="_blank" rel="noopener">Contratto di Locazione ad Uso Turistico – La Caracola</a> per questo soggiorno. Sono consapevole che la prenotazione sarà vincolante solo dopo la conferma scritta del proprietario e che prima dell\'arrivo sarà obbligatorio completare il check-in online inserendo i dati dei documenti d\'identità per le autorità.',
+    'error_terms_required'  => 'Devi accettare le Regole della Casa e il Contratto di Locazione ad Uso Turistico per inviare la richiesta.',
     'booking_thanks_title'  => 'Richiesta inviata!',
     'booking_thanks_text'   => 'Grazie per il tuo interesse per La Caracola. Ti contatteremo al più presto per confermare la disponibilità.',
     'booking_price_title'   => 'Stima prezzo',
@@ -140,7 +141,7 @@ return [
     'rules_warning_text'    => 'La mancata osservanza di queste norme potrebbe causare ulteriori addebiti.',
 
     // --- Terms page (short-term tourist lease agreement) ---
-    'terms_title'    => 'Schema di Contratto di Locazione ad Uso Turistico',
+    'terms_title'    => 'Contratto di Locazione ad Uso Turistico – La Caracola',
     'terms_subtitle' => "Ai sensi dell'art. 1, comma 2, lett. c, della legge 9 dicembre 1998, n. 431",
     'terms_s1_title' => 'Oggetto del Contratto e Finalità',
     'terms_s1_text'  => "Il Locatore concede in locazione breve per esclusive finalità turistiche all'Ospite (Conduttore), che accetta, l'immobile denominato \"La Caracola\", sito in Andora (SV), Via Aurelia 64, Int 3. Il presente contratto è regolato dagli articoli 1571 e seguenti del Codice Civile, dall'art. 53 del D.Lgs. 79/2011 e dall'art. 1, comma 2 lett. c) della Legge 431/98. È esclusa qualsiasi forma di sublocazione o concessione in godimento a terzi.",
@@ -159,7 +160,7 @@ return [
     'booking_pending_mail_subject' => 'Richiesta ricevuta — La Caracola',
     'booking_pending_mail_title'   => 'Grazie per la tua richiesta!',
     'booking_pending_mail_intro'   => 'Abbiamo ricevuto la tua richiesta di disponibilità per il soggiorno dal :checkin al :checkout. Questa NON è ancora una prenotazione confermata: ti risponderemo al più presto per confermare la disponibilità e inviarti le istruzioni per il pagamento.',
-    'booking_pending_mail_terms'   => 'Ti confermiamo che hai accettato le Regole della Casa e lo Schema di Contratto di Locazione Turistica Breve il :date.',
+    'booking_pending_mail_terms'   => 'Ti confermiamo che hai accettato le <a href=":rules_url">Regole della Casa</a> e il <a href=":terms_url">Contratto di Locazione ad Uso Turistico – La Caracola</a> il :date.',
     'booking_pending_mail_footer'  => 'Per qualsiasi domanda, rispondi direttamente a questa email.',
     'booking_confirmed_mail_subject' => 'Prenotazione confermata — La Caracola',
     'booking_confirmed_mail_title'   => 'La tua prenotazione è confermata!',
@@ -174,7 +175,7 @@ return [
     'booking_confirmed_mail_deadline'    => 'Se non riceveremo il pagamento entro il :deadline, la prenotazione sarà considerata annullata.',
     'booking_confirmed_mail_cancellation_title' => 'Cancellazione gratuita',
     'booking_confirmed_mail_cancellation' => 'Potrai cancellare gratuitamente la prenotazione, con rimborso completo, fino al :date.',
-    'booking_confirmed_mail_terms'       => 'Ti ricordiamo che hai accettato le Regole della Casa e lo Schema di Contratto di Locazione Turistica Breve il :date.',
+    'booking_confirmed_mail_terms'       => 'Ti ricordiamo che hai accettato le <a href=":rules_url">Regole della Casa</a> e il <a href=":terms_url">Contratto di Locazione ad Uso Turistico – La Caracola</a> il :date.',
     'booking_confirmed_mail_footer'      => 'Grazie per aver scelto La Caracola. A presto!',
     'booking_confirmed_mail_checkin_title' => 'Check-in online',
     'booking_confirmed_mail_checkin_text'  => 'Prima del tuo arrivo è obbligatorio completare il check-in online, inserendo i dati dei documenti d\'identità di tutti gli ospiti per gli adempimenti di legge (Polizia di Stato).',
