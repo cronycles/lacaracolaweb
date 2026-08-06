@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Mail\BookingRequestMail;
 use App\Mail\BookingRequestPendingMail;
 use App\Models\BookingRequest;
+use App\Models\PricingRule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -83,5 +84,37 @@ class BookingLegalConsentTest extends TestCase
         foreach (['it', 'en', 'fr', 'de'] as $locale) {
             $this->get(route("{$locale}.terms"))->assertStatus(200);
         }
+    }
+
+    public function test_successful_request_stores_the_server_computed_price_estimate(): void
+    {
+        Mail::fake();
+
+        // Recurring rule covering the whole year: 100€/night.
+        PricingRule::create([
+            'start_month'     => 1,
+            'start_day'       => 1,
+            'end_month'       => 12,
+            'end_day'         => 31,
+            'price_per_night' => 10000,
+        ]);
+
+        $payload = $this->validPayload() + ['accepted_terms' => '1'];
+
+        $this->postJson(route('it.booking.request'), $payload)->assertOk();
+
+        $bookingRequest = BookingRequest::first();
+
+        // 5 nights × 100€ = 500€ stay + config cleaning/linen fees.
+        $cleaningFee = (float) config('apartment.booking.cleaning_fee', 0);
+        $linenFee = ((float) config('apartment.booking.linen_fee_per_person', 0)) * 2;
+
+        $this->assertSame('500.00', $bookingRequest->estimated_stay_amount);
+        $this->assertSame(number_format($cleaningFee, 2, '.', ''), $bookingRequest->estimated_cleaning_amount);
+        $this->assertSame(number_format($linenFee, 2, '.', ''), $bookingRequest->estimated_linen_amount);
+        $this->assertSame(
+            number_format(500 + $cleaningFee + $linenFee, 2, '.', ''),
+            $bookingRequest->estimated_total_amount
+        );
     }
 }

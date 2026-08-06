@@ -26,16 +26,24 @@ class BookingRequest extends Model
         'user_agent',
         'locale',
         'declined_at',
+        'estimated_stay_amount',
+        'estimated_cleaning_amount',
+        'estimated_linen_amount',
+        'estimated_total_amount',
     ];
 
     protected $casts = [
-        'checkin'            => 'date',
-        'checkout'           => 'date',
-        'adults'             => 'integer',
-        'children'           => 'integer',
-        'newsletter'         => 'boolean',
-        'terms_accepted_at'  => 'datetime',
-        'declined_at'        => 'datetime',
+        'checkin'                   => 'date',
+        'checkout'                  => 'date',
+        'adults'                    => 'integer',
+        'children'                  => 'integer',
+        'newsletter'                => 'boolean',
+        'terms_accepted_at'         => 'datetime',
+        'declined_at'               => 'datetime',
+        'estimated_stay_amount'     => 'decimal:2',
+        'estimated_cleaning_amount' => 'decimal:2',
+        'estimated_linen_amount'    => 'decimal:2',
+        'estimated_total_amount'    => 'decimal:2',
     ];
 
     public function booking(): HasOne

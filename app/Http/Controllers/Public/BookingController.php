@@ -71,7 +71,7 @@ class BookingController extends Controller
      * Handle availability request form submission (flow B).
      * Sends an email notification to the owner and redirects to thank-you page.
      */
-    public function requestAvailability(Request $request): RedirectResponse|\Illuminate\Http\JsonResponse
+    public function requestAvailability(Request $request, PricingQuoteService $pricingQuoteService): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         // Honeypot: bots fill hidden fields that humans never see
         if ($request->filled('website')) {
@@ -125,21 +125,31 @@ class BookingController extends Controller
         // Store in session for thank-you page (non-AJAX fallback)
         session()->flash('booking_request', $data);
 
+        // Recalculate the price server-side (never trust a client-submitted amount)
+        // so the owner can see the guest's quoted price in the requests queue and
+        // have it pre-filled into the booking's financial fields on acceptance.
+        $guests = (int) $data['adults'] + (int) ($data['children'] ?? 0);
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
+
         $bookingRequest = BookingRequest::create([
-            'first_name'        => $data['first_name'],
-            'last_name'         => $data['last_name'],
-            'email'             => $data['email'],
-            'phone'             => $data['phone'] ?? null,
-            'checkin'           => $data['checkin'],
-            'checkout'          => $data['checkout'],
-            'adults'            => $data['adults'],
-            'children'          => $data['children'] ?? 0,
-            'message'           => $data['message'] ?? null,
-            'newsletter'        => (bool) ($data['newsletter'] ?? false),
-            'terms_accepted_at' => now(),
-            'ip_address'        => $request->ip(),
-            'user_agent'        => substr((string) $request->userAgent(), 0, 255),
-            'locale'            => app()->getLocale(),
+            'first_name'                => $data['first_name'],
+            'last_name'                 => $data['last_name'],
+            'email'                     => $data['email'],
+            'phone'                     => $data['phone'] ?? null,
+            'checkin'                   => $data['checkin'],
+            'checkout'                  => $data['checkout'],
+            'adults'                    => $data['adults'],
+            'children'                  => $data['children'] ?? 0,
+            'message'                   => $data['message'] ?? null,
+            'newsletter'                => (bool) ($data['newsletter'] ?? false),
+            'terms_accepted_at'         => now(),
+            'ip_address'                => $request->ip(),
+            'user_agent'                => substr((string) $request->userAgent(), 0, 255),
+            'locale'                    => app()->getLocale(),
+            'estimated_stay_amount'     => $quote['available'] ? $quote['stay_cents'] / 100 : null,
+            'estimated_cleaning_amount' => $quote['available'] ? $quote['cleaning_cents'] / 100 : null,
+            'estimated_linen_amount'    => $quote['available'] ? $quote['linen_cents'] / 100 : null,
+            'estimated_total_amount'    => $quote['available'] ? $quote['total_cents'] / 100 : null,
         ]);
 
         try {

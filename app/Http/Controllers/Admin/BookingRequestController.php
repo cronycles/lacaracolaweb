@@ -49,6 +49,11 @@ class BookingRequestController extends Controller
             'source'             => 'direct',
             'locale'             => $bookingRequest->locale,
             'notes'              => $bookingRequest->message,
+            // Pre-fill the financial fields with the price quoted to the guest
+            // on the public form, so the owner just has to verify/adjust it.
+            'income_amount'      => $bookingRequest->estimated_stay_amount,
+            'cleaning_amount'    => $bookingRequest->estimated_cleaning_amount,
+            'linen_amount'       => $bookingRequest->estimated_linen_amount,
         ]);
 
         AvailabilityBlock::create([

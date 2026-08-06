@@ -145,6 +145,24 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertSame('Rossi', $booking->person->last_name);
     }
 
+    public function test_confirming_prefills_financial_fields_from_the_requests_price_estimate(): void
+    {
+        $request = $this->makeRequest([
+            'estimated_stay_amount'     => 500.00,
+            'estimated_cleaning_amount' => 100.00,
+            'estimated_linen_amount'    => 50.00,
+            'estimated_total_amount'    => 650.00,
+        ]);
+
+        $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
+
+        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+
+        $this->assertSame('500.00', $booking->income_amount);
+        $this->assertSame('100.00', $booking->cleaning_amount);
+        $this->assertSame('50.00', $booking->linen_amount);
+    }
+
     public function test_declining_removes_request_from_queue_without_creating_a_booking(): void
     {
         Mail::fake();

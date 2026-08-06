@@ -20,6 +20,7 @@
                         <th>Check-in</th>
                         <th>Check-out</th>
                         <th>Ospiti</th>
+                        <th>Prezzo</th>
                         <th>Messaggio</th>
                         <th>Ospite associato</th>
                         <th></th>
@@ -40,6 +41,13 @@
                                 {{ $request->adults }} adulti
                                 @if($request->children > 0), {{ $request->children }} bambini @endif
                             </td>
+                            <td style="font-weight:600;white-space:nowrap">
+                                @if($request->estimated_total_amount !== null)
+                                    € {{ number_format((float) $request->estimated_total_amount, 2, ',', '.') }}
+                                @else
+                                    <span style="color:#6b7f89;font-weight:400">n/d</span>
+                                @endif
+                            </td>
                             <td style="max-width:220px;font-size:.85rem;color:#6b7f89">
                                 {{ \Illuminate\Support\Str::limit($request->message, 80) ?: '—' }}
                             </td>
@@ -57,7 +65,7 @@
                             <td style="white-space:nowrap">
                                 <form method="POST" action="{{ route('admin.booking-requests.confirm', $request) }}" style="display:inline">
                                     @csrf
-                                    <button type="submit" class="btn btn--primary btn--sm">✓ Conferma</button>
+                                    <button type="submit" class="btn btn--primary btn--sm">✓ Accetta</button>
                                 </form>
                                 <form method="POST" action="{{ route('admin.booking-requests.decline', $request) }}" style="display:inline"
                                       onsubmit="return confirm('Rifiutare questa richiesta? Verrà inviata una email all\'ospite e non verrà creata alcuna prenotazione.')">
