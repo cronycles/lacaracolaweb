@@ -25,6 +25,8 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - `resources/ts/components/map.ts`
 - `resources/ts/components/mobile-nav.ts`
 - `resources/ts/components/lang-switcher.ts`
+- `resources/ts/checkin.ts` (Vite entry for the public online check-in page)
+- `resources/ts/people-reporting-fields.ts` (shared by `admin.ts` and `checkin.ts`)
 
 # Important frontend contracts
 ## Public availability form
@@ -40,6 +42,28 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   / `route_locale('terms')`. The submit button (`resources/ts/components/booking-form.ts`)
   stays `disabled` until the checkbox is checked; the server also validates
   `accepted_terms => ['required', 'accepted']` as a defense-in-depth measure.
+
+## Public online check-in page
+- Route: `GET /check-in/{token}` (no locale prefix — token is the only identifier),
+  view `resources/views/public/checkin.blade.php` (`resources/views/public/checkin-expired.blade.php`
+  for invalid/expired/canceled tokens).
+- `resources/ts/checkin.ts` is the dedicated Vite entry (registered in `vite.config.js`),
+  bootstrapping the country/municipality combo fields shared with admin:
+  `initCountryComboFields()`, `initPeopleReportingFields()`, `initDocumentIssueFields()`
+  from `resources/ts/people-reporting-fields.ts`. `initDocumentTypeToggle()` is **not**
+  used here — the "tipo alloggiato" is fully automatic (not user-editable), so the
+  document-fields block visibility is decided server-side per guest (Blade `@unless`).
+- `resources/ts/people-reporting-fields.ts` is i18n-aware via an optional
+  `window.CHECKIN_I18N` object (labels for "comune/città di nascita", placeholders);
+  when absent (admin form) it falls back to the original Italian strings, so admin
+  behavior is unchanged.
+- `window.COMUNI_VALIDI` / `window.COUNTRIES_MAP` are set the same way as the admin form.
+- Styling: `resources/css/components/checkin-form.css` (imported by `app.css`) adds a
+  few page-specific classes (`.checkin-guest`, `.checkin-badge`, `.checkin-callout`,
+  `.checkin-lang-switch`) on top of the shared `.booking-form` component classes.
+- Language switcher: plain links appending `?lang=xx` to the current URL (reloads the
+  page); intentionally does **not** reuse `lang-switcher.ts`/`/locale` (which persists
+  the choice in session) since the check-in page's switcher must not persist.
 
 ## Brand identity (colors + logo)
 - Palette lives in `resources/css/tokens.css` (`:root`):

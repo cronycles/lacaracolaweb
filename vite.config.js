@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/css/auth/login.css',
                 'resources/ts/app.ts',
                 'resources/ts/admin.ts',
+                'resources/ts/checkin.ts',
                 'resources/js/app.js',
             ],
             refresh: [

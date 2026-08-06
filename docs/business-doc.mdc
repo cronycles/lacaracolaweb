@@ -38,6 +38,30 @@ alwaysApply: true
   48h payment deadline; if unpaid, the owner cancels the booking manually
   (no automated cancellation job).
 
+### Online check-in (guest self-service)
+- Every confirmed booking gets a persistent, unguessable check-in link (no
+  guest account/login), included in the "booking confirmed" email and reusable
+  across multiple visits until the checkout date (the link then becomes inactive).
+- The guest can fill in their own and their travel companions' ID/document data
+  themselves (same fields and rules as the admin's guest-reporting form), add
+  companions up to the booking's total guest count, and edit the data as many
+  times as needed before an explicit "Confirm & submit" step.
+- Guest classification is fully automatic (same as admin): a single guest is
+  "Ospite singolo", the first of several is "Capo gruppo" (document required),
+  the rest are "Membro gruppo" (no document required).
+- Data submitted by the guest is only ever **saved** — it is never sent to the
+  Polizia di Stato automatically. The owner still reviews and sends it from
+  `admin/guest-reporting` exactly as before this feature existed.
+- The guest can keep editing the data after confirming, as long as the link
+  hasn't expired (i.e. checkout hasn't passed yet).
+- If check-in still isn't completed a configurable number of days before
+  arrival (default 7), the guest receives an automatic reminder email with the
+  same check-in link. No reminder is sent once check-in is completed or if the
+  booking was canceled.
+- The check-in page shows in the language the original request/booking was
+  made in, with a simple on-page language switcher (doesn't change the saved
+  language, just how that visit is displayed).
+
 ## Admin flows
 - Access via email/password.
 - Availability management (manual blocks and calendar visibility).

@@ -128,6 +128,7 @@ class BookingController extends Controller
             'terms_accepted_at' => now(),
             'ip_address'        => $request->ip(),
             'user_agent'        => substr((string) $request->userAgent(), 0, 255),
+            'locale'            => app()->getLocale(),
         ]);
 
         try {

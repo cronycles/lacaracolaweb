@@ -93,4 +93,17 @@ class BookingConfirmationEmailTest extends TestCase
 
         $this->assertTrue($mail->cancellationStillFree);
     }
+
+    public function test_confirmed_mail_includes_checkin_link_and_generates_token_if_missing(): void
+    {
+        $booking = $this->createBooking();
+        $this->assertNull($booking->checkin_token);
+
+        $mail = new BookingConfirmedMail($booking);
+
+        $booking->refresh();
+        $this->assertNotNull($booking->checkin_token);
+        $this->assertStringContainsString('/check-in/', $mail->checkinUrl);
+        $this->assertStringContainsString($booking->checkin_token, $mail->checkinUrl);
+    }
 }

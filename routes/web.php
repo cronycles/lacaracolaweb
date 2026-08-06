@@ -9,6 +9,7 @@ use App\Http\Controllers\Public\RulesController;
 use App\Http\Controllers\Public\TermsController;
 use App\Http\Controllers\Public\UsefulPlacesController;
 use App\Http\Controllers\Public\BookingController;
+use App\Http\Controllers\Public\CheckinController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\LegacyRedirectController;
 use App\Http\Controllers\LocaleController;
@@ -54,6 +55,12 @@ foreach ($locales as $locale) {
         Route::get('/' . $slug['thanks'], [BookingController::class, 'thanks'])->name('booking.thanks');
     });
 }
+
+// --- Public online check-in (token-based, not locale-prefixed) ---
+Route::get('/check-in/{token}', [CheckinController::class, 'show'])->name('checkin.show');
+Route::post('/check-in/{token}', [CheckinController::class, 'store'])->name('checkin.store');
+Route::post('/check-in/{token}/companions', [CheckinController::class, 'addCompanion'])->name('checkin.companions.store');
+Route::post('/check-in/{token}/confirm', [CheckinController::class, 'confirm'])->name('checkin.confirm');
 
 // --- Redirect old URLs without locale prefix (for SEO and backward compatibility) ---
 Route::get('/appartamento', [LegacyRedirectController::class, 'appartamento']);

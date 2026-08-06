@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 class Booking extends Model
 {
     use SoftDeletes;
@@ -29,6 +30,10 @@ class Booking extends Model
         'notes',
         'canceled_at',
         'confirmation_sent_at',
+        'checkin_token',
+        'checkin_token_expires_at',
+        'checkin_completed_at',
+        'locale',
         'income_amount',
         'income_paid',
         'income_paid_at',
@@ -55,6 +60,8 @@ class Booking extends Model
         'pets'             => 'integer',
         'canceled_at'      => 'datetime',
         'confirmation_sent_at' => 'datetime',
+        'checkin_token_expires_at' => 'datetime',
+        'checkin_completed_at' => 'datetime',
         'income_amount'    => 'decimal:2',
         'income_paid'      => 'boolean',
         'income_paid_at'   => 'date',
@@ -174,5 +181,23 @@ class Booking extends Model
     public function isCanceled(): bool
     {
         return $this->canceled_at !== null;
+    }
+
+    /**
+     * Generate (or regenerate) a high-entropy check-in token for this booking,
+     * expiring at the end of the checkout day. Persists the change immediately.
+     */
+    public function generateCheckinToken(): string
+    {
+        do {
+            $token = Str::random(48);
+        } while (self::where('checkin_token', $token)->exists());
+
+        $this->forceFill([
+            'checkin_token'            => $token,
+            'checkin_token_expires_at' => $this->checkout->copy()->endOfDay(),
+        ])->save();
+
+        return $token;
     }
 }

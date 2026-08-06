@@ -211,3 +211,45 @@ Comunicazione obbligatoria degli ospiti alla Polizia di Stato tramite SOAP.
 - Codici paesi: 9-digit da `stati.csv` (es. ITALIA=`100000100`, GERMANIA=`100000216`).
 - Per aggiungere un paese mancante: cercare in `resources/data/AlloggiatiWeb/stati.csv` e aggiungere a `countryIsoToAlloggiati()`.
 
+---
+
+## Online check-in pubblico (guest self-service)
+
+Flusso pubblico, basato su token, che permette all'ospite di inserire da solo i propri dati
+e quelli dei compagni di viaggio, senza autenticazione. I dati vengono **solo salvati**,
+mai inviati automaticamente al driver AlloggiatiWeb (l'invio resta manuale da admin).
+
+### File coinvolti
+| File | Responsabilità |
+|---|---|
+| `App\Services\GuestReporting\GuestClassifier` | Logica condivisa di classificazione `tipo_alloggiato` (singolo→16, capogruppo→18, membro→20), usata sia da admin sia dal form pubblico |
+| `App\Http\Controllers\Concerns\PersistsGuestReportingData` | Trait condiviso: regole di validazione + persistenza `Person`, usato da `GuestReportingController` (admin) e `Public\CheckinController` (pubblico) — non chiama mai il driver SOAP |
+| `App\Http\Controllers\Public\CheckinController` | `show`/`store`/`addCompanion`/`confirm` — unico controller pubblico del flusso |
+| `Booking::generateCheckinToken()` | Genera token random (48+ char, `Str::random`), `checkin_token_expires_at = checkout` (fine giornata) |
+| `resources/views/public/checkin.blade.php` / `checkin-expired.blade.php` | Form pubblico e pagina di errore (token invalido/scaduto/prenotazione annullata) |
+| `App\Mail\CheckinReminderMail` + `App\Console\Commands\SendCheckinReminders` | Promemoria schedulato (`routes/console.php`, `dailyAt('09:00')`) |
+
+### Regole chiave
+- Rotte pubbliche non prefissate da locale: `GET /check-in/{token}`, `POST /check-in/{token}` (store),
+  `POST /check-in/{token}/companions` (aggiunta compagno), `POST /check-in/{token}/confirm`.
+- Token invalido, scaduto (`checkin_token_expires_at` passato) o prenotazione annullata (`canceled_at`)
+  → pagina generica `public.checkin-expired`, nessun dato di prenotazione/ospite esposto.
+- `tipo_alloggiato` per ogni ospite viene **sempre ricalcolato server-side** da `GuestClassifier`
+  in base alla posizione dell'ospite in `Booking::allGuests()` — il client non può alterarlo
+  (a differenza del form admin, qui l'endpoint è pubblico/non autenticato).
+- `person_id` per ogni riga del form viene analogamente forzato server-side (mai fidarsi
+  dell'input del client) per evitare che un ospite modifichi dati di un'altra prenotazione.
+- Aggiunta compagno: stesso controllo del cap totale ospiti di `BookingGuestController::store`
+  (`adults + children`), tramite `Booking::additionalGuests()->syncWithoutDetaching()`.
+- `CheckinController::confirm()` verifica il completamento dei campi richiesti leggendo
+  direttamente le colonne di `Person` (non passa dal validator di `store()` — nota: una regola
+  `nullable` in Laravel disattiva l'esecuzione delle Closure di validazione quando il valore è
+  null, quindi l'obbligatorietà reale del documento è garantita solo qui, non in `store()`).
+- Editing consentito anche dopo la conferma, finché il token non è scaduto (`checkin_completed_at`
+  non viene mai azzerato da `store()`).
+- Locale della pagina: `?lang=` override (non persistito in sessione) → `Booking.locale` →
+  `config('routes.fallback')`.
+- `BookingConfirmedMail` genera il token al volo se assente (`$booking->checkin_token ?: $booking->generateCheckinToken()`).
+- `config('apartment.checkin.reminder_lead_days', 7)` controlla l'anticipo del promemoria;
+  `SendCheckinReminders` invia solo se `checkin_completed_at IS NULL` e `canceled_at IS NULL`.
+

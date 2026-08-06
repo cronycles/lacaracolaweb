@@ -22,6 +22,7 @@ class BookingRequest extends Model
         'terms_accepted_at',
         'ip_address',
         'user_agent',
+        'locale',
     ];
 
     protected $casts = [

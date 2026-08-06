@@ -116,6 +116,10 @@ Individual stay/reservation records linked to a primary guest.
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |
 | `confirmation_sent_at` | TIMESTAMP | When the "booking confirmed — pay within 48h" email was manually sent (nullable) |
+| `checkin_token` | VARCHAR(64)     | High-entropy public check-in token (nullable, unique; generated lazily on first need) |
+| `checkin_token_expires_at` | TIMESTAMP | Token expiry, set to end of the checkout day when generated (nullable) |
+| `checkin_completed_at` | TIMESTAMP | When the guest explicitly confirmed the online check-in (nullable) |
+| `locale`       | VARCHAR(5)       | Locale for the check-in page/emails (nullable, e.g. `it`/`en`/`fr`/`de`) |
 | `deleted_at`   | TIMESTAMP        | Soft delete timestamp (nullable)                   |
 
 **Notes:**
@@ -129,6 +133,8 @@ Individual stay/reservation records linked to a primary guest.
 - `person_id` uses RESTRICT (not CASCADE) to prevent accidental deletion of bookings if a person is deleted
 - `booking_request_id` links a manually created admin booking back to the public availability request it originated from (for legal consent proof); set to NULL if the request is deleted
 - `confirmation_sent_at` prevents accidentally sending the payment-confirmation email twice; the send action warns before resending if already set
+- `checkin_token`/`checkin_token_expires_at` power the public online check-in link (see `docs/specific-tech-backend-doc.mdc` § Online check-in pubblico); not backfilled for existing bookings, generated on first need (e.g. when `BookingConfirmedMail` is sent)
+- `checkin_completed_at` is the single source of truth for "guest completed online check-in"; the guest can still edit data afterwards without clearing this flag
 
 **Relations:**
 
@@ -157,6 +163,7 @@ Public "availability request" submissions (direct/private booking leads), kept a
 | `terms_accepted_at`  | TIMESTAMP        | When the House Rules / Lease Agreement checkbox was accepted |
 | `ip_address`         | VARCHAR(45)      | Requester IP address at submission time (nullable) |
 | `user_agent`         | VARCHAR(255)     | Requester user agent at submission time (nullable) |
+| `locale`             | VARCHAR(5)       | Locale captured at submission time (nullable, e.g. `it`/`en`/`fr`/`de`) |
 | `created_at`         | TIMESTAMP        |                                                     |
 | `updated_at`         | TIMESTAMP        |                                                     |
 

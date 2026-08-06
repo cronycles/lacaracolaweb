@@ -76,11 +76,9 @@
 
         @foreach ($guests as $i => $guest)
             @php
-                $isFirst    = $i === 0;
-                $isSingle   = $guests->count() === 1;
-                $defaultTipo = $isSingle ? '16' : ($isFirst ? '18' : '20');
+                $defaultTipo = \App\Services\GuestReporting\GuestClassifier::defaultTipoFor($i, $guests->count());
                 $activeTipo  = old("guests.{$i}.tipo_alloggiato", $defaultTipo);
-                $requiresDoc = in_array($activeTipo, ['16', '17', '18'], true);
+                $requiresDoc = \App\Services\GuestReporting\GuestClassifier::requiresDocument($activeTipo);
             @endphp
 
             <div class="a-card" style="margin-bottom:1.25rem">

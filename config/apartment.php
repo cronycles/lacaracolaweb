@@ -129,6 +129,12 @@ return [
         'free_cancellation_days' => 14,
     ],
 
+    // --- Online check-in (guest self-service document data entry) ---
+    'checkin' => [
+        // Days before check-in the reminder email is sent if check-in is still incomplete.
+        'reminder_lead_days' => env('APARTMENT_CHECKIN_REMINDER_LEAD_DAYS', 7),
+    ],
+
     // --- INTERHOME integration ---
     'interhome' => [
         // Official Interhome listing code.

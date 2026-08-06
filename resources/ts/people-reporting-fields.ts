@@ -30,7 +30,25 @@ declare global {
         COMUNI_VALIDI?: string[];
         COUNTRIES_MAP?: Record<string, string>;
         COUNTRIES_DIAL?: Record<string, string>;
+        /** Optional translated labels for the public (i18n) check-in form; admin form keeps the Italian defaults. */
+        CHECKIN_I18N?: {
+            birthMunicipalityLabel?: string;
+            birthCityLabel?: string;
+            municipalitySearchPlaceholder?: string;
+            cityPlaceholderExample?: string;
+        };
     }
+}
+
+/** Labels used by the birth-country → municipality/city toggle, i18n-aware. */
+function getFieldLabels() {
+    const i18n = window.CHECKIN_I18N ?? {};
+    return {
+        birthMunicipalityLabel: i18n.birthMunicipalityLabel ?? 'Comune di nascita',
+        birthCityLabel: i18n.birthCityLabel ?? 'Città di nascita',
+        municipalitySearchPlaceholder: i18n.municipalitySearchPlaceholder ?? 'Cerca comune...',
+        cityPlaceholderExample: i18n.cityPlaceholderExample ?? 'Es: Monaco',
+    };
 }
 
 // Fallback short list (capoluogo only) — used when window.COMUNI_VALIDI is not available.
@@ -99,17 +117,18 @@ function initPeopleReportingFields(): void {
 
         function update(countryCode: string): void {
             const isItaly = countryCode === 'IT';
+            const labels = getFieldLabels();
 
             if (provinceGroup) provinceGroup.style.display = isItaly ? '' : 'none';
 
             // Update the associated <label> text (label is now on the wrapper)
-            const label = mi.closest('.form-group')?.querySelector('label');
+            const label = mi.closest('.form-group, .booking-form__group')?.querySelector('label');
             if (label) {
                 const hasAsterisk = label.textContent?.trimEnd().endsWith('*') ?? false;
-                label.textContent = (isItaly ? 'Comune di nascita' : 'Città di nascita') + (hasAsterisk ? ' *' : '');
+                label.textContent = (isItaly ? labels.birthMunicipalityLabel : labels.birthCityLabel) + (hasAsterisk ? ' *' : '');
             }
 
-            mi.placeholder = isItaly ? 'Cerca comune...' : 'Es: Monaco';
+            mi.placeholder = isItaly ? labels.municipalitySearchPlaceholder : labels.cityPlaceholderExample;
 
             if (isItaly) {
                 comboSelect.enable(getComuniList(), comboSelect.getValue() || initialValue);
@@ -155,7 +174,7 @@ function initDocumentIssueFields(): void {
             issuePlaceGroup!.style.display = isItaly ? '' : 'none';
             if (comboSelect && issuePlaceInput) {
                 if (isItaly) {
-                    issuePlaceInput.placeholder = 'Cerca comune...';
+                    issuePlaceInput.placeholder = getFieldLabels().municipalitySearchPlaceholder;
                     comboSelect.enable(getComuniList(), comboSelect.getValue() || initialValue);
                 } else {
                     comboSelect.disable();

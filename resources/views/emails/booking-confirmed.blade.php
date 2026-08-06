@@ -60,6 +60,12 @@
     </div>
     @endif
 
+    <div class="section">
+        <div class="section-title">{{ __('app.booking_confirmed_mail_checkin_title') }}</div>
+        <p>{{ __('app.booking_confirmed_mail_checkin_text') }}</p>
+        <p><a href="{{ $checkinUrl }}" class="btn">{{ __('app.booking_confirmed_mail_checkin_button') }}</a></p>
+    </div>
+
     <div class="footer">
         {{ __('app.booking_confirmed_mail_footer') }}
     </div>
