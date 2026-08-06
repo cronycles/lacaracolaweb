@@ -5,13 +5,6 @@
 @section('content')
     <div style="max-width:600px">
 
-        {{-- Success message --}}
-        @if (session('success'))
-            <div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.875rem;color:#065f46">
-                ✓ {{ session('success') }}
-            </div>
-        @endif
-
         {{-- Account security card --}}
         <div class="a-card">
             <div class="a-card__title">{{ __('app.admin_account_title') }}</div>

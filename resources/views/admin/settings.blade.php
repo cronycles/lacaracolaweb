@@ -5,13 +5,6 @@
 @section('content')
     <div style="max-width:600px">
 
-        {{-- Success message --}}
-        @if (session('success'))
-            <div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.875rem;color:#065f46">
-                ✓ {{ session('success') }}
-            </div>
-        @endif
-
         {{-- Quick links card --}}
         <div style="background:#f3f4f6;border-radius:8px;padding:1rem;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
             <a href="{{ route('admin.account-security') }}" class="btn btn--outline">

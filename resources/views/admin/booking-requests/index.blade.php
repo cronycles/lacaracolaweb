@@ -7,13 +7,6 @@
         <h1 style="font-size:1.1rem;font-weight:700">Richieste di disponibilità</h1>
     </div>
 
-    @if(session('success'))
-        <div class="flash flash--success" style="margin-bottom:.75rem">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="flash flash--error" style="margin-bottom:.75rem">{{ session('error') }}</div>
-    @endif
-
     <div class="a-card">
         @if ($requests->isEmpty())
             <p style="color:#6b7f89;font-size:.875rem">Nessuna richiesta in attesa.</p>

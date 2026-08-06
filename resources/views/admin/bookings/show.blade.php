@@ -31,10 +31,6 @@
             @endif
         </div>
 
-        @if(session('success'))
-            <div class="flash flash--success" style="margin-bottom:.75rem">{{ session('success') }}</div>
-        @endif
-
         <div id="telegram-toast" style="display:none;margin-bottom:.75rem"></div>
 
         <div class="a-card">
@@ -173,9 +169,6 @@
             {{-- Add guest form --}}
             @if(auth()->user()->hasPermission('manage_bookings'))
                 <div style="margin-top:.75rem">
-                    @if(session('success'))
-                        <div class="alert alert--success" style="margin-bottom:.5rem;font-size:.85rem">{{ session('success') }}</div>
-                    @endif
                     @error('person_id')
                         <div class="alert alert--error" style="margin-bottom:.5rem;font-size:.85rem">{{ $message }}</div>
                     @enderror

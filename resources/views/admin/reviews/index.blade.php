@@ -8,10 +8,6 @@
         <h1 style="font-size:1.1rem;font-weight:700">Recensioni</h1>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert--success" style="margin-bottom:1rem">{{ session('success') }}</div>
-    @endif
-
     <div class="a-card">
         @if($bookings->isEmpty())
             <p style="color:#6b7f89;font-size:.875rem">Nessuna prenotazione trovata.</p>
