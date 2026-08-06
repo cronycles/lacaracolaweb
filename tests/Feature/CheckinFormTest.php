@@ -62,18 +62,17 @@ class CheckinFormTest extends TestCase
     {
         $booking = $this->createBooking(1);
 
-        // Save without document data: store() succeeds (documents aren't
-        // enforced at save time), but confirm() must still reject it because
-        // a single guest is classified as type 16 (document required).
+        // Saving without document data is rejected outright: a single guest
+        // is classified as type 16, which requires a document.
         $this->post(route('checkin.store', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: false)],
-        ])->assertRedirect(route('checkin.show', $booking->checkin_token));
+        ])->assertSessionHasErrors([
+            'guests.0.document_type',
+            'guests.0.document_number',
+            'guests.0.document_issue_country_code',
+        ]);
 
-        $this->post(route('checkin.confirm', $booking->checkin_token))
-            ->assertSessionHas('error');
-        $this->assertNull($booking->fresh()->checkin_completed_at);
-
-        // With full document data, confirmation succeeds.
+        // With full document data, saving and then confirming succeeds.
         $this->post(route('checkin.store', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
@@ -94,13 +93,20 @@ class CheckinFormTest extends TestCase
         $companion2 = Person::create(['first_name' => 'Luca', 'last_name' => 'Bianchi']);
         $booking->additionalGuests()->attach([$companion1->id, $companion2->id]);
 
-        // Primary guest (index 0, capogruppo/type 18) has a document; companions
-        // (index 1/2, membro gruppo/type 20) intentionally don't.
+        // Primary guest (index 0) is capogruppo (type 18) => document is
+        // required, so omitting it is rejected outright...
         $payload = [
-            $this->guestPayload($booking->person_id, withDocument: true),
+            $this->guestPayload($booking->person_id, withDocument: false),
             $this->guestPayload($companion1->id, withDocument: false),
             $this->guestPayload($companion2->id, withDocument: false),
         ];
+
+        $this->post(route('checkin.store', $booking->checkin_token), ['guests' => $payload])
+            ->assertSessionHasErrors(['guests.0.document_type']);
+
+        // ...but companions (index 1, 2) are membro gruppo (type 20) => no
+        // document required, even once the primary guest provides one.
+        $payload[0] = $this->guestPayload($booking->person_id, withDocument: true);
 
         $this->post(route('checkin.store', $booking->checkin_token), ['guests' => $payload])
             ->assertRedirect(route('checkin.show', $booking->checkin_token))
@@ -110,8 +116,6 @@ class CheckinFormTest extends TestCase
         $this->assertSame('M', $companion1->gender);
         $this->assertNull($companion1->document_type);
 
-        // Confirmation succeeds even though companions lack document data,
-        // because they are classified as type 20 (no document required).
         $this->post(route('checkin.confirm', $booking->checkin_token))
             ->assertSessionHas('success');
         $this->assertNotNull($booking->fresh()->checkin_completed_at);

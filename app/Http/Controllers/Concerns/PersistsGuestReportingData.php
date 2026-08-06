@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Concerns;
 use App\Models\Booking;
 use App\Models\Person;
 use App\Services\GuestReporting\Data\ItalianMunicipalities;
+use App\Services\GuestReporting\GuestClassifier;
 use App\Services\GuestReporting\GuestRecord;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -30,7 +31,7 @@ trait PersistsGuestReportingData
      */
     protected function guestReportingValidationRules(Request $request, array $countryCodes): array
     {
-        return [
+        $rules = [
             'guests'                                      => ['required', 'array', 'min:1'],
             'guests.*.person_id'                          => ['required', 'integer', 'exists:people,id'],
             'guests.*.include'                            => ['sometimes', 'nullable'],
@@ -50,55 +51,44 @@ trait PersistsGuestReportingData
             'guests.*.birth_province'                     => ['nullable', 'string', 'max:2'],
             'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
-            'guests.*.document_type'                      => [
-                function ($attribute, $value, $fail) use ($request) {
-                    $idx = explode('.', $attribute)[1];
-                    if (! empty($request->input("guests.{$idx}.include"))
-                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
-                        && empty($value)) {
-                        $fail('Il tipo documento è obbligatorio per questo tipo di alloggiato.');
-                    }
-                },
-                'nullable', 'string', Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other']),
-            ],
-            'guests.*.document_number'                    => [
-                function ($attribute, $value, $fail) use ($request) {
-                    $idx = explode('.', $attribute)[1];
-                    if (! empty($request->input("guests.{$idx}.include"))
-                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
-                        && empty($value)) {
-                        $fail('Il numero documento è obbligatorio per questo tipo di alloggiato.');
-                    }
-                },
-                'nullable', 'string', 'max:60',
-            ],
-            'guests.*.document_issue_place'               => [
-                'nullable', 'string', 'max:100',
-                function ($attribute, $value, $fail) use ($request) {
-                    $idx = explode('.', $attribute)[1];
-                    if (! empty($request->input("guests.{$idx}.include"))
-                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
-                        && $request->input("guests.{$idx}.document_issue_country_code") === 'IT'
-                        && empty($value)) {
-                        $fail('Il luogo di rilascio è obbligatorio per documenti italiani.');
-                    }
+        ];
+
+        // Document fields need explicit per-index rules (rather than the
+        // `guests.*` wildcard used above) because their "required" condition
+        // is a compound check (guest included AND tipo_alloggiato requires a
+        // document) that the `required_if` rule string can't express — and a
+        // plain Closure is NOT an "implicit" rule, so Laravel silently skips
+        // it (along with every other non-implicit rule) whenever `nullable`
+        // is present and the field is empty. `Rule::requiredIf()` IS
+        // implicit, so — unlike a Closure — it is always evaluated, which is
+        // what actually makes the document requirement enforceable here.
+        foreach ((array) $request->input('guests', []) as $idx => $guestRow) {
+            $guestRow = is_array($guestRow) ? $guestRow : [];
+            $included = ! empty($guestRow['include'] ?? null);
+            $requiresDoc = $included && GuestClassifier::requiresDocument((string) ($guestRow['tipo_alloggiato'] ?? ''));
+            $issueCountryIsItaly = ($guestRow['document_issue_country_code'] ?? null) === 'IT';
+
+            $rules["guests.{$idx}.document_type"] = [
+                Rule::requiredIf($requiresDoc), 'nullable', 'string',
+                Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other']),
+            ];
+            $rules["guests.{$idx}.document_number"] = [
+                Rule::requiredIf($requiresDoc), 'nullable', 'string', 'max:60',
+            ];
+            $rules["guests.{$idx}.document_issue_country_code"] = [
+                Rule::requiredIf($requiresDoc), 'nullable', 'string', Rule::in($countryCodes),
+            ];
+            $rules["guests.{$idx}.document_issue_place"] = [
+                Rule::requiredIf($requiresDoc && $issueCountryIsItaly), 'nullable', 'string', 'max:100',
+                function ($attribute, $value, $fail) {
                     if (filled($value) && ItalianMunicipalities::findCode($value) === null) {
                         $fail("'{$value}' non è un comune italiano riconosciuto per il luogo di rilascio.");
                     }
                 },
-            ],
-            'guests.*.document_issue_country_code'        => [
-                function ($attribute, $value, $fail) use ($request) {
-                    $idx = explode('.', $attribute)[1];
-                    if (! empty($request->input("guests.{$idx}.include"))
-                        && in_array($request->input("guests.{$idx}.tipo_alloggiato"), ['16', '17', '18'], true)
-                        && empty($value)) {
-                        $fail('Lo stato di rilascio del documento è obbligatorio per questo tipo di alloggiato.');
-                    }
-                },
-                'nullable', 'string', Rule::in($countryCodes),
-            ],
-        ];
+            ];
+        }
+
+        return $rules;
     }
 
     /**
