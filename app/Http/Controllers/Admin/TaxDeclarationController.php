@@ -260,14 +260,14 @@ class TaxDeclarationController extends Controller
                   ->orWhere('linen_tax', true)
                   ->orWhere('parking_tax', true);
             })
-            ->selectRaw('YEAR(checkin) as y')
+            ->selectRaw(sql_year_expr('checkin') . ' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
             ->toArray();
 
         $entryYears = FinancialEntry::where('tax_declaration', true)
-            ->selectRaw('YEAR(entry_date) as y')
+            ->selectRaw(sql_year_expr('entry_date') . ' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')

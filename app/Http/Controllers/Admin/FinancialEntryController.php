@@ -103,25 +103,25 @@ class FinancialEntryController extends Controller
         // ── Balance at start of selected year (all previous years combined) ──
 
         $prevBookingIncome = Booking::whereNull('canceled_at')
-            ->whereRaw('YEAR(COALESCE(income_paid_at, checkout)) < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(income_paid_at, checkout)') . ' < ?', [$year])
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
         $prevBookingParking = Booking::whereNull('canceled_at')
-            ->whereRaw('YEAR(COALESCE(parking_paid_at, checkout)) < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(parking_paid_at, checkout)') . ' < ?', [$year])
             ->where('parking_paid', true)
             ->whereNotNull('parking_amount')
             ->sum('parking_amount');
 
         $prevBookingExpenses = Booking::whereNull('canceled_at')
-            ->whereRaw('YEAR(COALESCE(services_paid_at, checkout)) < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(services_paid_at, checkout)') . ' < ?', [$year])
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;
 
-        $prevExtraIncome   = FinancialEntry::where('type', 'income')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
-        $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw('YEAR(entry_date) < ?', [$year])->sum('amount');
+        $prevExtraIncome   = FinancialEntry::where('type', 'income')->whereRaw(sql_year_expr('entry_date') . ' < ?', [$year])->sum('amount');
+        $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw(sql_year_expr('entry_date') . ' < ?', [$year])->sum('amount');
 
         // prevBookingExpenses = cleaning+linen paid before $year — also counts as income (pass-through).
         $previousBalance = (float) ($prevBookingIncome + $prevBookingParking + $prevBookingExpenses + $prevExtraIncome) - ($prevBookingExpenses + $prevExtraExpenses);
@@ -424,13 +424,13 @@ class FinancialEntryController extends Controller
     /** Returns years that have bookings or financial entries, plus the current year */
     private function availableYears(): array
     {
-        $bookingYears = Booking::selectRaw('YEAR(checkin) as y')
+        $bookingYears = Booking::selectRaw(sql_year_expr('checkin') . ' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
             ->toArray();
 
-        $entryYears = FinancialEntry::selectRaw('YEAR(entry_date) as y')
+        $entryYears = FinancialEntry::selectRaw(sql_year_expr('entry_date') . ' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
