@@ -102,6 +102,28 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertNotNull($booking->availabilityBlock);
     }
 
+    public function test_confirming_applies_the_same_tax_declaration_defaults_as_creating_a_booking_directly(): void
+    {
+        config(['finance.tax_declaration_defaults' => [
+            'income'   => true,
+            'cleaning' => false,
+            'linen'    => false,
+            'parking'  => false,
+        ]]);
+
+        $request = $this->makeRequest();
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.booking-requests.confirm', $request));
+
+        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+
+        $this->assertTrue($booking->income_tax);
+        $this->assertFalse($booking->cleaning_tax);
+        $this->assertFalse($booking->linen_tax);
+        $this->assertFalse($booking->parking_tax);
+    }
+
     public function test_confirming_matches_an_existing_person_by_email_instead_of_duplicating(): void
     {
         $existing = Person::create([

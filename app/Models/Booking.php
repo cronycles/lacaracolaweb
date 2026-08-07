@@ -79,6 +79,32 @@ class Booking extends Model
         'parking_tax'      => 'boolean',
     ];
 
+    /**
+     * Applies the "Dichiarazione dei redditi" tax-flag defaults (config
+     * `finance.tax_declaration_defaults`) to any booking created without
+     * them explicitly set. Centralized here (instead of in each controller/
+     * service that creates a Booking) so every creation path — the admin
+     * "new booking" form, accepting a booking request, and the Interhome
+     * PDF import — stays in sync and never silently gets `false` from the
+     * column's DB default.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Booking $booking) {
+            $defaults = config('finance.tax_declaration_defaults', [
+                'income'   => true,
+                'cleaning' => true,
+                'linen'    => true,
+                'parking'  => false,
+            ]);
+
+            $booking->income_tax   ??= $defaults['income'];
+            $booking->cleaning_tax ??= $defaults['cleaning'];
+            $booking->linen_tax    ??= $defaults['linen'];
+            $booking->parking_tax  ??= $defaults['parking'];
+        });
+    }
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

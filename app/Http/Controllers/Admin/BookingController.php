@@ -74,19 +74,9 @@ class BookingController extends Controller
         $person = Person::findOrFail($data['person_id']);
         $person->autoSubscribeToNewsletter();
 
-        // If the tax flag fields are absent (user without view_accounting didn't see the checkboxes),
-        // fill them with the config defaults so new bookings always have sensible values.
-        $defaults = config('finance.tax_declaration_defaults', [
-            'income'   => true,
-            'cleaning' => true,
-            'linen'    => true,
-            'parking'  => false,
-        ]);
-        $data['income_tax']   ??= $defaults['income'];
-        $data['cleaning_tax'] ??= $defaults['cleaning'];
-        $data['linen_tax']    ??= $defaults['linen'];
-        $data['parking_tax']  ??= $defaults['parking'];
-
+        // Tax flag defaults (for users without view_accounting who don't see the
+        // checkboxes) are applied by Booking::booted()'s `creating` listener,
+        // shared by every booking-creation path.
         $booking = Booking::create($data);
 
         // Automatically create availability block
