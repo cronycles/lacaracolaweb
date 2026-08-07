@@ -51,7 +51,17 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Pricing is recurring by month/day by default (no year). A `pricing_rules.year` override makes a rule apply to one specific calendar year only, taking priority over recurring rules for that year (used for movable holidays — see "Movable holiday pricing" below).
 
 # Service map
-- `BookingCreationService`: creates booking + person + availability block from normalized data (Interhome import, admin booking-request confirmation). Guest matching (`findOrCreatePerson()`/`previewMatch()`: email → phone → exact first+last name → else create) is the single source of truth for "find or create this guest" — reused by both flows, never duplicated.
+- `BookingCreationService`: creates booking + person + availability block from normalized data (Interhome import). Guest matching (`findOrCreatePerson()`/`previewMatch()`: email → phone → exact first+last name → else create) is the single source of truth for "find or create this guest" — reused by the import flow and by `BookingRequestController::confirm()`, never duplicated.
+
+## The 3 places that create a `Booking` — keep them in sync
+A `Booking` row is created from 3 different call sites, and it's easy to add a rule to one and forget the others:
+1. `Admin\BookingController::store()` — "nuova prenotazione" admin form
+2. `Admin\BookingRequestController::confirm()` — "Accetta" button on a pending guest request
+3. `BookingCreationService::createFromParsed()` — Interhome PDF import
+
+**Rule of thumb**: any business rule that must apply to *every* new booking (defaults, invariants, side effects) belongs in `Booking::booted()` (a `static::creating(...)` / `static::created(...)` listener on the model), NOT duplicated in each controller/service above. Before adding "apply X when a booking is created" logic to a controller, search for `Booking::create(` across the repo to see how many places would need the same fix.
+
+Example: the tax-declaration flag defaults below used to live only in `BookingController::store()` — accepting a request or importing a PDF silently produced bookings with `income_tax`/`cleaning_tax`/etc. at the DB column default (`false`) instead of the configured default. Fixed by moving the defaulting into `Booking::booted()`.
 - `PricingQuoteService`: single pricing engine (public quote + admin simulator).
 - `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
 - `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients resolved from `users.telegram_chat_id`.
@@ -176,7 +186,7 @@ Polymorphic file attachments for financial movements. Documents (invoices, recei
 
 ## Config defaults
 `config/finance.php` key `tax_declaration_defaults`: `income`, `cleaning`, `linen` default `true`; `parking` defaults `false`.
-Applied at `BookingController::store()` and via migration for existing rows.
+Applied centrally in `Booking::booted()` (a `static::creating()` listener that fills any of the 4 flags left `null` with the config default) — see "The 3 places that create a `Booking`" above. This guarantees the admin form, request confirmation, and PDF import all get the same defaults, since the `bookings` table columns themselves default to `false`. Also applied via migration (one-off) for existing rows.
 
 ---
 
