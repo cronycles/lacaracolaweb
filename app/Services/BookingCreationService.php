@@ -87,6 +87,13 @@ class BookingCreationService
                 'phone'      => $data['phone'] ?? null,
             ]);
         } else {
+            // Matching includes soft-deleted people (the email/phone unique
+            // constraints aren't scoped to non-deleted rows), so restore it
+            // rather than leaving it trashed while we reuse it.
+            if ($person->trashed()) {
+                $person->restore();
+            }
+
             // Enrich existing guest when import brings missing contacts.
             if (empty($person->email) && !empty($data['email'])) {
                 $person->email = $data['email'];
@@ -122,21 +129,26 @@ class BookingCreationService
      */
     private function matchExistingPerson(array $data): ?Person
     {
+        // Include soft-deleted rows: `email` and `phone` have plain unique
+        // DB constraints that aren't relaxed by soft-deletes, so a trashed
+        // Person still blocks (and should be reused/restored for) the same
+        // email/phone rather than causing a duplicate-entry SQL error.
         if (!empty($data['email'])) {
-            $person = Person::where('email', $data['email'])->first();
+            $person = Person::withTrashed()->where('email', $data['email'])->first();
             if ($person) {
                 return $person;
             }
         }
 
         if (!empty($data['phone'])) {
-            $person = Person::where('phone', $data['phone'])->first();
+            $person = Person::withTrashed()->where('phone', $data['phone'])->first();
             if ($person) {
                 return $person;
             }
         }
 
-        return Person::where('first_name', $data['first_name'])
+        return Person::withTrashed()
+            ->where('first_name', $data['first_name'])
             ->where('last_name', $data['last_name'])
             ->first();
     }

@@ -84,4 +84,34 @@ class BookingCreationServiceTest extends TestCase
         $this->assertNull($match);
         $this->assertSame(0, Person::count());
     }
+
+    /**
+     * Regression test: `email`/`phone` have plain unique DB constraints that
+     * aren't scoped to non-deleted rows, so a soft-deleted `Person` still
+     * occupies the email and previously caused a duplicate-entry SQL error
+     * when `matchExistingPerson()` (which excluded trashed rows) failed to
+     * find it and tried to create a new one instead.
+     */
+    public function test_find_or_create_person_restores_a_soft_deleted_match_instead_of_duplicating(): void
+    {
+        $existing = Person::create([
+            'first_name' => 'Daniele',
+            'last_name'  => 'Crosetti',
+            'email'      => 'cronycles@gmail.com',
+        ]);
+        $existing->delete();
+
+        $this->assertTrue($existing->fresh()->trashed());
+
+        $person = (new BookingCreationService())->findOrCreatePerson([
+            'first_name' => 'Daniele',
+            'last_name'  => 'Crosetti',
+            'email'      => 'cronycles@gmail.com',
+            'phone'      => '+39 629919011',
+        ]);
+
+        $this->assertSame($existing->id, $person->id);
+        $this->assertFalse($person->fresh()->trashed());
+        $this->assertSame(1, Person::count());
+    }
 }

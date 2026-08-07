@@ -51,7 +51,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Pricing is recurring by month/day by default (no year). A `pricing_rules.year` override makes a rule apply to one specific calendar year only, taking priority over recurring rules for that year (used for movable holidays — see "Movable holiday pricing" below).
 
 # Service map
-- `BookingCreationService`: creates booking + person + availability block from normalized data (Interhome import). Guest matching (`findOrCreatePerson()`/`previewMatch()`: email → phone → exact first+last name → else create) is the single source of truth for "find or create this guest" — reused by the import flow and by `BookingRequestController::confirm()`, never duplicated.
+- `BookingCreationService`: creates booking + person + availability block from normalized data (Interhome import). Guest matching (`findOrCreatePerson()`/`previewMatch()`: email → phone → exact first+last name → else create) is the single source of truth for "find or create this guest" — reused by the import flow and by `BookingRequestController::confirm()`, never duplicated. Matching queries include soft-deleted `Person` rows (`withTrashed()`) and `findOrCreatePerson()` restores a matched trashed person: `people.email`/`people.phone` have plain unique DB constraints not scoped to `deleted_at`, so a trashed person would otherwise cause a duplicate-entry SQL error on the next attempt to reuse that email/phone.
 
 ## The 3 places that create a `Booking` — keep them in sync
 A `Booking` row is created from 3 different call sites, and it's easy to add a rule to one and forget the others:
