@@ -12,6 +12,7 @@ use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -151,6 +152,15 @@ class PersonController extends Controller
 
     public function destroy(Person $ospiti): RedirectResponse
     {
+        // A Person still referenced as primary guest (person_id) on a booking must
+        // never be soft-deleted: $booking->person would otherwise break every admin
+        // view that reads it. Additional-guest links are just detached instead.
+        if ($ospiti->bookings()->exists()) {
+            return redirect()->route('admin.people.index')
+                ->with('error', 'Impossibile eliminare: questo ospite è il capogruppo di una o più prenotazioni.');
+        }
+
+        DB::table('booking_person')->where('person_id', $ospiti->id)->delete();
         $ospiti->delete();
 
         return redirect()->route('admin.people.index')->with('success', 'Ospite eliminato.');

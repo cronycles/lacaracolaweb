@@ -107,7 +107,11 @@ class Booking extends Model
 
     public function person(): BelongsTo
     {
-        return $this->belongsTo(Person::class);
+        // withTrashed(): a Person can be soft-deleted while still referenced
+        // by historical bookings (person_id FK). Without this, $booking->person
+        // resolves to null for those bookings and breaks every view that reads
+        // $booking->person->full_name (index/show/calendar/dashboard/reporting).
+        return $this->belongsTo(Person::class)->withTrashed();
     }
 
     public function bookingRequest(): BelongsTo
