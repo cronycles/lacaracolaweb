@@ -64,9 +64,15 @@ class BookingRequest extends Model
     /**
      * Requests still awaiting owner action: not declined, and not yet
      * converted into a Booking.
+     *
+     * `withTrashed()` on the relation is required: `Booking` uses SoftDeletes,
+     * so deleting the linked booking later (e.g. cleaning up a test booking)
+     * must NOT resurrect the already-confirmed request into the pending
+     * queue — the request was already handled.
      */
     public function scopePending(Builder $query): Builder
     {
-        return $query->whereNull('declined_at')->whereDoesntHave('booking');
+        return $query->whereNull('declined_at')
+            ->whereDoesntHave('booking', fn (Builder $q) => $q->withTrashed());
     }
 }

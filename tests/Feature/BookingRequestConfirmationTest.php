@@ -76,6 +76,20 @@ class BookingRequestConfirmationTest extends TestCase
         $response->assertDontSee('Confirmed Guest');
     }
 
+    public function test_confirmed_request_does_not_reappear_after_its_booking_is_deleted(): void
+    {
+        $request = $this->makeRequest();
+
+        $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
+
+        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking->delete(); // soft delete, e.g. owner cleans up a test/wrong booking
+
+        $response = $this->actingAs($this->admin)->get(route('admin.booking-requests.index'));
+
+        $response->assertDontSee($request->first_name.' '.$request->last_name);
+    }
+
     public function test_confirming_creates_linked_booking_with_empty_financials_and_redirects_to_edit(): void
     {
         $request = $this->makeRequest();

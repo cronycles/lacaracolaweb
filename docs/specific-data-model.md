@@ -173,7 +173,7 @@ Public "availability request" submissions (direct/private booking leads), kept a
 
 - `ip_address`/`user_agent` are stored solely as proof of legal consent for direct/private bookings; treat as personal data under GDPR (same handling as other guest data in this app).
 - Not soft-deleted; these are lightweight lead records, not reservations.
-- "Pending" (awaiting owner action) means `declined_at IS NULL` AND no linked `Booking` exists (`BookingRequest::scopePending()`); declining keeps the row (and its consent proof) but removes it from the admin queue instead of deleting it.
+- "Pending" (awaiting owner action) means `declined_at IS NULL` AND no linked `Booking` exists (`BookingRequest::scopePending()`), **counting soft-deleted bookings as still existing** (relation query uses `withTrashed()`) — otherwise deleting the linked `Booking` later would resurrect an already-confirmed request into the queue. Declining keeps the row (and its consent proof) but removes it from the admin queue instead of deleting it.
 - `first_name`/`last_name` are passed as-is (no string splitting/guessing) into `BookingCreationService::findOrCreatePerson()` when the request is confirmed, mirroring `people.first_name`/`last_name`.
 
 **Relations:**

@@ -295,7 +295,7 @@ prenotazioni reali con un click, riusando i dati già presenti nella richiesta.
 | `App\Http\Controllers\Admin\BookingRequestController` | `index` (coda), `confirm` (crea booking), `decline` (rifiuta + email ospite), `destroy` (elimina definitivamente, nessuna email) |
 | `App\Services\BookingCreationService::findOrCreatePerson()` | Matching ospite condiviso con l'import Interhome (vedi Service map) |
 | `App\Services\BookingCreationService::previewMatch()` | Stessa ricerca di `findOrCreatePerson()` ma **read-only**, non crea/salva nulla — usata per l'anteprima nella coda |
-| `App\Models\BookingRequest::scopePending()` | `whereNull('declined_at')->whereDoesntHave('booking')` — definizione di "richiesta in attesa" |
+| `App\Models\BookingRequest::scopePending()` | `whereNull('declined_at')->whereDoesntHave('booking', fn ($q) => $q->withTrashed())` — definizione di "richiesta in attesa". Il `withTrashed()` è **necessario**: `Booking` usa `SoftDeletes`, quindi cancellare in seguito il booking collegato (es. pulizia di una prenotazione di test) non deve far ricomparire la richiesta già gestita nella coda |
 | `App\Mail\BookingRequestDeclinedMail` | Email cortese di rifiuto inviata all'ospite in `decline()`, con `->locale($bookingRequest->locale)` |
 | `resources/views/admin/booking-requests/index.blade.php` | Vista coda |
 
