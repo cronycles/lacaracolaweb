@@ -22,6 +22,14 @@
                         📧 Invia conferma{{ $booking->confirmation_sent_at ? ' (già inviata)' : '' }}
                     </button>
                 </form>
+                <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}"
+                      class="js-confirm-send-mail"
+                      data-confirm-message="{{ $booking->checkin_completed_at ? 'Il check-in online risulta già completato il '.$booking->checkin_completed_at->format('d/m/Y H:i').'. Inviare comunque il promemoria?' : 'Inviare (o testare) l\'email di promemoria check-in online?' }}">
+                    @csrf
+                    <button type="submit" class="btn btn--outline btn--sm" title="Invia manualmente l'email di promemoria check-in online (normalmente inviata in automatico {{ config('apartment.checkin.reminder_lead_days', 7) }} giorni prima del check-in, se non ancora completato)">
+                        🛎 Promemoria check-in{{ $booking->checkin_completed_at ? ' (già completato)' : '' }}
+                    </button>
+                </form>
                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
                       onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
                     @csrf

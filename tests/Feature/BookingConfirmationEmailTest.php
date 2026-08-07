@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Mail\BookingConfirmedMail;
+use App\Mail\CheckinReminderMail;
 use App\Models\Booking;
 use App\Models\Person;
 use App\Models\Role;
@@ -66,6 +67,42 @@ class BookingConfirmationEmailTest extends TestCase
                 && $mail->hasBcc(config('apartment.email'))
                 && $mail->booking->is($booking);
         });
+    }
+
+    public function test_admin_can_manually_send_checkin_reminder_email(): void
+    {
+        Mail::fake();
+
+        $booking = $this->createBooking();
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.bookings.send-checkin-reminder', $booking))
+            ->assertRedirect();
+
+        Mail::assertSent(CheckinReminderMail::class, function (CheckinReminderMail $mail) use ($booking) {
+            return $mail->hasTo('anna.verdi@example.com')
+                && $mail->hasBcc(config('apartment.email'))
+                && $mail->booking->is($booking);
+        });
+    }
+
+    public function test_manual_checkin_reminder_fails_gracefully_without_guest_email(): void
+    {
+        Mail::fake();
+
+        $person = Person::create(['first_name' => 'No', 'last_name' => 'Email']);
+        $booking = Booking::create([
+            'person_id' => $person->id,
+            'checkin'   => now()->addDays(20)->format('Y-m-d'),
+            'checkout'  => now()->addDays(25)->format('Y-m-d'),
+            'adults'    => 1,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.bookings.send-checkin-reminder', $booking))
+            ->assertRedirect();
+
+        Mail::assertNothingSent();
     }
 
     public function test_cancellation_deadline_is_omitted_when_checkin_is_too_soon(): void

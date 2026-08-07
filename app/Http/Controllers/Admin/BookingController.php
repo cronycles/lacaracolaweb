@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\BookingConfirmedMail;
+use App\Mail\CheckinReminderMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
@@ -164,6 +165,24 @@ class BookingController extends Controller
         $prenotazioni->update(['confirmation_sent_at' => now()]);
 
         return redirect()->back()->with('success', 'Email di conferma prenotazione inviata a ' . $prenotazioni->person->email . '.');
+    }
+
+    /**
+     * Manually (re)send the online check-in reminder email, e.g. for testing or
+     * to nudge a guest ahead of the automatic reminder sent by the
+     * `checkin:send-reminders` scheduled command (config: reminder_lead_days).
+     */
+    public function sendCheckinReminderEmail(Booking $prenotazioni): RedirectResponse
+    {
+        $prenotazioni->load('person');
+
+        if (empty($prenotazioni->person->email)) {
+            return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
+        }
+
+        Mail::to($prenotazioni->person->email)->send(new CheckinReminderMail($prenotazioni));
+
+        return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a ' . $prenotazioni->person->email . '.');
     }
 
     public function notifyTelegram(Booking $prenotazioni, TelegramService $telegram): JsonResponse
