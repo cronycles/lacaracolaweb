@@ -46,6 +46,8 @@ class BookingRequestController extends Controller
             'checkout'           => $bookingRequest->checkout,
             'adults'             => $bookingRequest->adults,
             'children'           => $bookingRequest->children,
+            'babies'             => $bookingRequest->babies,
+            'pets'               => $bookingRequest->pets,
             'source'             => 'direct',
             'locale'             => $bookingRequest->locale,
             'notes'              => $bookingRequest->message,

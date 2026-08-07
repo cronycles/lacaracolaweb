@@ -29,6 +29,8 @@ return [
         'checkout' => 'check-out',
         'adults'   => 'adultes',
         'children' => 'enfants',
+        'babies'   => 'bébés',
+        'pets'     => 'animaux domestiques',
         'first_name' => 'prénom',
         'last_name' => 'nom',
         'email'    => 'e-mail',

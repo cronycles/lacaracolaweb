@@ -23,6 +23,8 @@ class BookingLegalConsentTest extends TestCase
             'checkout'   => now()->addDays(15)->format('Y-m-d'),
             'adults'     => 2,
             'children'   => 0,
+            'babies'     => 1,
+            'pets'       => 1,
             'first_name' => 'Mario',
             'last_name'  => 'Rossi',
             'email'      => 'mario.rossi@example.com',
@@ -60,6 +62,8 @@ class BookingLegalConsentTest extends TestCase
         $this->assertNotNull($bookingRequest->terms_accepted_at);
         $this->assertSame('mario.rossi@example.com', $bookingRequest->email);
         $this->assertNotEmpty($bookingRequest->user_agent);
+        $this->assertSame(1, $bookingRequest->babies);
+        $this->assertSame(1, $bookingRequest->pets);
     }
 
     public function test_successful_request_sends_owner_and_guest_emails(): void

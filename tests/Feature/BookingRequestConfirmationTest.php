@@ -43,6 +43,8 @@ class BookingRequestConfirmationTest extends TestCase
             'checkout'          => now()->addDays(15)->format('Y-m-d'),
             'adults'            => 2,
             'children'          => 0,
+            'babies'            => 1,
+            'pets'              => 1,
             'message'           => 'Vorremmo portare anche il cane, è possibile?',
             'terms_accepted_at' => now(),
             'locale'            => 'it',
@@ -89,6 +91,8 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertSame($request->checkin->format('Y-m-d'), $booking->checkin->format('Y-m-d'));
         $this->assertSame($request->checkout->format('Y-m-d'), $booking->checkout->format('Y-m-d'));
         $this->assertSame(2, $booking->adults);
+        $this->assertSame(1, $booking->babies);
+        $this->assertSame(1, $booking->pets);
         $this->assertSame('direct', $booking->source);
         $this->assertSame('it', $booking->locale);
         $this->assertNull($booking->income_amount);

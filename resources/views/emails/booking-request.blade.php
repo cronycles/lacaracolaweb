@@ -31,6 +31,18 @@
                 <td>{{ $requestData['children'] }}</td>
             </tr>
             @endif
+            @if (!empty($requestData['babies']))
+            <tr>
+                <th>Neonati (0-2 anni)</th>
+                <td>{{ $requestData['babies'] }}</td>
+            </tr>
+            @endif
+            @if (!empty($requestData['pets']))
+            <tr>
+                <th>Animali domestici</th>
+                <td>{{ $requestData['pets'] }}</td>
+            </tr>
+            @endif
         </table>
     </div>
 

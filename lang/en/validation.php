@@ -201,6 +201,8 @@ return [
         'checkout' => 'check-out',
         'adults'   => 'adults',
         'children' => 'children',
+        'babies'   => 'infants',
+        'pets'     => 'pets',
         'first_name' => 'first name',
         'last_name' => 'last name',
         'email'    => 'email',

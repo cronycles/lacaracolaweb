@@ -18,6 +18,8 @@ class BookingRequestMail extends Mailable
      *   checkout: string,
      *   adults: int,
      *   children: int|null,
+     *   babies: int|null,
+     *   pets: int|null,
      *   first_name: string,
      *   last_name: string,
      *   email: string,

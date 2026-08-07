@@ -40,6 +40,12 @@
                             <td>
                                 {{ $request->adults }} adulti
                                 @if($request->children > 0), {{ $request->children }} bambini @endif
+                                @if(($request->babies ?? 0) > 0)
+                                    <br><span title="{{ $request->babies }} neonato/i" aria-label="{{ $request->babies }} neonato/i" style="font-size:.85em">👶 {{ $request->babies }}</span>
+                                @endif
+                                @if(($request->pets ?? 0) > 0)
+                                    <span title="{{ $request->pets }} animale/i" aria-label="{{ $request->pets }} animale/i" style="font-size:.85em">🐾 {{ $request->pets }}</span>
+                                @endif
                             </td>
                             <td style="font-weight:600;white-space:nowrap">
                                 @if($request->estimated_total_amount !== null)

@@ -92,6 +92,25 @@
         </div>
     </div>
 
+    <div class="booking-form__row">
+        <div class="booking-form__group">
+            <label for="babies">� {{ __('app.booking_babies') }} <span class="booking-form__hint">({{ __('app.booking_babies_hint') }})</span></label>
+            <select id="babies" name="babies">
+                @foreach (range(0, 3) as $i)
+                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="booking-form__group">
+            <label for="pets">🐾 {{ __('app.booking_pets') }}</label>
+            <select id="pets" name="pets">
+                @foreach (range(0, 3) as $i)
+                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
     {{-- Contact info --}}
     <div class="booking-form__row" style="margin-top:.5rem">
         <div class="booking-form__group">
