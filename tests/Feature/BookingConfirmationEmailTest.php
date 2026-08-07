@@ -106,4 +106,42 @@ class BookingConfirmationEmailTest extends TestCase
         $this->assertStringContainsString('/check-in/', $mail->checkinUrl);
         $this->assertStringContainsString($booking->checkin_token, $mail->checkinUrl);
     }
+
+    public function test_rendered_mail_includes_guest_counts_and_total_price_when_present(): void
+    {
+        $booking = $this->createBooking([
+            'adults'          => 2,
+            'children'        => 1,
+            'babies'          => 1,
+            'pets'            => 2,
+            'income_amount'   => 500,
+            'cleaning_amount' => 50,
+            'linen_amount'    => 20,
+            'parking_amount'  => 30,
+        ]);
+
+        $html = (new BookingConfirmedMail($booking))->render();
+
+        $this->assertStringContainsString('600,00', $html);
+        // Adults count (2), children (1), babies (1) and pets (2) all appear as table cell values.
+        $this->assertMatchesRegularExpression('/<td>\s*2\s*<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<td>\s*1\s*<\/td>/', $html);
+    }
+
+    public function test_rendered_mail_omits_children_babies_pets_rows_and_total_when_zero_or_unknown(): void
+    {
+        $booking = $this->createBooking([
+            'adults'   => 2,
+            'children' => 0,
+            'babies'   => 0,
+            'pets'     => 0,
+        ]);
+
+        $html = (new BookingConfirmedMail($booking))->render();
+
+        $this->assertStringNotContainsString(__('app.booking_children'), $html);
+        $this->assertStringNotContainsString(__('app.booking_babies'), $html);
+        $this->assertStringNotContainsString(__('app.booking_pets'), $html);
+        $this->assertStringNotContainsString(__('app.booking_confirmed_mail_summary_total'), $html);
+    }
 }

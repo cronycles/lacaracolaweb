@@ -208,6 +208,8 @@ return [
     'booking_confirmed_mail_subject' => 'Réservation confirmée — La Caracola',
     'booking_confirmed_mail_title'   => 'Votre réservation est confirmée !',
     'booking_confirmed_mail_intro'   => "Nous avons le plaisir de confirmer votre réservation pour un séjour du :checkin au :checkout à La Caracola.",
+    'booking_confirmed_mail_summary_title' => 'Récapitulatif du séjour',
+    'booking_confirmed_mail_summary_total' => 'Prix total',
     'booking_confirmed_mail_payment_title' => 'Comment finaliser votre réservation',
     'booking_confirmed_mail_payment_intro'  => "Pour officialiser la réservation, merci d'effectuer le paiement par virement bancaire dans les :hours heures suivant cet e-mail :",
     'booking_confirmed_mail_beneficiary' => 'Bénéficiaire',

@@ -208,6 +208,8 @@ return [
     'booking_confirmed_mail_subject' => 'Booking confirmed — La Caracola',
     'booking_confirmed_mail_title'   => 'Your booking is confirmed!',
     'booking_confirmed_mail_intro'   => 'We are pleased to confirm your booking for a stay from :checkin to :checkout at La Caracola.',
+    'booking_confirmed_mail_summary_title' => 'Stay summary',
+    'booking_confirmed_mail_summary_total' => 'Total price',
     'booking_confirmed_mail_payment_title' => 'How to complete your booking',
     'booking_confirmed_mail_payment_intro'  => 'To make the booking official, please make the payment by bank transfer within :hours hours of this email:',
     'booking_confirmed_mail_beneficiary' => 'Beneficiary',

@@ -12,6 +12,40 @@
     ]) }}</p>
 
     <div class="section">
+        <div class="section-title">{{ __('app.booking_confirmed_mail_summary_title') }}</div>
+        <table>
+            <tr>
+                <th>{{ __('app.booking_adults') }}</th>
+                <td>{{ $booking->adults }}</td>
+            </tr>
+            @if ($booking->children > 0)
+            <tr>
+                <th>{{ __('app.booking_children') }}</th>
+                <td>{{ $booking->children }}</td>
+            </tr>
+            @endif
+            @if ($booking->babies > 0)
+            <tr>
+                <th>{{ __('app.booking_babies') }}</th>
+                <td>{{ $booking->babies }}</td>
+            </tr>
+            @endif
+            @if ($booking->pets > 0)
+            <tr>
+                <th>{{ __('app.booking_pets') }}</th>
+                <td>{{ $booking->pets }}</td>
+            </tr>
+            @endif
+            @if ($booking->total_price !== null)
+            <tr>
+                <th>{{ __('app.booking_confirmed_mail_summary_total') }}</th>
+                <td>€ {{ number_format($booking->total_price, 2, ',', '.') }}</td>
+            </tr>
+            @endif
+        </table>
+    </div>
+
+    <div class="section">
         <div class="section-title">{{ __('app.booking_confirmed_mail_payment_title') }}</div>
         <p>{{ __('app.booking_confirmed_mail_payment_intro', ['hours' => config('apartment.payment.deadline_hours', 48)]) }}</p>
         <table>

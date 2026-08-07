@@ -175,6 +175,8 @@ return [
     'booking_confirmed_mail_subject' => 'Prenotazione confermata — La Caracola',
     'booking_confirmed_mail_title'   => 'La tua prenotazione è confermata!',
     'booking_confirmed_mail_intro'   => 'Siamo lieti di confermarti la prenotazione per il soggiorno dal :checkin al :checkout presso La Caracola.',
+    'booking_confirmed_mail_summary_title' => 'Riepilogo del soggiorno',
+    'booking_confirmed_mail_summary_total' => 'Prezzo totale',
     'booking_confirmed_mail_payment_title' => 'Come completare la prenotazione',
     'booking_confirmed_mail_payment_intro'  => 'Per rendere ufficiale la prenotazione, ti chiediamo di effettuare il pagamento tramite bonifico bancario entro :hours ore da questa email:',
     'booking_confirmed_mail_beneficiary' => 'Beneficiario',
