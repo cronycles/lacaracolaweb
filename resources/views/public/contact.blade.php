@@ -46,7 +46,7 @@
                     @enderror
                 </div>
 
-                <div class="booking-form__group" style="margin-top:.5rem">
+                <div class="booking-form__group">
                     <label for="email">{{ __('app.contact_email') }} *</label>
                     <input type="email"
                            id="email"
@@ -61,7 +61,7 @@
                     @enderror
                 </div>
 
-                <div class="booking-form__group" style="margin-top:.5rem">
+                <div class="booking-form__group">
                     <label for="subject">{{ __('app.contact_subject') }}</label>
                     <input type="text"
                            id="subject"
@@ -74,7 +74,7 @@
                     @enderror
                 </div>
 
-                <div class="booking-form__group" style="margin-top:.5rem">
+                <div class="booking-form__group">
                     <label for="message">{{ __('app.contact_message') }} *</label>
                     <textarea id="message"
                               name="message"

@@ -112,7 +112,7 @@
     </div>
 
     {{-- Contact info --}}
-    <div class="booking-form__row" style="margin-top:.5rem">
+    <div class="booking-form__row">
         <div class="booking-form__group">
             <label for="first_name">{{ __('app.booking_first_name') }} *</label>
             <input type="text" id="first_name" name="first_name" required minlength="3" maxlength="100" autocomplete="given-name">
@@ -125,7 +125,7 @@
         </div>
     </div>
 
-    <div class="booking-form__row" style="margin-top:.5rem">
+    <div class="booking-form__row">
         <div class="booking-form__group">
             <label for="email">{{ __('app.booking_email') }} *</label>
             <input type="email" id="email" name="email" required maxlength="150" autocomplete="email">
@@ -141,7 +141,7 @@
         </div>
     </div>
 
-    <div class="booking-form__group" style="margin-top:.5rem">
+    <div class="booking-form__group">
         <label for="message">{{ __('app.booking_message') }}</label>
         <textarea id="message" name="message" maxlength="1000"></textarea>
     </div>

@@ -96,6 +96,18 @@
     }
 }
 
+/* Uniform vertical rhythm between stacked sections (rows/groups placed
+   directly in the form) — scoped with the child combinator so it never
+   affects the two side-by-side .booking-form__group columns inside a
+   .booking-form__row (those are spaced by the row's own grid gap). */
+.booking-form > .booking-form__row + .booking-form__row,
+.booking-form > .booking-form__row + .booking-form__group,
+.booking-form > .booking-form__group + .booking-form__row,
+.booking-form > .booking-form__group + .booking-form__group,
+.booking-form > .booking-form__price + .booking-form__row {
+    margin-top: var(--space-4);
+}
+
 /* Newsletter opt-in toggle card */
 .booking-form__newsletter {
     display: flex;
