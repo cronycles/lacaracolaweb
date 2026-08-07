@@ -12,7 +12,7 @@
             <p style="color:#6b7f89;font-size:.875rem">Nessuna richiesta in attesa.</p>
         @else
             <div class="a-table-wrap">
-            <table class="a-table">
+            <table class="a-table a-table--responsive-cards">
                 <thead>
                     <tr>
                         <th>Richiedente</th>
@@ -30,34 +30,38 @@
                     @foreach ($requests as $request)
                         @php $match = $matches[$request->id]; @endphp
                         <tr>
-                            <td style="font-weight:600">{{ $request->full_name }}</td>
-                            <td style="font-size:.85rem">
+                            <td data-label="Richiedente" style="font-weight:600">{{ $request->full_name }}</td>
+                            <td data-label="Contatti" style="font-size:.85rem">
                                 {{ $request->email }}
                                 @if($request->phone)<br>{{ $request->phone }}@endif
                             </td>
-                            <td>{{ $request->checkin->format('d/m/Y') }}</td>
-                            <td>{{ $request->checkout->format('d/m/Y') }}</td>
-                            <td>
-                                {{ $request->adults }} adulti
-                                @if($request->children > 0), {{ $request->children }} bambini @endif
-                                @if(($request->babies ?? 0) > 0)
-                                    <br><span title="{{ $request->babies }} neonato/i" aria-label="{{ $request->babies }} neonato/i" style="font-size:.85em">👶 {{ $request->babies }}</span>
-                                @endif
-                                @if(($request->pets ?? 0) > 0)
-                                    <span title="{{ $request->pets }} animale/i" aria-label="{{ $request->pets }} animale/i" style="font-size:.85em">🐾 {{ $request->pets }}</span>
-                                @endif
+                            <td data-label="Check-in">{{ $request->checkin->format('d/m/Y') }}</td>
+                            <td data-label="Check-out">{{ $request->checkout->format('d/m/Y') }}</td>
+                            <td data-label="Ospiti">
+                                <div class="guest-badges">
+                                    <span class="guest-badge" title="{{ $request->adults }} adulti" aria-label="{{ $request->adults }} adulti">🧑 {{ $request->adults }}</span>
+                                    @if($request->children > 0)
+                                        <span class="guest-badge" title="{{ $request->children }} bambini" aria-label="{{ $request->children }} bambini">🧒 {{ $request->children }}</span>
+                                    @endif
+                                    @if(($request->babies ?? 0) > 0)
+                                        <span class="guest-badge" title="{{ $request->babies }} neonato/i" aria-label="{{ $request->babies }} neonato/i">👶 {{ $request->babies }}</span>
+                                    @endif
+                                    @if(($request->pets ?? 0) > 0)
+                                        <span class="guest-badge" title="{{ $request->pets }} animale/i" aria-label="{{ $request->pets }} animale/i">🐾 {{ $request->pets }}</span>
+                                    @endif
+                                </div>
                             </td>
-                            <td style="font-weight:600;white-space:nowrap">
+                            <td data-label="Prezzo" style="font-weight:600;white-space:nowrap">
                                 @if($request->estimated_total_amount !== null)
                                     € {{ number_format((float) $request->estimated_total_amount, 2, ',', '.') }}
                                 @else
                                     <span style="color:#6b7f89;font-weight:400">n/d</span>
                                 @endif
                             </td>
-                            <td style="max-width:220px;font-size:.85rem;color:#6b7f89">
+                            <td data-label="Messaggio" style="max-width:220px;font-size:.85rem;color:#6b7f89">
                                 {{ \Illuminate\Support\Str::limit($request->message, 80) ?: '—' }}
                             </td>
-                            <td>
+                            <td data-label="Ospite associato">
                                 @if($match)
                                     <span class="badge badge--paid" title="Verrà usato questo profilo esistente">
                                         {{ $match->full_name }} (esistente)
@@ -68,7 +72,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td style="white-space:nowrap">
+                            <td data-label="Azioni" style="white-space:nowrap">
                                 <form method="POST" action="{{ route('admin.booking-requests.confirm', $request) }}" style="display:inline">
                                     @csrf
                                     <button type="submit" class="btn btn--primary btn--sm">✓ Accetta</button>

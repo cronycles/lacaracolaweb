@@ -219,6 +219,26 @@ body {
 .badge--paid      { background: #dcfce7; color: #166534; }
 .badge--unpaid    { background: #fef3c7; color: #92400e; }
 
+/* Guest count chips (adults/children/babies/pets) — kept visually separate
+   instead of run-on text, used in booking-requests list "Ospiti" column. */
+.guest-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+}
+.guest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .2rem;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .2rem .45rem;
+    border-radius: 9999px;
+    background: #eef2f5;
+    color: #30596c;
+    white-space: nowrap;
+}
+
 /* Buttons */
 .btn {
     display: inline-flex;
@@ -873,6 +893,53 @@ body {
         -webkit-overflow-scrolling: touch;
         width: 100%;
     }
+
+    /* ── Tables opted into card layout on mobile (scoped via modifier class,
+       so other admin tables keep the horizontal-scroll behaviour above) ── */
+    .a-table--responsive-cards { overflow-x: visible; }
+    .a-table--responsive-cards thead { display: none; }
+    .a-table--responsive-cards,
+    .a-table--responsive-cards tbody,
+    .a-table--responsive-cards tr,
+    .a-table--responsive-cards td {
+        display: block;
+        width: 100%;
+    }
+    .a-table--responsive-cards tr {
+        margin-bottom: .875rem;
+        border: 1px solid var(--admin-border);
+        border-radius: .5rem;
+        padding: .25rem .875rem;
+        background: #fff;
+    }
+    .a-table--responsive-cards td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+        text-align: right;
+        padding: .55rem 0;
+        border-bottom: 1px solid #f0f2f4;
+        max-width: none !important;
+    }
+    .a-table--responsive-cards td:last-child { border-bottom: none; }
+    .a-table--responsive-cards td::before {
+        content: attr(data-label);
+        flex-shrink: 0;
+        text-align: left;
+        font-size: .7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: #6b7f89;
+    }
+    .a-table--responsive-cards td[data-label="Azioni"] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .a-table--responsive-cards td[data-label="Azioni"]::before { margin-bottom: .4rem; }
+    .a-table--responsive-cards td[data-label="Azioni"] form { display: block !important; margin-bottom: .4rem; }
+    .a-table--responsive-cards td[data-label="Azioni"] .btn { width: 100%; }
 
     /* ── Calendar page: stack vertically ── */
     .cal-page-layout { grid-template-columns: 1fr; }
