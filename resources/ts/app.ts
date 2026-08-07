@@ -8,6 +8,7 @@ import { initMobileNav } from '@/components/mobile-nav';
 import { initLangSwitcher } from '@/components/lang-switcher';
 import { initGallery } from '@/components/gallery';
 import { initBookingForm } from '@/components/booking-form';
+import { initGuestPicker } from '@/components/guest-picker';
 import { initPricingSimulator } from '@/components/pricing-simulator';
 import { initMap } from '@/components/map';
 import { initPhonePrefixSelects } from '@/components/phone-prefix-select';
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroSlider();
     initGallery();
     initBookingForm();
+    initGuestPicker();
     initPricingSimulator();
     initMap();
     initPhonePrefixSelects();

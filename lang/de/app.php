@@ -34,6 +34,8 @@ return [
     'booking_babies'        => 'Kleinkinder',
     'booking_babies_hint'   => '0-2 Jahre',
     'booking_pets'          => 'Haustiere',
+    'booking_guests_label'  => 'Gäste',
+    'booking_guests_done'   => 'Fertig',
     'booking_first_name'    => 'Vorname',
     'booking_last_name'     => 'Nachname',
     'booking_email'         => 'E-Mail',

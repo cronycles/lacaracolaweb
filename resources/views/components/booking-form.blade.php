@@ -72,42 +72,66 @@
         <p class="booking-form__price-detail" data-price-detail></p>
     </div>
 
-    {{-- Guests row --}}
-    <div class="booking-form__row">
-        <div class="booking-form__group">
-            <label for="adults">{{ __('app.booking_adults') }} *</label>
-            <select id="adults" name="adults" required>
-                @foreach (range(1, 6) as $i)
-                    <option value="{{ $i }}" {{ $i === 2 ? 'selected' : '' }}>{{ $i }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="booking-form__group">
-            <label for="children">{{ __('app.booking_children') }}</label>
-            <select id="children" name="children">
-                @foreach (range(0, 5) as $i)
-                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
+    {{-- Guests picker: single collapsed field, opens a popup with +/- steppers --}}
+    <div class="guest-picker" id="guest-picker">
+        <span class="date-picker__label">{{ __('app.booking_guests_label') }}</span>
+        <button type="button" id="guest-trigger" class="dp-trigger" aria-haspopup="true">
+            <span class="dp-trigger__icon" aria-hidden="true">🧑</span>
+            <span class="dp-trigger__value dp-trigger__value--set" data-guest-summary>🧑 2</span>
+        </button>
 
-    <div class="booking-form__row">
-        <div class="booking-form__group">
-            <label for="babies">👶 {{ __('app.booking_babies') }} <span class="booking-form__hint">({{ __('app.booking_babies_hint') }})</span></label>
-            <select id="babies" name="babies">
-                @foreach (range(0, 3) as $i)
-                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="booking-form__group">
-            <label for="pets">🐾 {{ __('app.booking_pets') }}</label>
-            <select id="pets" name="pets">
-                @foreach (range(0, 3) as $i)
-                    <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
-                @endforeach
-            </select>
+        <input type="hidden" id="adults" name="adults" value="2">
+        <input type="hidden" id="children" name="children" value="0">
+        <input type="hidden" id="babies" name="babies" value="0">
+        <input type="hidden" id="pets" name="pets" value="0">
+
+        <div id="guest-popup" class="dp-popup guest-popup" hidden role="dialog" aria-label="{{ __('app.booking_guests_label') }}">
+            <div class="guest-popup__row" data-guest-row="adults" data-min="1" data-max="6">
+                <div class="guest-popup__info">
+                    <span class="guest-popup__icon" aria-hidden="true">🧑</span>
+                    <span class="guest-popup__label">{{ __('app.booking_adults') }}</span>
+                </div>
+                <div class="guest-popup__stepper">
+                    <button type="button" class="guest-popup__btn" data-action="decrement" aria-label="-">−</button>
+                    <span class="guest-popup__count" data-guest-count>2</span>
+                    <button type="button" class="guest-popup__btn" data-action="increment" aria-label="+">+</button>
+                </div>
+            </div>
+            <div class="guest-popup__row" data-guest-row="children" data-min="0" data-max="5">
+                <div class="guest-popup__info">
+                    <span class="guest-popup__icon" aria-hidden="true">🧒</span>
+                    <span class="guest-popup__label">{{ __('app.booking_children') }}</span>
+                </div>
+                <div class="guest-popup__stepper">
+                    <button type="button" class="guest-popup__btn" data-action="decrement" aria-label="-">−</button>
+                    <span class="guest-popup__count" data-guest-count>0</span>
+                    <button type="button" class="guest-popup__btn" data-action="increment" aria-label="+">+</button>
+                </div>
+            </div>
+            <div class="guest-popup__row" data-guest-row="babies" data-min="0" data-max="3">
+                <div class="guest-popup__info">
+                    <span class="guest-popup__icon" aria-hidden="true">👶</span>
+                    <span class="guest-popup__label">{{ __('app.booking_babies') }} <span class="booking-form__hint">({{ __('app.booking_babies_hint') }})</span></span>
+                </div>
+                <div class="guest-popup__stepper">
+                    <button type="button" class="guest-popup__btn" data-action="decrement" aria-label="-">−</button>
+                    <span class="guest-popup__count" data-guest-count>0</span>
+                    <button type="button" class="guest-popup__btn" data-action="increment" aria-label="+">+</button>
+                </div>
+            </div>
+            <div class="guest-popup__row" data-guest-row="pets" data-min="0" data-max="3">
+                <div class="guest-popup__info">
+                    <span class="guest-popup__icon" aria-hidden="true">🐾</span>
+                    <span class="guest-popup__label">{{ __('app.booking_pets') }}</span>
+                </div>
+                <div class="guest-popup__stepper">
+                    <button type="button" class="guest-popup__btn" data-action="decrement" aria-label="-">−</button>
+                    <span class="guest-popup__count" data-guest-count>0</span>
+                    <button type="button" class="guest-popup__btn" data-action="increment" aria-label="+">+</button>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn--primary guest-popup__done" data-guest-done>{{ __('app.booking_guests_done') }}</button>
         </div>
     </div>
 

@@ -38,6 +38,8 @@ return [
     'booking_babies'        => 'Neonati',
     'booking_babies_hint'   => '0-2 anni',
     'booking_pets'          => 'Animali domestici',
+    'booking_guests_label'  => 'Ospiti',
+    'booking_guests_done'   => 'Fatto',
     'booking_first_name'    => 'Nome',
     'booking_last_name'     => 'Cognome',
     'booking_email'         => 'Email',

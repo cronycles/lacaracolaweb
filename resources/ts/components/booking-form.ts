@@ -149,8 +149,8 @@ export function initBookingForm(): void {
             return;
         }
 
-        const adultsEl   = form.querySelector<HTMLSelectElement>('[name="adults"]');
-        const childrenEl = form.querySelector<HTMLSelectElement>('[name="children"]');
+        const adultsEl   = form.querySelector<HTMLInputElement>('[name="adults"]');
+        const childrenEl = form.querySelector<HTMLInputElement>('[name="children"]');
         const guests = (parseInt(adultsEl?.value ?? '1', 10) || 1)
                      + (parseInt(childrenEl?.value ?? '0', 10) || 0);
 
@@ -202,8 +202,8 @@ export function initBookingForm(): void {
     checkout?.addEventListener('change', scheduleQuote);
 
     // Re-fetch quote when guest count changes (affects linen fee)
-    form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', scheduleQuote);
-    form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', scheduleQuote);
+    form.querySelector<HTMLInputElement>('[name="adults"]')?.addEventListener('change', scheduleQuote);
+    form.querySelector<HTMLInputElement>('[name="children"]')?.addEventListener('change', scheduleQuote);
 
     // --- Date range picker integration ---
 
