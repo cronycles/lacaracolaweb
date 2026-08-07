@@ -32,7 +32,7 @@ return [
     'booking_adults'        => 'Adults',
     'booking_children'      => 'Children',
     'booking_babies'        => 'Infants',
-    'booking_babies_hint'   => '0-2 years, with crib',
+    'booking_babies_hint'   => '0-2 years',
     'booking_pets'          => 'Pets',
     'booking_first_name'    => 'First Name',
     'booking_last_name'     => 'Last Name',

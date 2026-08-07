@@ -36,7 +36,7 @@ return [
     'booking_adults'        => 'Adulti',
     'booking_children'      => 'Bambini',
     'booking_babies'        => 'Neonati',
-    'booking_babies_hint'   => '0-2 anni, con culla',
+    'booking_babies_hint'   => '0-2 anni',
     'booking_pets'          => 'Animali domestici',
     'booking_first_name'    => 'Nome',
     'booking_last_name'     => 'Cognome',
