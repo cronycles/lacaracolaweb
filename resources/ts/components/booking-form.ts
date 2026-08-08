@@ -35,6 +35,7 @@ export function initBookingForm(): void {
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
+    const MAX_BEDS = parseInt(form.dataset['maxBeds'] ?? '6', 10);
 
     // --- Field error helpers ---
 
@@ -96,6 +97,21 @@ export function initBookingForm(): void {
             setFieldError('checkout', form.dataset['errorMinNights'] ?? `Minimum stay is ${MIN_NIGHTS} nights.`);
             return false;
         }
+        return true;
+    };
+
+    const validateGuestCount = (): boolean => {
+        clearFieldError('adults');
+        clearFieldError('children');
+
+        const adults = parseInt(form.querySelector<HTMLSelectElement>('[name="adults"]')?.value ?? '0', 10) || 0;
+        const children = parseInt(form.querySelector<HTMLSelectElement>('[name="children"]')?.value ?? '0', 10) || 0;
+
+        if (adults + children > MAX_BEDS) {
+            setFieldError('children', form.dataset['errorMaxGuests'] ?? `Maximum capacity is ${MAX_BEDS} guests.`);
+            return false;
+        }
+
         return true;
     };
 
@@ -204,6 +220,8 @@ export function initBookingForm(): void {
     // Re-fetch quote when guest count changes (affects linen fee)
     form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', scheduleQuote);
     form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', scheduleQuote);
+    form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', validateGuestCount);
+    form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', validateGuestCount);
 
     // --- Date range picker integration ---
 
@@ -278,6 +296,7 @@ export function initBookingForm(): void {
         e.preventDefault();
         clearAllErrors();
         if (!validateDates()) return;
+        if (!validateGuestCount()) return;
 
         const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
 

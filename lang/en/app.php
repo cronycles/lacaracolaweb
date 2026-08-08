@@ -60,6 +60,7 @@ return [
     'booking_min_nights'    => 'Minimum stay :nights nights.',
     'error_min_nights'      => 'The minimum stay is :nights nights.',
     'error_max_nights'      => 'The maximum stay is :nights nights.',
+    'error_max_guests'      => 'The maximum number of guests is :guests. Infants and pets are not counted.',
     'error_checkin_past'    => 'Check-in date cannot be in the past.',
     'error_checkout_order'  => 'Check-out must be after check-in.',
     'error_server'          => 'An error occurred. Please try again.',

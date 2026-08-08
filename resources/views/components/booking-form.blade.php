@@ -16,9 +16,11 @@
     data-quote-url="{{ route_locale('booking.quote') }}"
     data-locale="{{ app()->getLocale() }}"
       data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
+    data-max-beds="{{ config('apartment.specs.beds', 6) }}"
       data-error-past="{{ __('app.error_checkin_past') }}"
       data-error-order="{{ __('app.error_checkout_order') }}"
       data-error-min-nights="{{ __('app.error_min_nights', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
+    data-error-max-guests="{{ __('app.error_max_guests', ['guests' => config('apartment.specs.beds', 6)]) }}"
       data-error-server="{{ __('app.error_server') }}"
       data-label-loading="{{ __('app.booking_loading') }}"
     data-price-loading="{{ __('app.booking_price_loading') }}"
@@ -89,6 +91,7 @@
                     <option value="{{ $i }}" {{ $i === 0 ? 'selected' : '' }}>{{ $i }}</option>
                 @endforeach
             </select>
+            <span class="booking-form__field-error" data-error-for="children" hidden aria-live="polite"></span>
         </div>
     </div>
 

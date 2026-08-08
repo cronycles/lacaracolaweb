@@ -31,6 +31,7 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 # Important frontend contracts
 ## Public availability form
 - Date picker minimum nights comes from `data-min-nights`.
+- Guest capacity is validated in the browser from `data-max-beds`: adults + children must fit, while infants and pets are excluded.
 - Occupied dates are received from backend via `data-unavailable-dates`.
 - AJAX quote:
   - endpoint: `POST /{locale}/{availability-slug}/quote`

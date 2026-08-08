@@ -103,6 +103,19 @@ class BookingController extends Controller
             'phone.regex'             => __('app.error_phone_digits_only'),
         ]);
 
+        $guests = (int) $data['adults'] + (int) ($data['children'] ?? 0);
+        $maxBeds = (int) config('apartment.specs.beds');
+
+        if ($guests > $maxBeds) {
+            $error = __('app.error_max_guests', ['guests' => $maxBeds]);
+
+            if ($request->wantsJson()) {
+                return response()->json(['errors' => ['children' => [$error]]], 422);
+            }
+
+            return back()->withErrors(['children' => $error])->withInput();
+        }
+
         // Combine dial prefix + number into a single formatted phone string,
         // e.g. "+39 333 123 4567" (same format as the admin guest phone field).
         $data['phone'] = trim(($data['phone_prefix'] ?? '') . ' ' . $data['phone']);
@@ -130,7 +143,6 @@ class BookingController extends Controller
         // Recalculate the price server-side (never trust a client-submitted amount)
         // so the owner can see the guest's quoted price in the requests queue and
         // have it pre-filled into the booking's financial fields on acceptance.
-        $guests = (int) $data['adults'] + (int) ($data['children'] ?? 0);
         $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
 
         $bookingRequest = BookingRequest::create([

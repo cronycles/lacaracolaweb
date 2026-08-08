@@ -28,6 +28,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Availability request endpoint: `POST /{locale}/{availability-slug}`
   - supports JSON and form submit
   - requires `accepted_terms` (House Rules + Short-Term Tourist Lease Agreement consent); validated server-side even though the submit button is also disabled client-side until checked
+  - rejects requests where `adults + children` exceeds `config('apartment.specs.beds')`; infants and pets are excluded from this capacity check
   - persists a `BookingRequest` record (contact/stay data + `terms_accepted_at`, `ip_address`, `user_agent`) as legal proof of consent — direct/private bookings are never anonymous leads
   - sends owner email (`BookingRequestMail`, states the guest's consent + timestamp), with non-blocking fallback on mail errors
   - sends guest email (`BookingRequestPendingMail`) clarifying the booking is NOT yet confirmed

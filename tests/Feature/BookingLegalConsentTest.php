@@ -66,6 +66,43 @@ class BookingLegalConsentTest extends TestCase
         $this->assertSame(1, $bookingRequest->pets);
     }
 
+    public function test_request_rejects_adults_and_children_above_apartment_capacity(): void
+    {
+        Mail::fake();
+
+        $payload = array_merge($this->validPayload(), [
+            'adults' => 6,
+            'children' => 1,
+            'accepted_terms' => '1',
+        ]);
+
+        $this->postJson(route('it.booking.request'), $payload)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['children']);
+
+        $this->assertDatabaseCount('booking_requests', 0);
+        Mail::assertNothingSent();
+    }
+
+    public function test_infants_and_pets_do_not_count_towards_apartment_capacity(): void
+    {
+        Mail::fake();
+
+        $payload = array_merge($this->validPayload(), [
+            'adults' => 6,
+            'children' => 0,
+            'babies' => 3,
+            'pets' => 3,
+            'accepted_terms' => '1',
+        ]);
+
+        $this->postJson(route('it.booking.request'), $payload)
+            ->assertOk()
+            ->assertJson(['success' => true]);
+
+        $this->assertDatabaseCount('booking_requests', 1);
+    }
+
     public function test_successful_request_sends_owner_and_guest_emails(): void
     {
         Mail::fake();
