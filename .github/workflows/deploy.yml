@@ -34,22 +34,36 @@ jobs:
       - name: Pull latest changes in cPanel repository
         shell: bash
         run: |
-          RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
-            -G \
-            -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
-            --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update")
+          # A real browser User-Agent + a few retries work around the hosting
+          # WAF occasionally serving a "please wait, verifying" JS challenge
+          # page (HTTP 200, non-JSON body) instead of the real API response.
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
-          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
-          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+          for attempt in 1 2 3 4 5; do
+            RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+              -G \
+              -A "$UA" \
+              -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
+              --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
+              "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControl/update")
 
-          echo "HTTP: $HTTP_CODE"
-          echo "Response: $BODY"
+            HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+            BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "HTTP error $HTTP_CODE"
-            exit 1
-          fi
+            echo "Attempt $attempt - HTTP: $HTTP_CODE"
+            echo "Response: $BODY"
+
+            if [ "$HTTP_CODE" = "200" ] && echo "$BODY" | head -c1 | grep -q '{'; then
+              echo "Repository update triggered"
+              exit 0
+            fi
+
+            echo "Non-JSON or non-200 response, retrying in 10s..."
+            sleep 10
+          done
+
+          echo "Failed to trigger repository update after retries"
+          exit 1
 
       - name: Wait for repository update
         run: sleep 15
@@ -57,34 +71,35 @@ jobs:
       - name: Run cPanel deployment tasks
         shell: bash
         run: |
-          RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
-            -G \
-            -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
-            --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create")
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
-          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
-          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+          for attempt in 1 2 3 4 5; do
+            RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
+              -G \
+              -A "$UA" \
+              -H "Authorization: cpanel ${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_TOKEN }}" \
+              --data-urlencode "repository_root=${{ secrets.CPANEL_REPOSITORY_ROOT }}" \
+              "https://${{ secrets.CPANEL_HOST }}:2083/execute/VersionControlDeployment/create")
 
-          echo "HTTP: $HTTP_CODE"
-          echo "Response: $BODY"
+            HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+            BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "HTTP error $HTTP_CODE"
-            exit 1
-          fi
+            echo "Attempt $attempt - HTTP: $HTTP_CODE"
+            echo "Response: $BODY"
 
-          DEPLOY_BODY="$BODY" python3 <<'PYCODE'
-          import json, os, sys
+            if [ "$HTTP_CODE" = "200" ] && echo "$BODY" | head -c1 | grep -q '{'; then
+              if echo "$BODY" | grep -Eq '"status"[[:space:]]*:[[:space:]]*1'; then
+                echo "Deploy completed successfully"
+                exit 0
+              else
+                echo "Deploy failed: $BODY"
+                exit 1
+              fi
+            fi
 
-          try:
-              data = json.loads(os.environ['DEPLOY_BODY'])
-              if data.get('status') == 1:
-                  print('Deploy completed successfully')
-              else:
-                  print('Deploy failed:', data)
-                  sys.exit(1)
-          except Exception as exc:
-              print('Could not parse cPanel response:', exc)
-              sys.exit(1)
-          PYCODE
+            echo "Non-JSON or non-200 response, retrying in 10s..."
+            sleep 10
+          done
+
+          echo "Failed to trigger deployment after retries"
+          exit 1
