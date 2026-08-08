@@ -73,5 +73,11 @@ Route::get('/disponibilita', [LegacyRedirectController::class, 'disponibilita'])
 
 Route::get('/contattaci', [LegacyRedirectController::class, 'contattaci']);
 
+// --- Legacy redirects for the renamed booking URL slug (formerly "disponibilita"/"availability") ---
+Route::get('/it/disponibilita/grazie', [LegacyRedirectController::class, 'bookingThanksItLegacy']);
+Route::get('/en/availability/thank-you', [LegacyRedirectController::class, 'bookingThanksEnLegacy']);
+Route::get('/fr/disponibilite/merci', [LegacyRedirectController::class, 'bookingThanksFrLegacy']);
+Route::get('/de/verfugbarkeit/danke', [LegacyRedirectController::class, 'bookingThanksDeLegacy']);
+
 // --- Fallback: redirect root to localized home ---
 Route::get('/', [LegacyRedirectController::class, 'home']);

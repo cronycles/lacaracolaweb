@@ -11,7 +11,7 @@ return [
     'nav_map'          => 'Dove Siamo',
     'nav_experiences'  => 'Esperienze',
     'nav_reviews'      => 'Recensioni',
-    'nav_booking'      => 'Disponibilità',
+    'nav_booking'      => 'Prenota',
     'nav_rules'        => 'Regole della Casa',
     'nav_terms'        => 'Contratto di Locazione ad Uso Turistico',
     'nav_useful'       => 'Posti Utili',
@@ -20,7 +20,7 @@ return [
     'hero_eyebrow'     => 'Marina di Andora, Liguria',
     'hero_title'       => 'A due Passi dal Mare',
     'hero_subtitle'    => 'Un appartamento dove il profumo del mare entra dalla finestra. Rilassati, esplora la Riviera Ligure e ritorna qui ogni anno.',
-    'hero_cta_booking' => 'Verifica Disponibilità',
+    'hero_cta_booking' => 'Prenota Ora',
     'hero_cta_discover'=> 'Scopri l\'Appartamento',
 
     // --- Features (home highlights) ---
@@ -30,7 +30,8 @@ return [
     'feature_beds'     => '6 posti letto',
 
     // --- Booking ---
-    'booking_title'         => 'Richiedi Disponibilità',
+    'booking_title'         => 'Prenota',
+    'booking_subtitle'      => 'Seleziona le tue date e invia la richiesta. Ti confermeremo la disponibilità nel più breve tempo possibile per completare la tua prenotazione.',
     'booking_checkin'       => 'Check-in',
     'booking_checkout'      => 'Check-out',
     'booking_adults'        => 'Adulti',
@@ -81,7 +82,7 @@ return [
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Prenota direttamente',
     'booking_external_text'  => 'La disponibilità e la prenotazione sono gestite su una piattaforma esterna. Clicca qui sotto per verificare le date e procedere.',
-    'booking_external_btn'   => 'Verifica disponibilità',
+    'booking_external_btn'   => 'Prenota Ora',
 
     // --- SEO text blocks (bottom of home page) ---
     'seo_home_h2' => 'Appartamento in affitto ad Andora - La Caracola',
@@ -118,7 +119,7 @@ return [
     'apartment_floor_label'   => 'Piano',
     'apartment_amenities_title' => 'Servizi inclusi',
     'apartment_gallery_title' => 'Galleria',
-    'apartment_cta_title'     => 'Hai voglia? Richiedi la disponibilità',
+    'apartment_cta_title'     => 'Hai voglia? Prenota ora',
     'apartment_cta_subtitle'  => 'Rispondiamo entro 24 ore.',
     'apartment_gallery_fullscreen' => 'Foto a schermo intero',
     'apartment_gallery_close' => 'Chiudi',

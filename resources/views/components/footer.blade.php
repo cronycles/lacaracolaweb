@@ -30,7 +30,6 @@
                 <li><a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a></li>
                 <li><a href="{{ route_locale('terms') }}">{{ __('app.nav_terms') }}</a></li>
                 <li><a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a></li>
-                <li><a href="{{ route_locale('contact') }}">{{ __('app.nav_contact') }}</a></li>
             </ul>
         </div>
 
@@ -45,6 +44,15 @@
                 @if(config('apartment.platforms.booking'))
                     <li><a href="{{ config('apartment.platforms.booking') }}" target="_blank" rel="noopener">Booking.com</a></li>
                 @endif
+            </ul>
+        </div>
+
+        {{-- Contact --}}
+        <div>
+            <p class="footer__heading">{{ __('app.footer_contact') }}</p>
+            <ul class="footer__links" role="list">
+                <li><a href="{{ route_locale('contact') }}">{{ __('app.nav_contact') }}</a></li>
+                <li><a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a></li>
             </ul>
         </div>
 

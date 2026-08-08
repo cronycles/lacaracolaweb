@@ -10,7 +10,7 @@ return [
     'nav_map'          => 'Where We Are',
     'nav_experiences'  => 'Experiences',
     'nav_reviews'      => 'Reviews',
-    'nav_booking'      => 'Availability',
+    'nav_booking'      => 'Book',
     'nav_rules'        => 'House Rules',
     'nav_terms'        => 'Tourist-Use Lease Agreement',
     'nav_useful'       => 'Useful Places',
@@ -18,7 +18,7 @@ return [
     'hero_eyebrow'     => 'Marina di Andora, Liguria',
     'hero_title'       => 'Steps from the Sea',
     'hero_subtitle'    => 'An apartment where the scent of the sea drifts through the windows. Relax, explore the Ligurian Riviera and come back every year.',
-    'hero_cta_booking' => 'Check Availability',
+    'hero_cta_booking' => 'Book Now',
     'hero_cta_discover'=> 'Discover the Apartment',
 
     'feature_sea'      => 'Sea view',
@@ -26,7 +26,8 @@ return [
     'feature_balcony'  => 'Spacious balcony',
     'feature_beds'     => '6 guests',
 
-    'booking_title'         => 'Request Availability',
+    'booking_title'         => 'Book',
+    'booking_subtitle'      => 'Select your dates and send your request. We will confirm availability as soon as possible so you can complete your booking.',
     'booking_checkin'       => 'Check-in',
     'booking_checkout'      => 'Check-out',
     'booking_adults'        => 'Adults',
@@ -77,7 +78,7 @@ return [
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Book directly',
     'booking_external_text'  => 'Availability and booking are managed on an external platform. Click below to check dates and proceed.',
-    'booking_external_btn'   => 'Check availability',
+    'booking_external_btn'   => 'Book Now',
 
     // --- SEO text blocks (bottom of home page) ---
     'seo_home_h2' => 'Holiday apartment for rent in Andora - La Caracola',
@@ -113,7 +114,7 @@ return [
     'apartment_floor_label'   => 'Floor',
     'apartment_amenities_title' => 'Amenities',
     'apartment_gallery_title' => 'Gallery',
-    'apartment_cta_title'     => 'Ready to stay? Request availability',
+    'apartment_cta_title'     => 'Ready to stay? Book now',
     'apartment_cta_subtitle'  => 'We reply within 24 hours.',
     'apartment_gallery_fullscreen' => 'Fullscreen view',
     'apartment_gallery_close' => 'Close',

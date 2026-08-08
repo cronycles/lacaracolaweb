@@ -46,6 +46,27 @@ class LegacyRedirectController extends Controller
         return $this->localRedirect('booking.thanks', 301);
     }
 
+    // --- Legacy redirects for the renamed booking URL slug (formerly "disponibilita"/"availability") ---
+    public function bookingThanksItLegacy(): RedirectResponse
+    {
+        return redirect(route_locale('booking.thanks', [], 'it'), 301);
+    }
+
+    public function bookingThanksEnLegacy(): RedirectResponse
+    {
+        return redirect(route_locale('booking.thanks', [], 'en'), 301);
+    }
+
+    public function bookingThanksFrLegacy(): RedirectResponse
+    {
+        return redirect(route_locale('booking.thanks', [], 'fr'), 301);
+    }
+
+    public function bookingThanksDeLegacy(): RedirectResponse
+    {
+        return redirect(route_locale('booking.thanks', [], 'de'), 301);
+    }
+
     public function home(): RedirectResponse
     {
         return $this->localRedirect('home', 307);

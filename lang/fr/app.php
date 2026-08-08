@@ -10,7 +10,7 @@ return [
     'nav_map'          => 'Où Sommes-Nous',
     'nav_experiences'  => 'Expériences',
     'nav_reviews'      => 'Avis',
-    'nav_booking'      => 'Disponibilités',
+    'nav_booking'      => 'Réserver',
     'nav_rules'        => 'Règles de la Maison',
     'nav_terms'        => 'Contrat de Location à Usage Touristique',
     'nav_useful'       => 'Lieux Utiles',
@@ -18,7 +18,7 @@ return [
     'hero_eyebrow'     => 'Marina di Andora, Ligurie',
     'hero_title'       => 'À Deux Pas de la Mer',
     'hero_subtitle'    => "Un appartement où le parfum de la mer entre par la fenêtre. Détendez-vous, explorez la Riviera Ligure, revenez chaque année.",
-    'hero_cta_booking' => 'Vérifier les Disponibilités',
+    'hero_cta_booking' => 'Réserver Maintenant',
     'hero_cta_discover'=> "Découvrir l'Appartement",
 
     'feature_sea'      => 'Vue mer',
@@ -26,7 +26,8 @@ return [
     'feature_balcony'  => 'Grande terrasse',
     'feature_beds'     => '6 personnes',
 
-    'booking_title'         => 'Demander la Disponibilité',
+    'booking_title'         => 'Réserver',
+    'booking_subtitle'      => 'Sélectionnez vos dates et envoyez votre demande. Nous vous confirmerons la disponibilité dans les plus brefs délais afin de finaliser votre réservation.',
     'booking_checkin'       => 'Arrivée',
     'booking_checkout'      => 'Départ',
     'booking_adults'        => 'Adultes',
@@ -77,7 +78,7 @@ return [
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Réservez directement',
     'booking_external_text'  => 'La disponibilité et la réservation sont gérées sur une plateforme externe. Cliquez ci-dessous pour vérifier les dates et continuer.',
-    'booking_external_btn'   => 'Vérifier la disponibilité',
+    'booking_external_btn'   => 'Réserver Maintenant',
 
     // --- SEO text blocks (bottom of home page) ---
     'seo_home_h2' => 'Appartement de vacances à Andora - La Caracola',
@@ -113,7 +114,7 @@ return [
     'apartment_floor_label'   => 'Étage',
     'apartment_amenities_title' => 'Équipements',
     'apartment_gallery_title' => 'Galerie',
-    'apartment_cta_title'     => 'Intéressé? Demander la disponibilité',
+    'apartment_cta_title'     => 'Envie d\'y séjourner ? Réservez maintenant',
     'apartment_cta_subtitle'  => 'Nous répondons dans les 24 heures.',
     'apartment_gallery_fullscreen' => 'Vue en plein écran',
     'apartment_gallery_close' => 'Fermer',

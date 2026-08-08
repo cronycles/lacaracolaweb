@@ -86,6 +86,7 @@
 <section class="section" id="booking" aria-labelledby="booking-title" style="background:var(--color-bg)">
     <div class="container">
         <h2 class="section-title" id="booking-title" style="text-align:center">{{ __('app.booking_title') }}</h2>
+        <h3 class="section-subtitle" style="text-align:center;font-weight:400;margin-inline:auto">{{ __('app.booking_subtitle') }}</h3>
 
         @if ($bookingMode === 'external' && $bookingExternalUrl)
             {{-- Flow C: external platform CTA --}}

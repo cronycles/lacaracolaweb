@@ -10,7 +10,7 @@ return [
     'nav_map'          => 'Lage',
     'nav_experiences'  => 'Erlebnisse',
     'nav_reviews'      => 'Bewertungen',
-    'nav_booking'      => 'Verfügbarkeit',
+    'nav_booking'      => 'Buchen',
     'nav_rules'        => 'Hausregeln',
     'nav_terms'        => 'Mietvertrag zur touristischen Nutzung',
     'nav_useful'       => 'Nützliche Orte',
@@ -18,7 +18,7 @@ return [
     'hero_eyebrow'     => 'Marina di Andora, Ligurien',
     'hero_title'       => 'Direkt am Meer',
     'hero_subtitle'    => 'Eine Wohnung, in der der Meeresduft durchs Fenster weht. Entspannen Sie sich, erkunden Sie die Ligurische Riviera, und kommen Sie jedes Jahr wieder.',
-    'hero_cta_booking' => 'Verfügbarkeit prüfen',
+    'hero_cta_booking' => 'Jetzt Buchen',
     'hero_cta_discover'=> 'Die Wohnung entdecken',
 
     'feature_sea'      => 'Meerblick',
@@ -26,7 +26,8 @@ return [
     'feature_balcony'  => 'Großer Balkon',
     'feature_beds'     => '6 Schlafplätze',
 
-    'booking_title'         => 'Verfügbarkeit anfragen',
+    'booking_title'         => 'Buchen',
+    'booking_subtitle'      => 'Wählen Sie Ihre Daten und senden Sie Ihre Anfrage. Wir bestätigen die Verfügbarkeit so schnell wie möglich, damit Sie Ihre Buchung abschließen können.',
     'booking_checkin'       => 'Anreise',
     'booking_checkout'      => 'Abreise',
     'booking_adults'        => 'Erwachsene',
@@ -77,7 +78,7 @@ return [
     // --- Flow C: external booking CTA ---
     'booking_external_title' => 'Direkt buchen',
     'booking_external_text'  => 'Verfügbarkeit und Buchung werden auf einer externen Plattform verwaltet. Klicken Sie unten, um Daten zu prüfen und fortzufahren.',
-    'booking_external_btn'   => 'Verfügbarkeit prüfen',
+    'booking_external_btn'   => 'Jetzt Buchen',
 
     // --- SEO text blocks (bottom of home page) ---
     'seo_home_h2' => 'Ferienwohnung in Andora - La Caracola',
@@ -113,7 +114,7 @@ return [
     'apartment_floor_label'   => 'Stock',
     'apartment_amenities_title' => 'Ausstattung',
     'apartment_gallery_title' => 'Galerie',
-    'apartment_cta_title'     => 'Interessiert? Verfügbarkeit anfragen',
+    'apartment_cta_title'     => 'Lust auf einen Aufenthalt? Jetzt buchen',
     'apartment_cta_subtitle'  => 'Wir antworten innerhalb von 24 Stunden.',
     'apartment_gallery_fullscreen' => 'Vollbildansicht',
     'apartment_gallery_close' => 'Schließen',
