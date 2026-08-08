@@ -19,8 +19,10 @@
             <li><a href="{{ route_locale('map') }}"          class="nav__link @active('map')">{{ __('app.nav_map') }}</a></li>
             <li><a href="{{ route_locale('experiences') }}"  class="nav__link @active('experiences')">{{ __('app.nav_experiences') }}</a></li>
             <li><a href="{{ route_locale('reviews') }}"      class="nav__link @active('reviews')">{{ __('app.nav_reviews') }}</a></li>
-            <li><a href="{{ route_locale('home') }}#booking" class="nav__link @active('home')">{{ __('app.nav_booking') }}</a></li>
         </ul>
+
+        {{-- Booking CTA: visually separated button, not a plain nav link --}}
+        <a href="{{ route_locale('home') }}#booking" class="btn btn--accent btn--sm nav__cta">{{ __('app.nav_booking') }}</a>
 
         {{-- Language switcher dropdown --}}
         <div class="lang-dropdown lang-dropdown--desktop" id="langDropdown">
@@ -68,7 +70,7 @@
     <a href="{{ route_locale('map') }}">{{ __('app.nav_map') }}</a>
     <a href="{{ route_locale('experiences') }}">{{ __('app.nav_experiences') }}</a>
     <a href="{{ route_locale('reviews') }}">{{ __('app.nav_reviews') }}</a>
-    <a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a>
+    <a href="{{ route_locale('home') }}#booking" class="nav-mobile__cta">{{ __('app.nav_booking') }}</a>
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Admin area link (mobile) --}}
