@@ -18,6 +18,8 @@ interface QuoteResponse {
     available: boolean;
     nights?: number;
     total_cents?: number;
+    parking_requested?: boolean;
+    parking_cents?: number;
     guests?: number;
     message: string;
 }
@@ -36,6 +38,10 @@ export function initBookingForm(): void {
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
     const MAX_BEDS = parseInt(form.dataset['maxBeds'] ?? '6', 10);
+    const parkingCheckbox = form.querySelector<HTMLInputElement>('[name="parking_requested"]');
+    const parkingPriceEl = form.querySelector<HTMLElement>('[data-parking-price]');
+    const parkingFeeCents = parseInt(form.dataset['parkingFeeCents'] ?? '0', 10);
+    const parkingPriceLabel = form.dataset['parkingPriceLabel'] ?? ':price / giorno';
 
     // --- Field error helpers ---
 
@@ -153,6 +159,12 @@ export function initBookingForm(): void {
         }).format(totalCents / 100);
     };
 
+    const updateParkingLabel = (): void => {
+        if (!parkingPriceEl || !parkingCheckbox) return;
+        parkingPriceEl.hidden = !parkingCheckbox.checked;
+        parkingPriceEl.textContent = parkingPriceLabel.replace(':price', formatCurrency(parkingFeeCents));
+    };
+
     const fetchPriceQuote = (): void => {
         if (!checkin?.value || !checkout?.value || !validateDates()) {
             hidePrice();
@@ -175,6 +187,7 @@ export function initBookingForm(): void {
         payload.append('checkin', checkin.value);
         payload.append('checkout', checkout.value);
         payload.append('guests', String(guests));
+        payload.append('parking_requested', parkingCheckbox?.checked ? '1' : '0');
 
         fetch(quoteUrl, {
             method: 'POST',
@@ -198,7 +211,11 @@ export function initBookingForm(): void {
 
                 // Only the total is shown to guests — the internal cost breakdown
                 // (stay/cleaning/linen/avg per night) is not public information.
-                showPriceMessage(formatCurrency(data.total_cents), data.message);
+                let detail = data.message;
+                if (data.parking_requested) {
+                    detail += ` · ${parkingPriceLabel.replace(':price', formatCurrency(parkingFeeCents))}`;
+                }
+                showPriceMessage(formatCurrency(data.total_cents), detail);
             })
             .catch(() => {
                 hidePrice();
@@ -220,8 +237,13 @@ export function initBookingForm(): void {
     // Re-fetch quote when guest count changes (affects linen fee)
     form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', scheduleQuote);
     form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', scheduleQuote);
+    parkingCheckbox?.addEventListener('change', () => {
+        updateParkingLabel();
+        scheduleQuote();
+    });
     form.querySelector<HTMLSelectElement>('[name="adults"]')?.addEventListener('change', validateGuestCount);
     form.querySelector<HTMLSelectElement>('[name="children"]')?.addEventListener('change', validateGuestCount);
+    updateParkingLabel();
 
     // --- Date range picker integration ---
 

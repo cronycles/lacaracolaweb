@@ -96,6 +96,7 @@ class PricingController extends Controller
             'checkin'  => ['required', 'date'],
             'checkout' => ['required', 'date', 'after:checkin'],
             'guests'   => ['nullable', 'integer', 'min:1', 'max:12'],
+            'parking_requested' => ['nullable', 'boolean'],
         ]);
 
         $checkin = new \DateTimeImmutable($data['checkin']);
@@ -119,7 +120,8 @@ class PricingController extends Controller
             ]);
         }
 
-        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
+        $parkingRequested = (bool) ($data['parking_requested'] ?? false);
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests, $parkingRequested);
 
         if (! $quote['available']) {
             return response()->json([
@@ -135,6 +137,8 @@ class PricingController extends Controller
             'stay_cents' => $quote['stay_cents'],
             'cleaning_cents' => $quote['cleaning_cents'],
             'linen_cents' => $quote['linen_cents'],
+            'parking_requested' => $quote['parking_requested'],
+            'parking_cents' => $quote['parking_cents'],
             'total_cents' => $quote['total_cents'],
             'avg_per_night_cents' => $quote['avg_per_night_cents'],
         ]);

@@ -56,6 +56,7 @@ class BookingRequestController extends Controller
             'income_amount'      => $bookingRequest->estimated_stay_amount,
             'cleaning_amount'    => $bookingRequest->estimated_cleaning_amount,
             'linen_amount'       => $bookingRequest->estimated_linen_amount,
+            'parking_amount'     => $bookingRequest->estimated_parking_amount,
         ]);
 
         AvailabilityBlock::create([

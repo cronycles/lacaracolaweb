@@ -51,9 +51,9 @@
         </div>
 
         {{-- Admin area link (discreet) --}}
-        <a href="/admin" class="nav__admin-link" aria-label="Admin area" title="Admin">
+        <!-- <a href="/admin" class="nav__admin-link" aria-label="Admin area" title="Admin">
             🔒
-        </a>
+        </a> -->
 
         {{-- Mobile burger --}}
         <button class="nav__burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -74,7 +74,7 @@
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Admin area link (mobile) --}}
-    <a href="/admin" class="nav-mobile__admin-link" aria-label="Admin area">🔒</a>
+    <!-- <a href="/admin" class="nav-mobile__admin-link" aria-label="Admin area">🔒</a> -->
     {{-- Language switcher: flat buttons inside mobile menu --}}
     <div class="lang-switcher-mobile">
         @foreach(['it','en','fr','de'] as $locale)

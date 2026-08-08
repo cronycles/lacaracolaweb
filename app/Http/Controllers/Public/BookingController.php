@@ -24,6 +24,7 @@ class BookingController extends Controller
             'checkin'  => ['required', 'date', 'after_or_equal:today'],
             'checkout' => ['required', 'date', 'after:checkin'],
             'guests'   => ['nullable', 'integer', 'min:1', 'max:12'],
+            'parking_requested' => ['nullable', 'boolean'],
         ]);
 
         $checkin = new \DateTimeImmutable($data['checkin']);
@@ -47,7 +48,8 @@ class BookingController extends Controller
             ]);
         }
 
-        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
+        $parkingRequested = (bool) ($data['parking_requested'] ?? false);
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests, $parkingRequested);
 
         if (! $quote['available']) {
             return response()->json([
@@ -63,6 +65,8 @@ class BookingController extends Controller
             'nights' => $quote['nights'],
             'guests' => $quote['guests'],
             'total_cents' => $quote['total_cents'],
+            'parking_requested' => $quote['parking_requested'],
+            'parking_cents' => $quote['parking_cents'],
             'message' => __('app.booking_price_detail', ['nights' => $quote['nights']]),
         ]);
     }
@@ -96,6 +100,7 @@ class BookingController extends Controller
             'phone_prefix'   => ['required', 'string', 'max:10'],
             'message'    => ['nullable', 'string', 'max:1000'],
             'newsletter' => ['nullable', 'boolean'],
+            'parking_requested' => ['nullable', 'boolean'],
             'accepted_terms' => ['required', 'accepted'],
         ], [
             'accepted_terms.required' => __('app.error_terms_required'),
@@ -143,7 +148,8 @@ class BookingController extends Controller
         // Recalculate the price server-side (never trust a client-submitted amount)
         // so the owner can see the guest's quoted price in the requests queue and
         // have it pre-filled into the booking's financial fields on acceptance.
-        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests);
+        $parkingRequested = (bool) ($data['parking_requested'] ?? false);
+        $quote = $pricingQuoteService->calculate($data['checkin'], $data['checkout'], $guests, $parkingRequested);
 
         $bookingRequest = BookingRequest::create([
             'first_name'                => $data['first_name'],
@@ -156,6 +162,7 @@ class BookingController extends Controller
             'children'                  => $data['children'] ?? 0,
             'babies'                    => $data['babies'] ?? 0,
             'pets'                      => $data['pets'] ?? 0,
+            'parking_requested'        => $parkingRequested,
             'message'                   => $data['message'] ?? null,
             'newsletter'                => (bool) ($data['newsletter'] ?? false),
             'terms_accepted_at'         => now(),
@@ -165,6 +172,7 @@ class BookingController extends Controller
             'estimated_stay_amount'     => $quote['available'] ? $quote['stay_cents'] / 100 : null,
             'estimated_cleaning_amount' => $quote['available'] ? $quote['cleaning_cents'] / 100 : null,
             'estimated_linen_amount'    => $quote['available'] ? $quote['linen_cents'] / 100 : null,
+            'estimated_parking_amount'  => $quote['available'] && $parkingRequested ? $quote['parking_cents'] / 100 : null,
             'estimated_total_amount'    => $quote['available'] ? $quote['total_cents'] / 100 : null,
         ]);
 

@@ -158,4 +158,34 @@ class BookingLegalConsentTest extends TestCase
             $bookingRequest->estimated_total_amount
         );
     }
+
+    public function test_successful_request_adds_the_requested_parking_to_the_server_computed_estimate(): void
+    {
+        Mail::fake();
+
+        PricingRule::create([
+            'start_month'     => 1,
+            'start_day'       => 1,
+            'end_month'       => 12,
+            'end_day'         => 31,
+            'price_per_night' => 10000,
+        ]);
+
+        $payload = $this->validPayload() + [
+            'accepted_terms'    => '1',
+            'parking_requested' => '1',
+        ];
+
+        $this->postJson(route('it.booking.request'), $payload)->assertOk();
+
+        $bookingRequest = BookingRequest::first();
+        $parkingAmount = (float) config('apartment.booking.parking_fee_per_day', 0) * 5;
+
+        $this->assertTrue($bookingRequest->parking_requested);
+        $this->assertSame(number_format($parkingAmount, 2, '.', ''), $bookingRequest->estimated_parking_amount);
+        $this->assertSame(
+            number_format(500 + (float) config('apartment.booking.cleaning_fee', 0) + 50 + $parkingAmount, 2, '.', ''),
+            $bookingRequest->estimated_total_amount
+        );
+    }
 }

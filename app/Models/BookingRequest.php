@@ -21,6 +21,7 @@ class BookingRequest extends Model
         'children',
         'babies',
         'pets',
+        'parking_requested',
         'message',
         'newsletter',
         'terms_accepted_at',
@@ -31,6 +32,7 @@ class BookingRequest extends Model
         'estimated_stay_amount',
         'estimated_cleaning_amount',
         'estimated_linen_amount',
+        'estimated_parking_amount',
         'estimated_total_amount',
     ];
 
@@ -41,12 +43,14 @@ class BookingRequest extends Model
         'children'                  => 'integer',
         'babies'                    => 'integer',
         'pets'                      => 'integer',
+        'parking_requested'         => 'boolean',
         'newsletter'                => 'boolean',
         'terms_accepted_at'         => 'datetime',
         'declined_at'               => 'datetime',
         'estimated_stay_amount'     => 'decimal:2',
         'estimated_cleaning_amount' => 'decimal:2',
         'estimated_linen_amount'    => 'decimal:2',
+        'estimated_parking_amount'  => 'decimal:2',
         'estimated_total_amount'    => 'decimal:2',
     ];
 

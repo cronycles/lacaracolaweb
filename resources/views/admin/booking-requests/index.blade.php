@@ -20,6 +20,7 @@
                         <th>Check-in</th>
                         <th>Check-out</th>
                         <th>Ospiti</th>
+                        <th>Parcheggio</th>
                         <th>Prezzo</th>
                         <th>Messaggio</th>
                         <th>Ospite associato</th>
@@ -50,6 +51,13 @@
                                         <span class="guest-badge" title="{{ $request->pets }} animale/i" aria-label="{{ $request->pets }} animale/i">🐾 {{ $request->pets }}</span>
                                     @endif
                                 </div>
+                            </td>
+                            <td data-label="Parcheggio">
+                                @if($request->parking_requested)
+                                    <span class="badge badge--unpaid">Richiesto</span>
+                                @else
+                                    <span style="color:#6b7f89">No</span>
+                                @endif
                             </td>
                             <td data-label="Prezzo" style="font-weight:600;white-space:nowrap">
                                 @if($request->estimated_total_amount !== null)

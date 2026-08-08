@@ -24,6 +24,8 @@
       data-error-server="{{ __('app.error_server') }}"
       data-label-loading="{{ __('app.booking_loading') }}"
     data-price-loading="{{ __('app.booking_price_loading') }}"
+    data-parking-price-label="{{ __('app.booking_parking_price') }}"
+    data-parking-fee-cents="{{ (int) config('apartment.booking.parking_fee_per_day', 0) * 100 }}"
     data-unavailable-dates='@json($unavailableDates ?? [])'
       novalidate>
     @csrf
@@ -112,6 +114,17 @@
                 @endforeach
             </select>
         </div>
+    </div>
+
+    <div class="booking-form__newsletter">
+        <span>
+            <label for="parking_requested">🅿️ {{ __('app.booking_parking_requested') }}</label>
+            <small data-parking-price hidden></small>
+        </span>
+        <label class="toggle" aria-label="{{ __('app.booking_parking_requested') }}">
+            <input type="checkbox" id="parking_requested" name="parking_requested" value="1">
+            <span class="toggle__track"><span class="toggle__thumb"></span></span>
+        </label>
     </div>
 
     {{-- Contact info --}}

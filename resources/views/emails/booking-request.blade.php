@@ -43,6 +43,16 @@
                 <td>{{ $requestData['pets'] }}</td>
             </tr>
             @endif
+            <tr>
+                <th>Parcheggio privato</th>
+                <td>{{ !empty($requestData['parking_requested']) ? 'Richiesto' : 'No' }}</td>
+            </tr>
+            @if ($bookingRequest && $bookingRequest->estimated_parking_amount !== null)
+            <tr>
+                <th>Totale parcheggio</th>
+                <td>€ {{ number_format((float) $bookingRequest->estimated_parking_amount, 2, ',', '.') }}</td>
+            </tr>
+            @endif
         </table>
     </div>
 

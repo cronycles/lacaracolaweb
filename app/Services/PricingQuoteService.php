@@ -16,9 +16,9 @@ class PricingQuoteService
      *   fixed_costs = cleaning_fee + (linen_fee_per_person × guests)
      *   avg_per_night = total / nights
      *
-     * @return array{available: bool, nights: int, guests: int, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
+    * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: int|null, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
      */
-    public function calculate(string $checkin, string $checkout, int $guests = 1): array
+    public function calculate(string $checkin, string $checkout, int $guests = 1, bool $parkingRequested = false): array
     {
         $checkinDate = Carbon::parse($checkin)->startOfDay();
         $checkoutDate = Carbon::parse($checkout)->startOfDay();
@@ -29,7 +29,7 @@ class PricingQuoteService
         $maxNights = (int) config('apartment.booking.max_nights', 28);
 
         if ($nights <= 0 || $nights < $minNights || $nights > $maxNights) {
-            return $this->unavailable($nights, $guests);
+            return $this->unavailable($nights, $guests, $parkingRequested);
         }
 
         $rules = PricingRule::query()->get();
@@ -39,7 +39,7 @@ class PricingQuoteService
 
         while ($cursor->lt($checkoutDate)) {
             if ($hidePriceFromDate !== null && $cursor->greaterThanOrEqualTo($hidePriceFromDate)) {
-                return $this->unavailable($nights, $guests);
+                return $this->unavailable($nights, $guests, $parkingRequested);
             }
 
             $ruleForNight = $rules
@@ -48,7 +48,7 @@ class PricingQuoteService
                 ->first();
 
             if (! $ruleForNight) {
-                return $this->unavailable($nights, $guests);
+                return $this->unavailable($nights, $guests, $parkingRequested);
             }
 
             $stayCents += (int) $ruleForNight->price_per_night;
@@ -59,14 +59,19 @@ class PricingQuoteService
         $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
         $linenCentsPerPerson = ((int) config('apartment.booking.linen_fee_per_person', 0)) * 100;
         $linenCents = $linenCentsPerPerson * max(1, $guests);
+        $parkingCents = $parkingRequested
+            ? ((int) config('apartment.booking.parking_fee_per_day', 0)) * 100 * $nights
+            : 0;
 
-        $totalCents = $stayCents + $cleaningCents + $linenCents;
+        $totalCents = $stayCents + $cleaningCents + $linenCents + $parkingCents;
         $avgPerNightCents = $nights > 0 ? (int) round($totalCents / $nights) : 0;
 
         return [
             'available' => true,
             'nights' => $nights,
             'guests' => $guests,
+            'parking_requested' => $parkingRequested,
+            'parking_cents' => $parkingCents,
             'stay_cents' => $stayCents,
             'cleaning_cents' => $cleaningCents,
             'linen_cents' => $linenCents,
@@ -76,14 +81,16 @@ class PricingQuoteService
     }
 
     /**
-     * @return array{available: bool, nights: int, guests: int, stay_cents: null, cleaning_cents: null, linen_cents: null, total_cents: null, avg_per_night_cents: null}
+    * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: null, stay_cents: null, cleaning_cents: null, linen_cents: null, total_cents: null, avg_per_night_cents: null}
      */
-    private function unavailable(int $nights, int $guests): array
+    private function unavailable(int $nights, int $guests, bool $parkingRequested = false): array
     {
         return [
             'available' => false,
             'nights' => $nights,
             'guests' => $guests,
+            'parking_requested' => $parkingRequested,
+            'parking_cents' => null,
             'stay_cents' => null,
             'cleaning_cents' => null,
             'linen_cents' => null,

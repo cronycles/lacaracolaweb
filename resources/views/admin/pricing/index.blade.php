@@ -41,6 +41,10 @@
                 <input type="number" id="sim-guests" name="guests" min="1" max="12" value="2"
                        style="width:70px;padding:.3rem .5rem;border:1px solid var(--admin-border);border-radius:.375rem;font-size:.9rem">
             </div>
+            <div style="margin-top:.75rem;display:flex;align-items:center;gap:.5rem">
+                <input type="checkbox" id="sim-parking" name="parking_requested" value="1">
+                <label for="sim-parking" style="font-size:.85rem;color:#374151">🅿️ Parcheggio privato ({{ config('apartment.booking.parking_fee_per_day', 0) }} € / giorno)</label>
+            </div>
         </form>
 
         <div id="pricing-sim-result" style="margin-top:1rem;display:none;border:1px solid var(--admin-border);border-radius:.5rem;padding:.9rem;background:#f9fafb">

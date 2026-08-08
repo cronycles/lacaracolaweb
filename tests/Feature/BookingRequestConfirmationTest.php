@@ -191,7 +191,8 @@ class BookingRequestConfirmationTest extends TestCase
             'estimated_stay_amount'     => 500.00,
             'estimated_cleaning_amount' => 100.00,
             'estimated_linen_amount'    => 50.00,
-            'estimated_total_amount'    => 650.00,
+            'estimated_parking_amount'  => 50.00,
+            'estimated_total_amount'    => 700.00,
         ]);
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
@@ -201,6 +202,7 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertSame('500.00', $booking->income_amount);
         $this->assertSame('100.00', $booking->cleaning_amount);
         $this->assertSame('50.00', $booking->linen_amount);
+        $this->assertSame('50.00', $booking->parking_amount);
     }
 
     public function test_declining_removes_request_from_queue_without_creating_a_booking(): void

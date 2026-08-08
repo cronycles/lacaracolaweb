@@ -36,6 +36,12 @@
                 <td>{{ $booking->pets }}</td>
             </tr>
             @endif
+            @if ($booking->parking_amount !== null)
+            <tr>
+                <th>{{ __('app.booking_confirmed_mail_parking') }}</th>
+                <td>€ {{ number_format((float) $booking->parking_amount, 2, ',', '.') }}</td>
+            </tr>
+            @endif
             @if ($booking->total_price !== null)
             <tr>
                 <th>{{ __('app.booking_confirmed_mail_summary_total') }}</th>

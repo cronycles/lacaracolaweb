@@ -8,6 +8,7 @@ interface SimulationResponse {
     cleaning_cents?: number;
     linen_cents?: number;
     total_cents?: number;
+    parking_cents?: number;
     avg_per_night_cents?: number;
     message?: string;
 }
@@ -65,6 +66,8 @@ export function initPricingSimulator(): void {
         payload.append('checkin', checkinInput.value);
         payload.append('checkout', checkoutInput.value);
         payload.append('guests', String(guests));
+        const parkingInput = form.querySelector<HTMLInputElement>('#sim-parking');
+        payload.append('parking_requested', parkingInput?.checked ? '1' : '0');
 
         fetch(simulateUrl, {
             method: 'POST',
@@ -86,11 +89,13 @@ export function initPricingSimulator(): void {
                 const stay         = data.stay_cents ?? 0;
                 const cleaning     = data.cleaning_cents ?? 0;
                 const linen        = data.linen_cents ?? 0;
+                const parking      = data.parking_cents ?? 0;
                 const avgPerNight  = data.avg_per_night_cents ?? 0;
                 const total        = data.total_cents ?? 0;
 
                 summaryEl.textContent = `${nights} notti · ${guests} ospiti · Totale ${formatCurrency(total)} · Media ${formatCurrency(avgPerNight)}/notte`;
-                breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)} · Biancheria ${formatCurrency(linen)}`;
+                const parkingDetail = parking > 0 ? ` · Parcheggio ${formatCurrency(parking)}` : '';
+                breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)} · Biancheria ${formatCurrency(linen)}${parkingDetail}`;
 
                 resultBox.style.display = 'block';
             })
@@ -106,6 +111,7 @@ export function initPricingSimulator(): void {
 
     const guestsInputEl = form.querySelector<HTMLInputElement>('#sim-guests');
     guestsInputEl?.addEventListener('change', runSimulation);
+    form.querySelector<HTMLInputElement>('#sim-parking')?.addEventListener('change', runSimulation);
 
     if (container && popup && triggerCheckin && triggerCheckout) {
         createDateRangePicker({

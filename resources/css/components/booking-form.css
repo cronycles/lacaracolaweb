@@ -104,7 +104,8 @@
 .booking-form > .booking-form__row + .booking-form__group,
 .booking-form > .booking-form__group + .booking-form__row,
 .booking-form > .booking-form__group + .booking-form__group,
-.booking-form > .booking-form__price + .booking-form__row {
+.booking-form > .booking-form__price + .booking-form__row,
+.booking-form > .booking-form__newsletter + .booking-form__row {
     margin-top: var(--space-4);
 }
 
