@@ -33,20 +33,6 @@
             </ul>
         </div>
 
-        {{-- Book --}}
-        <div>
-            <p class="footer__heading">{{ __('app.footer_book') }}</p>
-            <ul class="footer__links" role="list">
-                <li><a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a></li>
-                @if(config('apartment.platforms.airbnb'))
-                    <li><a href="{{ config('apartment.platforms.airbnb') }}" target="_blank" rel="noopener">Airbnb</a></li>
-                @endif
-                @if(config('apartment.platforms.booking'))
-                    <li><a href="{{ config('apartment.platforms.booking') }}" target="_blank" rel="noopener">Booking.com</a></li>
-                @endif
-            </ul>
-        </div>
-
         {{-- Contact --}}
         <div>
             <p class="footer__heading">{{ __('app.footer_contact') }}</p>
