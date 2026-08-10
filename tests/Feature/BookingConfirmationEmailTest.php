@@ -188,9 +188,15 @@ class BookingConfirmationEmailTest extends TestCase
             'parking_amount' => 30,
             'income_amount' => 500,
         ]);
+        $booking->person->update([
+            'phone' => '3331234567',
+            'phone_prefix' => '+39',
+        ]);
 
         $html = (new BookingHostKeeperMail($booking))->render();
 
+        $this->assertStringContainsString('3331234567', $html);
+        $this->assertStringContainsString('anna.verdi@example.com', $html);
         $this->assertStringContainsString('Costo totale servizio', $html);
         $this->assertStringContainsString('70,00', $html);
         $this->assertStringContainsString('50,00', $html);

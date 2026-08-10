@@ -36,7 +36,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Booking confirmation email (admin, manual trigger): `POST /admin/prenotazioni/{id}/send-confirmation` (requires `manage_bookings`)
   - Sends `BookingConfirmedMail` to the booking's guest with payment instructions (`config('apartment.payment')`), a 48h payment deadline, and the free-cancellation deadline (`checkin` − `apartment.payment.free_cancellation_days`, omitted once elapsed)
   - BCCs the owner (`config('apartment.email')`) and includes the guest name plus configured check-in/check-out times in the stay summary
-  - Also sends the Italian-only `BookingHostKeeperMail` to all users with the `host_keeper` role, BCCing the owner and including guest counts, parking, cleaning and linen service costs, but never the guest price
+  - Also sends the Italian-only `BookingHostKeeperMail` to all users with the `host_keeper` role, BCCing the owner and including the guest's phone/email when present, guest counts, parking, cleaning and linen service costs, but never the guest price
   - Sets `Booking.confirmation_sent_at`; the admin UI warns before resending if already sent
   - No automated cancellation job if unpaid after 48h — the owner cancels manually via the existing `cancel` action
 - Telegram webhook: `POST /api/telegram/webhook/{secret}` (stateless, no CSRF)

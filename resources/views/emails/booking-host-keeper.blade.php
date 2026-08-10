@@ -15,6 +15,18 @@
                 <th>Nome prenotazione</th>
                 <td>{{ $booking->person->full_name }}</td>
             </tr>
+            @if ($booking->person->phone_display)
+            <tr>
+                <th>Telefono ospite</th>
+                <td><a href="tel:{{ $booking->person->phone_display }}">{{ $booking->person->phone_display }}</a></td>
+            </tr>
+            @endif
+            @if ($booking->person->email)
+            <tr>
+                <th>Email ospite</th>
+                <td><a href="mailto:{{ $booking->person->email }}">{{ $booking->person->email }}</a></td>
+            </tr>
+            @endif
             <tr>
                 <th>Check-in</th>
                 <td>{{ $booking->checkin->translatedFormat('d F Y') }} (dalle {{ config('apartment.booking.checkin_time') }})</td>
