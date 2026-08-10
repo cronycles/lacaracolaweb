@@ -26,8 +26,9 @@ return [
             'utente'           => env('GUEST_REPORTING_UTENTE'),
             'password'         => env('GUEST_REPORTING_PASSWORD'),
             'ws_key'           => env('GUEST_REPORTING_WS_KEY'),
-            // If set, uses GestioneAppartamenti_* SOAP methods and Tabella 2 (176-char) record format.
-            // Leave empty/null for single-structure mode (Tabella 1, 170-char format).
+            // If set, uses GestioneAppartamenti_* SOAP methods and the separate
+            // multi-apartment record format, which is not implemented yet.
+            // Leave empty/null for single-structure mode (standard 168-char records).
             'id_appartamento'  => env('GUEST_REPORTING_ID_APPARTAMENTO'),
         ],
     ],

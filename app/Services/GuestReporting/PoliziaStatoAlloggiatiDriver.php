@@ -8,6 +8,7 @@ use App\Contracts\GuestReportingDriverInterface;
 use App\Models\Country;
 use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use RuntimeException;
 use SoapClient;
 use SoapFault;
@@ -182,8 +183,8 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     /**
      * Build the ElencoSchedine array from an array of GuestRecords.
     * The WSDL defines ElencoSchedine as ArrayOfString, so each 168-character
-    * record is sent as a separate element. Row terminators must not be added
-    * to the elements because they would count toward the record length.
+    * record is sent as a separate element. The SOAP array provides row
+    * boundaries, so terminators must not be included in the elements.
      *
      * @param  GuestRecord[]  $guests
      * @return array{string: string[]}
@@ -213,9 +214,9 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             str_pad((string) min(30, max(1, $guest->stayNights)), 2, '0', STR_PAD_LEFT));
 
         $this->writeField($record, self::FIELD_COGNOME_START, self::FIELD_COGNOME_LEN,
-            mb_strtoupper($guest->lastName));
+            mb_strtoupper(Str::ascii($guest->lastName)));
         $this->writeField($record, self::FIELD_NOME_START, self::FIELD_NOME_LEN,
-            mb_strtoupper($guest->firstName));
+            mb_strtoupper(Str::ascii($guest->firstName)));
 
         $this->writeField($record, self::FIELD_SESSO_START, self::FIELD_SESSO_LEN,
             $this->genderToAlloggiati($guest->gender));
@@ -241,7 +242,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             $this->writeField($record, self::FIELD_TIPO_DOC_START, self::FIELD_TIPO_DOC_LEN,
                 $this->documentTypeToAlloggiati($guest->documentType));
             $this->writeField($record, self::FIELD_NUM_DOC_START, self::FIELD_NUM_DOC_LEN,
-                mb_strtoupper($guest->documentNumber));
+                mb_strtoupper(Str::ascii($guest->documentNumber)));
 
             if ($guest->documentIssueCountryCode === 'IT') {
                 $issueCode = ItalianMunicipalities::findCode($guest->documentIssuePlace, null) ?? str_repeat(' ', 9);

@@ -71,11 +71,15 @@ Se si passa una stringa concatenata, il client invia `<ns1:ElencoSchedine/>`
 
 ## 4. Formato Record (Tracciato — da `TracciatoRecord.png`)
 
-Ogni schedina contiene **168 caratteri di dati**. Il servizio richiede inoltre
-`CR+LF` dopo ogni riga tranne l'ultima, per una lunghezza di 170 caratteri sulle
-righe intermedie. `ArrayOfString` separa gli elementi SOAP, ma non sostituisce
-il terminatore previsto dal tracciato.
+Ogni elemento di `ArrayOfString` deve contenere **168 caratteri di dati**, senza
+`CR+LF`. La struttura `ArrayOfString` separa già le schedine; includere un
+terminatore nella stringa fa fallire la validazione della dimensione riga.
 Tutti i campi non valorizzati devono essere riempiti con **spazi**.
+
+I campi testuali inviati al tracciato devono essere ASCII: i caratteri accentati
+o non ASCII vengono translitterati dal driver. Per il tracciato standard
+`GUEST_REPORTING_ID_APPARTAMENTO` deve restare vuoto; la modalità multi-appartamento
+usa un tracciato Tabella 2 distinto, non ancora implementato.
 
 | Campo | DA | A | Len | Tipo 16-17-18 | Tipo 19-20 | Note |
 |---|---|---|---|---|---|---|
