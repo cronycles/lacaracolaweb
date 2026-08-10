@@ -3,14 +3,14 @@
  * Initialises all interactive UI modules.
  */
 
-import { initHeroSlider } from '@/components/hero-slider';
-import { initMobileNav } from '@/components/mobile-nav';
-import { initLangSwitcher } from '@/components/lang-switcher';
-import { initGallery } from '@/components/gallery';
 import { initBookingForm } from '@/components/booking-form';
-import { initPricingSimulator } from '@/components/pricing-simulator';
+import { initGallery } from '@/components/gallery';
+import { initHeroSlider } from '@/components/hero-slider';
+import { initLangSwitcher } from '@/components/lang-switcher';
 import { initMap } from '@/components/map';
+import { initMobileNav } from '@/components/mobile-nav';
 import { initPhonePrefixSelects } from '@/components/phone-prefix-select';
+import { initPricingSimulator } from '@/components/pricing-simulator';
 
 // Run after DOM is ready
 document.addEventListener('DOMContentLoaded', () => {

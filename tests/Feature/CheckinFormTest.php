@@ -142,6 +142,18 @@ class CheckinFormTest extends TestCase
         $this->assertSame('Extra', $booking->additionalGuests()->first()->first_name);
     }
 
+    public function test_confirmation_is_rejected_when_a_booked_guest_has_not_been_added(): void
+    {
+        $booking = $this->createBooking(2);
+
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
+            'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token))
+          ->assertSessionHas('error');
+
+        $this->assertNull($booking->fresh()->checkin_completed_at);
+    }
+
     public function test_submitting_checkin_form_persists_person_data(): void
     {
         $booking = $this->createBooking(1);

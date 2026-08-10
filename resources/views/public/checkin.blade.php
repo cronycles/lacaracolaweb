@@ -38,6 +38,15 @@
             ]) }}
         </p>
 
+        <div class="checkin-progress" data-checkin-progress
+             data-required-guests="{{ $booking->total_guests }}"
+             data-present-guests="{{ $totalGuests }}"
+               data-progress-template="{{ __('app.checkin_guest_progress_count', ['completed' => '__COMPLETED__', 'total' => $booking->total_guests]) }}"
+             role="status" aria-live="polite">
+            <strong>{{ __('app.checkin_guest_progress', ['total' => $booking->total_guests]) }}</strong>
+            <span data-checkin-progress-count>{{ __('app.checkin_guest_progress_count', ['completed' => 0, 'total' => $booking->total_guests]) }}</span>
+        </div>
+
         @if (session('success'))
             <div class="checkin-callout">{{ session('success') }}</div>
         @endif
@@ -178,8 +187,6 @@
                 </div>
             @endforeach
 
-            <button type="submit" class="btn btn--primary">{{ __('app.checkin_confirm_button') }}</button>
-            <p class="booking-form__note">{{ __('app.checkin_confirm_note') }}</p>
         </form>
 
         @if ($canAddCompanion)
@@ -199,6 +206,16 @@
                 <button type="submit" class="btn btn--outline" style="margin-top:var(--space-4)">{{ __('app.checkin_add_companion_button') }}</button>
             </form>
         @endif
+
+        <div class="checkin-submit">
+            <div class="checkin-callout checkin-callout--error" data-checkin-submit-error hidden role="alert">
+                {{ __('app.checkin_incomplete_error') }}
+            </div>
+            <button type="submit" form="checkin-form" class="btn btn--primary" data-checkin-submit>
+                {{ __('app.checkin_confirm_button') }}
+            </button>
+            <p class="booking-form__note">{{ __('app.checkin_confirm_note') }}</p>
+        </div>
 
     </div>
 </section>

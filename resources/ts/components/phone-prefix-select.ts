@@ -151,7 +151,7 @@ class PhonePrefixSelect {
 
     private _renderList(query: string): void {
         const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-        const normalize = (s: string) =>
+        const normalize = (s: string): string =>
             s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         const filtered = q

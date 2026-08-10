@@ -95,6 +95,13 @@ class CheckinController extends Controller
     {
         $booking = $this->resolveValidBooking($token);
 
+        if ($booking->allGuests()->count() < $booking->total_guests) {
+            return redirect()
+                ->route('checkin.show', $token)
+                ->withInput()
+                ->with('error', __('app.checkin_guest_count_error'));
+        }
+
         try {
             $data = $this->validatedGuestData($request, $booking);
         } catch (ValidationException $exception) {

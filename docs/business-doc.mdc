@@ -77,6 +77,9 @@ alwaysApply: true
   themselves (same fields and rules as the admin's guest-reporting form), add
   companions up to the booking's total guest count, and edit the data as many
   times as needed before an explicit "Confirm & submit" step.
+  The page states the total number of guests required, keeps the confirmation
+  action at the bottom of the flow, and blocks confirmation until every booked
+  guest has been added and all required fields are complete.
   Confirmation saves the submitted data and confirms the check-in in one
   operation; there is no separate save action. If validation or persistence
   fails, the entered values are retained so the guest can correct or retry

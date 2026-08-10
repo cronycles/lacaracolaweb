@@ -41,7 +41,12 @@ declare global {
 }
 
 /** Labels used by the birth-country → municipality/city toggle, i18n-aware. */
-function getFieldLabels() {
+function getFieldLabels(): {
+    birthMunicipalityLabel: string;
+    birthCityLabel: string;
+    municipalitySearchPlaceholder: string;
+    cityPlaceholderExample: string;
+} {
     const i18n = window.CHECKIN_I18N ?? {};
     return {
         birthMunicipalityLabel: i18n.birthMunicipalityLabel ?? 'Comune di nascita',
