@@ -7100,6 +7100,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'Tests\\Feature\\SuperAdminAuthorizationTest' => __DIR__ . '/../..' . '/tests/Feature/SuperAdminAuthorizationTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
+        'Tests\\Unit\\PoliziaStatoAlloggiatiDriverTest' => __DIR__ . '/../..' . '/tests/Unit/PoliziaStatoAlloggiatiDriverTest.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',
