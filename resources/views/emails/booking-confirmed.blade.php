@@ -63,8 +63,8 @@
         </table>
     </div>
 
-    <div class="section">
-        <div class="section-title">{{ __('app.booking_confirmed_mail_payment_title') }}</div>
+    <div class="payment-section">
+        <div class="payment-title">{{ __('app.booking_confirmed_mail_payment_title') }}</div>
         <p>{{ __('app.booking_confirmed_mail_payment_intro', ['hours' => config('apartment.payment.deadline_hours', 48)]) }}</p>
         <table>
             @if (config('apartment.payment.beneficiary'))
@@ -94,8 +94,8 @@
             </tr>
         </table>
 
-        <div class="callout">
-            {{ __('app.booking_confirmed_mail_deadline', ['deadline' => $paymentDeadline->translatedFormat('d F Y \a\l\l\e H:i')]) }}
+        <div class="payment-deadline">
+                {!! __('app.booking_confirmed_mail_deadline', ['deadline' => $paymentDeadline->translatedFormat('d F Y \\a\\l\\l\\e H:i')]) !!}
         </div>
     </div>
 

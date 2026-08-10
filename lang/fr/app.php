@@ -227,7 +227,7 @@ return [
     'booking_confirmed_mail_bic'         => 'BIC/SWIFT',
     'booking_confirmed_mail_reference'   => 'Référence de paiement',
     'booking_confirmed_mail_reference_value' => 'Réservation La Caracola :checkin - :checkout',
-    'booking_confirmed_mail_deadline'    => "Si nous ne recevons pas le paiement avant le :deadline, la réservation sera considérée comme annulée.",
+    'booking_confirmed_mail_deadline'    => "Si nous ne recevons pas le paiement avant le <strong>:deadline</strong>, la réservation sera considérée comme annulée.",
     'booking_confirmed_mail_cancellation_title' => 'Annulation gratuite',
     'booking_confirmed_mail_cancellation' => "Vous pouvez annuler gratuitement la réservation, avec remboursement intégral, jusqu'au :date.",
     'booking_confirmed_mail_terms'       => "Nous vous rappelons que vous avez accepté le <a href=\":rules_url\">Règlement Intérieur</a> et le <a href=\":terms_url\">Contrat de Location à Usage Touristique – La Caracola</a> le :date.",

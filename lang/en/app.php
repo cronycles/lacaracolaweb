@@ -227,7 +227,7 @@ return [
     'booking_confirmed_mail_bic'         => 'BIC/SWIFT',
     'booking_confirmed_mail_reference'   => 'Payment reference',
     'booking_confirmed_mail_reference_value' => 'La Caracola booking :checkin - :checkout',
-    'booking_confirmed_mail_deadline'    => 'If we do not receive payment by :deadline, the booking will be considered cancelled.',
+    'booking_confirmed_mail_deadline'    => 'If we do not receive payment by <strong>:deadline</strong>, the booking will be considered cancelled.',
     'booking_confirmed_mail_cancellation_title' => 'Free cancellation',
     'booking_confirmed_mail_cancellation' => 'You can cancel the booking free of charge, with a full refund, until :date.',
     'booking_confirmed_mail_terms'       => 'Please note that you accepted the <a href=":rules_url">House Rules</a> and the <a href=":terms_url">Tourist-Use Lease Agreement – La Caracola</a> on :date.',

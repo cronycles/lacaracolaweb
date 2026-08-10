@@ -120,6 +120,9 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   as literal hex values (email clients don't load external stylesheets or resolve
   CSS custom properties, so `tokens.css` cannot be referenced directly — colors
   must stay in sync manually if the palette changes).
+- The booking-confirmed email payment instructions use a dedicated, high-visibility
+  payment panel; the payment deadline remains inside that panel with a neutral gray
+  warning style and bold deadline date/time.
 - If a different logo size/crop is needed, ask for a new export rather than
   resizing the existing PNG/SVG in code.
 

@@ -14,6 +14,11 @@
         td { padding: 6px 0; }
         .section { margin-top: 20px; }
         .section-title { font-weight: bold; color: #30596C; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .payment-section { background: #eef5f7; border: 2px solid #30596C; border-radius: 6px; padding: 20px; margin-top: 24px; }
+        .payment-section .payment-title { color: #30596C; font-size: 18px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .payment-section table { margin: 12px 0 0; }
+        .payment-deadline { background: #f1f3f4; border-left: 4px solid #7b858b; color: #5d666b; padding: 12px 16px; border-radius: 4px; margin-top: 18px; }
+        .payment-deadline strong { color: #1a1a1a; }
         .message-box { background: #f5f5f5; border-left: 4px solid #30596C; padding: 12px 16px; border-radius: 4px; margin-top: 8px; white-space: pre-wrap; }
         .callout { background: #fbf8ef; border-left: 4px solid #c7b772; padding: 12px 16px; border-radius: 4px; margin-top: 16px; }
         .footer { margin-top: 32px; font-size: 12px; color: #888; border-top: 1px solid #dde3e6; padding-top: 16px; }
