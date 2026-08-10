@@ -74,11 +74,13 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - `window.COMUNI_VALIDI` / `window.COUNTRIES_MAP` are set the same way as the admin form.
 - Styling: `resources/css/components/checkin-form.css` (imported by `app.css`) adds a
   few page-specific classes (`.checkin-guest`, `.checkin-badge`, `.checkin-callout`,
-  `.checkin-lang-switch`, `.checkin-progress`, `.checkin-submit`) on top of the
-  shared `.booking-form` component classes. The page shows the booking's total
-  guest count and a live completion count; the bottom confirmation action is
-  blocked client-side when a guest or required field is missing, while the
-  server remains authoritative for both checks.
+  `.checkin-lang-switch`, `.checkin-progress`, `.checkin-submit`) and styles the
+  shared generated `.combo-select` dropdown on top of the `.booking-form` classes.
+  The page shows the booking's total guest count and a live completion count; the
+  bottom confirmation action is blocked client-side when a guest or required field
+  is missing, while the server remains authoritative for both checks. Adding a
+  companion carries the current unsaved guest fields through the separate POST so
+  the redirect can repopulate them.
 - Language switcher: plain links appending `?lang=xx` to the current URL (reloads the
   page); intentionally does **not** reuse `lang-switcher.ts`/`/locale` (which persists
   the choice in session) since the check-in page's switcher must not persist.

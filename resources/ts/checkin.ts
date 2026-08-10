@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progress = document.querySelector<HTMLElement>('[data-checkin-progress]');
     const progressCount = document.querySelector<HTMLElement>('[data-checkin-progress-count]');
     const submitError = document.querySelector<HTMLElement>('[data-checkin-submit-error]');
+    const companionForm = document.querySelector<HTMLFormElement>('[data-companion-form]');
 
     if (!form || !progress || !progressCount || !submitError) {
         return;
@@ -52,6 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reportValidity();
             submitError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+    });
+
+    companionForm?.addEventListener('submit', () => {
+        form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[name]').forEach((field) => {
+            if (field.name === '_token') {
+                return;
+            }
+
+            const copy = document.createElement('input');
+            copy.type = 'hidden';
+            copy.name = field.name;
+            copy.value = field.value;
+            companionForm.appendChild(copy);
+        });
     });
 
     updateProgress();

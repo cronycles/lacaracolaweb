@@ -190,7 +190,7 @@
         </form>
 
         @if ($canAddCompanion)
-            <form method="POST" action="{{ route('checkin.companions.store', $booking->checkin_token) }}" class="booking-form" style="margin-top:var(--space-8)">
+            <form method="POST" action="{{ route('checkin.companions.store', $booking->checkin_token) }}" class="booking-form" style="margin-top:var(--space-8)" data-companion-form>
                 @csrf
                 <div class="booking-form__title">{{ __('app.checkin_add_companion_title') }}</div>
                 <div class="booking-form__row">

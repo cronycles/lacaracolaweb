@@ -142,6 +142,21 @@ class CheckinFormTest extends TestCase
         $this->assertSame('Extra', $booking->additionalGuests()->first()->first_name);
     }
 
+    public function test_adding_companion_preserves_unsaved_guest_input(): void
+    {
+        $booking = $this->createBooking(2);
+
+        $this->post(route('checkin.companions.store', $booking->checkin_token), [
+            'first_name' => 'Extra',
+            'last_name'  => 'Guest',
+            'guests'     => [[
+                'gender' => 'F',
+            ]],
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token))
+          ->assertSessionHas('success')
+          ->assertSessionHasInput('guests.0.gender', 'F');
+    }
+
     public function test_confirmation_is_rejected_when_a_booked_guest_has_not_been_added(): void
     {
         $booking = $this->createBooking(2);

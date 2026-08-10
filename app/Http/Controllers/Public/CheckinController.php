@@ -70,6 +70,7 @@ class CheckinController extends Controller
         if ($currentTotal >= $booking->total_guests) {
             return redirect()
                 ->route('checkin.show', $token)
+                ->withInput()
                 ->with('error', __('app.checkin_companion_cap_reached'));
         }
 
@@ -87,6 +88,7 @@ class CheckinController extends Controller
 
         return redirect()
             ->route('checkin.show', $token)
+            ->withInput()
             ->with('success', __('app.checkin_companion_added'));
     }
 
