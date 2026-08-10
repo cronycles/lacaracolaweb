@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Mail\BookingConfirmedMail;
+use App\Mail\BookingHostKeeperMail;
 use App\Mail\CheckinReminderMail;
 use App\Models\Booking;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -25,8 +28,8 @@ class BookingConfirmationEmailTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
 
         $superAdminRole = Role::where('name', 'super_admin')->first();
@@ -37,21 +40,27 @@ class BookingConfirmationEmailTest extends TestCase
     {
         $person = Person::create([
             'first_name' => 'Anna',
-            'last_name'  => 'Verdi',
-            'email'      => 'anna.verdi@example.com',
+            'last_name' => 'Verdi',
+            'email' => 'anna.verdi@example.com',
         ]);
 
         return Booking::create(array_merge([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(20)->format('Y-m-d'),
-            'checkout'  => now()->addDays(25)->format('Y-m-d'),
-            'adults'    => 2,
+            'checkin' => now()->addDays(20)->format('Y-m-d'),
+            'checkout' => now()->addDays(25)->format('Y-m-d'),
+            'adults' => 2,
         ], $overrides));
     }
 
-    public function test_sending_confirmation_email_sets_timestamp_and_bccs_owner(): void
+    public function test_sending_confirmation_email_sets_timestamp_and_bccs_owner_and_host_keeper(): void
     {
         Mail::fake();
+
+        $hostKeeperRole = Role::where('name', 'host_keeper')->first();
+        User::factory()->create([
+            'role_id' => $hostKeeperRole->id,
+            'email' => 'keeper@example.com',
+        ]);
 
         $booking = $this->createBooking();
 
@@ -64,6 +73,12 @@ class BookingConfirmationEmailTest extends TestCase
 
         Mail::assertSent(BookingConfirmedMail::class, function (BookingConfirmedMail $mail) use ($booking) {
             return $mail->hasTo('anna.verdi@example.com')
+                && $mail->hasBcc(config('apartment.email'))
+                && $mail->booking->is($booking);
+        });
+
+        Mail::assertSent(BookingHostKeeperMail::class, function (BookingHostKeeperMail $mail) use ($booking) {
+            return $mail->hasTo('keeper@example.com')
                 && $mail->hasBcc(config('apartment.email'))
                 && $mail->booking->is($booking);
         });
@@ -93,9 +108,9 @@ class BookingConfirmationEmailTest extends TestCase
         $person = Person::create(['first_name' => 'No', 'last_name' => 'Email']);
         $booking = Booking::create([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(20)->format('Y-m-d'),
-            'checkout'  => now()->addDays(25)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(20)->format('Y-m-d'),
+            'checkout' => now()->addDays(25)->format('Y-m-d'),
+            'adults' => 1,
         ]);
 
         $this->actingAs($this->admin)
@@ -110,7 +125,7 @@ class BookingConfirmationEmailTest extends TestCase
         Mail::fake();
 
         $booking = $this->createBooking([
-            'checkin'  => now()->addDays(5)->format('Y-m-d'),
+            'checkin' => now()->addDays(5)->format('Y-m-d'),
             'checkout' => now()->addDays(8)->format('Y-m-d'),
         ]);
 
@@ -122,7 +137,7 @@ class BookingConfirmationEmailTest extends TestCase
     public function test_cancellation_deadline_is_present_when_checkin_is_far_enough(): void
     {
         $booking = $this->createBooking([
-            'checkin'  => now()->addDays(30)->format('Y-m-d'),
+            'checkin' => now()->addDays(30)->format('Y-m-d'),
             'checkout' => now()->addDays(35)->format('Y-m-d'),
         ]);
 
@@ -147,14 +162,14 @@ class BookingConfirmationEmailTest extends TestCase
     public function test_rendered_mail_includes_guest_counts_and_total_price_when_present(): void
     {
         $booking = $this->createBooking([
-            'adults'          => 2,
-            'children'        => 1,
-            'babies'          => 1,
-            'pets'            => 2,
-            'income_amount'   => 500,
+            'adults' => 2,
+            'children' => 1,
+            'babies' => 1,
+            'pets' => 2,
+            'income_amount' => 500,
             'cleaning_amount' => 50,
-            'linen_amount'    => 20,
-            'parking_amount'  => 30,
+            'linen_amount' => 20,
+            'parking_amount' => 30,
         ]);
 
         $html = (new BookingConfirmedMail($booking))->render();
@@ -165,13 +180,32 @@ class BookingConfirmationEmailTest extends TestCase
         $this->assertMatchesRegularExpression('/<td>\s*1\s*<\/td>/', $html);
     }
 
+    public function test_host_keeper_mail_contains_operational_costs_without_guest_price(): void
+    {
+        $booking = $this->createBooking([
+            'cleaning_amount' => 50,
+            'linen_amount' => 20,
+            'parking_amount' => 30,
+            'income_amount' => 500,
+        ]);
+
+        $html = (new BookingHostKeeperMail($booking))->render();
+
+        $this->assertStringContainsString('Costo totale servizio', $html);
+        $this->assertStringContainsString('70,00', $html);
+        $this->assertStringContainsString('50,00', $html);
+        $this->assertStringContainsString('20,00', $html);
+        $this->assertStringContainsString('30,00', $html);
+        $this->assertStringNotContainsString('500,00', $html);
+    }
+
     public function test_rendered_mail_omits_children_babies_pets_rows_and_total_when_zero_or_unknown(): void
     {
         $booking = $this->createBooking([
-            'adults'   => 2,
+            'adults' => 2,
             'children' => 0,
-            'babies'   => 0,
-            'pets'     => 0,
+            'babies' => 0,
+            'pets' => 0,
         ]);
 
         $html = (new BookingConfirmedMail($booking))->render();

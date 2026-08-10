@@ -38,8 +38,12 @@ alwaysApply: true
   owner reviews pending requests in the admin "Richieste" queue (see below)
   and confirms or declines them from there; confirming creates the real
   `Booking` automatically. The owner then manually sends the "booking
-  confirmed" email with payment instructions and a 48h payment deadline; if
-  unpaid, the owner cancels the booking manually (no automated cancellation job).
+  confirmed" email with payment instructions and a 48h payment deadline. The
+  guest receives the localized confirmation and the house address is BCCed. Each
+  `host_keeper` user also receives a separate Italian operational email, with
+  the house address BCCed, containing stay details and service costs but not the
+  guest price. If unpaid, the owner cancels the booking manually (no automated
+  cancellation job).
 
 ### Pending availability requests (admin queue)
 - Every submitted availability request appears in a dedicated admin "Richieste"

@@ -15,6 +15,18 @@
         <div class="section-title">{{ __('app.booking_confirmed_mail_summary_title') }}</div>
         <table>
             <tr>
+                <th>{{ __('app.booking_confirmed_mail_booking_name') }}</th>
+                <td>{{ $booking->person->full_name }}</td>
+            </tr>
+            <tr>
+                <th>{{ __('app.booking_confirmed_mail_checkin') }}</th>
+                <td>{{ $booking->checkin->translatedFormat('d F Y') }} ({{ __('app.booking_confirmed_mail_from') }} {{ config('apartment.booking.checkin_time') }})</td>
+            </tr>
+            <tr>
+                <th>{{ __('app.booking_confirmed_mail_checkout') }}</th>
+                <td>{{ $booking->checkout->translatedFormat('d F Y') }} ({{ __('app.booking_confirmed_mail_by') }} {{ config('apartment.booking.checkout_time') }})</td>
+            </tr>
+            <tr>
                 <th>{{ __('app.booking_adults') }}</th>
                 <td>{{ $booking->adults }}</td>
             </tr>

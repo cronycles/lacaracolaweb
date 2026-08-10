@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\BookingConfirmedMail;
+use App\Mail\BookingHostKeeperMail;
 use App\Mail\CheckinReminderMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
+use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -66,7 +68,7 @@ class BookingController extends Controller
     {
         $people = Person::orderBy('last_name')->orderBy('first_name')->get();
 
-        return view('admin.bookings.form', ['booking' => new Booking(), 'people' => $people]);
+        return view('admin.bookings.form', ['booking' => new Booking, 'people' => $people]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -83,8 +85,8 @@ class BookingController extends Controller
         // Automatically create availability block
         AvailabilityBlock::create([
             'start_date' => $data['checkin'],
-            'end_date'   => $data['checkout'],
-            'reason'     => 'booked',
+            'end_date' => $data['checkout'],
+            'reason' => 'booked',
             'booking_id' => $booking->id,
         ]);
 
@@ -102,7 +104,7 @@ class BookingController extends Controller
             ->get();
 
         return view('admin.bookings.show', [
-            'booking'          => $prenotazioni,
+            'booking' => $prenotazioni,
             'selectablePeople' => $selectablePeople,
         ]);
     }
@@ -125,7 +127,7 @@ class BookingController extends Controller
         if ($prenotazioni->availabilityBlock) {
             $prenotazioni->availabilityBlock->update([
                 'start_date' => $data['checkin'],
-                'end_date'   => $data['checkout'],
+                'end_date' => $data['checkout'],
             ]);
         }
 
@@ -151,7 +153,8 @@ class BookingController extends Controller
 
     /**
      * Manually send the "booking confirmed — pay within 48h" email to the guest,
-     * with payment instructions and the free-cancellation deadline. BCCs the owner.
+     * with payment instructions and the free-cancellation deadline. CCs the owner
+     * and sends a separate operational summary to all host keepers.
      */
     public function sendConfirmationEmail(Booking $prenotazioni): RedirectResponse
     {
@@ -162,9 +165,20 @@ class BookingController extends Controller
         }
 
         Mail::to($prenotazioni->person->email)->send(new BookingConfirmedMail($prenotazioni));
+
+        $hostKeeperEmails = User::query()
+            ->whereHas('role', fn ($query) => $query->where('name', 'host_keeper'))
+            ->whereNotNull('email')
+            ->pluck('email')
+            ->all();
+
+        if ($hostKeeperEmails !== []) {
+            Mail::to($hostKeeperEmails)->send(new BookingHostKeeperMail($prenotazioni));
+        }
+
         $prenotazioni->update(['confirmation_sent_at' => now()]);
 
-        return redirect()->back()->with('success', 'Email di conferma prenotazione inviata a ' . $prenotazioni->person->email . '.');
+        return redirect()->back()->with('success', 'Email di conferma prenotazione inviata a '.$prenotazioni->person->email.'.');
     }
 
     /**
@@ -182,14 +196,14 @@ class BookingController extends Controller
 
         Mail::to($prenotazioni->person->email)->send(new CheckinReminderMail($prenotazioni));
 
-        return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a ' . $prenotazioni->person->email . '.');
+        return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a '.$prenotazioni->person->email.'.');
     }
 
     public function notifyTelegram(Booking $prenotazioni, TelegramService $telegram): JsonResponse
     {
         $prenotazioni->load('person');
 
-        $recipients = \App\Models\User::whereNotNull('telegram_chat_id')->count();
+        $recipients = User::whereNotNull('telegram_chat_id')->count();
 
         if ($recipients === 0) {
             return response()->json(['sent' => false, 'reason' => 'no_recipients']);
@@ -205,7 +219,7 @@ class BookingController extends Controller
     {
         $person = $booking->person;
 
-        $lines   = [];
+        $lines = [];
         $lines[] = "\u{1F3E0} Prenotazione \u{2014} {$person->full_name}";
 
         if (! empty($person->phone)) {
@@ -285,31 +299,31 @@ class BookingController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'person_id'       => ['required', 'exists:people,id'],
-            'checkin'         => ['required', 'date'],
-            'checkout'        => ['required', 'date', 'after:checkin'],
-            'adults'          => ['required', 'integer', 'min:1', 'max:6'],
-            'children'        => ['nullable', 'integer', 'min:0', 'max:6'],
-            'babies'          => ['nullable', 'integer', 'min:0', 'max:6'],
-            'pets'            => ['nullable', 'integer', 'min:0', 'max:4'],
-            'source'          => ['required', 'in:direct,airbnb,booking,interhome'],
-            'external_ref'    => ['nullable', 'string', 'max:60'],
-            'notes'           => ['nullable', 'string', 'max:1000'],
-            'income_amount'   => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'income_paid'     => ['nullable', 'boolean'],
-            'income_paid_at'  => ['nullable', 'date'],
+            'person_id' => ['required', 'exists:people,id'],
+            'checkin' => ['required', 'date'],
+            'checkout' => ['required', 'date', 'after:checkin'],
+            'adults' => ['required', 'integer', 'min:1', 'max:6'],
+            'children' => ['nullable', 'integer', 'min:0', 'max:6'],
+            'babies' => ['nullable', 'integer', 'min:0', 'max:6'],
+            'pets' => ['nullable', 'integer', 'min:0', 'max:4'],
+            'source' => ['required', 'in:direct,airbnb,booking,interhome'],
+            'external_ref' => ['nullable', 'string', 'max:60'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'income_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'income_paid' => ['nullable', 'boolean'],
+            'income_paid_at' => ['nullable', 'date'],
             'cleaning_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'cleaning_paid'   => ['nullable', 'boolean'],
-            'linen_amount'    => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'linen_paid'      => ['nullable', 'boolean'],
-            'parking_amount'   => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'parking_paid'     => ['nullable', 'boolean'],
-            'parking_paid_at'  => ['nullable', 'date'],
+            'cleaning_paid' => ['nullable', 'boolean'],
+            'linen_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'linen_paid' => ['nullable', 'boolean'],
+            'parking_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
+            'parking_paid' => ['nullable', 'boolean'],
+            'parking_paid_at' => ['nullable', 'date'],
             'services_paid_at' => ['nullable', 'date'],
-            'income_tax'       => ['nullable', 'boolean'],
-            'cleaning_tax'     => ['nullable', 'boolean'],
-            'linen_tax'        => ['nullable', 'boolean'],
-            'parking_tax'      => ['nullable', 'boolean'],
+            'income_tax' => ['nullable', 'boolean'],
+            'cleaning_tax' => ['nullable', 'boolean'],
+            'linen_tax' => ['nullable', 'boolean'],
+            'parking_tax' => ['nullable', 'boolean'],
         ]);
     }
 
@@ -317,9 +331,9 @@ class BookingController extends Controller
     {
         return $request->validate([
             'start_date' => ['required', 'date'],
-            'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
-            'reason'     => ['required', 'in:owner,maintenance'],
-            'notes'      => ['nullable', 'string', 'max:1000'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'reason' => ['required', 'in:owner,maintenance'],
+            'notes' => ['nullable', 'string', 'max:1000'],
         ]);
     }
 }

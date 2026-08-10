@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mail;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,9 +15,12 @@ class BookingConfirmedMail extends Mailable
 {
     use SerializesModels;
 
-    public readonly \Carbon\Carbon $paymentDeadline;
-    public readonly \Carbon\Carbon $freeCancellationDate;
+    public readonly Carbon $paymentDeadline;
+
+    public readonly Carbon $freeCancellationDate;
+
     public readonly bool $cancellationStillFree;
+
     public readonly string $checkinUrl;
 
     public function __construct(public readonly Booking $booking)
