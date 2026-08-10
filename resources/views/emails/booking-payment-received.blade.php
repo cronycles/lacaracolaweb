@@ -48,7 +48,7 @@
         </table>
     </div>
 
-    <div class="callout" style="border-left-color:#c62828;background:#fff5f5">
+    <div class="callout" style="background:#fff5f5">
         <strong>IMPORTANTE: completa il check-in online</strong><br>
         Se non lo hai ancora fatto, compila il check-in prima del tuo arrivo. È necessario per prepararci ad accoglierti.
         <p><a href="{{ $checkinUrl }}" class="btn">Compila il check-in online</a></p>
