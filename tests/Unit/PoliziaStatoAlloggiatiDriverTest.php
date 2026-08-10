@@ -15,7 +15,7 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_record_terminator_is_added_between_rows_only(): void
+    public function test_each_array_item_contains_only_the_168_character_record(): void
     {
         Country::create([
             'iso2'            => 'FR',
@@ -45,8 +45,8 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
         $buildElenco = new ReflectionMethod($driver, 'buildElenco');
         $records = $buildElenco->invoke($driver, [$guest, $guest]);
 
-        self::assertSame([170, 168], array_map('strlen', $records['string']));
-        self::assertStringEndsWith("\r\n", $records['string'][0]);
+        self::assertSame([168, 168], array_map('strlen', $records['string']));
+        self::assertStringNotContainsString("\r\n", $records['string'][0]);
         self::assertStringNotContainsString("\r\n", $records['string'][1]);
     }
 }

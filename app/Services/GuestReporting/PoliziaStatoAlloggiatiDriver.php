@@ -25,7 +25,7 @@ use Throwable;
  * - Municipality code lookup (name → 9-digit code from comuni.csv)
  * - Token caching
  *
- * RECORD FORMAT — 168 data chars per guest, plus CRLF after every row except the last:
+ * RECORD FORMAT — 168 data chars per guest:
  *   pos  0- 1 ( 2): Tipo Alloggiato        — Codice Tabella Tipo Alloggiati
  *   pos  2-11 (10): Data Arrivo            — gg/mm/aaaa
  *   pos 12-13 ( 2): Giorni Permanenza      — max 30
@@ -45,7 +45,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 {
     private const WSDL = 'https://alloggiatiweb.poliziadistato.it/service/service.asmx?wsdl';
 
-    // Record data length — 168 chars; CR+LF is added between rows in buildElenco().
+    // Each ArrayOfString item must contain exactly 168 data chars.
     private const RECORD_LENGTH = 168;
 
     // Field positions (0-indexed start, length) — from TracciatoRecord.png
@@ -181,9 +181,9 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 
     /**
      * Build the ElencoSchedine array from an array of GuestRecords.
-    * The WSDL defines ElencoSchedine as ArrayOfString, so each record
-    * is a separate element. Alloggiati Web still requires CR+LF after every
-    * row except the last, as specified by the official record layout.
+    * The WSDL defines ElencoSchedine as ArrayOfString, so each 168-character
+    * record is sent as a separate element. Row terminators must not be added
+    * to the elements because they would count toward the record length.
      *
      * @param  GuestRecord[]  $guests
      * @return array{string: string[]}
@@ -191,9 +191,8 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     private function buildElenco(array $guests): array
     {
         $records = [];
-        $lastIndex = count($guests) - 1;
-        foreach ($guests as $index => $guest) {
-            $records[] = $this->buildRecord($guest) . ($index < $lastIndex ? "\r\n" : '');
+        foreach ($guests as $guest) {
+            $records[] = $this->buildRecord($guest);
         }
 
         return ['string' => $records];
