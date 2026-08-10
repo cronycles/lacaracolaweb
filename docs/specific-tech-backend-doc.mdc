@@ -23,6 +23,9 @@ Data model: [Specific Data Model](./specific-data-model.md).
 
 ## Public online check-in
 - `GET /check-in/{token}` renders the token-based guest form.
+- `POST /check-in/{token}/edit` explicitly invalidates a completed check-in and
+  returns the guest to the editable form; it is called only after the guest
+  confirms the warning in the UI.
 - `POST /check-in/{token}/confirm` validates the submitted guest data, persists
   all guest records, and sets `checkin_completed_at` in one database transaction.
 - Validation failures redirect to the check-in page with errors and old input;
@@ -258,14 +261,15 @@ mai inviati automaticamente al driver AlloggiatiWeb (l'invio resta manuale da ad
 |---|---|
 | `App\Services\GuestReporting\GuestClassifier` | Logica condivisa di classificazione `tipo_alloggiato` (singolo→16, capogruppo→18, membro→20), usata sia da admin sia dal form pubblico |
 | `App\Http\Controllers\Concerns\PersistsGuestReportingData` | Trait condiviso: regole di validazione + persistenza `Person`, usato da `GuestReportingController` (admin) e `Public\CheckinController` (pubblico) — non chiama mai il driver SOAP |
-| `App\Http\Controllers\Public\CheckinController` | `show`/`store`/`addCompanion`/`confirm` — unico controller pubblico del flusso |
+| `App\Http\Controllers\Public\CheckinController` | `show`/`addCompanion`/`beginEdit`/`confirm` — unico controller pubblico del flusso |
 | `Booking::generateCheckinToken()` | Genera token random (48+ char, `Str::random`), `checkin_token_expires_at = checkout` (fine giornata) |
 | `resources/views/public/checkin.blade.php` / `checkin-expired.blade.php` | Form pubblico e pagina di errore (token invalido/scaduto/prenotazione annullata) |
 | `App\Mail\CheckinReminderMail` + `App\Console\Commands\SendCheckinReminders` | Promemoria schedulato (`routes/console.php`, `dailyAt('09:00')`) |
 
 ### Regole chiave
-- Rotte pubbliche non prefissate da locale: `GET /check-in/{token}`, `POST /check-in/{token}` (store),
-  `POST /check-in/{token}/companions` (aggiunta compagno), `POST /check-in/{token}/confirm`.
+- Rotte pubbliche non prefissate da locale: `GET /check-in/{token}`,
+  `POST /check-in/{token}/companions` (aggiunta compagno),
+  `POST /check-in/{token}/edit` (invalida la conferma), `POST /check-in/{token}/confirm`.
 - Token invalido, scaduto (`checkin_token_expires_at` passato) o prenotazione annullata (`canceled_at`)
   → pagina generica `public.checkin-expired`, nessun dato di prenotazione/ospite esposto.
 - `tipo_alloggiato` per ogni ospite viene **sempre ricalcolato server-side** da `GuestClassifier`
@@ -279,8 +283,10 @@ mai inviati automaticamente al driver AlloggiatiWeb (l'invio resta manuale da ad
   direttamente le colonne di `Person` (non passa dal validator di `store()`), come controllo
   di sicurezza aggiuntivo — ma da 2026-08-06 l'obbligatorietà del documento è comunque garantita
   già in `store()` stesso (vedi "Insidia di validazione" sotto).
-- Editing consentito anche dopo la conferma, finché il token non è scaduto (`checkin_completed_at`
-  non viene mai azzerato da `store()`).
+- Dopo la conferma la pagina mostra un riepilogo server-rendered. L'editing è consentito finché
+  il token non è scaduto, ma richiede `POST /edit` dopo una conferma esplicita del warning;
+  `beginEdit()` azzera `checkin_completed_at` prima di riaprire il form. Il guest deve quindi
+  confermare nuovamente tutti i dati.
 - Locale della pagina: `?lang=` override (non persistito in sessione) → `Booking.locale` →
   `config('routes.fallback')`.
 - `BookingConfirmedMail` genera il token al volo se assente (`$booking->checkin_token ?: $booking->generateCheckinToken()`).

@@ -90,8 +90,10 @@ alwaysApply: true
 - Data submitted by the guest is only ever **saved** — it is never sent to the
   Polizia di Stato automatically. The owner still reviews and sends it from
   `admin/guest-reporting` exactly as before this feature existed.
-- The guest can keep editing the data after confirming, as long as the link
-  hasn't expired (i.e. checkout hasn't passed yet).
+- After confirmation, the page shows a review summary instead of the editable
+  form. The guest can choose to edit the data while the link is valid, but must
+  explicitly confirm a warning first; that action invalidates the completed
+  check-in, and the guest must submit all data again to complete it.
 - If check-in still isn't completed a configurable number of days before
   arrival (default 7), the guest receives an automatic reminder email with the
   same check-in link. No reminder is sent once check-in is completed or if the

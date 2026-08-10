@@ -52,6 +52,97 @@
     font-size: 1.1rem;
 }
 
+.checkin-summary {
+    margin-top: var(--space-4);
+    background: rgb(255 255 255 / 70%);
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    color: var(--color-text);
+}
+
+.checkin-summary__title {
+    margin: 0 0 var(--space-4);
+    font-size: 1.05rem;
+    color: var(--color-primary-dark);
+}
+
+.checkin-summary__guest + .checkin-summary__guest {
+    border-top: 1px solid #d1fae5;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+}
+
+.checkin-summary__guest h3 {
+    margin: 0 0 var(--space-3);
+    font-size: 1rem;
+}
+
+.checkin-summary dl {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+}
+
+.checkin-summary dl div {
+    display: grid;
+    grid-template-columns: minmax(9rem, 42%) 1fr;
+    gap: var(--space-3);
+}
+
+.checkin-summary dt {
+    color: var(--color-text-muted);
+}
+
+.checkin-summary dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.checkin-edit-button {
+    align-self: flex-start;
+    margin-top: var(--space-4);
+}
+
+.checkin-edit-dialog {
+    width: min(90vw, 30rem);
+    max-width: 30rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    color: var(--color-text);
+    box-shadow: 0 12px 40px rgb(26 43 52 / 25%);
+}
+
+.checkin-edit-dialog::backdrop {
+    background: rgb(26 43 52 / 45%);
+}
+
+.checkin-edit-dialog h2 {
+    margin-top: 0;
+    color: var(--color-primary-dark);
+    font-size: 1.25rem;
+}
+
+.checkin-edit-dialog__actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: var(--space-6);
+}
+
+@media (max-width: 480px) {
+    .checkin-summary dl div {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .checkin-edit-dialog__actions .btn {
+        width: 100%;
+    }
+}
+
 .checkin-progress {
     display: flex;
     justify-content: space-between;

@@ -59,6 +59,7 @@ foreach ($locales as $locale) {
 // --- Public online check-in (token-based, not locale-prefixed) ---
 Route::get('/check-in/{token}', [CheckinController::class, 'show'])->name('checkin.show');
 Route::post('/check-in/{token}/companions', [CheckinController::class, 'addCompanion'])->name('checkin.companions.store');
+Route::post('/check-in/{token}/edit', [CheckinController::class, 'beginEdit'])->name('checkin.edit');
 Route::post('/check-in/{token}/confirm', [CheckinController::class, 'confirm'])->name('checkin.confirm');
 
 // --- Redirect old URLs without locale prefix (for SEO and backward compatibility) ---

@@ -71,4 +71,15 @@ class CheckinAccessTest extends TestCase
         $response->assertOk();
         $response->assertDontSee('Verdi');
     }
+
+    public function test_completed_checkin_shows_summary_instead_of_editable_form(): void
+    {
+        $booking = $this->createBooking(['checkin_completed_at' => now()]);
+
+        $this->get(route('checkin.show', $booking->checkin_token))
+            ->assertOk()
+            ->assertSee(__('app.checkin_summary_title'))
+            ->assertSee(route('checkin.edit', $booking->checkin_token))
+            ->assertDontSee('data-checkin-submit');
+    }
 }

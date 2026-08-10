@@ -290,6 +290,11 @@ class CheckinFormTest extends TestCase
         $booking->refresh();
         $this->assertNotNull($booking->checkin_completed_at);
 
+        $this->post(route('checkin.edit', $booking->checkin_token))
+            ->assertRedirect(route('checkin.show', $booking->checkin_token));
+
+        $this->assertNull($booking->fresh()->checkin_completed_at);
+
         $updatedPayload = $this->guestPayload($booking->person_id, withDocument: true);
         $updatedPayload['document_number'] = 'NEWDOC999';
 
@@ -300,5 +305,16 @@ class CheckinFormTest extends TestCase
         $booking->person->refresh();
         $this->assertSame('NEWDOC999', $booking->person->document_number);
         $this->assertNotNull($booking->fresh()->checkin_completed_at);
+    }
+
+    public function test_beginning_edit_mode_invalidates_completed_checkin(): void
+    {
+        $booking = $this->createBooking(1, ['checkin_completed_at' => now()]);
+
+        $this->post(route('checkin.edit', $booking->checkin_token))
+            ->assertRedirect(route('checkin.show', $booking->checkin_token))
+            ->assertSessionHas('success', __('app.checkin_edit_mode_started'));
+
+        $this->assertNull($booking->fresh()->checkin_completed_at);
     }
 }

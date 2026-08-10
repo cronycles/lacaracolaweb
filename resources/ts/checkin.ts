@@ -21,6 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressCount = document.querySelector<HTMLElement>('[data-checkin-progress-count]');
     const submitError = document.querySelector<HTMLElement>('[data-checkin-submit-error]');
     const companionForm = document.querySelector<HTMLFormElement>('[data-companion-form]');
+    const editDialog = document.querySelector<HTMLDialogElement>('[data-checkin-edit-dialog]');
+    const editOpenButton = document.querySelector<HTMLButtonElement>('[data-checkin-edit-open]');
+    const editCloseButton = document.querySelector<HTMLButtonElement>('[data-checkin-edit-close]');
+
+    editOpenButton?.addEventListener('click', () => editDialog?.showModal());
+    editCloseButton?.addEventListener('click', () => editDialog?.close());
+    editDialog?.addEventListener('click', (event) => {
+        if (event.target === editDialog) {
+            editDialog.close();
+        }
+    });
 
     const scrollStorageKey = `checkin-scroll:${window.location.pathname}`;
     const restoreScrollPosition = (): void => {

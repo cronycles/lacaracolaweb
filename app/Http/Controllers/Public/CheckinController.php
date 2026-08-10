@@ -96,6 +96,20 @@ class CheckinController extends Controller
             ->with('success', __('app.checkin_companion_added'));
     }
 
+    /** Invalidate a completed check-in before allowing the guest to edit it. */
+    public function beginEdit(string $token): RedirectResponse
+    {
+        $booking = $this->resolveValidBooking($token);
+
+        if ($booking->checkin_completed_at) {
+            $booking->forceFill(['checkin_completed_at' => null])->save();
+        }
+
+        return redirect()
+            ->route('checkin.show', $token)
+            ->with('success', __('app.checkin_edit_mode_started'));
+    }
+
     /** Save the submitted data and explicitly confirm the online check-in. */
     public function confirm(Request $request, string $token): RedirectResponse
     {

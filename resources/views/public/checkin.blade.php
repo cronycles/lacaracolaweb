@@ -30,10 +30,57 @@
             @endforeach
         </div>
 
-        @if ($booking->checkin_completed_at && $totalGuests >= $booking->total_guests)
+        @php
+            $checkinConfirmed = $booking->checkin_completed_at && $totalGuests >= $booking->total_guests;
+        @endphp
+
+        @if ($checkinConfirmed)
             <div class="checkin-callout checkin-callout--success" role="status">
                 <strong class="checkin-callout__title">{{ __('app.checkin_already_confirmed_title') }}</strong>
                 <span>{{ __('app.checkin_already_confirmed', ['date' => $booking->checkin_completed_at->translatedFormat('d/m/Y H:i')]) }}</span>
+
+                <div class="checkin-summary">
+                    <h2 class="checkin-summary__title">{{ __('app.checkin_summary_title') }}</h2>
+                    @foreach ($guests as $guest)
+                        <section class="checkin-summary__guest">
+                            <h3>{{ $guest->full_name }}</h3>
+                            <dl>
+                                <div><dt>{{ __('app.checkin_field_gender') }}</dt><dd>{{ $guest->gender === 'M' ? __('app.checkin_gender_m') : __('app.checkin_gender_f') }}</dd></div>
+                                <div><dt>{{ __('app.checkin_field_birth_date') }}</dt><dd>{{ $guest->birth_date?->translatedFormat('d/m/Y') ?? '—' }}</dd></div>
+                                <div><dt>{{ __('app.checkin_field_nationality') }}</dt><dd>{{ $guest->nationality_code ?: '—' }}</dd></div>
+                                <div><dt>{{ __('app.checkin_field_birth_country') }}</dt><dd>{{ $guest->birth_country_code ?: '—' }}</dd></div>
+                                <div><dt>{{ __('app.checkin_field_birth_municipality') }}</dt><dd>{{ $guest->birth_municipality ?: '—' }}</dd></div>
+                                @if ($guest->birth_province)
+                                    <div><dt>{{ __('app.checkin_field_birth_province') }}</dt><dd>{{ $guest->birth_province }}</dd></div>
+                                @endif
+                                @if ($guest->document_type)
+                                    <div><dt>{{ __('app.checkin_field_document_type') }}</dt><dd>{{ __('app.checkin_document_type_' . $guest->document_type) }}</dd></div>
+                                    <div><dt>{{ __('app.checkin_field_document_number') }}</dt><dd>{{ $guest->document_number ?: '—' }}</dd></div>
+                                    <div><dt>{{ __('app.checkin_field_document_issue_country') }}</dt><dd>{{ $guest->document_issue_country_code ?: '—' }}</dd></div>
+                                    @if ($guest->document_issue_place)
+                                        <div><dt>{{ __('app.checkin_field_document_issue_place') }}</dt><dd>{{ $guest->document_issue_place }}</dd></div>
+                                    @endif
+                                @endif
+                            </dl>
+                        </section>
+                    @endforeach
+                </div>
+
+                <button type="button" class="btn btn--outline checkin-edit-button" data-checkin-edit-open>
+                    {{ __('app.checkin_edit_button') }}
+                </button>
+
+                <dialog class="checkin-edit-dialog" data-checkin-edit-dialog aria-labelledby="checkin-edit-dialog-title">
+                    <form method="POST" action="{{ route('checkin.edit', $booking->checkin_token) }}">
+                        @csrf
+                        <h2 id="checkin-edit-dialog-title">{{ __('app.checkin_edit_dialog_title') }}</h2>
+                        <p>{{ __('app.checkin_edit_dialog_text') }}</p>
+                        <div class="checkin-edit-dialog__actions">
+                            <button type="button" class="btn btn--outline" data-checkin-edit-close>{{ __('app.checkin_edit_cancel') }}</button>
+                            <button type="submit" class="btn btn--primary">{{ __('app.checkin_edit_confirm') }}</button>
+                        </div>
+                    </form>
+                </dialog>
             </div>
         @endif
 
@@ -45,6 +92,7 @@
             ]) }}
         </p>
 
+        @unless ($checkinConfirmed)
         <div class="checkin-progress checkin-progress--incomplete" data-checkin-progress
              data-required-guests="{{ $booking->total_guests }}"
              data-present-guests="{{ $totalGuests }}"
@@ -223,6 +271,7 @@
             </button>
             <p class="booking-form__note">{{ __('app.checkin_confirm_note') }}</p>
         </div>
+        @endunless
 
     </div>
 </section>

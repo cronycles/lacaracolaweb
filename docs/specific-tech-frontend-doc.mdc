@@ -78,12 +78,15 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - `window.COMUNI_VALIDI` / `window.COUNTRIES_MAP` are set the same way as the admin form.
 - Styling: `resources/css/components/checkin-form.css` (imported by `app.css`) adds a
   few page-specific classes (`.checkin-guest`, `.checkin-badge`, `.checkin-callout`,
-  `.checkin-lang-switch`, `.checkin-progress`, `.checkin-submit`) and styles the
-  shared generated `.combo-select` dropdown on top of the `.booking-form` classes.
-  The page shows the booking's total guest count and a live completion count with
-  distinct incomplete and complete visual states; an already confirmed check-in
-  uses a prominent success callout while remaining editable. The bottom confirmation
-  action is blocked client-side when a guest or required field is missing, while the server remains authoritative for both checks. Adding a
+  `.checkin-lang-switch`, `.checkin-progress`, `.checkin-submit`, `.checkin-summary`,
+  `.checkin-edit-dialog`) and styles the shared generated `.combo-select` dropdown
+  on top of the `.booking-form` classes. The page shows the booking's total guest
+  count and a live completion count with distinct incomplete and complete visual
+  states. An already confirmed check-in shows a success callout and a server-rendered
+  summary; editing requires an explicit confirmation dialog and invalidates the
+  completed state before reopening the form. The bottom confirmation action is
+  blocked client-side when a guest or required field is missing, while the server
+  remains authoritative for both checks. Adding a
   companion carries the current unsaved guest fields through the separate POST so
   the redirect can repopulate them. The redirect also restores the previous scroll
   position and focused field; province inputs use the `Es: GE` placeholder and
