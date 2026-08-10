@@ -48,7 +48,6 @@ trait PersistsGuestReportingData
                     }
                 },
             ],
-            'guests.*.birth_province'                     => ['nullable', 'string', 'max:2'],
             'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
             'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
         ];
@@ -66,8 +65,12 @@ trait PersistsGuestReportingData
             $guestRow = is_array($guestRow) ? $guestRow : [];
             $included = ! empty($guestRow['include'] ?? null);
             $requiresDoc = $included && GuestClassifier::requiresDocument((string) ($guestRow['tipo_alloggiato'] ?? ''));
+            $birthCountryIsItaly = ($guestRow['birth_country_code'] ?? null) === 'IT';
             $issueCountryIsItaly = ($guestRow['document_issue_country_code'] ?? null) === 'IT';
 
+            $rules["guests.{$idx}.birth_province"] = [
+                Rule::requiredIf($included && $birthCountryIsItaly), 'nullable', 'string', 'max:2',
+            ];
             $rules["guests.{$idx}.document_type"] = [
                 Rule::requiredIf($requiresDoc), 'nullable', 'string',
                 Rule::in(['passport', 'id_card', 'driving_license', 'residence_permit', 'other']),

@@ -79,6 +79,7 @@
                 $defaultTipo = \App\Services\GuestReporting\GuestClassifier::defaultTipoFor($i, $guests->count());
                 $activeTipo  = old("guests.{$i}.tipo_alloggiato", $defaultTipo);
                 $requiresDoc = \App\Services\GuestReporting\GuestClassifier::requiresDocument($activeTipo);
+                $birthCountryCode = old("guests.{$i}.birth_country_code", $guest->birth_country_code);
             @endphp
 
             <div class="a-card" style="margin-bottom:1.25rem">
@@ -165,12 +166,13 @@
                         @error("guests.{$i}.birth_country_code") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group" id="birth_province_group_{{ $i }}" data-birth-province-group
-                         style="{{ old("guests.{$i}.birth_country_code", $guest->birth_country_code) !== 'IT' ? 'display:none' : '' }}">
+                         style="{{ $birthCountryCode !== 'IT' ? 'display:none' : '' }}">
                         <label class="form-label" for="guests_{{ $i }}_birth_province">Provincia *</label>
                         <input type="text" id="guests_{{ $i }}_birth_province"
                                name="guests[{{ $i }}][birth_province]" class="form-input"
                                value="{{ old("guests.{$i}.birth_province", $guest->birth_province) }}"
-                               maxlength="2" placeholder="Es: GE">
+                             maxlength="2" placeholder="Es: GE"
+                             @if($birthCountryCode === 'IT') required @endif>
                         @error("guests.{$i}.birth_province") <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                 </div>

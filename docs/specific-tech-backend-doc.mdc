@@ -214,6 +214,11 @@ Applied centrally in `Booking::booted()` (a `static::creating()` listener that f
 Comunicazione obbligatoria degli ospiti alla Polizia di Stato tramite SOAP.
 **Documentazione tecnica completa**: [`docs/AlloggiatiWeb/INTEGRATION.md`](./AlloggiatiWeb/INTEGRATION.md) — leggere quello prima di toccare qualsiasi file in questo modulo.
 
+La validazione condivisa tra `admin/guest-reporting` e il check-in pubblico richiede
+la provincia di nascita quando `birth_country_code` è `IT`; per gli altri paesi la
+provincia resta opzionale. Per una nascita italiana, il comune viene inoltre
+validato contro l'elenco dei comuni italiani.
+
 ### File coinvolti
 | File | Responsabilità |
 |---|---|

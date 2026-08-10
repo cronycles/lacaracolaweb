@@ -106,9 +106,10 @@ export { initCountryComboFields };
  */
 function initPeopleReportingFields(): void {
     document.querySelectorAll<HTMLInputElement>('[data-reporting-birth-country]').forEach((countryEl) => {
-        const card = countryEl.closest<HTMLElement>('.a-card') ?? document.documentElement;
+        const card = countryEl.closest<HTMLElement>('.a-card, .checkin-guest') ?? document.documentElement;
         const municipalityInput = card.querySelector<HTMLInputElement>('[data-reporting-birth-municipality]');
         const provinceGroup     = card.querySelector<HTMLElement>('[data-birth-province-group]');
+        const provinceInput     = provinceGroup?.querySelector<HTMLInputElement>('input');
 
         if (!municipalityInput) return;
         const mi = municipalityInput; // stable non-null ref for closures
@@ -125,6 +126,7 @@ function initPeopleReportingFields(): void {
             const labels = getFieldLabels();
 
             if (provinceGroup) provinceGroup.style.display = isItaly ? '' : 'none';
+            if (provinceInput) provinceInput.required = isItaly;
 
             // Update the associated <label> text (label is now on the wrapper)
             const label = mi.closest('.form-group, .booking-form__group')?.querySelector('label');
@@ -148,6 +150,7 @@ function initPeopleReportingFields(): void {
             update(getCountryCode());
             if (getCountryCode() !== 'IT') {
                 mi.value = '';
+                if (provinceInput) provinceInput.value = '';
             }
         });
     });

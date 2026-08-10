@@ -66,6 +66,7 @@
                 @php
                     $tipo = \App\Services\GuestReporting\GuestClassifier::defaultTipoFor($i, $totalGuests);
                     $requiresDoc = \App\Services\GuestReporting\GuestClassifier::requiresDocument($tipo);
+                    $birthCountryCode = old("guests.{$i}.birth_country_code", $guest->birth_country_code);
                 @endphp
 
                 <div class="booking-form checkin-guest">
@@ -120,11 +121,12 @@
 
                     <div class="booking-form__row">
                         <div class="booking-form__group" id="birth_province_group_{{ $i }}" data-birth-province-group
-                             style="{{ old("guests.{$i}.birth_country_code", $guest->birth_country_code) !== 'IT' ? 'display:none' : '' }}">
+                             style="{{ $birthCountryCode !== 'IT' ? 'display:none' : '' }}">
                             <label for="guests_{{ $i }}_birth_province">{{ __('app.checkin_field_birth_province') }} *</label>
                             <input type="text" id="guests_{{ $i }}_birth_province"
                                    name="guests[{{ $i }}][birth_province]"
-                                   value="{{ old("guests.{$i}.birth_province", $guest->birth_province) }}" maxlength="2">
+                                 value="{{ old("guests.{$i}.birth_province", $guest->birth_province) }}" maxlength="2"
+                                 @if($birthCountryCode === 'IT') required @endif>
                             @error("guests.{$i}.birth_province") <span class="booking-form__field-error">{{ $message }}</span> @enderror
                         </div>
                         <div class="booking-form__group">

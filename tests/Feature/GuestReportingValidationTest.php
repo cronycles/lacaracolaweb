@@ -32,6 +32,7 @@ class GuestReportingValidationTest extends TestCase
         parent::setUp();
 
         Country::firstOrCreate(['iso2' => 'FR'], ['name_it' => 'Francia']);
+        Country::firstOrCreate(['iso2' => 'IT'], ['name_it' => 'Italia']);
 
         $this->seed([
             \Database\Seeders\PermissionSeeder::class,
@@ -107,6 +108,39 @@ class GuestReportingValidationTest extends TestCase
 
         $person->refresh();
         $this->assertNull($person->document_type);
+        $this->assertSame(0, $this->driverCallCount, 'Driver must not be called when validation fails.');
+    }
+
+    public function test_italian_birth_requires_birth_province(): void
+    {
+        $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
+        $booking = Booking::create([
+            'person_id' => $person->id,
+            'checkin'   => now()->addDays(10)->format('Y-m-d'),
+            'checkout'  => now()->addDays(15)->format('Y-m-d'),
+            'adults'    => 1,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.guest-reporting.test', $booking), [
+                'guests' => [[
+                    'person_id'                   => $person->id,
+                    'include'                     => 1,
+                    'tipo_alloggiato'              => '16',
+                    'gender'                       => 'M',
+                    'birth_date'                   => '1990-01-01',
+                    'nationality_code'             => 'IT',
+                    'birth_country_code'           => 'IT',
+                    'birth_municipality'           => 'Genova',
+                    'birth_province'               => '',
+                    'document_type'                => 'passport',
+                    'document_number'              => 'X1234567',
+                    'document_issue_country_code'  => 'IT',
+                    'document_issue_place'         => 'Genova',
+                ]],
+            ])
+            ->assertSessionHasErrors(['guests.0.birth_province']);
+
         $this->assertSame(0, $this->driverCallCount, 'Driver must not be called when validation fails.');
     }
 

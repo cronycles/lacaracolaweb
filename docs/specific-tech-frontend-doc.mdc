@@ -67,6 +67,10 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   from `resources/ts/people-reporting-fields.ts`. `initDocumentTypeToggle()` is **not**
   used here — the "tipo alloggiato" is fully automatic (not user-editable), so the
   document-fields block visibility is decided server-side per guest (Blade `@unless`).
+- `initPeopleReportingFields()` scopes birth-country changes to the current guest row
+  in both forms. When the birth country is Italy, the birth province is visible and
+  required; for foreign birth countries it is hidden, cleared, and optional. Italian
+  birth municipalities remain locked to the shared municipality list.
 - `resources/ts/people-reporting-fields.ts` is i18n-aware via an optional
   `window.CHECKIN_I18N` object (labels for "comune/città di nascita", placeholders);
   when absent (admin form) it falls back to the original Italian strings, so admin

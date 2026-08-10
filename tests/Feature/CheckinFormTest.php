@@ -82,6 +82,22 @@ class CheckinFormTest extends TestCase
         $this->assertNotNull($booking->fresh()->checkin_completed_at);
     }
 
+    public function test_italian_birth_requires_birth_province(): void
+    {
+        $booking = $this->createBooking(1);
+        $payload = $this->guestPayload($booking->person_id, withDocument: true);
+        $payload['nationality_code'] = 'IT';
+        $payload['birth_country_code'] = 'IT';
+        $payload['birth_municipality'] = 'Genova';
+        $payload['birth_province'] = '';
+
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
+            'guests' => [$payload],
+        ])->assertSessionHasErrors(['guests.0.birth_province']);
+
+        $this->assertNull($booking->fresh()->checkin_completed_at);
+    }
+
     public function test_multi_guest_booking_classifies_primary_as_capogruppo_and_companions_as_membro_gruppo(): void
     {
         $booking = $this->createBooking(3);
