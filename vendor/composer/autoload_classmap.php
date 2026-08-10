@@ -49,6 +49,7 @@ return array(
     'App\\Http\\Middleware\\SetLocale' => $baseDir . '/app/Http/Middleware/SetLocale.php',
     'App\\Mail\\BookingConfirmedMail' => $baseDir . '/app/Mail/BookingConfirmedMail.php',
     'App\\Mail\\BookingHostKeeperMail' => $baseDir . '/app/Mail/BookingHostKeeperMail.php',
+    'App\\Mail\\BookingPaymentReceivedMail' => $baseDir . '/app/Mail/BookingPaymentReceivedMail.php',
     'App\\Mail\\BookingRequestDeclinedMail' => $baseDir . '/app/Mail/BookingRequestDeclinedMail.php',
     'App\\Mail\\BookingRequestMail' => $baseDir . '/app/Mail/BookingRequestMail.php',
     'App\\Mail\\BookingRequestPendingMail' => $baseDir . '/app/Mail/BookingRequestPendingMail.php',
