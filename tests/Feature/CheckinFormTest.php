@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Models\Booking;
 use App\Models\Country;
+use App\Models\Municipality;
 use App\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -20,6 +21,7 @@ class CheckinFormTest extends TestCase
 
         Country::firstOrCreate(['iso2' => 'FR'], ['name_it' => 'Francia']);
         Country::firstOrCreate(['iso2' => 'IT'], ['name_it' => 'Italia']);
+        Municipality::create(['code' => '407010025', 'name' => 'GENOVA', 'province' => 'GE']);
     }
 
     private function createBooking(int $adults, array $overrides = []): Booking
@@ -156,6 +158,38 @@ class CheckinFormTest extends TestCase
 
         $this->assertSame(1, $booking->additionalGuests()->count());
         $this->assertSame('Extra', $booking->additionalGuests()->first()->first_name);
+    }
+
+    public function test_adding_companion_normalizes_name(): void
+    {
+        $booking = $this->createBooking(2);
+
+        $this->post(route('checkin.companions.store', $booking->checkin_token), [
+            'first_name' => ' mARCO ',
+            'last_name'  => 'rOSSI',
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token));
+
+        $companion = $booking->additionalGuests()->first();
+        $this->assertSame('Marco', $companion->first_name);
+        $this->assertSame('Rossi', $companion->last_name);
+    }
+
+    public function test_checkin_normalizes_province_and_birth_municipality(): void
+    {
+        $booking = $this->createBooking(1);
+        $payload = $this->guestPayload($booking->person_id, withDocument: true);
+        $payload['birth_country_code'] = 'IT';
+        $payload['birth_municipality'] = 'gENOVA';
+        $payload['birth_province'] = 'ge';
+
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
+            'guests' => [$payload],
+                ])->assertRedirect(route('checkin.show', $booking->checkin_token))
+                    ->assertSessionHas('success');
+
+        $booking->person->refresh();
+        $this->assertSame('Genova', $booking->person->birth_municipality);
+        $this->assertSame('GE', $booking->person->birth_province);
     }
 
     public function test_adding_companion_preserves_unsaved_guest_input(): void

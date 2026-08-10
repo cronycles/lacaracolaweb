@@ -100,6 +100,26 @@ function initCountryComboFields(): void {
 
 export { initCountryComboFields };
 
+function normalizeCapitalized(value: string): string {
+    return value.trim().toLocaleLowerCase('it-IT').replace(/(^|[\s'-])\p{L}/gu, (letter) => letter.toLocaleUpperCase('it-IT'));
+}
+
+function initGuestTextNormalization(): void {
+    document.querySelectorAll<HTMLInputElement>('[data-normalize-uppercase]').forEach((input) => {
+        input.addEventListener('input', () => {
+            input.value = input.value.toLocaleUpperCase('it-IT');
+        });
+    });
+
+    document.querySelectorAll<HTMLInputElement>('[data-normalize-capitalized]').forEach((input) => {
+        input.addEventListener('blur', () => {
+            input.value = normalizeCapitalized(input.value);
+        });
+    });
+}
+
+export { initGuestTextNormalization };
+
 /**
  * Initialise birth-country → municipality/province logic for every guest row.
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.

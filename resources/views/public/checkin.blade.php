@@ -125,7 +125,8 @@
                             <label for="guests_{{ $i }}_birth_province">{{ __('app.checkin_field_birth_province') }} *</label>
                             <input type="text" id="guests_{{ $i }}_birth_province"
                                    name="guests[{{ $i }}][birth_province]"
-                                 value="{{ old("guests.{$i}.birth_province", $guest->birth_province) }}" maxlength="2"
+                                   value="{{ old("guests.{$i}.birth_province", $guest->birth_province) }}" maxlength="2" placeholder="Es: GE"
+                                   data-normalize-uppercase
                                  @if($birthCountryCode === 'IT') required @endif>
                             @error("guests.{$i}.birth_province") <span class="booking-form__field-error">{{ $message }}</span> @enderror
                         </div>
@@ -134,6 +135,7 @@
                             <input type="text" id="guests_{{ $i }}_birth_municipality"
                                    name="guests[{{ $i }}][birth_municipality]" maxlength="100" required
                                    data-reporting-birth-municipality
+                                   data-normalize-capitalized
                                    value="{{ old("guests.{$i}.birth_municipality", $guest->birth_municipality) }}"
                                    data-current-value="{{ old("guests.{$i}.birth_municipality", $guest->birth_municipality) }}">
                             @error("guests.{$i}.birth_municipality") <span class="booking-form__field-error">{{ $message }}</span> @enderror
@@ -198,11 +200,11 @@
                 <div class="booking-form__row">
                     <div class="booking-form__group">
                         <label for="companion_first_name">{{ __('app.checkin_field_first_name') }} *</label>
-                        <input type="text" id="companion_first_name" name="first_name" required maxlength="100">
+                        <input type="text" id="companion_first_name" name="first_name" required maxlength="100" data-normalize-capitalized>
                     </div>
                     <div class="booking-form__group">
                         <label for="companion_last_name">{{ __('app.checkin_field_last_name') }} *</label>
-                        <input type="text" id="companion_last_name" name="last_name" required maxlength="100">
+                        <input type="text" id="companion_last_name" name="last_name" required maxlength="100" data-normalize-capitalized>
                     </div>
                 </div>
                 <button type="submit" class="btn btn--outline" style="margin-top:var(--space-4)">{{ __('app.checkin_add_companion_button') }}</button>

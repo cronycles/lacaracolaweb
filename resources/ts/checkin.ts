@@ -7,18 +7,40 @@
  * automatic and not user-editable here, so `initDocumentTypeToggle()` is not
  * needed: the document fields' visibility is decided server-side per guest.
  */
-import { initCountryComboFields, initPeopleReportingFields, initDocumentIssueFields } from './people-reporting-fields';
+import { initCountryComboFields, initPeopleReportingFields, initDocumentIssueFields, initGuestTextNormalization } from './people-reporting-fields';
 
 document.addEventListener('DOMContentLoaded', () => {
     initCountryComboFields();
     initPeopleReportingFields();
     initDocumentIssueFields();
+    initGuestTextNormalization();
 
     const form = document.querySelector<HTMLFormElement>('#checkin-form');
     const progress = document.querySelector<HTMLElement>('[data-checkin-progress]');
     const progressCount = document.querySelector<HTMLElement>('[data-checkin-progress-count]');
     const submitError = document.querySelector<HTMLElement>('[data-checkin-submit-error]');
     const companionForm = document.querySelector<HTMLFormElement>('[data-companion-form]');
+
+    const scrollStorageKey = `checkin-scroll:${window.location.pathname}`;
+    const restoreScrollPosition = (): void => {
+        const saved = window.sessionStorage.getItem(scrollStorageKey);
+        if (!saved) return;
+
+        try {
+            const state = JSON.parse(saved) as { top?: number; fieldName?: string };
+            window.requestAnimationFrame(() => {
+                window.scrollTo({ top: state.top ?? 0, behavior: 'auto' });
+                if (state.fieldName) {
+                    document.querySelector<HTMLInputElement>(`[name="${CSS.escape(state.fieldName)}"]`)?.focus({ preventScroll: true });
+                }
+                window.sessionStorage.removeItem(scrollStorageKey);
+            });
+        } catch {
+            window.sessionStorage.removeItem(scrollStorageKey);
+        }
+    };
+
+    restoreScrollPosition();
 
     if (!form || !progress || !progressCount || !submitError) {
         return;
@@ -56,6 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     companionForm?.addEventListener('submit', () => {
+        const activeField = document.activeElement instanceof HTMLInputElement
+            || document.activeElement instanceof HTMLSelectElement
+            || document.activeElement instanceof HTMLTextAreaElement
+            ? document.activeElement.name
+            : '';
+        window.sessionStorage.setItem(scrollStorageKey, JSON.stringify({ top: window.scrollY, fieldName: activeField }));
+
         form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[name]').forEach((field) => {
             if (field.name === '_token') {
                 return;

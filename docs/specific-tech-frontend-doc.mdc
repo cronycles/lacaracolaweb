@@ -84,7 +84,9 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   bottom confirmation action is blocked client-side when a guest or required field
   is missing, while the server remains authoritative for both checks. Adding a
   companion carries the current unsaved guest fields through the separate POST so
-  the redirect can repopulate them.
+  the redirect can repopulate them. The redirect also restores the previous scroll
+  position and focused field; province inputs use the `Es: GE` placeholder and
+  client-side casing hints, while the server remains authoritative for normalization.
 - Language switcher: plain links appending `?lang=xx` to the current URL (reloads the
   page); intentionally does **not** reuse `lang-switcher.ts`/`/locale` (which persists
   the choice in session) since the check-in page's switcher must not persist.

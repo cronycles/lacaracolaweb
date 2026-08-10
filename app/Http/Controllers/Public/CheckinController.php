@@ -79,6 +79,9 @@ class CheckinController extends Controller
             'last_name'  => ['required', 'string', 'max:100'],
         ]);
 
+        $data['first_name'] = mb_convert_case(mb_strtolower(trim($data['first_name'])), MB_CASE_TITLE, 'UTF-8');
+        $data['last_name'] = mb_convert_case(mb_strtolower(trim($data['last_name'])), MB_CASE_TITLE, 'UTF-8');
+
         $person = Person::create([
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
@@ -160,6 +163,7 @@ class CheckinController extends Controller
         }
 
         $request->merge(['guests' => $guestsInput]);
+        $this->normalizeGuestReportingInput($request);
 
         $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
 

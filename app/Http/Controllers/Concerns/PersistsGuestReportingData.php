@@ -94,6 +94,30 @@ trait PersistsGuestReportingData
         return $rules;
     }
 
+    /** Normalize human-readable guest fields before exact municipality validation. */
+    protected function normalizeGuestReportingInput(Request $request): void
+    {
+        $guests = (array) $request->input('guests', []);
+
+        foreach ($guests as $idx => $guest) {
+            if (! is_array($guest)) {
+                continue;
+            }
+
+            if (isset($guest['birth_municipality']) && is_string($guest['birth_municipality'])) {
+                $guest['birth_municipality'] = mb_convert_case(mb_strtolower(trim($guest['birth_municipality'])), MB_CASE_TITLE, 'UTF-8');
+            }
+
+            if (isset($guest['birth_province']) && is_string($guest['birth_province'])) {
+                $guest['birth_province'] = mb_strtoupper(trim($guest['birth_province']), 'UTF-8');
+            }
+
+            $guests[$idx] = $guest;
+        }
+
+        $request->merge(['guests' => $guests]);
+    }
+
     /**
      * Persist one guest's `Person` fields (permanent update) and build the
      * corresponding `GuestRecord` DTO from the validated row data.
