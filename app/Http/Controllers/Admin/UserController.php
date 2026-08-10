@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -82,6 +83,7 @@ class UserController extends Controller
     public function update(Request $request, User $utenti): RedirectResponse
     {
         $data = $request->validate([
+            'email'            => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($utenti->id)],
             'role_id'          => ['nullable', 'exists:roles,id'],
             'phone'            => ['nullable', 'string', 'max:32'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
@@ -89,6 +91,7 @@ class UserController extends Controller
             'permissions.*'    => ['exists:permissions,id'],
         ]);
 
+        $utenti->email            = $data['email'];
         $utenti->role_id          = $data['role_id'] ?? null;
         $utenti->phone            = $data['phone'] ?? null;
         $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;

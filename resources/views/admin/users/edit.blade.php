@@ -9,11 +9,20 @@
         </div>
 
         <div class="a-card">
-            <div class="a-card__title">{{ $user->name }} <span style="color:#6b7f89;font-weight:400;font-size:.85rem">({{ $user->email }})</span></div>
+            <div class="a-card__title">{{ $user->name }}</div>
 
             <form method="POST" action="{{ route('admin.users.update', $user) }}">
                 @csrf
                 @method('PUT')
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-input"
+                           value="{{ old('email', $user->email) }}" required autocomplete="email">
+                    @error('email')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" for="phone">Telefono</label>
