@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.querySelector<HTMLFormElement>('#checkin-form');
     const progress = document.querySelector<HTMLElement>('[data-checkin-progress]');
+    const progressLabel = document.querySelector<HTMLElement>('[data-checkin-progress-label]');
     const progressCount = document.querySelector<HTMLElement>('[data-checkin-progress-count]');
     const submitError = document.querySelector<HTMLElement>('[data-checkin-submit-error]');
     const companionForm = document.querySelector<HTMLFormElement>('[data-companion-form]');
@@ -42,13 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     restoreScrollPosition();
 
-    if (!form || !progress || !progressCount || !submitError) {
+    if (!form || !progress || !progressLabel || !progressCount || !submitError) {
         return;
     }
 
     const requiredGuests = Number(progress.dataset.requiredGuests ?? 0);
     const presentGuests = Number(progress.dataset.presentGuests ?? 0);
     const progressTemplate = progress.dataset.progressTemplate ?? '__COMPLETED__ / ' + requiredGuests;
+    const incompleteLabel = progress.dataset.progressIncompleteLabel ?? '';
+    const completeLabel = progress.dataset.progressCompleteLabel ?? '';
     const guestForms = Array.from(form.querySelectorAll<HTMLInputElement>('input[name$="[person_id]"]'));
 
     const updateProgress = (): void => {
@@ -60,6 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     .every((field) => field.checkValidity());
         }).length;
 
+        const isComplete = presentGuests >= requiredGuests && completedGuests >= requiredGuests;
+        progress.classList.toggle('checkin-progress--complete', isComplete);
+        progress.classList.toggle('checkin-progress--incomplete', !isComplete);
+        progressLabel.textContent = (isComplete ? completeLabel : incompleteLabel).replace(':total', String(requiredGuests));
         progressCount.textContent = progressTemplate.replace('__COMPLETED__', String(completedGuests));
         progress.dataset.presentGuests = String(presentGuests);
     };

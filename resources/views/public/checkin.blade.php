@@ -38,12 +38,14 @@
             ]) }}
         </p>
 
-        <div class="checkin-progress" data-checkin-progress
+        <div class="checkin-progress checkin-progress--incomplete" data-checkin-progress
              data-required-guests="{{ $booking->total_guests }}"
              data-present-guests="{{ $totalGuests }}"
-               data-progress-template="{{ __('app.checkin_guest_progress_count', ['completed' => '__COMPLETED__', 'total' => $booking->total_guests]) }}"
+             data-progress-incomplete-label="{{ __('app.checkin_guest_progress') }}"
+             data-progress-complete-label="{{ __('app.checkin_guest_progress_complete') }}"
+             data-progress-template="{{ __('app.checkin_guest_progress_count', ['completed' => '__COMPLETED__', 'total' => $booking->total_guests]) }}"
              role="status" aria-live="polite">
-            <strong>{{ __('app.checkin_guest_progress', ['total' => $booking->total_guests]) }}</strong>
+            <strong data-checkin-progress-label>{{ __('app.checkin_guest_progress', ['total' => $booking->total_guests]) }}</strong>
             <span data-checkin-progress-count>{{ __('app.checkin_guest_progress_count', ['completed' => 0, 'total' => $booking->total_guests]) }}</span>
         </div>
 
@@ -54,8 +56,9 @@
             <div class="checkin-callout checkin-callout--error">{{ session('error') }}</div>
         @endif
         @if ($booking->checkin_completed_at)
-            <div class="checkin-callout">
-                {{ __('app.checkin_already_confirmed', ['date' => $booking->checkin_completed_at->translatedFormat('d/m/Y H:i')]) }}
+            <div class="checkin-callout checkin-callout--success" role="status">
+                <strong class="checkin-callout__title">{{ __('app.checkin_already_confirmed_title') }}</strong>
+                <span>{{ __('app.checkin_already_confirmed', ['date' => $booking->checkin_completed_at->translatedFormat('d/m/Y H:i')]) }}</span>
             </div>
         @endif
 
