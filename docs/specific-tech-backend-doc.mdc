@@ -244,7 +244,8 @@ validato contro l'elenco dei comuni italiani.
   - Il campo è reso `disabled` nel form; il valore viene inviato tramite un `<input type="hidden">`.
 - Tipo alloggiato `19` e `20`: i campi documento nel record vengono scritti come spazi dal driver (anche se il form li raccoglie).
 - Nascita estera: comune e provincia restano spazi; solo `statoBirth` (9-digit da `stati.csv`) è obbligatorio.
-- `ElencoSchedine` SOAP: deve essere `['string' => [$rec1, ...]]` — mai una stringa concatenata.
+- `ElencoSchedine` SOAP: deve essere `['string' => [$rec1, ...]]` — mai una stringa concatenata. Ogni record contiene 168 caratteri dati e termina con `CRLF`, tranne l'ultimo.
+- Prima della validazione, il guest reporting ricalcola il tipo del primo ospite incluso: `16` se è l'unico, `18` se ci sono più ospiti. Questo impedisce di inviare un `20` senza capo gruppo quando il capogruppo originale è stato escluso dal form.
 - Codici paesi: 9-digit da `stati.csv` (es. ITALIA=`100000100`, GERMANIA=`100000216`).
 - Per aggiungere un paese mancante: cercare in `resources/data/AlloggiatiWeb/stati.csv` e aggiungere a `countryIsoToAlloggiati()`.
 

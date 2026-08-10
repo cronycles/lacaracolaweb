@@ -163,15 +163,15 @@ class CheckinController extends Controller
     private function validatedGuestData(Request $request, Booking $booking): array
     {
         $guests = $booking->allGuests()->values();
-        $totalGuests = $guests->count();
         $rawGuests = $request->input('guests', []);
         $guestsInput = [];
+        $guestTypes = GuestClassifier::typesForIncludedIndexes($guests->keys()->all());
 
         foreach ($guests as $i => $guest) {
             $rowInput = is_array($rawGuests[$i] ?? null) ? $rawGuests[$i] : [];
             $guestsInput[$i] = array_merge($rowInput, [
                 'person_id'       => $guest->id,
-                'tipo_alloggiato' => GuestClassifier::defaultTipoFor($i, $totalGuests),
+                'tipo_alloggiato' => $guestTypes[$i],
                 'include'         => 1,
             ]);
         }

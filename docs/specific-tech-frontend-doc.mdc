@@ -28,6 +28,15 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - `resources/ts/checkin.ts` (Vite entry for the public online check-in page)
 - `resources/ts/people-reporting-fields.ts` (shared by `admin.ts` and `checkin.ts`)
 
+## Guest reporting classification
+
+The admin guest-reporting form and public online check-in share the same
+AlloggiatiWeb classification. The backend source of truth is
+`App\Services\GuestReporting\GuestClassifier`; the shared TypeScript module
+`resources/ts/people-reporting-fields.ts` mirrors the rule in the admin UI when
+guests are included or excluded. A single included guest is type `16`; with
+multiple included guests, the first is type `18` and the others are type `20`.
+
 # Important frontend contracts
 ## Public availability form
 - Date picker minimum nights comes from `data-min-nights`.

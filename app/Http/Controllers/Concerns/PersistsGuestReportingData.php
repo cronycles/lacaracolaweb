@@ -22,6 +22,29 @@ use Illuminate\Validation\Rule;
  */
 trait PersistsGuestReportingData
 {
+    /** Ensure the first guest actually included in the submission is the group head. */
+    protected function normalizeGuestReportingTypes(Request $request): void
+    {
+        $guests = (array) $request->input('guests', []);
+        $includedIndexes = [];
+
+        foreach ($guests as $idx => $guest) {
+            if (is_array($guest) && ! empty($guest['include'] ?? null)) {
+                $includedIndexes[] = $idx;
+            }
+        }
+
+        if ($includedIndexes === []) {
+            return;
+        }
+
+        foreach (GuestClassifier::typesForIncludedIndexes($includedIndexes) as $idx => $type) {
+            $guests[$idx]['tipo_alloggiato'] = $type;
+        }
+
+        $request->merge(['guests' => $guests]);
+    }
+
     /**
      * Laravel validation rules for a `guests` array of guest-reporting fields.
      * Identical for every caller; `$request` is needed by the closures to read

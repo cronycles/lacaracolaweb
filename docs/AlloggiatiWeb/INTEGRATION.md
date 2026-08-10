@@ -71,8 +71,10 @@ Se si passa una stringa concatenata, il client invia `<ns1:ElencoSchedine/>`
 
 ## 4. Formato Record (Tracciato — da `TracciatoRecord.png`)
 
-Ogni schedina è **una stringa di esattamente 168 caratteri** (senza CR+LF —
-la separazione tra record è gestita da ArrayOfString).  
+Ogni schedina contiene **168 caratteri di dati**. Il servizio richiede inoltre
+`CR+LF` dopo ogni riga tranne l'ultima, per una lunghezza di 170 caratteri sulle
+righe intermedie. `ArrayOfString` separa gli elementi SOAP, ma non sostituisce
+il terminatore previsto dal tracciato.
 Tutti i campi non valorizzati devono essere riempiti con **spazi**.
 
 | Campo | DA | A | Len | Tipo 16-17-18 | Tipo 19-20 | Note |
@@ -232,7 +234,7 @@ Per nascita estera: `birthMunicipality`/`birthProvince` vengono ignorati.
 | *"Data di Arrivo Non Valida"* | Formato data sbagliato (`Ymd`, `dmY`) | Usare `gg/mm/aaaa` con slash (10 char) |
 | *"Giorni di Permanenza Errati"* | Campo mancante o a zero | Pos 12-13, zero-padded, min 1, max 30 |
 | Token in campo sbagliato | `$result->token` non esiste | È in `$result->GenerateTokenResult->token` |
-| Record troppo corto/lungo | Posizioni calcolate male | `mb_strlen($record, '8bit')` deve essere 168 |
+| Record troppo corto/lungo | Posizioni calcolate male o terminatore assente | Dati: 168 caratteri; righe non finali: 168 + `CRLF` |
 | Comune non trovato in IT | Case mismatch o comune storico | `ItalianMunicipalities::findCode()` normalizza lowercase; usa `$province` per disambiguare |
 | Paese non mappato | ISO-2 non in `countryIsoToAlloggiati()` | Aggiungere da `stati.csv` (colonna `Codice`) |
 

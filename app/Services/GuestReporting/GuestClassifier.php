@@ -12,6 +12,25 @@ namespace App\Services\GuestReporting;
 class GuestClassifier
 {
     /**
+     * Return the AlloggiatiWeb type for each included row, preserving its index.
+     * The first included row is always the head of the group, or a single guest.
+     *
+     * @param array<int, int|string> $includedIndexes
+     * @return array<int, string>
+     */
+    public static function typesForIncludedIndexes(array $includedIndexes): array
+    {
+        $types = [];
+        $totalGuests = count($includedIndexes);
+
+        foreach (array_values($includedIndexes) as $position => $index) {
+            $types[(int) $index] = self::defaultTipoFor($position, $totalGuests);
+        }
+
+        return $types;
+    }
+
+    /**
      * @param int $index       Zero-based position of the guest within the booking's guest
      *                          list (0 = primary guest / capogruppo).
      * @param int $totalGuests Total number of guests being reported for the booking.

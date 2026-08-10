@@ -116,6 +116,7 @@ class GuestReportingController extends Controller
      */
     private function validateAndPersistGuests(Request $request, Booking $booking): array
     {
+        $this->normalizeGuestReportingTypes($request);
         $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
 
         $data = $request->validate($this->guestReportingValidationRules($request, $countryCodes));

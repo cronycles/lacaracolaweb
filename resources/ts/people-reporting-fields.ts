@@ -120,6 +120,39 @@ function initGuestTextNormalization(): void {
 
 export { initGuestTextNormalization };
 
+/** Keep admin guest types aligned with the shared AlloggiatiWeb classification. */
+function initGuestReportingClassification(): void {
+    document.querySelectorAll<HTMLFormElement>('[data-guest-reporting-form]').forEach((form) => {
+        const rows = Array.from(form.querySelectorAll<HTMLElement>('[data-guest-include-checkbox]'));
+        const update = (): void => {
+            const includedRows = rows.filter((checkbox) => (checkbox as HTMLInputElement).checked);
+            const totalIncluded = includedRows.length;
+
+            rows.forEach((checkbox) => {
+                const index = checkbox.dataset.guestIncludeCheckbox;
+                if (index === undefined) return;
+
+                const position = includedRows.indexOf(checkbox);
+                const type = position < 0 ? '20' : totalIncluded <= 1 ? '16' : position === 0 ? '18' : '20';
+                const card = checkbox.closest<HTMLElement>('.a-card');
+                const hiddenType = card?.querySelector<HTMLInputElement>('input[name$="[tipo_alloggiato]"]');
+                const typeSelect = card?.querySelector<HTMLSelectElement>('[data-tipo-alloggiato-select]');
+
+                if (hiddenType) hiddenType.value = type;
+                if (typeSelect) {
+                    typeSelect.value = type;
+                    typeSelect.dispatchEvent(new Event('change'));
+                }
+            });
+        };
+
+        rows.forEach((checkbox) => checkbox.addEventListener('change', update));
+        update();
+    });
+}
+
+export { initGuestReportingClassification };
+
 /**
  * Initialise birth-country → municipality/province logic for every guest row.
  * Scoped to the nearest `.a-card` so multi-guest forms work correctly.

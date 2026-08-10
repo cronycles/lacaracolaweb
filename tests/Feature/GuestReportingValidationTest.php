@@ -178,4 +178,47 @@ class GuestReportingValidationTest extends TestCase
         $this->assertSame('passport', $person->document_type);
         $this->assertSame(1, $this->driverCallCount, 'Driver must be called exactly once when validation passes.');
     }
+
+    public function test_single_included_guest_is_promoted_to_single_guest(): void
+    {
+        $excluded = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
+        $included = Person::create(['first_name' => 'Luca', 'last_name' => 'Bianchi']);
+        $booking = Booking::create([
+            'person_id' => $excluded->id,
+            'checkin'   => now()->addDays(10)->format('Y-m-d'),
+            'checkout'  => now()->addDays(15)->format('Y-m-d'),
+            'adults'    => 2,
+        ]);
+        $booking->additionalGuests()->attach($included->id);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.guest-reporting.test', $booking), [
+                'guests' => [
+                    [
+                        'person_id' => $excluded->id,
+                        'include'   => 0,
+                        'tipo_alloggiato' => '18',
+                    ],
+                    [
+                        'person_id'                  => $included->id,
+                        'include'                    => 1,
+                        'tipo_alloggiato'             => '20',
+                        'gender'                      => 'M',
+                        'birth_date'                  => '1990-01-01',
+                        'nationality_code'            => 'FR',
+                        'birth_country_code'          => 'FR',
+                        'birth_municipality'          => 'Paris',
+                        'document_type'               => 'passport',
+                        'document_number'             => 'X1234567',
+                        'document_issue_country_code' => 'FR',
+                        'document_issue_place'        => '',
+                    ],
+                ],
+            ])
+            ->assertRedirect(route('admin.guest-reporting.show', $booking))
+            ->assertSessionHas('success');
+
+        $report = $booking->guestReports()->latest('id')->first();
+        $this->assertSame('16', $report->guests_payload[0]['tipoAlloggiato']);
+    }
 }

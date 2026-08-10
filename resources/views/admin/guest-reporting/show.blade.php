@@ -71,7 +71,7 @@
         $guests = $booking->allGuests();
     @endphp
 
-    <form id="guest-reporting-form" method="POST">
+    <form id="guest-reporting-form" method="POST" data-guest-reporting-form>
         @csrf
 
         @foreach ($guests as $i => $guest)
