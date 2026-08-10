@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Mail\CheckinCompletedMail;
 use App\Models\Booking;
 use App\Models\Country;
 use App\Models\Municipality;
 use App\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class CheckinFormTest extends TestCase
@@ -232,6 +234,7 @@ class CheckinFormTest extends TestCase
 
     public function test_confirming_sets_checkin_completed_at(): void
     {
+        Mail::fake();
         $booking = $this->createBooking(1);
 
         $this->post(route('checkin.confirm', $booking->checkin_token), [
@@ -241,6 +244,11 @@ class CheckinFormTest extends TestCase
 
         $booking->refresh();
         $this->assertNotNull($booking->checkin_completed_at);
+        Mail::assertSent(CheckinCompletedMail::class, function (CheckinCompletedMail $mail) use ($booking) {
+            return $mail->hasTo($booking->person->email)
+                && $mail->hasBcc(config('apartment.email'))
+                && $mail->booking->is($booking);
+        });
     }
 
     public function test_completed_message_is_hidden_when_a_guest_is_missing(): void

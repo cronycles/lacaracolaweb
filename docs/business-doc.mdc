@@ -70,6 +70,10 @@ alwaysApply: true
   as opposed to declining which is the real "we said no to a guest" flow.
 
 ### Online check-in (guest self-service)
+
+After the guest confirms all required data, the system marks the online check-in as completed and
+sends a confirmation email. The email reassures the guest that everything is ready for arrival and
+repeats the stay contact, house address with map links, cancellation deadline, and accepted terms.
 - Every confirmed booking gets a persistent, unguessable check-in link (no
   guest account/login), included in the "booking confirmed" email and reusable
   across multiple visits until the checkout date (the link then becomes inactive).

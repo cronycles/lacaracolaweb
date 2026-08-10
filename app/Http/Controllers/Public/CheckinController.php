@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Concerns\PersistsGuestReportingData;
 use App\Http\Controllers\Controller;
+use App\Mail\CheckinCompletedMail;
 use App\Models\Booking;
 use App\Models\Country;
 use App\Models\Person;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -150,6 +152,17 @@ class CheckinController extends Controller
                 ->withInput()
                 ->with('error', __('app.checkin_save_error'));
         }
+
+            if ($booking->person?->email) {
+                try {
+                    Mail::to($booking->person->email)->send(new CheckinCompletedMail($booking));
+                } catch (Throwable $exception) {
+                    Log::error('CheckinCompletedMail failed to send.', [
+                        'booking_id' => $booking->id,
+                        'exception'  => $exception,
+                    ]);
+                }
+            }
 
         return redirect()
             ->route('checkin.show', $token);

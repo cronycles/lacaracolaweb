@@ -28,6 +28,9 @@ Data model: [Specific Data Model](./specific-data-model.md).
   confirms the warning in the UI.
 - `POST /check-in/{token}/confirm` validates the submitted guest data, persists
   all guest records, and sets `checkin_completed_at` in one database transaction.
+  After a successful confirmation it sends `CheckinCompletedMail` to the guest,
+  with the owner in BCC; a mail transport failure is logged without undoing the
+  completed check-in.
 - Validation failures redirect to the check-in page with errors and old input;
   persistence failures roll back the transaction, log the exception, and retain
   the submitted input for retry.
@@ -56,6 +59,10 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Sends `BookingPaymentReceivedMail` only to the guest, with `config('apartment.email')` in BCC
   - Includes booking summary, prominent online check-in link, configured host keeper names/emails, house address, and Google Maps/Apple Maps/OpenStreetMap links
   - Phase 1 intentionally does not update payment fields or store an email-sent timestamp
+- Completed online check-in email (`CheckinCompletedMail`): sent automatically to the guest after
+  `POST /check-in/{token}/confirm` succeeds. It confirms that the online check-in is complete,
+  repeats the host keeper contact, house address and map links, free-cancellation deadline, and
+  accepted house rules/lease links, and BCCs `config('apartment.email')`.
 - Telegram webhook: `POST /api/telegram/webhook/{secret}` (stateless, no CSRF)
   - Receives updates from Telegram; logs `chat_id` for initial recipient setup.
   - Secret validated against `config('telegram.webhook_secret')`.
