@@ -152,7 +152,7 @@ Or generate locally if needed.
 
 Configure these in repository Actions secrets:
 
-- CPANEL_HOST (expected: lacaracolaandora.com, verify on port 2083)
+- CPANEL_HOST (direct cPanel hostname or server IP, for example `65.108.143.244`; do not use the Cloudflare-proxied public domain)
 - CPANEL_USER (lacaraco)
 - CPANEL_TOKEN (API token from cPanel)
 - CPANEL_REPOSITORY_ROOT (/home/lacaraco/repositories/lacaracolaweb)
