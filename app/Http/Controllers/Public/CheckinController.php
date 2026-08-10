@@ -88,6 +88,7 @@ class CheckinController extends Controller
         ]);
 
         $booking->additionalGuests()->syncWithoutDetaching([$person->id]);
+        $booking->forceFill(['checkin_completed_at' => null])->save();
 
         return redirect()
             ->route('checkin.show', $token)
@@ -137,8 +138,7 @@ class CheckinController extends Controller
         }
 
         return redirect()
-            ->route('checkin.show', $token)
-            ->with('success', __('app.checkin_confirmed_message'));
+            ->route('checkin.show', $token);
     }
 
     // -------------------------------------------------------------------------

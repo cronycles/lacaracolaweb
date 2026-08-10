@@ -76,8 +76,7 @@ class CheckinFormTest extends TestCase
                 // Full data is saved and confirmed in one request.
                 $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
-        ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHas('success');
+                ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $booking->person->refresh();
         $this->assertSame('passport', $booking->person->document_type);
@@ -123,8 +122,7 @@ class CheckinFormTest extends TestCase
         $payload[0] = $this->guestPayload($booking->person_id, withDocument: true);
 
         $this->post(route('checkin.confirm', $booking->checkin_token), ['guests' => $payload])
-            ->assertRedirect(route('checkin.show', $booking->checkin_token))
-            ->assertSessionHas('success');
+            ->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $companion1->refresh();
         $this->assertSame('M', $companion1->gender);
@@ -184,8 +182,7 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$payload],
-                ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-                    ->assertSessionHas('success');
+                ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $booking->person->refresh();
         $this->assertSame('Genova', $booking->person->birth_municipality);
@@ -240,11 +237,19 @@ class CheckinFormTest extends TestCase
         $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ])
-            ->assertRedirect(route('checkin.show', $booking->checkin_token))
-            ->assertSessionHas('success');
+            ->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $booking->refresh();
         $this->assertNotNull($booking->checkin_completed_at);
+    }
+
+    public function test_completed_message_is_hidden_when_a_guest_is_missing(): void
+    {
+        $booking = $this->createBooking(2, ['checkin_completed_at' => now()]);
+
+        $this->get(route('checkin.show', $booking->checkin_token))
+            ->assertOk()
+            ->assertDontSee(__('app.checkin_already_confirmed_title'));
     }
 
     public function test_confirmation_rejected_when_required_fields_are_missing(): void

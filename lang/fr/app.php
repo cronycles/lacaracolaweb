@@ -274,7 +274,6 @@ return [
     'checkin_save_error'            => "Le check-in n'a pas pu être enregistré. Les données saisies ont été conservées ; veuillez réessayer dans quelques instants.",
     'checkin_companion_added'       => 'Voyageur ajouté. Complétez maintenant ses données ci-dessous.',
     'checkin_companion_cap_reached' => 'Vous avez déjà atteint le nombre maximum de voyageurs prévu pour cette réservation.',
-    'checkin_confirmed_message'     => 'Check-in confirmé. Merci !',
     'checkin_incomplete_guests'     => "Complétez d'abord toutes les données obligatoires pour : :guests.",
     'checkin_expired_title'         => "Lien n'est plus valide",
     'checkin_expired_text'          => "Ce lien de check-in n'est pas valide, a expiré, ou la réservation a été annulée. Si vous pensez qu'il s'agit d'une erreur, contactez-nous.",

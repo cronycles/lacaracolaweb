@@ -242,7 +242,6 @@ return [
     'checkin_save_error'            => 'Non è stato possibile salvare il check-in. I dati inseriti sono stati mantenuti: riprova tra poco.',
     'checkin_companion_added'       => 'Ospite aggiunto. Compila ora i suoi dati qui sotto.',
     'checkin_companion_cap_reached' => 'Hai già raggiunto il numero massimo di ospiti previsto per questa prenotazione.',
-    'checkin_confirmed_message'     => 'Check-in confermato. Grazie!',
     'checkin_incomplete_guests'     => 'Completa prima tutti i dati obbligatori per: :guests.',
     'checkin_expired_title'         => 'Link non più valido',
     'checkin_expired_text'          => 'Questo link di check-in non è valido, è scaduto oppure la prenotazione è stata annullata. Se pensi si tratti di un errore, contattaci.',

@@ -275,7 +275,6 @@ return [
     'checkin_save_error'            => 'Der Check-in konnte nicht gespeichert werden. Ihre Eingaben wurden beibehalten. Bitte versuchen Sie es gleich noch einmal.',
     'checkin_companion_added'       => 'Gast hinzugefügt. Füllen Sie nun unten seine Daten aus.',
     'checkin_companion_cap_reached' => 'Sie haben die für diese Buchung zulässige Höchstzahl an Gästen bereits erreicht.',
-    'checkin_confirmed_message'     => 'Check-in bestätigt. Vielen Dank!',
     'checkin_incomplete_guests'     => 'Bitte vervollständigen Sie zuerst alle Pflichtfelder für: :guests.',
     'checkin_expired_title'         => 'Link nicht mehr gültig',
     'checkin_expired_text'          => 'Dieser Check-in-Link ist ungültig, abgelaufen oder die Buchung wurde storniert. Wenn Sie glauben, dass dies ein Fehler ist, kontaktieren Sie uns bitte.',

@@ -30,6 +30,13 @@
             @endforeach
         </div>
 
+        @if ($booking->checkin_completed_at && $totalGuests >= $booking->total_guests)
+            <div class="checkin-callout checkin-callout--success" role="status">
+                <strong class="checkin-callout__title">{{ __('app.checkin_already_confirmed_title') }}</strong>
+                <span>{{ __('app.checkin_already_confirmed', ['date' => $booking->checkin_completed_at->translatedFormat('d/m/Y H:i')]) }}</span>
+            </div>
+        @endif
+
         <h1 class="section-title">{{ __('app.checkin_title') }}</h1>
         <p style="color:var(--color-text-muted);margin-bottom:var(--space-6)">
             {{ __('app.checkin_intro', [
@@ -55,13 +62,6 @@
         @if (session('error'))
             <div class="checkin-callout checkin-callout--error">{{ session('error') }}</div>
         @endif
-        @if ($booking->checkin_completed_at)
-            <div class="checkin-callout checkin-callout--success" role="status">
-                <strong class="checkin-callout__title">{{ __('app.checkin_already_confirmed_title') }}</strong>
-                <span>{{ __('app.checkin_already_confirmed', ['date' => $booking->checkin_completed_at->translatedFormat('d/m/Y H:i')]) }}</span>
-            </div>
-        @endif
-
         <form id="checkin-form" method="POST" action="{{ route('checkin.confirm', $booking->checkin_token) }}">
             @csrf
 

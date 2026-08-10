@@ -275,7 +275,6 @@ return [
     'checkin_save_error'            => 'The check-in could not be saved. Your entered details were kept; please try again shortly.',
     'checkin_companion_added'       => 'Guest added. Now fill in their details below.',
     'checkin_companion_cap_reached' => 'You have already reached the maximum number of guests allowed for this booking.',
-    'checkin_confirmed_message'     => 'Check-in confirmed. Thank you!',
     'checkin_incomplete_guests'     => 'Please complete all required fields first for: :guests.',
     'checkin_expired_title'         => 'Link no longer valid',
     'checkin_expired_text'          => 'This check-in link is invalid, expired, or the booking has been canceled. If you think this is a mistake, please contact us.',

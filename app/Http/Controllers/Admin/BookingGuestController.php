@@ -34,6 +34,7 @@ class BookingGuestController extends Controller
 
         // Sync avoids duplicates
         $prenotazioni->additionalGuests()->syncWithoutDetaching([$person->id]);
+        $prenotazioni->forceFill(['checkin_completed_at' => null])->save();
 
         return back()->with('success', "{$person->full_name} aggiunto agli ospiti.");
     }
@@ -42,6 +43,7 @@ class BookingGuestController extends Controller
     public function destroy(Booking $prenotazioni, Person $person): RedirectResponse
     {
         $prenotazioni->additionalGuests()->detach($person->id);
+        $prenotazioni->forceFill(['checkin_completed_at' => null])->save();
 
         return back()->with('success', "{$person->full_name} rimosso dagli ospiti.");
     }
