@@ -13,8 +13,12 @@ use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Services\GuestReporting\GuestClassifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 /**
  * Public, token-based "online check-in" flow. Guests reach this via an
@@ -57,38 +61,6 @@ class CheckinController extends Controller
         ]);
     }
 
-    /** Persist the submitted guest-reporting data for every guest currently on the booking. */
-    public function store(Request $request, string $token): RedirectResponse
-    {
-        $booking = $this->resolveValidBooking($token);
-
-        $guests = $booking->allGuests()->values();
-        $totalGuests = $guests->count();
-
-        $rawGuests = $request->input('guests', []);
-        $guestsInput = [];
-        foreach ($guests as $i => $guest) {
-            $rowInput = is_array($rawGuests[$i] ?? null) ? $rawGuests[$i] : [];
-            $guestsInput[$i] = array_merge($rowInput, [
-                'person_id'       => $guest->id,
-                'tipo_alloggiato' => GuestClassifier::defaultTipoFor($i, $totalGuests),
-                'include'         => 1,
-            ]);
-        }
-        $request->merge(['guests' => $guestsInput]);
-
-        $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
-        $data = $request->validate($this->guestReportingValidationRules($request, $countryCodes));
-
-        foreach ($data['guests'] as $guestData) {
-            $this->persistGuestPerson($guestData, $booking);
-        }
-
-        return redirect()
-            ->route('checkin.show', $token)
-            ->with('success', __('app.checkin_saved_message'));
-    }
-
     /** Create and attach a new travel companion (name only), enforcing the total-guest cap. */
     public function addCompanion(Request $request, string $token): RedirectResponse
     {
@@ -118,44 +90,39 @@ class CheckinController extends Controller
             ->with('success', __('app.checkin_companion_added'));
     }
 
-    /** Explicit "Confirm & submit" step — requires every guest's required fields to be complete. */
+    /** Save the submitted data and explicitly confirm the online check-in. */
     public function confirm(Request $request, string $token): RedirectResponse
     {
         $booking = $this->resolveValidBooking($token);
 
-        $guests = $booking->allGuests()->values();
-        $totalGuests = $guests->count();
-        $missing = [];
-
-        foreach ($guests as $i => $guest) {
-            $tipo = GuestClassifier::defaultTipoFor($i, $totalGuests);
-            $requiresDoc = GuestClassifier::requiresDocument($tipo);
-
-            $incomplete = empty($guest->gender)
-                || empty($guest->birth_date)
-                || empty($guest->birth_municipality)
-                || empty($guest->birth_country_code)
-                || empty($guest->nationality_code)
-                || ($guest->birth_country_code === 'IT' && empty($guest->birth_province))
-                || ($requiresDoc && (
-                    empty($guest->document_type)
-                    || empty($guest->document_number)
-                    || empty($guest->document_issue_country_code)
-                    || ($guest->document_issue_country_code === 'IT' && empty($guest->document_issue_place))
-                ));
-
-            if ($incomplete) {
-                $missing[] = $guest->full_name;
-            }
-        }
-
-        if (! empty($missing)) {
+        try {
+            $data = $this->validatedGuestData($request, $booking);
+        } catch (ValidationException $exception) {
             return redirect()
                 ->route('checkin.show', $token)
-                ->with('error', __('app.checkin_incomplete_guests', ['guests' => implode(', ', $missing)]));
+                ->withErrors($exception->validator)
+                ->withInput();
         }
 
-        $booking->forceFill(['checkin_completed_at' => now()])->save();
+        try {
+            DB::transaction(function () use ($data, $booking): void {
+                foreach ($data['guests'] as $guestData) {
+                    $this->persistGuestPerson($guestData, $booking);
+                }
+
+                $booking->forceFill(['checkin_completed_at' => now()])->save();
+            });
+        } catch (Throwable $exception) {
+            Log::error('Online check-in confirmation failed.', [
+                'booking_id' => $booking->id,
+                'exception'  => $exception,
+            ]);
+
+            return redirect()
+                ->route('checkin.show', $token)
+                ->withInput()
+                ->with('error', __('app.checkin_save_error'));
+        }
 
         return redirect()
             ->route('checkin.show', $token)
@@ -165,6 +132,30 @@ class CheckinController extends Controller
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
+
+    /** Normalize the submitted rows and validate them against the current booking guests. */
+    private function validatedGuestData(Request $request, Booking $booking): array
+    {
+        $guests = $booking->allGuests()->values();
+        $totalGuests = $guests->count();
+        $rawGuests = $request->input('guests', []);
+        $guestsInput = [];
+
+        foreach ($guests as $i => $guest) {
+            $rowInput = is_array($rawGuests[$i] ?? null) ? $rawGuests[$i] : [];
+            $guestsInput[$i] = array_merge($rowInput, [
+                'person_id'       => $guest->id,
+                'tipo_alloggiato' => GuestClassifier::defaultTipoFor($i, $totalGuests),
+                'include'         => 1,
+            ]);
+        }
+
+        $request->merge(['guests' => $guestsInput]);
+
+        $countryCodes = Country::whereNotNull('iso2')->pluck('iso2')->all();
+
+        return $request->validate($this->guestReportingValidationRules($request, $countryCodes));
+    }
 
     /** Resolve a booking by token, aborting with 404 if the token is unknown, expired, or canceled. */
     private function resolveValidBooking(string $token): Booking

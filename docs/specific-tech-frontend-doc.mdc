@@ -78,6 +78,10 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - Language switcher: plain links appending `?lang=xx` to the current URL (reloads the
   page); intentionally does **not** reuse `lang-switcher.ts`/`/locale` (which persists
   the choice in session) since the check-in page's switcher must not persist.
+- The guest fields and the "Confirm & submit" button are one form. There is no
+  separate save button: the confirmation request submits and persists all fields.
+  Validation or backend errors return to the same page with the entered values
+  preserved.
 
 ## Admin: pending booking-requests queue
 - View: `resources/views/admin/booking-requests/index.blade.php` (table: requester,

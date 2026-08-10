@@ -62,9 +62,8 @@ class CheckinFormTest extends TestCase
     {
         $booking = $this->createBooking(1);
 
-        // Saving without document data is rejected outright: a single guest
-        // is classified as type 16, which requires a document.
-        $this->post(route('checkin.store', $booking->checkin_token), [
+        // A single guest is classified as type 16, which requires a document.
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: false)],
         ])->assertSessionHasErrors([
             'guests.0.document_type',
@@ -72,17 +71,14 @@ class CheckinFormTest extends TestCase
             'guests.0.document_issue_country_code',
         ]);
 
-        // With full document data, saving and then confirming succeeds.
-        $this->post(route('checkin.store', $booking->checkin_token), [
+                // Full data is saved and confirmed in one request.
+                $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
           ->assertSessionHas('success');
 
         $booking->person->refresh();
         $this->assertSame('passport', $booking->person->document_type);
-
-        $this->post(route('checkin.confirm', $booking->checkin_token))
-            ->assertSessionHas('success');
         $this->assertNotNull($booking->fresh()->checkin_completed_at);
     }
 
@@ -101,14 +97,14 @@ class CheckinFormTest extends TestCase
             $this->guestPayload($companion2->id, withDocument: false),
         ];
 
-        $this->post(route('checkin.store', $booking->checkin_token), ['guests' => $payload])
+        $this->post(route('checkin.confirm', $booking->checkin_token), ['guests' => $payload])
             ->assertSessionHasErrors(['guests.0.document_type']);
 
         // ...but companions (index 1, 2) are membro gruppo (type 20) => no
         // document required, even once the primary guest provides one.
         $payload[0] = $this->guestPayload($booking->person_id, withDocument: true);
 
-        $this->post(route('checkin.store', $booking->checkin_token), ['guests' => $payload])
+        $this->post(route('checkin.confirm', $booking->checkin_token), ['guests' => $payload])
             ->assertRedirect(route('checkin.show', $booking->checkin_token))
             ->assertSessionHas('success');
 
@@ -116,8 +112,6 @@ class CheckinFormTest extends TestCase
         $this->assertSame('M', $companion1->gender);
         $this->assertNull($companion1->document_type);
 
-        $this->post(route('checkin.confirm', $booking->checkin_token))
-            ->assertSessionHas('success');
         $this->assertNotNull($booking->fresh()->checkin_completed_at);
     }
 
@@ -152,7 +146,7 @@ class CheckinFormTest extends TestCase
     {
         $booking = $this->createBooking(1);
 
-        $this->post(route('checkin.store', $booking->checkin_token), [
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ])->assertRedirect();
 
@@ -166,11 +160,9 @@ class CheckinFormTest extends TestCase
     {
         $booking = $this->createBooking(1);
 
-        $this->post(route('checkin.store', $booking->checkin_token), [
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
-        ]);
-
-        $this->post(route('checkin.confirm', $booking->checkin_token))
+        ])
             ->assertRedirect(route('checkin.show', $booking->checkin_token))
             ->assertSessionHas('success');
 
@@ -184,20 +176,34 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.confirm', $booking->checkin_token))
             ->assertRedirect(route('checkin.show', $booking->checkin_token))
-            ->assertSessionHas('error');
+            ->assertSessionHasErrors();
 
         $booking->refresh();
         $this->assertNull($booking->checkin_completed_at);
+    }
+
+    public function test_validation_failure_preserves_submitted_guest_data(): void
+    {
+        $booking = $this->createBooking(1);
+
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
+            'guests' => [[
+                'gender' => 'M',
+            ]],
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token))
+          ->assertSessionHasErrors()
+          ->assertSessionHasInput('guests.0.gender', 'M');
+
+        $this->assertNull($booking->fresh()->checkin_completed_at);
     }
 
     public function test_editing_after_confirmation_is_still_possible(): void
     {
         $booking = $this->createBooking(1);
 
-        $this->post(route('checkin.store', $booking->checkin_token), [
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ]);
-        $this->post(route('checkin.confirm', $booking->checkin_token));
 
         $booking->refresh();
         $this->assertNotNull($booking->checkin_completed_at);
@@ -205,7 +211,7 @@ class CheckinFormTest extends TestCase
         $updatedPayload = $this->guestPayload($booking->person_id, withDocument: true);
         $updatedPayload['document_number'] = 'NEWDOC999';
 
-        $this->post(route('checkin.store', $booking->checkin_token), [
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$updatedPayload],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 

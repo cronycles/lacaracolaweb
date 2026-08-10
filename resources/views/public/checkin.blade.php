@@ -50,7 +50,7 @@
             </div>
         @endif
 
-        <form id="checkin-form" method="POST" action="{{ route('checkin.store', $booking->checkin_token) }}">
+        <form id="checkin-form" method="POST" action="{{ route('checkin.confirm', $booking->checkin_token) }}">
             @csrf
 
             @foreach ($guests as $i => $guest)
@@ -178,7 +178,8 @@
                 </div>
             @endforeach
 
-            <button type="submit" class="btn btn--primary">{{ __('app.checkin_save_button') }}</button>
+            <button type="submit" class="btn btn--primary">{{ __('app.checkin_confirm_button') }}</button>
+            <p class="booking-form__note">{{ __('app.checkin_confirm_note') }}</p>
         </form>
 
         @if ($canAddCompanion)
@@ -198,12 +199,6 @@
                 <button type="submit" class="btn btn--outline" style="margin-top:var(--space-4)">{{ __('app.checkin_add_companion_button') }}</button>
             </form>
         @endif
-
-        <form method="POST" action="{{ route('checkin.confirm', $booking->checkin_token) }}" style="margin-top:var(--space-8);text-align:center">
-            @csrf
-            <button type="submit" class="btn btn--primary">{{ __('app.checkin_confirm_button') }}</button>
-            <p class="booking-form__note">{{ __('app.checkin_confirm_note') }}</p>
-        </form>
 
     </div>
 </section>
