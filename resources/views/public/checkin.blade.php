@@ -22,6 +22,8 @@
 <section class="section">
     <div class="container" style="max-width:720px">
 
+        <h1 class="section-title">{{ __('app.checkin_title') }}</h1>
+
         {{-- Language switcher: reloads with ?lang= override, does not persist --}}
         <div class="checkin-lang-switch">
             @foreach (['it', 'en', 'fr', 'de'] as $loc)
@@ -84,7 +86,7 @@
             </div>
         @endif
 
-        <h1 class="section-title">{{ __('app.checkin_title') }}</h1>
+        @unless ($checkinConfirmed)
         <p style="color:var(--color-text-muted);margin-bottom:var(--space-6)">
             {{ __('app.checkin_intro', [
                 'checkin'  => $booking->checkin->translatedFormat('d F Y'),
@@ -92,7 +94,6 @@
             ]) }}
         </p>
 
-        @unless ($checkinConfirmed)
         <div class="checkin-progress checkin-progress--incomplete" data-checkin-progress
              data-required-guests="{{ $booking->total_guests }}"
              data-present-guests="{{ $totalGuests }}"

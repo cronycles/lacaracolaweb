@@ -78,8 +78,16 @@ class CheckinAccessTest extends TestCase
 
         $this->get(route('checkin.show', $booking->checkin_token))
             ->assertOk()
+            ->assertSeeInOrder([
+                __('app.checkin_title'),
+                __('app.checkin_already_confirmed_title'),
+            ])
             ->assertSee(__('app.checkin_summary_title'))
             ->assertSee(route('checkin.edit', $booking->checkin_token))
+            ->assertDontSee(__('app.checkin_intro', [
+                'checkin' => $booking->checkin->translatedFormat('d F Y'),
+                'checkout' => $booking->checkout->translatedFormat('d F Y'),
+            ]))
             ->assertDontSee('data-checkin-submit');
     }
 }
