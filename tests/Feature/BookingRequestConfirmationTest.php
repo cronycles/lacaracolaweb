@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Mail\BookingRequestDeclinedMail;
+use App\Models\AvailabilityBlock;
 use App\Models\BookingRequest;
 use App\Models\Person;
 use App\Models\Role;
@@ -114,6 +115,9 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertNull($booking->linen_amount);
         $this->assertNull($booking->parking_amount);
         $this->assertNotNull($booking->availabilityBlock);
+        $this->assertSame('booked', $booking->availabilityBlock->reason);
+        $this->assertSame($booking->id, $booking->availabilityBlock->booking_id);
+        $this->assertNull($booking->availabilityBlock->booking_request_id);
     }
 
     public function test_confirming_applies_the_same_tax_declaration_defaults_as_creating_a_booking_directly(): void
@@ -126,6 +130,12 @@ class BookingRequestConfirmationTest extends TestCase
         ]]);
 
         $request = $this->makeRequest();
+        AvailabilityBlock::create([
+            'start_date'         => $request->checkin,
+            'end_date'           => $request->checkout,
+            'reason'             => 'pending',
+            'booking_request_id' => $request->id,
+        ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.booking-requests.confirm', $request));
@@ -218,6 +228,7 @@ class BookingRequestConfirmationTest extends TestCase
         $request->refresh();
         $this->assertNotNull($request->declined_at);
         $this->assertDatabaseCount('bookings', 0);
+        $this->assertDatabaseMissing('availability_blocks', ['booking_request_id' => $request->id]);
 
         $response = $this->actingAs($this->admin)->get(route('admin.booking-requests.index'));
         $response->assertDontSee('Mario Rossi');
@@ -241,12 +252,19 @@ class BookingRequestConfirmationTest extends TestCase
         Mail::fake();
 
         $request = $this->makeRequest();
+        AvailabilityBlock::create([
+            'start_date'         => $request->checkin,
+            'end_date'           => $request->checkout,
+            'reason'             => 'pending',
+            'booking_request_id' => $request->id,
+        ]);
 
         $this->actingAs($this->admin)
             ->delete(route('admin.booking-requests.destroy', $request))
             ->assertRedirect(route('admin.booking-requests.index'));
 
         $this->assertDatabaseMissing('booking_requests', ['id' => $request->id]);
+        $this->assertDatabaseMissing('availability_blocks', ['booking_request_id' => $request->id]);
         Mail::assertNothingSent();
     }
 

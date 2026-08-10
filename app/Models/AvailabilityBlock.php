@@ -14,6 +14,7 @@ class AvailabilityBlock extends Model
         'end_date',
         'reason',
         'booking_id',
+        'booking_request_id',
         'notes',
     ];
 
@@ -25,5 +26,10 @@ class AvailabilityBlock extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function bookingRequest(): BelongsTo
+    {
+        return $this->belongsTo(BookingRequest::class);
     }
 }

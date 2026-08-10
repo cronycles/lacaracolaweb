@@ -311,6 +311,10 @@ prenotazioni reali con un click, riusando i dati già presenti nella richiesta.
 - `destroy()` elimina definitivamente la riga (nessuna email, nessuna traccia) — pensata per
   test/prove o richieste che il proprietario vuole rimuovere del tutto, distinta da `decline()`
   che invece serve per il flusso reale con l'ospite.
+- Alla creazione della richiesta viene creato un `AvailabilityBlock` `pending`, collegato
+  tramite `booking_request_id`: la home lo espone come non disponibile con semantica
+  check-in incluso / check-out escluso. `confirm()` converte lo stesso blocco in `booked`
+  collegandolo alla nuova `Booking`; `decline()` e `destroy()` eliminano il blocco pending.
 - Tutti i campi economici (`income_amount`, `cleaning_amount`, `linen_amount`, `parking_amount`)
   restano `NULL` sulla booking creata da `confirm()` — comportamento voluto, non un difetto:
   il proprietario li compila a mano dopo, come già avviene per le prenotazioni create manualmente.

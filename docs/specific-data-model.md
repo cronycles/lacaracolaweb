@@ -252,6 +252,7 @@ Explicit date ranges when the apartment is unavailable (booked, maintenance, or 
 | `end_date`   | DATE        | Block end date (exclusive)                   |
 | `reason`     | VARCHAR(30) | booked, owner, maintenance                   |
 | `booking_id` | BIGINT FK   | References `bookings.id` (nullable, CASCADE) |
+| `booking_request_id` | BIGINT FK | References `booking_requests.id` (nullable, CASCADE; unique) |
 | `notes`      | TEXT        | Reason details (nullable)                    |
 | `created_at` | TIMESTAMP   |                                              |
 | `updated_at` | TIMESTAMP   |                                              |
@@ -261,13 +262,16 @@ Explicit date ranges when the apartment is unavailable (booked, maintenance, or 
 - Blocks created automatically when bookings are made or imported
 - Manual blocks (reason: owner) are created by admin directly
 - Indexed on `(start_date, end_date)` for range queries
-- `booking_id` is nullable: blocks with `booking_id IS NULL` are manual owner blocks
+- `booking_id` is nullable: blocks with `booking_id IS NULL` are either manual owner blocks or pending request blocks
+- `booking_request_id` links a temporary `pending` block to the public request that created it; it is cleared when the request is confirmed and the block is linked to the resulting booking
+- Pending request blocks use check-in inclusive / check-out exclusive semantics, matching bookings. They are deleted when the request is declined or permanently deleted.
 - When a booking is hard-deleted, its associated block is also deleted (CASCADE)
 - When a booking is marked canceled (`canceled_at != null`), the block is NOT deleted, but availability queries exclude the canceled booking's dates
 
 **Relations:**
 
 - N → 1 `bookings` (optional, can be created for manual blocks without booking)
+- N → 1 `booking_requests` (optional, for temporary pending blocks)
 
 ---
 

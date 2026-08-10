@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\BookingRequestMail;
 use App\Mail\BookingRequestPendingMail;
 use App\Models\BookingRequest;
+use App\Models\AvailabilityBlock;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -174,6 +175,13 @@ class BookingController extends Controller
             'estimated_linen_amount'    => $quote['available'] ? $quote['linen_cents'] / 100 : null,
             'estimated_parking_amount'  => $quote['available'] && $parkingRequested ? $quote['parking_cents'] / 100 : null,
             'estimated_total_amount'    => $quote['available'] ? $quote['total_cents'] / 100 : null,
+        ]);
+
+        AvailabilityBlock::create([
+            'start_date'        => $bookingRequest->checkin,
+            'end_date'          => $bookingRequest->checkout,
+            'reason'            => 'pending',
+            'booking_request_id' => $bookingRequest->id,
         ]);
 
         try {

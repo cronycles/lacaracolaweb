@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Mail\BookingRequestMail;
 use App\Mail\BookingRequestPendingMail;
+use App\Models\AvailabilityBlock;
 use App\Models\BookingRequest;
 use App\Models\PricingRule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,6 +65,30 @@ class BookingLegalConsentTest extends TestCase
         $this->assertNotEmpty($bookingRequest->user_agent);
         $this->assertSame(1, $bookingRequest->babies);
         $this->assertSame(1, $bookingRequest->pets);
+
+        $block = AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->first();
+
+        $this->assertNotNull($block);
+        $this->assertSame('pending', $block->reason);
+        $this->assertSame($bookingRequest->checkin->format('Y-m-d'), $block->start_date->format('Y-m-d'));
+        $this->assertSame($bookingRequest->checkout->format('Y-m-d'), $block->end_date->format('Y-m-d'));
+    }
+
+    public function test_pending_request_dates_are_exposed_as_unavailable_on_the_home_calendar(): void
+    {
+        Mail::fake();
+
+        $payload = $this->validPayload() + ['accepted_terms' => '1'];
+        $this->postJson(route('it.booking.request'), $payload)->assertOk();
+
+        $request = BookingRequest::first();
+        $response = $this->get(route('it.home'));
+
+        $response->assertViewHas('unavailableDates', function (array $dates) use ($request): bool {
+            return in_array($request->checkin->format('Y-m-d'), $dates, true)
+                && in_array($request->checkout->copy()->subDay()->format('Y-m-d'), $dates, true)
+                && ! in_array($request->checkout->format('Y-m-d'), $dates, true);
+        });
     }
 
     public function test_request_rejects_adults_and_children_above_apartment_capacity(): void

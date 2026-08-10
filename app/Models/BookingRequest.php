@@ -59,6 +59,11 @@ class BookingRequest extends Model
         return $this->hasOne(Booking::class);
     }
 
+    public function availabilityBlock(): HasOne
+    {
+        return $this->hasOne(AvailabilityBlock::class);
+    }
+
     /** Full name helper, mirrors `Person::getFullNameAttribute()`. */
     public function getFullNameAttribute(): string
     {

@@ -42,8 +42,16 @@ class HomeController extends Controller
 
         $manualBlocks = AvailabilityBlock::query()
             ->whereNull('booking_id')
+            ->whereNull('booking_request_id')
             ->whereDate('start_date', '<=', $windowEnd->toDateString())
             ->whereDate('end_date', '>=', $today->toDateString())
+            ->get(['start_date', 'end_date']);
+
+        $pendingBlocks = AvailabilityBlock::query()
+            ->whereNull('booking_id')
+            ->whereNotNull('booking_request_id')
+            ->whereDate('start_date', '<=', $windowEnd->toDateString())
+            ->whereDate('end_date', '>', $today->toDateString())
             ->get(['start_date', 'end_date']);
 
         $dates = [];
@@ -71,6 +79,20 @@ class HomeController extends Controller
             }
 
             while ($cursor->lte($endDate)) {
+                $dates[$cursor->format('Y-m-d')] = true;
+                $cursor->addDay();
+            }
+        }
+
+        foreach ($pendingBlocks as $block) {
+            $cursor = Carbon::parse($block->start_date)->startOfDay();
+            $endDate = Carbon::parse($block->end_date)->startOfDay();
+
+            if ($cursor->lt($today)) {
+                $cursor = $today->copy();
+            }
+
+            while ($cursor->lt($endDate)) {
                 $dates[$cursor->format('Y-m-d')] = true;
                 $cursor->addDay();
             }

@@ -17,7 +17,8 @@ alwaysApply: true
 - The calendar shows occupied days and makes them non-selectable.
 - Occupancy is computed from:
     - active bookings (not canceled),
-    - manual blocks.
+  - manual blocks,
+  - pending availability requests (check-in inclusive, check-out exclusive).
 - Public price estimate (linear amortisation model):
     - uses recurring month/day pricing rules to sum nightly rates,
     - adds fixed costs once per booking: cleaning fee + linen fee × guests,
@@ -44,6 +45,9 @@ alwaysApply: true
 - Every submitted availability request appears in a dedicated admin "Richieste"
   page until the owner confirms or declines it — nothing is silently lost or
   only reachable via the notification email.
+- A pending availability request temporarily marks its requested dates as
+  unavailable on the public calendar. Confirmation converts that temporary
+  block into the booking block; decline or permanent deletion releases the dates.
 - Confirming a request automatically finds the matching guest profile (by
   email, then phone, then exact full name) or creates a new one, then creates
   the `Booking` with the request's dates/guests, linked back to the original

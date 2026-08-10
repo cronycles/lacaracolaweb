@@ -13,6 +13,7 @@ use App\Services\BookingCreationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class BookingRequestController extends Controller
@@ -37,34 +38,47 @@ class BookingRequestController extends Controller
     /** Confirm a pending request: find/create the guest, create the linked booking, redirect to edit it. */
     public function confirm(BookingRequest $bookingRequest, BookingCreationService $creationService): RedirectResponse
     {
-        $person = $creationService->findOrCreatePerson($this->personData($bookingRequest));
+        $booking = DB::transaction(function () use ($bookingRequest, $creationService): Booking {
+            $person = $creationService->findOrCreatePerson($this->personData($bookingRequest));
 
-        $booking = Booking::create([
-            'person_id'          => $person->id,
-            'booking_request_id' => $bookingRequest->id,
-            'checkin'            => $bookingRequest->checkin,
-            'checkout'           => $bookingRequest->checkout,
-            'adults'             => $bookingRequest->adults,
-            'children'           => $bookingRequest->children,
-            'babies'             => $bookingRequest->babies,
-            'pets'               => $bookingRequest->pets,
-            'source'             => 'direct',
-            'locale'             => $bookingRequest->locale,
-            'notes'              => $bookingRequest->message,
-            // Pre-fill the financial fields with the price quoted to the guest
-            // on the public form, so the owner just has to verify/adjust it.
-            'income_amount'      => $bookingRequest->estimated_stay_amount,
-            'cleaning_amount'    => $bookingRequest->estimated_cleaning_amount,
-            'linen_amount'       => $bookingRequest->estimated_linen_amount,
-            'parking_amount'     => $bookingRequest->estimated_parking_amount,
-        ]);
+            $booking = Booking::create([
+                'person_id'          => $person->id,
+                'booking_request_id' => $bookingRequest->id,
+                'checkin'            => $bookingRequest->checkin,
+                'checkout'           => $bookingRequest->checkout,
+                'adults'             => $bookingRequest->adults,
+                'children'           => $bookingRequest->children,
+                'babies'             => $bookingRequest->babies,
+                'pets'               => $bookingRequest->pets,
+                'source'             => 'direct',
+                'locale'             => $bookingRequest->locale,
+                'notes'              => $bookingRequest->message,
+                // Pre-fill the financial fields with the price quoted to the guest
+                // on the public form, so the owner just has to verify/adjust it.
+                'income_amount'      => $bookingRequest->estimated_stay_amount,
+                'cleaning_amount'    => $bookingRequest->estimated_cleaning_amount,
+                'linen_amount'       => $bookingRequest->estimated_linen_amount,
+                'parking_amount'     => $bookingRequest->estimated_parking_amount,
+            ]);
 
-        AvailabilityBlock::create([
-            'start_date' => $bookingRequest->checkin,
-            'end_date'   => $bookingRequest->checkout,
-            'reason'     => 'booked',
-            'booking_id' => $booking->id,
-        ]);
+            $block = AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->first();
+            if ($block) {
+                $block->update([
+                    'reason'             => 'booked',
+                    'booking_id'         => $booking->id,
+                    'booking_request_id' => null,
+                ]);
+            } else {
+                AvailabilityBlock::create([
+                    'start_date' => $bookingRequest->checkin,
+                    'end_date'   => $bookingRequest->checkout,
+                    'reason'     => 'booked',
+                    'booking_id' => $booking->id,
+                ]);
+            }
+
+            return $booking;
+        });
 
         return redirect()
             ->route('admin.bookings.edit', $booking)
@@ -74,6 +88,7 @@ class BookingRequestController extends Controller
     /** Decline a pending request: keeps the row (legal consent proof), removes it from the queue, notifies the guest. */
     public function decline(BookingRequest $bookingRequest): RedirectResponse
     {
+        AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->delete();
         $bookingRequest->update(['declined_at' => now()]);
 
         try {
@@ -96,6 +111,7 @@ class BookingRequestController extends Controller
     /** Permanently delete a request row (no email, no trace) — for cleanup/testing or requests the owner wants gone entirely. */
     public function destroy(BookingRequest $bookingRequest): RedirectResponse
     {
+        AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->delete();
         $bookingRequest->delete();
 
         return redirect()
