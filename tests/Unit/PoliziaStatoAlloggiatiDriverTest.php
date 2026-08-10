@@ -49,4 +49,40 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
         self::assertStringNotContainsString("\r\n", $records['string'][0]);
         self::assertStringNotContainsString("\r\n", $records['string'][1]);
     }
+
+    public function test_free_text_is_normalized_to_printable_ascii(): void
+    {
+        Country::create([
+            'iso2'            => 'FR',
+            'name_it'         => 'Francia',
+            'alloggiati_code' => '201000200',
+        ]);
+
+        $guest = new GuestRecord(
+            tipoAlloggiato: '18',
+            arrivalDate: '10/08/2026',
+            stayNights: 2,
+            lastName: "Àlvarez Ñørgaard ç ¢ 😀",
+            firstName: "Zoë Łukáš",
+            gender: 'F',
+            birthDate: '1990-01-01',
+            birthMunicipality: 'Paris',
+            birthProvince: null,
+            birthCountryCode: 'FR',
+            nationalityCode: 'FR',
+            documentType: 'passport',
+            documentNumber: "AB¢-ç😀123",
+            documentIssuePlace: '',
+            documentIssueCountryCode: 'FR',
+        );
+
+        $driver = new PoliziaStatoAlloggiatiDriver([]);
+        $buildRecord = new ReflectionMethod($driver, 'buildRecord');
+        $record = $buildRecord->invoke($driver, $guest);
+
+        self::assertSame(168, strlen($record));
+        self::assertDoesNotMatchRegularExpression('/[^\x20-\x7E]/', $record);
+        self::assertSame('ALVAREZ NORGAARD C C', rtrim(substr($record, 14, 50)));
+        self::assertSame('ZOE LUKAS', rtrim(substr($record, 64, 30)));
+    }
 }

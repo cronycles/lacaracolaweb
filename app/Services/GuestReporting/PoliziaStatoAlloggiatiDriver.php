@@ -214,9 +214,9 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             str_pad((string) min(30, max(1, $guest->stayNights)), 2, '0', STR_PAD_LEFT));
 
         $this->writeField($record, self::FIELD_COGNOME_START, self::FIELD_COGNOME_LEN,
-            mb_strtoupper(Str::ascii($guest->lastName)));
+            $this->normalizeFreeText($guest->lastName));
         $this->writeField($record, self::FIELD_NOME_START, self::FIELD_NOME_LEN,
-            mb_strtoupper(Str::ascii($guest->firstName)));
+            $this->normalizeFreeText($guest->firstName));
 
         $this->writeField($record, self::FIELD_SESSO_START, self::FIELD_SESSO_LEN,
             $this->genderToAlloggiati($guest->gender));
@@ -242,7 +242,7 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
             $this->writeField($record, self::FIELD_TIPO_DOC_START, self::FIELD_TIPO_DOC_LEN,
                 $this->documentTypeToAlloggiati($guest->documentType));
             $this->writeField($record, self::FIELD_NUM_DOC_START, self::FIELD_NUM_DOC_LEN,
-                mb_strtoupper(Str::ascii($guest->documentNumber)));
+                $this->normalizeFreeText($guest->documentNumber));
 
             if ($guest->documentIssueCountryCode === 'IT') {
                 $issueCode = ItalianMunicipalities::findCode($guest->documentIssuePlace, null) ?? str_repeat(' ', 9);
@@ -262,6 +262,16 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         }
 
         return $record;
+    }
+
+    /** Convert free text to the printable ASCII subset accepted by Alloggiati Web. */
+    private function normalizeFreeText(string $value): string
+    {
+        $value = Str::ascii($value);
+        $value = preg_replace('/[^\x20-\x7E]/', '', $value) ?? '';
+        $value = preg_replace('/\s+/', ' ', $value) ?? '';
+
+        return strtoupper(trim($value));
     }
 
     /** Write a value into the buffer at the given 0-based position, truncating/padding as needed. */
