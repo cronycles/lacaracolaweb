@@ -39,6 +39,10 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Also sends the Italian-only `BookingHostKeeperMail` to all users with the `host_keeper` role, BCCing the owner and including the guest's phone/email when present, guest counts, parking, cleaning and linen service costs, but never the guest price
   - Sets `Booking.confirmation_sent_at`; the admin UI warns before resending if already sent
   - No automated cancellation job if unpaid after 48h — the owner cancels manually via the existing `cancel` action
+- Payment received email (admin, manual trigger): `POST /admin/prenotazioni/{id}/send-payment-received` (requires `manage_bookings`)
+  - Sends `BookingPaymentReceivedMail` only to the guest, with `config('apartment.email')` in BCC
+  - Includes booking summary, prominent online check-in link, configured host keeper names/emails, house address, and Google Maps/Apple Maps/OpenStreetMap links
+  - Phase 1 intentionally does not update payment fields or store an email-sent timestamp
 - Telegram webhook: `POST /api/telegram/webhook/{secret}` (stateless, no CSRF)
   - Receives updates from Telegram; logs `chat_id` for initial recipient setup.
   - Secret validated against `config('telegram.webhook_secret')`.
@@ -104,6 +108,8 @@ Example: the tax-declaration flag defaults below used to live only in `BookingCo
 | `super_admin` | Full access to all features |
 | `host_owner` | Full access except `manage_users` and `import_pdf` |
 | `host_keeper` | Viewer only: calendar, bookings (no `income_amount`), guests |
+
+Host keeper users can store an optional `phone` contact in the admin user form. The payment-received guest email includes this number, when present, alongside the host keeper email.
 
 Roles are predefined in `RoleSeeder` — not dynamically created via UI.
 

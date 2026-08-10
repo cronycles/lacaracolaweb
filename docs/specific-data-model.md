@@ -27,6 +27,7 @@ Admin accounts for the apartment management system. Supports multiple users with
 | `role_id`    | BIGINT FK    | References `roles.id` (nullable, SET NULL) |
 | `name`       | VARCHAR(255) | Admin display name                        |
 | `email`      | VARCHAR(255) | Unique, used for login                    |
+| `phone`      | VARCHAR(32)  | Contact phone, used for host keeper emails (nullable) |
 | `password`   | VARCHAR(255) | Hashed (Laravel bcrypt)                   |
 | `telegram_chat_id` | VARCHAR(64) | Telegram chat ID for notifications (nullable) |
 | `created_at` | TIMESTAMP    |                                           |

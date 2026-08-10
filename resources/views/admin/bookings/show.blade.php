@@ -30,6 +30,14 @@
                         🛎 Promemoria check-in{{ $booking->checkin_completed_at ? ' (già completato)' : '' }}
                     </button>
                 </form>
+                <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}"
+                      class="js-confirm-send-mail"
+                      data-confirm-message="Inviare all'ospite l'email di conferma ricezione pagamento? Questa azione invia solo l'email e non modifica lo stato del pagamento.">
+                    @csrf
+                    <button type="submit" class="btn btn--primary btn--sm" title="Invia all'ospite la conferma della ricezione del pagamento">
+                        💳 Conferma pagamento
+                    </button>
+                </form>
                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
                       onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
                     @csrf
@@ -297,7 +305,11 @@
                             <th>Saldo netto</th>
                             <td>
                                 @php $net = (float)$booking->income_amount + (float)($booking->parking_amount ?? 0); @endphp
-                                <strong style="color:{{ $net >= 0 ? '#2e7d32' : '#c62828' }}">
+                                @if ($net >= 0)
+                                    <strong style="color:#2e7d32">
+                                @else
+                                    <strong style="color:#c62828">
+                                @endif
                                     € {{ number_format($net, 2, ',', '.') }}
                                 </strong>
                             </td>

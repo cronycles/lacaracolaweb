@@ -17,6 +17,7 @@
                     <tr>
                         <th>Nome</th>
                         <th>Email</th>
+                        <th>Telefono</th>
                         <th>Ruolo</th>
                         <th>Telegram Chat ID</th>
                         <th></th>
@@ -27,6 +28,13 @@
                         <tr>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+                            <td>
+                                @if ($user->phone)
+                                    <a href="tel:{{ $user->phone }}">{{ $user->phone }}</a>
+                                @else
+                                    <span style="color:#6b7f89">—</span>
+                                @endif
+                            </td>
                             <td>
                                 @if ($user->role)
                                     <span class="badge badge--{{ $user->role->name }}">{{ $user->role->name }}</span>

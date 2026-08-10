@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\BookingConfirmedMail;
 use App\Mail\BookingHostKeeperMail;
+use App\Mail\BookingPaymentReceivedMail;
 use App\Mail\CheckinReminderMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
@@ -197,6 +198,23 @@ class BookingController extends Controller
         Mail::to($prenotazioni->person->email)->send(new CheckinReminderMail($prenotazioni));
 
         return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a '.$prenotazioni->person->email.'.');
+    }
+
+    /**
+     * Manually send the guest email confirming that the payment was received.
+     * This phase only sends the email and does not change payment status.
+     */
+    public function sendPaymentReceivedEmail(Booking $prenotazioni): RedirectResponse
+    {
+        $prenotazioni->load('person');
+
+        if (empty($prenotazioni->person->email)) {
+            return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
+        }
+
+        Mail::to($prenotazioni->person->email)->send(new BookingPaymentReceivedMail($prenotazioni));
+
+        return redirect()->back()->with('success', 'Email di pagamento ricevuto inviata a '.$prenotazioni->person->email.'.');
     }
 
     public function notifyTelegram(Booking $prenotazioni, TelegramService $telegram): JsonResponse

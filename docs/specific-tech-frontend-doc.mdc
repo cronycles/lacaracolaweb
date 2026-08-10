@@ -93,6 +93,11 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
   / `.badge--unpaid` (amber, new profile will be created) color classes — no new badge
   variants introduced.
 
+## Admin: payment received email
+- Booking detail page (`resources/views/admin/bookings/show.blade.php`) exposes the `Conferma pagamento` button to users with `manage_bookings`.
+- The button confirms the action in the browser and sends the guest the payment-received email; phase 1 does not change payment status.
+- Admin user create/edit forms expose an optional phone field used for host keeper contact details in guest emails.
+
 ## Brand identity (colors + logo)
 - Palette lives in `resources/css/tokens.css` (`:root`):
   - `--color-primary: #30596C` (dark teal/blue — headings, primary buttons, links)

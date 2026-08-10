@@ -16,6 +16,15 @@
                 @method('PUT')
 
                 <div class="form-group">
+                    <label class="form-label" for="phone">Telefono</label>
+                    <input type="tel" id="phone" name="phone" class="form-input"
+                           value="{{ old('phone', $user->phone) }}" placeholder="Es. +39 333 1234567">
+                    @error('phone')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="role_id">Ruolo</label>
                     <select id="role_id" name="role_id" class="form-select">
                         <option value="">— Nessun ruolo —</option>

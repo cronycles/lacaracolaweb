@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Mail\BookingConfirmedMail;
 use App\Mail\BookingHostKeeperMail;
+use App\Mail\BookingPaymentReceivedMail;
 use App\Mail\CheckinReminderMail;
 use App\Models\Booking;
 use App\Models\Person;
@@ -99,6 +100,72 @@ class BookingConfirmationEmailTest extends TestCase
                 && $mail->hasBcc(config('apartment.email'))
                 && $mail->booking->is($booking);
         });
+    }
+
+    public function test_admin_can_send_payment_received_email_without_changing_payment_status(): void
+    {
+        Mail::fake();
+
+        $hostKeeperRole = Role::where('name', 'host_keeper')->first();
+        User::factory()->create([
+            'name' => 'Host Keeper',
+            'role_id' => $hostKeeperRole->id,
+            'email' => 'keeper@example.com',
+            'phone' => '+39 333 1234567',
+        ]);
+
+        $booking = $this->createBooking([
+            'children' => 1,
+            'income_amount' => 500,
+            'cleaning_amount' => 50,
+            'linen_amount' => 20,
+            'parking_amount' => 30,
+            'income_paid' => false,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.bookings.send-payment-received', $booking))
+            ->assertRedirect();
+
+        $booking->refresh();
+        $this->assertFalse($booking->income_paid);
+
+        Mail::assertSent(BookingPaymentReceivedMail::class, function (BookingPaymentReceivedMail $mail) use ($booking) {
+            return $mail->hasTo('anna.verdi@example.com')
+                && $mail->hasBcc(config('apartment.email'))
+                && $mail->booking->is($booking);
+        });
+    }
+
+    public function test_payment_received_email_contains_checkin_address_maps_and_total(): void
+    {
+        $hostKeeperRole = Role::where('name', 'host_keeper')->first();
+        User::factory()->create([
+            'name' => 'Host Keeper',
+            'role_id' => $hostKeeperRole->id,
+            'email' => 'keeper@example.com',
+            'phone' => '+39 333 1234567',
+        ]);
+
+        $booking = $this->createBooking([
+            'children' => 1,
+            'income_amount' => 500,
+            'cleaning_amount' => 50,
+            'linen_amount' => 20,
+            'parking_amount' => 30,
+        ]);
+
+        $html = (new BookingPaymentReceivedMail($booking))->render();
+
+        $this->assertStringContainsString('Pagamento ricevuto correttamente', $html);
+        $this->assertStringContainsString('600,00', $html);
+        $this->assertStringContainsString('Compila il check-in online', $html);
+        $this->assertStringContainsString('keeper@example.com', $html);
+        $this->assertStringContainsString('+39 333 1234567', $html);
+        $this->assertStringContainsString('Via Aurelia 64', $html);
+        $this->assertStringContainsString('google.com/maps', $html);
+        $this->assertStringContainsString('maps.apple.com', $html);
+        $this->assertStringContainsString('openstreetmap.org', $html);
     }
 
     public function test_manual_checkin_reminder_fails_gracefully_without_guest_email(): void

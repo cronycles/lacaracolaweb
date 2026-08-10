@@ -34,6 +34,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name'             => ['required', 'string', 'max:255'],
             'email'            => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone'            => ['nullable', 'string', 'max:32'],
             'password'         => ['required', 'string', 'min:8', 'confirmed'],
             'role_id'          => ['nullable', 'exists:roles,id'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
@@ -42,6 +43,7 @@ class UserController extends Controller
         User::create([
             'name'             => $data['name'],
             'email'            => $data['email'],
+            'phone'            => $data['phone'] ?? null,
             'password'         => Hash::make($data['password']),
             'role_id'          => $data['role_id'] ?? null,
             'telegram_chat_id' => $data['telegram_chat_id'] ?? null,
@@ -81,12 +83,14 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'role_id'          => ['nullable', 'exists:roles,id'],
+            'phone'            => ['nullable', 'string', 'max:32'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
             'permissions'      => ['nullable', 'array'],
             'permissions.*'    => ['exists:permissions,id'],
         ]);
 
         $utenti->role_id          = $data['role_id'] ?? null;
+        $utenti->phone            = $data['phone'] ?? null;
         $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;
         $utenti->save();
 
