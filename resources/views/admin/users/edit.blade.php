@@ -61,6 +61,18 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+                        <input type="hidden" name="telegram_notifications_enabled" value="0">
+                        <input type="checkbox" name="telegram_notifications_enabled" value="1"
+                               @checked(old('telegram_notifications_enabled', $user->telegram_notifications_enabled))>
+                        <span class="form-label" style="margin:0">Abilita notifiche Telegram</span>
+                    </label>
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.3rem">
+                        Se cambi ruolo, il flag viene riallineato automaticamente al valore predefinito del nuovo ruolo.
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-top:1.25rem">
                     <div class="form-label" style="margin-bottom:.5rem">
                         Permessi

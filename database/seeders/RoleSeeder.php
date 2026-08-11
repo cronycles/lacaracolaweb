@@ -18,15 +18,23 @@ class RoleSeeder extends Seeder
         // super_admin: all permissions
         $superAdmin = Role::firstOrCreate(
             ['name' => 'super_admin'],
-            ['description' => 'Accesso completo a tutte le funzionalità'],
+            [
+                'description' => 'Accesso completo a tutte le funzionalità',
+                'telegram_notifications_enabled' => true,
+            ],
         );
+        $superAdmin->update(['telegram_notifications_enabled' => true]);
         $superAdmin->permissions()->sync($allPermissions->pluck('id'));
 
         // host_keeper: viewer only (calendar, bookings, people — read-only)
         $hostKeeper = Role::firstOrCreate(
             ['name' => 'host_keeper'],
-            ['description' => 'Accesso in sola lettura a calendario, prenotazioni e ospiti'],
+            [
+                'description' => 'Accesso in sola lettura a calendario, prenotazioni e ospiti',
+                'telegram_notifications_enabled' => true,
+            ],
         );
+        $hostKeeper->update(['telegram_notifications_enabled' => true]);
         $hostKeeperPermissions = $allPermissions->whereIn('name', [
             'view_bookings',
             'view_people',
@@ -37,8 +45,12 @@ class RoleSeeder extends Seeder
         // host_owner: everything except manage_users and import_pdf
         $hostOwner = Role::firstOrCreate(
             ['name' => 'host_owner'],
-            ['description' => 'Accesso completo tranne gestione utenti e importazione PDF'],
+            [
+                'description' => 'Accesso completo tranne gestione utenti e importazione PDF',
+                'telegram_notifications_enabled' => true,
+            ],
         );
+        $hostOwner->update(['telegram_notifications_enabled' => true]);
         $hostOwnerPermissions = $allPermissions->whereNotIn('name', [
             'manage_users',
             'import_pdf',

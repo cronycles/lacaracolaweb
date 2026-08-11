@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -57,7 +58,7 @@ class TelegramService
      */
     public function sendToAllRecipients(string $text): void
     {
-        $chatIds = User::whereNotNull('telegram_chat_id')->pluck('telegram_chat_id');
+        $chatIds = $this->recipientQuery()->pluck('telegram_chat_id');
 
         if ($chatIds->isEmpty()) {
             Log::channel('telegram')->warning('sendToAllRecipients: no recipients configured');
@@ -68,5 +69,18 @@ class TelegramService
         foreach ($chatIds as $chatId) {
             $this->sendMessage($chatId, $text);
         }
+    }
+
+    public function countRecipients(): int
+    {
+        return $this->recipientQuery()->count();
+    }
+
+    /** @return Builder<User> */
+    private function recipientQuery(): Builder
+    {
+        return User::query()
+            ->whereNotNull('telegram_chat_id')
+            ->where('telegram_notifications_enabled', true);
     }
 }

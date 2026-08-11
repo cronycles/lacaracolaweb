@@ -11,18 +11,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'telegram_chat_id'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'telegram_chat_id', 'telegram_notifications_enabled'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if ($user->role_id !== null && ! $user->isDirty('telegram_notifications_enabled')) {
+                $user->telegram_notifications_enabled = (bool) Role::whereKey($user->role_id)
+                    ->value('telegram_notifications_enabled');
+            }
+        });
+
+        static::updating(function (User $user): void {
+            if ($user->isDirty('role_id')) {
+                $user->telegram_notifications_enabled = $user->role_id !== null
+                    && (bool) Role::whereKey($user->role_id)->value('telegram_notifications_enabled');
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'telegram_notifications_enabled' => 'boolean',
         ];
     }
 

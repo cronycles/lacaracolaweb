@@ -87,6 +87,7 @@ class UserController extends Controller
             'role_id'          => ['nullable', 'exists:roles,id'],
             'phone'            => ['nullable', 'string', 'max:32'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
+            'telegram_notifications_enabled' => ['boolean'],
             'permissions'      => ['nullable', 'array'],
             'permissions.*'    => ['exists:permissions,id'],
         ]);
@@ -95,6 +96,7 @@ class UserController extends Controller
         $utenti->role_id          = $data['role_id'] ?? null;
         $utenti->phone            = $data['phone'] ?? null;
         $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;
+        $utenti->telegram_notifications_enabled = (bool) ($data['telegram_notifications_enabled'] ?? false);
         $utenti->save();
 
         // Reload role permissions after potential role change

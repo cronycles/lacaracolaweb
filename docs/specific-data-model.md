@@ -30,6 +30,7 @@ Admin accounts for the apartment management system. Supports multiple users with
 | `phone`      | VARCHAR(32)  | Contact phone, used for host keeper emails (nullable) |
 | `password`   | VARCHAR(255) | Hashed (Laravel bcrypt)                   |
 | `telegram_chat_id` | VARCHAR(64) | Telegram chat ID for notifications (nullable) |
+| `telegram_notifications_enabled` | BOOLEAN | Effective per-user Telegram recipient flag (default false) |
 | `created_at` | TIMESTAMP    |                                           |
 | `updated_at` | TIMESTAMP    |                                           |
 
@@ -39,6 +40,7 @@ Admin accounts for the apartment management system. Supports multiple users with
 - `role_id` is nullable: a user without a role has no permissions (no access beyond login)
 - Password change available in admin panel (`/admin/impostazioni/sicurezza`)
 - Super admin created via `RoleSeeder` (assigned to `cronycles@gmail.com`)
+- Telegram recipients require both a non-null `telegram_chat_id` and this flag set to true
 
 **Relations:**
 
@@ -377,6 +379,7 @@ Predefined admin roles. Not dynamically creatable via UI — managed via seeders
 | `id`          | BIGINT PK    | Auto-increment |
 | `name`        | VARCHAR(255) | Unique slug (e.g., `super_admin`, `host_keeper`) |
 | `description` | VARCHAR(255) | Human-readable description (nullable) |
+| `telegram_notifications_enabled` | BOOLEAN | Default Telegram recipient flag for users in this role |
 | `created_at`  | TIMESTAMP    |                |
 | `updated_at`  | TIMESTAMP    |                |
 
@@ -384,6 +387,10 @@ Predefined admin roles. Not dynamically creatable via UI — managed via seeders
 - `super_admin`: full access to all features
 - `host_owner`: full access except `manage_users` and `import_pdf`
 - `host_keeper`: viewer only (calendar, bookings without `income_amount`, guests)
+
+The seeded roles `super_admin`, `host_owner`, and `host_keeper` default this flag to true;
+other roles default to false. Changing a user's role resets the user flag to the new role's
+default, after which it can be adjusted manually in the user edit form.
 
 **Relations:**
 - 1 → N `users`

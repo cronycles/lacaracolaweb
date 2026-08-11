@@ -16,6 +16,13 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - PostCSS in `resources/css`.
 - Bundling/build with Vite.
 
+## Admin Telegram recipients
+
+The admin user edit view (`resources/views/admin/users/edit.blade.php`) exposes the
+`telegram_notifications_enabled` checkbox alongside the Telegram chat ID. A recipient
+must have both values configured. When the role changes, the backend resets the checkbox
+according to the new role default; the helper text in the form explains this behavior.
+
 # Active TS modules
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`

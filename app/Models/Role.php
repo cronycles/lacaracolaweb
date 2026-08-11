@@ -10,7 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'telegram_notifications_enabled'];
+
+    protected function casts(): array
+    {
+        return [
+            'telegram_notifications_enabled' => 'boolean',
+        ];
+    }
 
     public function permissions(): BelongsToMany
     {

@@ -67,7 +67,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Receives updates from Telegram; logs `chat_id` for initial recipient setup.
   - Secret validated against `config('telegram.webhook_secret')`.
 - Booking Telegram notify: `POST /admin/prenotazioni/{id}/notify-telegram` (requires `manage_bookings`)
-  - Sends booking summary to all users with a non-null `telegram_chat_id`.
+  - Sends booking summary, including all online check-in guest fields, only to users with a non-null `telegram_chat_id` and `telegram_notifications_enabled = true`.
   - Returns JSON `{"sent": true|false}`.
 
 # Domain invariants
@@ -91,7 +91,8 @@ A `Booking` row is created from 3 different call sites, and it's easy to add a r
 Example: the tax-declaration flag defaults below used to live only in `BookingController::store()` — accepting a request or importing a PDF silently produced bookings with `income_tax`/`cleaning_tax`/etc. at the DB column default (`false`) instead of the configured default. Fixed by moving the defaulting into `Booking::booted()`.
 - `PricingQuoteService`: single pricing engine (public quote + admin simulator).
 - `InterhomePdfBookingParser`: parses Interhome PDFs into normalized records.
-- `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients resolved from `users.telegram_chat_id`.
+- `TelegramService`: sends Telegram messages via Bot API (`sendMessage`, `sendToAllRecipients`). Recipients require both `users.telegram_chat_id` and `users.telegram_notifications_enabled`.
+- `TelegramBookingMessageBuilder`: formats the booking summary and all guest check-in fields for Telegram. Arrival reminders include the guest block; departure reminders remain concise.
 
 # Movable holiday pricing (Easter/Pentecost)
 - Problem: `pricing_rules` are recurring by month/day, but Easter/Pentecost shift every year (lunar calendar) and can't be expressed as a fixed recurring window.
@@ -168,6 +169,8 @@ Do **not** override Laravel's `can()` method. Use `hasPermission()` and `isSuper
 
 ## Data model
 - `users.role_id` → FK to `roles`
+- `roles.telegram_notifications_enabled` → default Telegram recipient state for the role
+- `users.telegram_notifications_enabled` → effective per-user Telegram recipient state; changing a user's role resets it to the new role default
 - `role_permissions` pivot → role's default permissions
 - `user_permissions` pivot → per-user overrides (additive; `manage_users` is excluded from overrides)
 

@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\Booking;
 use App\Services\TelegramService;
+use App\Services\TelegramBookingMessageBuilder;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -15,7 +16,7 @@ class SendTelegramBookingReminders extends Command
 
     protected $description = 'Send Telegram arrival and departure reminders to configured recipients.';
 
-    public function handle(TelegramService $telegram): int
+    public function handle(TelegramService $telegram, TelegramBookingMessageBuilder $messages): int
     {
         $type = $this->option('type');
 
@@ -34,7 +35,7 @@ class SendTelegramBookingReminders extends Command
                 ->get();
 
             foreach ($arrivals as $booking) {
-                $text = $this->buildArrivalMessage($booking);
+                $text = $this->buildArrivalMessage($booking, $messages);
                 $telegram->sendToAllRecipients($text);
                 $this->line("Arrival reminder sent for booking #{$booking->id}");
             }
@@ -62,7 +63,7 @@ class SendTelegramBookingReminders extends Command
         return self::SUCCESS;
     }
 
-    private function buildArrivalMessage(Booking $booking): string
+    private function buildArrivalMessage(Booking $booking, TelegramBookingMessageBuilder $messages): string
     {
         $person = $booking->person;
 
@@ -83,6 +84,9 @@ class SendTelegramBookingReminders extends Command
             $guests .= "  Animali: {$booking->pets}";
         }
         $lines[] = $guests;
+
+        $lines[] = '';
+        $lines[] = $messages->buildGuestDetails($booking);
 
         return implode("\n", $lines);
     }
