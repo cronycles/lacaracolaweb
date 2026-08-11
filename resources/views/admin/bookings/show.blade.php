@@ -445,32 +445,6 @@
             @endif
         @endif
 
-        {{-- ── Segnalazione Ospiti (Guest Reporting) ── --}}
-        @if(auth()->user()->hasPermission('manage_bookings'))
-            <div class="a-card" style="margin-top:1.25rem">
-                <div class="a-card__title">Segnalazione Ospiti</div>
-                <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-                    @php $lastReport = $booking->guestReports()->latest('submitted_at')->first(); @endphp
-                    @if ($lastReport)
-                        <span style="font-size:.8rem;color:#6b7f89">
-                            Ultimo invio: {{ $lastReport->submitted_at->format('d/m/Y H:i') }}
-                            &nbsp;
-                            @if ($lastReport->mode === 'test')
-                                <span class="badge badge--outline" style="font-size:.7rem">Test</span>
-                            @else
-                                <span class="badge badge--primary" style="font-size:.7rem">Invio</span>
-                            @endif
-                            &nbsp;
-                            @if ($lastReport->status === 'success')
-                                <span class="badge badge--success" style="font-size:.7rem">Successo</span>
-                            @else
-                                <span class="badge badge--error" style="font-size:.7rem">Errore</span>
-                            @endif
-                        </span>
-                    @endif
-                </div>
-            </div>
-        @endif
     </div>
 
 @endsection
