@@ -45,7 +45,7 @@ alwaysApply: true
   guest price. If unpaid, the owner cancels the booking manually (no automated
   cancellation job).
 
-  After the owner verifies a bank transfer, the admin can send a separate payment-received email to the guest. This message repeats the essential stay and total-price summary, makes the online check-in request prominent, identifies the configured host keeper contact, and provides the house address with map links. In phase 1 this action sends only the email and does not change payment status or record a separate send timestamp.
+  After the owner verifies a bank transfer, the admin marks the booking as paid and sends the payment-received email to the guest. This message repeats the essential stay and total-price summary, makes the online check-in request prominent, identifies the configured host keeper contact, and provides the house address with map links. The booking records the payment date and the last time this email was sent.
 
 ### Pending availability requests (admin queue)
 - Every submitted availability request appears in a dedicated admin "Richieste"

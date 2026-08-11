@@ -52,6 +52,8 @@ class SendCheckinRemindersTest extends TestCase
         Mail::assertSent(CheckinReminderMail::class, function (CheckinReminderMail $mail) use ($matching) {
             return $mail->booking->is($matching);
         });
+
+        $this->assertNotNull($matching->fresh()->checkin_reminder_sent_at);
     }
 
     public function test_no_reminder_when_already_completed(): void

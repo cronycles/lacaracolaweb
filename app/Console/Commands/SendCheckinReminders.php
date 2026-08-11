@@ -47,6 +47,7 @@ class SendCheckinReminders extends Command
 
             try {
                 Mail::to($email)->send(new CheckinReminderMail($booking));
+                $booking->update(['checkin_reminder_sent_at' => now()]);
                 $this->line("Check-in reminder sent for booking #{$booking->id}");
             } catch (\Throwable $e) {
                 Log::error('CheckinReminderMail failed to send', [

@@ -3,49 +3,101 @@
 @section('title', 'Prenotazione — ' . $booking->person->full_name)
 
 @section('content')
-    <div style="max-width:680px">
-        <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
+    <div class="booking-page">
+        <div class="booking-header">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Prenotazioni</a>
             @if(auth()->user()->hasPermission('manage_bookings'))
                 <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn--primary btn--sm">Modifica</a>
-                <button type="button" class="btn btn--outline btn--sm"
-                        id="btn-telegram-notify"
-                        data-url="{{ route('admin.bookings.notify-telegram', $booking) }}"
-                        title="Invia notifica Telegram a tutti i destinatari configurati">
-                    ✈ Telegram
-                </button>
-                <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}"
-                      class="js-confirm-send-mail"
-                      data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email di conferma già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : "Inviare l'email di conferma prenotazione con le istruzioni di pagamento?" }}">
-                    @csrf
-                    <button type="submit" class="btn btn--outline btn--sm" title="Invia email di conferma prenotazione con istruzioni di pagamento (48h) e scadenza cancellazione gratuita">
-                        📧 Invia conferma{{ $booking->confirmation_sent_at ? ' (già inviata)' : '' }}
-                    </button>
-                </form>
-                <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}"
-                      class="js-confirm-send-mail"
-                      data-confirm-message="{{ $booking->checkin_completed_at ? 'Il check-in online risulta già completato il '.$booking->checkin_completed_at->format('d/m/Y H:i').'. Inviare comunque il promemoria?' : 'Inviare (o testare) l\'email di promemoria check-in online?' }}">
-                    @csrf
-                    <button type="submit" class="btn btn--outline btn--sm" title="Invia manualmente l'email di promemoria check-in online (normalmente inviata in automatico {{ config('apartment.checkin.reminder_lead_days', 7) }} giorni prima del check-in, se non ancora completato)">
-                        🛎 Promemoria check-in{{ $booking->checkin_completed_at ? ' (già completato)' : '' }}
-                    </button>
-                </form>
-                <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}"
-                      class="js-confirm-send-mail"
-                      data-confirm-message="Inviare all'ospite l'email di conferma ricezione pagamento? Questa azione invia solo l'email e non modifica lo stato del pagamento.">
-                    @csrf
-                    <button type="submit" class="btn btn--primary btn--sm" title="Invia all'ospite la conferma della ricezione del pagamento">
-                        💳 Conferma pagamento
-                    </button>
-                </form>
                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
-                      onsubmit="return confirm('Eliminare questa prenotazione?')" style="margin-left:auto">
+                      onsubmit="return confirm('Eliminare questa prenotazione?')" class="booking-header__danger">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn--danger btn--sm">Elimina</button>
                 </form>
             @endif
         </div>
+
+        @if(auth()->user()->hasPermission('manage_bookings'))
+            <section class="booking-workflow" aria-labelledby="booking-workflow-title">
+                <h2 class="booking-workflow__title" id="booking-workflow-title">Stato e prossime azioni</h2>
+
+                <div class="booking-step">
+                    <span class="booking-step__number">1</span>
+                    <div>
+                        <div class="booking-step__label">Conferma prenotazione</div>
+                        <div class="booking-step__status">
+                            {{ $booking->confirmation_sent_at ? 'Ultimo invio: '.$booking->confirmation_sent_at->format('d/m/Y H:i') : 'Non ancora inviata' }}
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                          data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare l\'email di conferma prenotazione con le istruzioni di pagamento?' }}">
+                        @csrf
+                        <button type="submit" class="btn btn--outline btn--sm">{{ $booking->confirmation_sent_at ? 'Invia di nuovo' : 'Conferma prenotazione' }}</button>
+                    </form>
+                </div>
+
+                <div class="booking-step">
+                    <span class="booking-step__number">2</span>
+                    <div>
+                        <div class="booking-step__label">Pagamento ricevuto</div>
+                        <div class="booking-step__status">
+                            @if($booking->income_paid)
+                                Incassato{{ $booking->income_paid_at ? ' il '.$booking->income_paid_at->format('d/m/Y') : '' }}
+                            @else
+                                Non ancora segnato come incassato
+                            @endif
+                            @if($booking->payment_received_sent_at)
+                                · Ultimo invio: {{ $booking->payment_received_sent_at->format('d/m/Y H:i') }}
+                            @endif
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                          data-confirm-message="{{ $booking->payment_received_sent_at ? 'Conferma pagamento già inviata il '.$booking->payment_received_sent_at->format('d/m/Y H:i').'. Il pagamento risulta incassato. Inviare di nuovo?' : 'Segnare il pagamento come incassato e inviare la conferma all\'ospite?' }}">
+                        @csrf
+                        <button type="submit" class="btn btn--primary btn--sm">{{ $booking->payment_received_sent_at ? 'Invia di nuovo' : 'Segna incassato e conferma' }}</button>
+                    </form>
+                </div>
+
+                <div class="booking-step">
+                    <span class="booking-step__number">3</span>
+                    <div>
+                        <div class="booking-step__label">Check-in online</div>
+                        <div class="booking-step__status">
+                            {{ $booking->checkin_completed_at ? 'Completato il '.$booking->checkin_completed_at->format('d/m/Y H:i') : 'Non ancora completato' }}
+                            · {{ $booking->checkin_reminder_sent_at ? 'Ultimo promemoria: '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i') : 'Promemoria non inviato' }}
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                          data-confirm-message="{{ $booking->checkin_reminder_sent_at ? 'Promemoria già inviato il '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare il promemoria check-in online?' }}">
+                        @csrf
+                        <button type="submit" class="btn btn--outline btn--sm">{{ $booking->checkin_reminder_sent_at ? 'Invia di nuovo' : 'Invia promemoria check-in' }}</button>
+                    </form>
+                </div>
+
+                <div class="booking-step">
+                    <span class="booking-step__number">4</span>
+                    <div>
+                        <div class="booking-step__label">Ospiti e Alloggiati Web</div>
+                        <div class="booking-step__status">Disponibile anche se il check-in online non è stato completato</div>
+                    </div>
+                    <a href="{{ route('admin.guest-reporting.show', $booking) }}" class="booking-step__action btn btn--outline btn--sm">Segnala ospiti</a>
+                </div>
+            </section>
+
+            <section class="booking-tools" aria-labelledby="booking-tools-title">
+                <h2 class="booking-tools__title" id="booking-tools-title">Strumenti opzionali</h2>
+                <div class="booking-tools__actions">
+                    <button type="button" class="btn btn--outline btn--sm" id="btn-telegram-notify"
+                            data-url="{{ route('admin.bookings.notify-telegram', $booking) }}"
+                            title="Invia il riepilogo della prenotazione e degli ospiti ai destinatari configurati">
+                        Invia riepilogo Telegram
+                    </button>
+                    @if($booking->telegram_notified_at)
+                        <span class="booking-step__status">Ultimo invio: {{ $booking->telegram_notified_at->format('d/m/Y H:i') }}</span>
+                    @endif
+                </div>
+            </section>
+        @endif
 
         <div id="telegram-toast" style="display:none;margin-bottom:.75rem"></div>
 
@@ -398,9 +450,6 @@
             <div class="a-card" style="margin-top:1.25rem">
                 <div class="a-card__title">Segnalazione Ospiti</div>
                 <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-                    <a href="{{ route('admin.guest-reporting.show', $booking) }}"
-                       class="btn btn--outline btn--sm">📤 Segnala ospiti</a>
-
                     @php $lastReport = $booking->guestReports()->latest('submitted_at')->first(); @endphp
                     @if ($lastReport)
                         <span style="font-size:.8rem;color:#6b7f89">
@@ -476,6 +525,7 @@
         .then(data => {
             if (data.sent) {
                 showToast('✓ Notifica Telegram inviata.', true);
+                setTimeout(() => window.location.reload(), 700);
             } else if (data.reason === 'no_recipients') {
                 showToast('Nessun destinatario configurato. Aggiungi un Telegram Chat ID negli utenti.', false);
             } else {

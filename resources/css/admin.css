@@ -263,6 +263,73 @@ body {
 .btn--outline:hover { background: #f1f5f9; }
 .btn--sm { font-size: .75rem; padding: .3rem .6rem; }
 
+/* Booking detail action workflow */
+.booking-page { max-width: 760px; }
+.booking-header {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+.booking-header__danger { margin-left: auto; }
+.booking-workflow,
+.booking-tools {
+    background: #fff;
+    border: 1px solid var(--admin-border);
+    border-radius: .5rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.booking-workflow__title,
+.booking-tools__title {
+    color: #6b7f89;
+    font-size: .875rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+.booking-step {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .75rem;
+    padding: .8rem 0;
+    border-top: 1px solid #edf1f3;
+}
+.booking-step:first-of-type { border-top: 0; padding-top: 0; }
+.booking-step__number {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #eef2f5;
+    color: #30596c;
+    font-size: .8rem;
+    font-weight: 700;
+}
+.booking-step__label { font-weight: 600; color: #1a2b34; }
+.booking-step__status { color: #6b7f89; font-size: .8rem; margin-top: .2rem; }
+.booking-step__action { justify-self: end; }
+.booking-tools { padding-bottom: 1rem; }
+.booking-tools__actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
+@media (max-width: 560px) {
+    .booking-page { max-width: none; }
+    .booking-header__danger { margin-left: 0; }
+    .booking-step {
+        grid-template-columns: 2rem minmax(0, 1fr);
+        align-items: start;
+    }
+    .booking-step__action { grid-column: 2; justify-self: stretch; }
+    .booking-step__action .btn,
+    .booking-step__action form { width: 100%; }
+    .booking-step__action .btn { justify-content: center; white-space: normal; text-align: center; }
+    .booking-tools__actions .btn { flex: 1 1 100%; justify-content: center; }
+}
+
 /* Forms */
 .form-group { margin-bottom: 1rem; }
 .form-label {

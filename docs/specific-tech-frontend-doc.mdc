@@ -130,8 +130,9 @@ multiple included guests, the first is type `18` and the others are type `20`.
   variants introduced.
 
 ## Admin: payment received email
-- Booking detail page (`resources/views/admin/bookings/show.blade.php`) exposes the `Conferma pagamento` button to users with `manage_bookings`.
-- The button confirms the action in the browser and sends the guest the payment-received email; phase 1 does not change payment status.
+- Booking detail page (`resources/views/admin/bookings/show.blade.php`) exposes the `Segna incassato e conferma` action to users with `manage_bookings`.
+- The action confirms the browser prompt, marks the booking income as paid, sends the guest the payment-received email, and displays the last send timestamp. Resends use the same action after a second confirmation.
+- The booking detail workflow also shows the last manual/automatic check-in reminder and the last Telegram summary send when available.
 - Admin user create/edit forms expose an optional phone field used for host keeper contact details in guest emails.
 
 ## Brand identity (colors + logo)

@@ -58,7 +58,8 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Payment received email (admin, manual trigger): `POST /admin/prenotazioni/{id}/send-payment-received` (requires `manage_bookings`)
   - Sends `BookingPaymentReceivedMail` only to the guest, with `config('apartment.email')` in BCC
   - Includes booking summary, prominent online check-in link, configured host keeper names/emails, house address, and Google Maps/Apple Maps/OpenStreetMap links
-  - Phase 1 intentionally does not update payment fields or store an email-sent timestamp
+  - After a successful send, sets `income_paid = true`, stores `income_paid_at` as today, and updates `Booking.payment_received_sent_at`; resends are allowed after a browser confirmation
+- Check-in reminder email (admin or scheduled): the manual endpoint and `checkin:send-reminders` both update `Booking.checkin_reminder_sent_at` after a successful send; the timestamp represents the last manual or automatic send
 - Completed online check-in email (`CheckinCompletedMail`): sent automatically to the guest after
   `POST /check-in/{token}/confirm` succeeds. It confirms that the online check-in is complete,
   repeats the host keeper contact, house address and map links, free-cancellation deadline, and
@@ -68,7 +69,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Secret validated against `config('telegram.webhook_secret')`.
 - Booking Telegram notify: `POST /admin/prenotazioni/{id}/notify-telegram` (requires `manage_bookings`)
   - Sends booking summary, including all online check-in guest fields, only to users with a non-null `telegram_chat_id` and `telegram_notifications_enabled = true`.
-  - Returns JSON `{"sent": true|false}`.
+  - On success updates `Booking.telegram_notified_at` and returns JSON `{"sent": true|false}`.
 
 # Domain invariants
 - Canceled booking state is `canceled_at != null`.

@@ -85,7 +85,7 @@ class BookingConfirmationEmailTest extends TestCase
         });
     }
 
-    public function test_admin_can_manually_send_checkin_reminder_email(): void
+    public function test_admin_can_manually_send_checkin_reminder_email_and_sets_timestamp(): void
     {
         Mail::fake();
 
@@ -95,6 +95,8 @@ class BookingConfirmationEmailTest extends TestCase
             ->post(route('admin.bookings.send-checkin-reminder', $booking))
             ->assertRedirect();
 
+        $this->assertNotNull($booking->fresh()->checkin_reminder_sent_at);
+
         Mail::assertSent(CheckinReminderMail::class, function (CheckinReminderMail $mail) use ($booking) {
             return $mail->hasTo('anna.verdi@example.com')
                 && $mail->hasBcc(config('apartment.email'))
@@ -102,7 +104,7 @@ class BookingConfirmationEmailTest extends TestCase
         });
     }
 
-    public function test_admin_can_send_payment_received_email_without_changing_payment_status(): void
+    public function test_admin_can_send_payment_received_email_and_marks_payment_received(): void
     {
         Mail::fake();
 
@@ -128,7 +130,17 @@ class BookingConfirmationEmailTest extends TestCase
             ->assertRedirect();
 
         $booking->refresh();
-        $this->assertFalse($booking->income_paid);
+        $booking->refresh();
+        $this->assertTrue($booking->income_paid);
+        $this->assertSame(now()->toDateString(), $booking->income_paid_at->toDateString());
+        $this->assertNotNull($booking->payment_received_sent_at);
+
+        $originalPaidAt = $booking->income_paid_at;
+        $this->actingAs($this->admin)
+            ->post(route('admin.bookings.send-payment-received', $booking))
+            ->assertRedirect();
+
+        $this->assertSame($originalPaidAt->toDateString(), $booking->fresh()->income_paid_at->toDateString());
 
         Mail::assertSent(BookingPaymentReceivedMail::class, function (BookingPaymentReceivedMail $mail) use ($booking) {
             return $mail->hasTo('anna.verdi@example.com')

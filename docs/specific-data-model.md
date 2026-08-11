@@ -119,9 +119,12 @@ Individual stay/reservation records linked to a primary guest.
 | `updated_at`   | TIMESTAMP        |                                                    |
 | `canceled_at`  | TIMESTAMP        | Cancellation marker (nullable, indexed)            |
 | `confirmation_sent_at` | TIMESTAMP | When the "booking confirmed — pay within 48h" email was manually sent (nullable) |
+| `payment_received_sent_at` | TIMESTAMP | When the payment-received email was last sent (nullable) |
 | `checkin_token` | VARCHAR(64)     | High-entropy public check-in token (nullable, unique; generated lazily on first need) |
 | `checkin_token_expires_at` | TIMESTAMP | Token expiry, set to end of the checkout day when generated (nullable) |
 | `checkin_completed_at` | TIMESTAMP | When the guest explicitly confirmed the online check-in (nullable) |
+| `checkin_reminder_sent_at` | TIMESTAMP | When the check-in reminder email was last sent, manually or automatically (nullable) |
+| `telegram_notified_at` | TIMESTAMP | When the booking summary was last sent via Telegram (nullable) |
 | `locale`       | VARCHAR(5)       | Locale for the check-in page/emails (nullable, e.g. `it`/`en`/`fr`/`de`) |
 | `deleted_at`   | TIMESTAMP        | Soft delete timestamp (nullable)                   |
 

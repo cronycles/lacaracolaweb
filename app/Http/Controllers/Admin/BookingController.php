@@ -197,13 +197,13 @@ class BookingController extends Controller
         }
 
         Mail::to($prenotazioni->person->email)->send(new CheckinReminderMail($prenotazioni));
+        $prenotazioni->update(['checkin_reminder_sent_at' => now()]);
 
         return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a '.$prenotazioni->person->email.'.');
     }
 
     /**
-     * Manually send the guest email confirming that the payment was received.
-     * This phase only sends the email and does not change payment status.
+    * Mark the payment as received and send the corresponding guest email.
      */
     public function sendPaymentReceivedEmail(Booking $prenotazioni): RedirectResponse
     {
@@ -214,6 +214,11 @@ class BookingController extends Controller
         }
 
         Mail::to($prenotazioni->person->email)->send(new BookingPaymentReceivedMail($prenotazioni));
+        $prenotazioni->update([
+            'income_paid' => true,
+            'income_paid_at' => $prenotazioni->income_paid_at ?? today(),
+            'payment_received_sent_at' => now(),
+        ]);
 
         return redirect()->back()->with('success', 'Email di pagamento ricevuto inviata a '.$prenotazioni->person->email.'.');
     }
@@ -229,6 +234,7 @@ class BookingController extends Controller
         }
 
         $telegram->sendToAllRecipients($messages->buildBookingSummary($prenotazioni));
+        $prenotazioni->update(['telegram_notified_at' => now()]);
 
         return response()->json(['sent' => true]);
     }
