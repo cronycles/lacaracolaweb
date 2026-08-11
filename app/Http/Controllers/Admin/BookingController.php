@@ -166,6 +166,10 @@ class BookingController extends Controller
             return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
         }
 
+        if (! User::paymentOwner()) {
+            return redirect()->back()->with('error', 'Impossibile inviare: nessun host owner abilitato ai pagamenti.');
+        }
+
         Mail::to($prenotazioni->person->email)->send(new BookingConfirmedMail($prenotazioni));
 
         $hostKeeperEmails = User::query()

@@ -39,7 +39,14 @@ class UserController extends Controller
             'password'         => ['required', 'string', 'min:8', 'confirmed'],
             'role_id'          => ['nullable', 'exists:roles,id'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
+            'tax_code'         => ['nullable', 'string', 'max:16'],
+            'payment_beneficiary' => ['nullable', 'string', 'max:255'],
+            'payment_iban'      => ['nullable', 'string', 'max:34'],
+            'payment_bic'       => ['nullable', 'string', 'max:11'],
+            'payment_enabled'  => ['boolean'],
         ]);
+
+        $isHostOwner = Role::whereKey($data['role_id'] ?? null)->where('name', 'host_owner')->exists();
 
         User::create([
             'name'             => $data['name'],
@@ -48,6 +55,11 @@ class UserController extends Controller
             'password'         => Hash::make($data['password']),
             'role_id'          => $data['role_id'] ?? null,
             'telegram_chat_id' => $data['telegram_chat_id'] ?? null,
+            'tax_code'         => $isHostOwner ? ($data['tax_code'] ?? null) : null,
+            'payment_beneficiary' => $isHostOwner ? ($data['payment_beneficiary'] ?? null) : null,
+            'payment_iban'     => $isHostOwner ? ($data['payment_iban'] ?? null) : null,
+            'payment_bic'      => $isHostOwner ? ($data['payment_bic'] ?? null) : null,
+            'payment_enabled'  => $isHostOwner && (bool) ($data['payment_enabled'] ?? false),
         ]);
 
         return redirect()->route('admin.users.index')
@@ -88,6 +100,11 @@ class UserController extends Controller
             'phone'            => ['nullable', 'string', 'max:32'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
             'telegram_notifications_enabled' => ['boolean'],
+            'tax_code'         => ['nullable', 'string', 'max:16'],
+            'payment_beneficiary' => ['nullable', 'string', 'max:255'],
+            'payment_iban'      => ['nullable', 'string', 'max:34'],
+            'payment_bic'       => ['nullable', 'string', 'max:11'],
+            'payment_enabled'  => ['boolean'],
             'permissions'      => ['nullable', 'array'],
             'permissions.*'    => ['exists:permissions,id'],
         ]);
@@ -97,6 +114,12 @@ class UserController extends Controller
         $utenti->phone            = $data['phone'] ?? null;
         $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;
         $utenti->telegram_notifications_enabled = (bool) ($data['telegram_notifications_enabled'] ?? false);
+        $isHostOwner = Role::whereKey($utenti->role_id)->where('name', 'host_owner')->exists();
+        $utenti->tax_code = $isHostOwner ? ($data['tax_code'] ?? null) : null;
+        $utenti->payment_beneficiary = $isHostOwner ? ($data['payment_beneficiary'] ?? null) : null;
+        $utenti->payment_iban = $isHostOwner ? ($data['payment_iban'] ?? null) : null;
+        $utenti->payment_bic = $isHostOwner ? ($data['payment_bic'] ?? null) : null;
+        $utenti->payment_enabled = $isHostOwner && (bool) ($data['payment_enabled'] ?? false);
         $utenti->save();
 
         // Reload role permissions after potential role change

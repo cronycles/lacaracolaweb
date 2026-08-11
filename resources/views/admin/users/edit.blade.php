@@ -25,6 +25,19 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="form-label" style="margin-bottom:.5rem">Dati host owner e pagamento</div>
+                    <input type="text" name="tax_code" class="form-input" value="{{ old('tax_code', $user->tax_code) }}" placeholder="Codice fiscale">
+                    <input type="text" name="payment_beneficiary" class="form-input" value="{{ old('payment_beneficiary', $user->payment_beneficiary) }}" placeholder="Beneficiario" style="margin-top:.5rem">
+                    <input type="text" name="payment_iban" class="form-input" value="{{ old('payment_iban', $user->payment_iban) }}" placeholder="IBAN" style="margin-top:.5rem">
+                    <input type="text" name="payment_bic" class="form-input" value="{{ old('payment_bic', $user->payment_bic) }}" placeholder="BIC/SWIFT" style="margin-top:.5rem">
+                    <label style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;cursor:pointer">
+                        <input type="hidden" name="payment_enabled" value="0">
+                        <input type="checkbox" name="payment_enabled" value="1" @checked(old('payment_enabled', $user->payment_enabled))>
+                        <span>Abilita questo host owner per i pagamenti</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="phone">Telefono</label>
                     <input type="tel" id="phone" name="phone" class="form-input"
                            value="{{ old('phone', $user->phone) }}" placeholder="Es. +39 333 1234567">

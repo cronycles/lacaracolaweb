@@ -67,22 +67,22 @@
         <div class="payment-title">{{ __('app.booking_confirmed_mail_payment_title') }}</div>
         <p>{{ __('app.booking_confirmed_mail_payment_intro', ['hours' => config('apartment.payment.deadline_hours', 48)]) }}</p>
         <table>
-            @if (config('apartment.payment.beneficiary'))
+            @if ($paymentOwner?->payment_beneficiary)
             <tr>
                 <th>{{ __('app.booking_confirmed_mail_beneficiary') }}</th>
-                <td>{{ config('apartment.payment.beneficiary') }}</td>
+                <td>{{ $paymentOwner->payment_beneficiary }}</td>
             </tr>
             @endif
-            @if (config('apartment.payment.iban'))
+            @if ($paymentOwner?->payment_iban)
             <tr>
                 <th>{{ __('app.booking_confirmed_mail_iban') }}</th>
-                <td>{{ config('apartment.payment.iban') }}</td>
+                <td>{{ $paymentOwner->payment_iban }}</td>
             </tr>
             @endif
-            @if (config('apartment.payment.bic'))
+            @if ($paymentOwner?->payment_bic)
             <tr>
                 <th>{{ __('app.booking_confirmed_mail_bic') }}</th>
-                <td>{{ config('apartment.payment.bic') }}</td>
+                <td>{{ $paymentOwner->payment_bic }}</td>
             </tr>
             @endif
             <tr>

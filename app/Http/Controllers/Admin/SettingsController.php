@@ -49,6 +49,37 @@ class SettingsController extends Controller
         return view('admin.account-security');
     }
 
+    public function paymentProfile(): View
+    {
+        abort_unless(Auth::user()->role?->name === 'host_owner', 403);
+
+        return view('admin.payment-profile', ['user' => Auth::user()]);
+    }
+
+    public function updatePaymentProfile(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        abort_unless($user->role?->name === 'host_owner', 403);
+
+        $data = $request->validate([
+            'tax_code' => ['nullable', 'string', 'max:16'],
+            'payment_beneficiary' => ['nullable', 'string', 'max:255'],
+            'payment_iban' => ['nullable', 'string', 'max:34'],
+            'payment_bic' => ['nullable', 'string', 'max:11'],
+            'payment_enabled' => ['boolean'],
+        ]);
+
+        $user->update([
+            'tax_code' => $data['tax_code'] ?? null,
+            'payment_beneficiary' => $data['payment_beneficiary'] ?? null,
+            'payment_iban' => $data['payment_iban'] ?? null,
+            'payment_bic' => $data['payment_bic'] ?? null,
+            'payment_enabled' => (bool) ($data['payment_enabled'] ?? false),
+        ]);
+
+        return back()->with('success', 'Dati di pagamento salvati.');
+    }
+
     /** Update the user's password and log out. */
     public function updatePassword(Request $request): RedirectResponse
     {

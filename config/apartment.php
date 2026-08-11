@@ -115,14 +115,8 @@ return [
         'key_loss_fee'        => '€150',
     ],
 
-    // --- Bank transfer payment instructions (used in the "booking confirmed" email) ---
+    // --- Bank transfer payment instructions (stored on the selected host owner) ---
     'payment' => [
-        // Beneficiary name shown on the bank transfer.
-        'beneficiary' => env('APARTMENT_PAYMENT_BENEFICIARY', ''),
-        // IBAN for the bank transfer.
-        'iban'        => env('APARTMENT_PAYMENT_IBAN', ''),
-        // BIC/SWIFT code (optional, shown if set).
-        'bic'         => env('APARTMENT_PAYMENT_BIC', ''),
         // Hours the guest has to pay after the confirmation email is sent.
         'deadline_hours' => 48,
         // Days before check-in until which cancellation is free (full refund).

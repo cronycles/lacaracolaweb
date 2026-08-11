@@ -28,6 +28,11 @@ Admin accounts for the apartment management system. Supports multiple users with
 | `name`       | VARCHAR(255) | Admin display name                        |
 | `email`      | VARCHAR(255) | Unique, used for login                    |
 | `phone`      | VARCHAR(32)  | Contact phone, used for host keeper emails (nullable) |
+| `tax_code` | VARCHAR(16) | Host owner's tax code (nullable) |
+| `payment_beneficiary` | VARCHAR(255) | Bank-transfer beneficiary (nullable) |
+| `payment_iban` | VARCHAR(34) | Bank-transfer IBAN (nullable) |
+| `payment_bic` | VARCHAR(11) | Bank-transfer BIC/SWIFT (nullable) |
+| `payment_enabled` | BOOLEAN | Selects this host owner as payment-data source (default false) |
 | `password`   | VARCHAR(255) | Hashed (Laravel bcrypt)                   |
 | `telegram_chat_id` | VARCHAR(64) | Telegram chat ID for notifications (nullable) |
 | `telegram_notifications_enabled` | BOOLEAN | Effective per-user Telegram recipient flag (default false) |
@@ -41,6 +46,7 @@ Admin accounts for the apartment management system. Supports multiple users with
 - Password change available in admin panel (`/admin/impostazioni/sicurezza`)
 - Super admin created via `RoleSeeder` (assigned to `cronycles@gmail.com`)
 - Telegram recipients require both a non-null `telegram_chat_id` and this flag set to true
+- Payment details are used only for users with the `host_owner` role; the enabled host owner is the source for booking payment emails. At most one should be enabled operationally.
 
 **Relations:**
 

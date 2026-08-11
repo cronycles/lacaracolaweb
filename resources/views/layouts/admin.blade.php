@@ -110,6 +110,13 @@
                 </a>
             </li>
             @endif
+            @if(auth()->user()->role?->name === 'host_owner')
+            <li>
+                <a href="{{ route('admin.payment-profile') }}" @class(['active' => request()->routeIs('admin.payment-profile*')])>
+                    💳 Profilo pagamenti
+                </a>
+            </li>
+            @endif
             <li>
                 <a href="{{ route('admin.account-security') }}" @class(['active' => request()->routeIs('admin.account-security*')])>
                     🔐 Sicurezza Account

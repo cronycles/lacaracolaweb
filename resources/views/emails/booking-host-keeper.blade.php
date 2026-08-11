@@ -78,10 +78,14 @@
         </table>
     </div>
 
+    @if ($paymentOwner?->name || $paymentOwner?->tax_code)
     <div class="callout">
-        La ricevuta deve essere intestata a <strong>Marco Crosetti</strong><br>
-        Codice fiscale: <strong>CRSMRC60D24D969K</strong>
+        La ricevuta deve essere intestata a <strong>{{ $paymentOwner?->name }}</strong><br>
+        @if ($paymentOwner?->tax_code)
+            Codice fiscale: <strong>{{ $paymentOwner->tax_code }}</strong>
+        @endif
     </div>
+    @endif
 
     <div class="footer">
         Riepilogo operativo inviato da <a href="https://lacaracolaandora.com">lacaracolaandora.com</a>.

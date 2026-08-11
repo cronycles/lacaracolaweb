@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'telegram_chat_id', 'telegram_notifications_enabled'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'telegram_chat_id', 'telegram_notifications_enabled', 'tax_code', 'payment_beneficiary', 'payment_iban', 'payment_bic', 'payment_enabled'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,6 +33,15 @@ class User extends Authenticatable
                     && (bool) Role::whereKey($user->role_id)->value('telegram_notifications_enabled');
             }
         });
+
+        static::saved(function (User $user): void {
+            if ($user->payment_enabled && $user->role?->name === 'host_owner') {
+                static::query()
+                    ->whereKeyNot($user->id)
+                    ->where('payment_enabled', true)
+                    ->update(['payment_enabled' => false]);
+            }
+        });
     }
 
     protected function casts(): array
@@ -41,7 +50,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'telegram_notifications_enabled' => 'boolean',
+            'payment_enabled' => 'boolean',
         ];
+    }
+
+    public static function paymentOwner(): ?self
+    {
+        return static::query()
+            ->where('payment_enabled', true)
+            ->whereHas('role', fn ($query) => $query->where('name', 'host_owner'))
+            ->orderBy('id')
+            ->first();
     }
 
     // ── Relationships ──────────────────────────────────────────────────────────

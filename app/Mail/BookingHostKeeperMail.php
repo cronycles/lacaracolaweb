@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mail;
 
 use App\Models\Booking;
+use App\Models\User;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -15,7 +16,12 @@ class BookingHostKeeperMail extends Mailable
 {
     use SerializesModels;
 
-    public function __construct(public readonly Booking $booking) {}
+    public readonly ?User $paymentOwner;
+
+    public function __construct(public readonly Booking $booking)
+    {
+        $this->paymentOwner = User::paymentOwner();
+    }
 
     public function envelope(): Envelope
     {

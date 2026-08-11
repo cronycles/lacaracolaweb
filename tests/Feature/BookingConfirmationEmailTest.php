@@ -35,6 +35,17 @@ class BookingConfirmationEmailTest extends TestCase
 
         $superAdminRole = Role::where('name', 'super_admin')->first();
         $this->admin = User::factory()->create(['role_id' => $superAdminRole->id]);
+
+        $hostOwnerRole = Role::where('name', 'host_owner')->first();
+        User::factory()->create([
+            'name' => 'Marco Crosetti',
+            'role_id' => $hostOwnerRole->id,
+            'payment_beneficiary' => 'Marco Crosetti',
+            'payment_iban' => 'IT81A0301503200000005220710',
+            'payment_bic' => 'FEBIITM2',
+            'tax_code' => 'CRSMRC60D24D969K',
+            'payment_enabled' => true,
+        ]);
     }
 
     private function createBooking(array $overrides = []): Booking
@@ -282,6 +293,19 @@ class BookingConfirmationEmailTest extends TestCase
         $this->assertStringContainsString('20,00', $html);
         $this->assertStringContainsString('30,00', $html);
         $this->assertStringNotContainsString('500,00', $html);
+    }
+
+    public function test_confirmation_and_host_keeper_mails_use_enabled_host_owner_details(): void
+    {
+        $booking = $this->createBooking();
+
+        $confirmationHtml = (new BookingConfirmedMail($booking))->render();
+        $hostKeeperHtml = (new BookingHostKeeperMail($booking))->render();
+
+        $this->assertStringContainsString('Marco Crosetti', $confirmationHtml);
+        $this->assertStringContainsString('IT81A0301503200000005220710', $confirmationHtml);
+        $this->assertStringContainsString('FEBIITM2', $confirmationHtml);
+        $this->assertStringContainsString('CRSMRC60D24D969K', $hostKeeperHtml);
     }
 
     public function test_rendered_mail_omits_children_babies_pets_rows_and_total_when_zero_or_unknown(): void

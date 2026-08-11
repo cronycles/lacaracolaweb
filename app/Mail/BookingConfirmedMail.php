@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mail;
 
 use App\Models\Booking;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -23,6 +24,8 @@ class BookingConfirmedMail extends Mailable
 
     public readonly string $checkinUrl;
 
+    public readonly ?User $paymentOwner;
+
     public function __construct(public readonly Booking $booking)
     {
         $this->paymentDeadline = now()->addHours((int) config('apartment.payment.deadline_hours', 48));
@@ -31,6 +34,7 @@ class BookingConfirmedMail extends Mailable
 
         $token = $booking->checkin_token ?: $booking->generateCheckinToken();
         $this->checkinUrl = route('checkin.show', $token);
+        $this->paymentOwner = User::paymentOwner();
     }
 
     public function envelope(): Envelope

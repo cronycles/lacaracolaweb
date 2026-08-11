@@ -34,6 +34,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Account security — available to all (password change)
     Route::get('/impostazioni/sicurezza', [SettingsController::class, 'accountSecurity'])->name('account-security');
     Route::post('/impostazioni/sicurezza/password', [SettingsController::class, 'updatePassword'])->name('account-security.update-password');
+    Route::get('/impostazioni/profilo-pagamenti', [SettingsController::class, 'paymentProfile'])->name('payment-profile');
+    Route::put('/impostazioni/profilo-pagamenti', [SettingsController::class, 'updatePaymentProfile'])->name('payment-profile.update');
 
     // ── manage_bookings ──────────────────────────────────────────────────────
     // Specific booking routes must be registered BEFORE the {prenotazioni} wildcard
