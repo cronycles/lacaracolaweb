@@ -47,6 +47,12 @@ alwaysApply: true
 
   After the owner verifies a bank transfer, the admin marks the booking as paid and sends the payment-received email to the guest. This message repeats the essential stay and total-price summary, makes the online check-in request prominent, identifies the configured host keeper contact, and provides the house address with map links. The booking records the payment date and the last time this email was sent.
 
+  In the admin booking detail workflow, every email action shows its effective
+  recipients before sending: the guest in `To`, the configured apartment email
+  in `BCC`, and, for the booking confirmation, the separate operational email
+  recipients with the `host_keeper` role. The optional Telegram action shows
+  the names of users with both a configured chat ID and notifications enabled.
+
 ### Pending availability requests (admin queue)
 - Every submitted availability request appears in a dedicated admin "Richieste"
   page until the owner confirms or declines it — nothing is silently lost or

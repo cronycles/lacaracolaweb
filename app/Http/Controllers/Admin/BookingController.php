@@ -99,6 +99,20 @@ class BookingController extends Controller
     {
         $prenotazioni->load('person', 'additionalGuests', 'bookingRequest');
 
+        $hostKeeperEmails = User::query()
+            ->whereHas('role', fn ($query) => $query->where('name', 'host_keeper'))
+            ->whereNotNull('email')
+            ->orderBy('name')
+            ->pluck('email')
+            ->all();
+
+        $telegramRecipients = User::query()
+            ->whereNotNull('telegram_chat_id')
+            ->where('telegram_notifications_enabled', true)
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+
         // People selectable as additional guests: never in any booking, or previously with this capogruppo
         $selectablePeople = Person::selectableForCapogruppo($prenotazioni->person_id)
             ->orderBy('last_name')
@@ -108,6 +122,8 @@ class BookingController extends Controller
         return view('admin.bookings.show', [
             'booking' => $prenotazioni,
             'selectablePeople' => $selectablePeople,
+            'hostKeeperEmails' => $hostKeeperEmails,
+            'telegramRecipients' => $telegramRecipients,
         ]);
     }
 

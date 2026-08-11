@@ -3,6 +3,12 @@
 @section('title', 'Prenotazione — ' . $booking->person->full_name)
 
 @section('content')
+    @php
+        $guestEmail = $booking->person->email ?: 'nessun indirizzo email';
+        $apartmentEmail = config('apartment.email');
+        $hostKeeperSummary = $hostKeeperEmails !== [] ? implode(', ', $hostKeeperEmails) : 'nessun host keeper';
+        $telegramSummary = $telegramRecipients !== [] ? implode(', ', $telegramRecipients) : 'nessun destinatario abilitato';
+    @endphp
     <div class="booking-page">
         <div class="booking-header">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Prenotazioni</a>
@@ -30,9 +36,10 @@
                         </div>
                     </div>
                     <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}" class="booking-step__action js-confirm-send-mail"
-                          data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare l\'email di conferma prenotazione con le istruzioni di pagamento?' }}">
+                                                    data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare l\'email di conferma prenotazione con le istruzioni di pagamento?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}; email operativa separata agli host keeper: {{ $hostKeeperSummary }}.">
                         @csrf
                         <button type="submit" class="btn btn--outline btn--sm">{{ $booking->confirmation_sent_at ? 'Invia di nuovo' : 'Conferma prenotazione' }}</button>
+                                                <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }} · Host keeper: {{ $hostKeeperSummary }}</span>
                     </form>
                 </div>
 
@@ -52,9 +59,10 @@
                         </div>
                     </div>
                     <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}" class="booking-step__action js-confirm-send-mail"
-                          data-confirm-message="{{ $booking->payment_received_sent_at ? 'Conferma pagamento già inviata il '.$booking->payment_received_sent_at->format('d/m/Y H:i').'. Il pagamento risulta incassato. Inviare di nuovo?' : 'Segnare il pagamento come incassato e inviare la conferma all\'ospite?' }}">
+                                                    data-confirm-message="{{ $booking->payment_received_sent_at ? 'Conferma pagamento già inviata il '.$booking->payment_received_sent_at->format('d/m/Y H:i').'. Il pagamento risulta incassato. Inviare di nuovo?' : 'Segnare il pagamento come incassato e inviare la conferma all\'ospite?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
                         @csrf
                         <button type="submit" class="btn btn--primary btn--sm">{{ $booking->payment_received_sent_at ? 'Invia di nuovo' : 'Segna incassato e conferma' }}</button>
+                                                <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
                     </form>
                 </div>
 
@@ -68,9 +76,10 @@
                         </div>
                     </div>
                     <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}" class="booking-step__action js-confirm-send-mail"
-                          data-confirm-message="{{ $booking->checkin_reminder_sent_at ? 'Promemoria già inviato il '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare il promemoria check-in online?' }}">
+                                                    data-confirm-message="{{ $booking->checkin_reminder_sent_at ? 'Promemoria già inviato il '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare il promemoria check-in online?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
                         @csrf
                         <button type="submit" class="btn btn--outline btn--sm">{{ $booking->checkin_reminder_sent_at ? 'Invia di nuovo' : 'Invia promemoria check-in' }}</button>
+                                                <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
                     </form>
                 </div>
 
@@ -89,9 +98,10 @@
                 <div class="booking-tools__actions">
                     <button type="button" class="btn btn--outline btn--sm" id="btn-telegram-notify"
                             data-url="{{ route('admin.bookings.notify-telegram', $booking) }}"
-                            title="Invia il riepilogo della prenotazione e degli ospiti ai destinatari configurati">
+                            title="Invia il riepilogo della prenotazione e degli ospiti ai destinatari configurati: {{ $telegramSummary }}">
                         Invia riepilogo Telegram
                     </button>
+                    <span class="booking-step__recipients">Destinatari: {{ $telegramSummary }}</span>
                     @if($booking->telegram_notified_at)
                         <span class="booking-step__status">Ultimo invio: {{ $booking->telegram_notified_at->format('d/m/Y H:i') }}</span>
                     @endif

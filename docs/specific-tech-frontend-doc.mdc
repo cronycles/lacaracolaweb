@@ -23,6 +23,17 @@ The admin user edit view (`resources/views/admin/users/edit.blade.php`) exposes 
 must have both values configured. When the role changes, the backend resets the checkbox
 according to the new role default; the helper text in the form explains this behavior.
 
+## Admin booking notification recipients
+
+The booking detail workflow (`resources/views/admin/bookings/show.blade.php`) displays
+the effective recipients below each send action and includes them in the confirmation
+dialog. Email recipients are prepared by `BookingController::show`: the guest is the
+`To` recipient, `config('apartment.email')` is the BCC, and booking confirmation also
+lists the `host_keeper` users who receive the separate operational email. Telegram
+recipients are users with both a non-null `telegram_chat_id` and
+`telegram_notifications_enabled = true`; the UI shows their names, or an explicit
+empty-recipient message.
+
 # Active TS modules
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`

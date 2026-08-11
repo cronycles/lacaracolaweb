@@ -245,7 +245,7 @@ body {
     align-items: center;
     gap: .4rem;
     padding: .45rem .9rem;
-    border-radius: .375rem;
+    border-radius: .5rem;
     font-size: .875rem;
     font-weight: 500;
     cursor: pointer;
@@ -292,7 +292,7 @@ body {
 }
 .booking-step {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    grid-template-columns: 2rem minmax(0, 1fr) minmax(15rem, 1.25fr);
     align-items: center;
     gap: .75rem;
     padding: .8rem 0;
@@ -312,7 +312,23 @@ body {
 }
 .booking-step__label { font-weight: 600; color: #1a2b34; }
 .booking-step__status { color: #6b7f89; font-size: .8rem; margin-top: .2rem; }
-.booking-step__action { justify-self: end; }
+.booking-step__action {
+    width: 100%;
+    justify-self: stretch;
+}
+.booking-step__action .btn {
+    min-width: 15rem;
+    justify-content: center;
+    border-radius: .5rem;
+}
+.booking-step__recipients {
+    display: block;
+    color: #6b7f89;
+    font-size: .72rem;
+    line-height: 1.35;
+    margin-top: .35rem;
+    max-width: 32rem;
+}
 .booking-tools { padding-bottom: 1rem; }
 .booking-tools__actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 
