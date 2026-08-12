@@ -309,7 +309,9 @@ class BookingConfirmationEmailTest extends TestCase
         $this->assertStringContainsString('IT81A0301503200000005220710', $confirmationHtml);
         $this->assertStringContainsString('FEBIITM2', $confirmationHtml);
         $this->assertStringContainsString('CRSMRC60D24D969K', $hostKeeperHtml);
+        $this->assertStringContainsString('Nome e Cognome:</strong> Marco Crosetti', $hostKeeperHtml);
         $this->assertStringContainsString('Via Lavagnino 1/1, 16152 Genova', $hostKeeperHtml);
+        $this->assertSame(2, substr_count($hostKeeperHtml, 'class="payment-section"'));
     }
 
     public function test_booking_email_preview_links_render_the_expected_mails(): void

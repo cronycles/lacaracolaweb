@@ -12,6 +12,7 @@
             $paymentOwner?->address_street,
             trim(implode(' ', array_filter([$paymentOwner?->address_zip, $paymentOwner?->address_city]))),
         ]));
+        $ownerName = $paymentOwner?->payment_beneficiary ?: $paymentOwner?->name;
     @endphp
 
     <h1>🐚 Prenotazione confermata — La Caracola</h1>
@@ -88,22 +89,24 @@
         </table>
     </div>
 
-    @if ($paymentOwner?->name || $paymentOwner?->tax_code || $ownerAddress)
-    <div class="callout">
-        <div class="section-title">Dati per la ricevuta fiscale della biancheria</div>
-        <strong>{{ $paymentOwner?->name }}</strong><br>
+    @if ($ownerName || $paymentOwner?->tax_code || $ownerAddress)
+    <div class="payment-section">
+        <div class="payment-title">Dati per la ricevuta fiscale della biancheria</div>
+        @if ($ownerName)
+            <strong>Nome e Cognome:</strong> {{ $ownerName }}<br>
+        @endif
         @if ($paymentOwner?->tax_code)
-            Codice fiscale: {{ $paymentOwner->tax_code }}<br>
+            <strong>Codice fiscale:</strong> {{ $paymentOwner->tax_code }}<br>
         @endif
         @if ($ownerAddress)
-            Indirizzo: {{ $ownerAddress }}
+            <strong>Indirizzo:</strong> {{ $ownerAddress }}
         @endif
     </div>
     @endif
 
-    <div class="section">
-        <div class="section-title">Dati per la ricevuta di incasso</div>
-        <p><strong>Committente:</strong> {{ $paymentOwner?->name }}@if($paymentOwner?->tax_code) — C.F. {{ $paymentOwner->tax_code }}@endif</p>
+    <div class="payment-section">
+        <div class="payment-title">Dati per la ricevuta di incasso</div>
+        <p><strong>Committente:</strong> {{ $ownerName }}@if($paymentOwner?->tax_code) — C.F. {{ $paymentOwner->tax_code }}@endif</p>
         <table>
             <tr>
                 <th>Compenso per servizio occasionale di check-in, check-out e pulizia immobile per il soggiorno dal {{ $booking->checkin->format('d/m/Y') }} al {{ $booking->checkout->format('d/m/Y') }}</th>
