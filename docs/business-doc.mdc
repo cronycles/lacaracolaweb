@@ -9,6 +9,9 @@ alwaysApply: true
 
 ## Public flows
 - Main public pages: Home, Apartment, Map, Experiences, Reviews, Rules, Useful Places.
+- Reviews use a 1-10 guest rating and can show separate optional answers for
+  what the guest liked and did not like, so positive and negative feedback stay
+  easy to scan independently.
 - Availability request supports two admin-selectable modes:
     - Internal form mode.
     - External link mode (external platform URL).

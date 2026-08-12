@@ -18,11 +18,29 @@
                 @foreach($reviews as $review)
                     <div class="review-card">
                         <div class="review-card__stars">
-                            @for($i = 1; $i <= 5; $i++)
+                            @for($i = 1; $i <= 10; $i++)
                                 {{ $i <= $review->rating ? '★' : '☆' }}
                             @endfor
                         </div>
                         <p class="review-card__text">"{{ $review->textForLocale(app()->getLocale()) }}"</p>
+                        @if($review->likedTextForLocale(app()->getLocale()))
+                            <div class="review-card__feedback review-card__feedback--liked">
+                                <span class="review-card__feedback-icon" aria-hidden="true">☺</span>
+                                <div>
+                                    <strong>{{ __('app.reviews_liked') }}</strong>
+                                    <p>{{ $review->likedTextForLocale(app()->getLocale()) }}</p>
+                                </div>
+                            </div>
+                        @endif
+                        @if($review->dislikedTextForLocale(app()->getLocale()))
+                            <div class="review-card__feedback review-card__feedback--disliked">
+                                <span class="review-card__feedback-icon" aria-hidden="true">☹</span>
+                                <div>
+                                    <strong>{{ __('app.reviews_disliked') }}</strong>
+                                    <p>{{ $review->dislikedTextForLocale(app()->getLocale()) }}</p>
+                                </div>
+                            </div>
+                        @endif
                         <div class="review-card__author">
                             <div>
                                 <p class="review-card__author-name">{{ $review->author_name }}</p>

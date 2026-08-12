@@ -41,6 +41,20 @@ payment-received email sent, online check-in completed, or a definitive
 Alloggiati Web submission recorded with `mode = send` and `status = success`.
 Successful draft tests do not mark the reporting step complete.
 
+## Booking reviews
+
+Review management is accessed from the booking detail page as step 5 of the
+booking workflow, and is visible only to users with `manage_reviews`. The
+action is contextual: it offers `Aggiungi recensione` when no review exists,
+otherwise `Modifica` and `Elimina`. The global admin sidebar does not contain a
+separate reviews entry.
+
+The review form accepts a rating from 1 to 10 and stores optional translated
+feedback for what guests liked and did not like. The public reviews page renders
+up to ten stars with wider spacing and shows the two feedback blocks only when
+their localized text is available, using a green smile for liked feedback and a
+dark sad face for disliked feedback.
+
 # Active TS modules
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`

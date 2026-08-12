@@ -24,10 +24,11 @@
             @endif
         </div>
 
-        @if(auth()->user()->hasPermission('manage_bookings'))
+        @if(auth()->user()->hasPermission('manage_bookings') || auth()->user()->hasPermission('manage_reviews'))
             <section class="booking-workflow" aria-labelledby="booking-workflow-title">
                 <h2 class="booking-workflow__title" id="booking-workflow-title">Stato e prossime azioni</h2>
 
+            @if(auth()->user()->hasPermission('manage_bookings'))
                 <div class="booking-step">
                     <span class="booking-step__number{{ $booking->confirmation_sent_at ? ' booking-step__number--completed' : '' }}" title="{{ $booking->confirmation_sent_at ? 'Conferma prenotazione inviata' : 'Conferma prenotazione non ancora inviata' }}">1</span>
                     <div>
@@ -108,6 +109,36 @@
                     </div>
                     <a href="{{ route('admin.guest-reporting.show', $booking) }}" class="booking-step__action btn btn--outline btn--sm">Segnala ospiti</a>
                 </div>
+                @endif
+
+                @if(auth()->user()->hasPermission('manage_reviews'))
+                <div class="booking-step">
+                    <span class="booking-step__number{{ $booking->review ? ' booking-step__number--completed' : '' }}" title="{{ $booking->review ? 'Recensione presente' : 'Recensione non ancora inserita' }}">5</span>
+                    <div>
+                        <div class="booking-step__label">Recensione</div>
+                        <div class="booking-step__status">
+                            @if($booking->review)
+                                Inserita · {{ str_repeat('★', $booking->review->rating) }} / 10{{ $booking->review->is_active ? '' : ' · Nascosta' }}
+                            @else
+                                Non ancora inserita
+                            @endif
+                        </div>
+                    </div>
+                    <div class="booking-step__action">
+                        @if($booking->review)
+                            <a href="{{ route('admin.reviews.edit', $booking->review) }}" class="btn btn--outline btn--sm">Modifica</a>
+                            <form method="POST" action="{{ route('admin.reviews.destroy', $booking->review) }}" style="display:inline"
+                                  onsubmit="return confirm('Eliminare questa recensione?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn--outline btn--sm" style="color:#c62828">Elimina</button>
+                            </form>
+                        @else
+                            <a href="{{ route('admin.reviews.create', $booking) }}" class="booking-step__action btn btn--primary btn--sm">Aggiungi recensione</a>
+                        @endif
+                    </div>
+                </div>
+                @endif
             </section>
 
             <section class="booking-tools" aria-labelledby="booking-tools-title">

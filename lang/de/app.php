@@ -333,6 +333,8 @@ return [
     'reviews_subtitle' => 'Echte Bewertungen.',
     'reviews_source'   => 'Über :source',
     'reviews_empty'    => 'Noch keine Bewertungen.',
+    'reviews_liked'    => 'Was den Gästen gefallen hat',
+    'reviews_disliked' => 'Was den Gästen nicht gefallen hat',
 
     // --- Contact form ---
     'nav_contact'              => 'Kontakt',

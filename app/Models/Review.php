@@ -35,11 +35,26 @@ class Review extends Model
      */
     public function textForLocale(string $locale): string
     {
+        return $this->translationFieldForLocale($locale, 'text');
+    }
+
+    public function likedTextForLocale(string $locale): string
+    {
+        return $this->translationFieldForLocale($locale, 'liked_text');
+    }
+
+    public function dislikedTextForLocale(string $locale): string
+    {
+        return $this->translationFieldForLocale($locale, 'disliked_text');
+    }
+
+    private function translationFieldForLocale(string $locale, string $field): string
+    {
         $translations = $this->translations->keyBy('locale');
 
-        return $translations->get($locale)?->text
-            ?? $translations->get('en')?->text
-            ?? $translations->get('it')?->text
+        return $translations->get($locale)?->{$field}
+            ?? $translations->get('en')?->{$field}
+            ?? $translations->get('it')?->{$field}
             ?? '';
     }
 }

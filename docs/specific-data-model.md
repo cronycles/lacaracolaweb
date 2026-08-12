@@ -430,7 +430,27 @@ Feature-level permission slugs. Defined once in `PermissionSeeder`.
 
 ---
 
-### 11. **role_permissions** *(pivot)*
+### 11. **review_translations**
+
+Localized review content. The `text` field may be null when only one of the
+optional feedback fields is available for that locale.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `id` | BIGINT PK | Auto-increment |
+| `review_id` | BIGINT FK | References `reviews.id`, cascade delete |
+| `locale` | VARCHAR(5) | `it`, `en`, `fr`, or `de` |
+| `text` | TEXT | Main review text, nullable for feedback-only translations |
+| `liked_text` | TEXT | What the guest liked, nullable |
+| `disliked_text` | TEXT | What the guest did not like, nullable |
+
+Unique key: `(review_id, locale)`.
+
+The `reviews.rating` field is an unsigned tiny integer from 1 to 10.
+
+---
+
+### 12. **role_permissions** *(pivot)*
 
 | Field           | Type      | Notes                     |
 | --------------- | --------- | ------------------------- |
@@ -441,7 +461,7 @@ Primary key: `(role_id, permission_id)`
 
 ---
 
-### 12. **user_permissions** *(pivot)*
+### 13. **user_permissions** *(pivot)*
 
 Per-user permission overrides, additive to the user's role permissions. `manage_users` is excluded by application logic (non-delegable).
 
@@ -454,7 +474,7 @@ Primary key: `(user_id, permission_id)`
 
 ---
 
-### 13. **interhome_pdf_import_logs**
+### 14. **interhome_pdf_import_logs**
 
 Log entries for PDF imports from Interhome platform (one entry per import session).
 
@@ -476,7 +496,7 @@ Log entries for PDF imports from Interhome platform (one entry per import sessio
 
 ---
 
-### 14. **countries** *(lookup — no timestamps)*
+### 15. **countries** *(lookup — no timestamps)*
 
 Reference table seeded from `resources/data/AlloggiatiWeb/stati.csv` (236 rows). Single source of truth for country selection in all forms (person form, guest-reporting).
 
@@ -496,7 +516,7 @@ Reference table seeded from `resources/data/AlloggiatiWeb/stati.csv` (236 rows).
 
 ---
 
-### 15. **municipalities** *(lookup — no timestamps)*
+### 16. **municipalities** *(lookup — no timestamps)*
 
 Reference table seeded from `resources/data/AlloggiatiWeb/comuni.csv` (11 294 rows). Used for Italian municipality lookup by `ItalianMunicipalities` helper.
 
@@ -516,7 +536,7 @@ Reference table seeded from `resources/data/AlloggiatiWeb/comuni.csv` (11 294 ro
 
 ---
 
-### 16. **guest_types** *(lookup — no timestamps)*
+### 17. **guest_types** *(lookup — no timestamps)*
 
 Reference table for AlloggiatiWeb guest type codes (5 rows, seeded from `tipo_alloggiato.csv`).
 

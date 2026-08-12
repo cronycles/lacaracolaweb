@@ -340,6 +340,8 @@ return [
     'reviews_subtitle' => 'Recensioni reali.',
     'reviews_source'   => 'Via :source',
     'reviews_empty'    => 'Nessuna recensione ancora disponibile.',
+    'reviews_liked'    => 'Cosa è piaciuto',
+    'reviews_disliked' => 'Cosa non è piaciuto',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Sicurezza Account',

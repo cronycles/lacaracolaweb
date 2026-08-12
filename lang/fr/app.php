@@ -329,6 +329,8 @@ return [
     'reviews_subtitle' => 'Avis réels.',
     'reviews_source'   => 'Via :source',
     'reviews_empty'    => "Aucun avis pour l'instant.",
+    'reviews_liked'    => 'Ce que les hôtes ont aimé',
+    'reviews_disliked' => "Ce que les hôtes n'ont pas aimé",
 
     // --- Contact form ---
     'nav_contact'              => 'Nous Contacter',

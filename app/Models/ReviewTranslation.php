@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReviewTranslation extends Model
 {
-    protected $fillable = ['review_id', 'locale', 'text'];
+    protected $fillable = ['review_id', 'locale', 'text', 'liked_text', 'disliked_text'];
 
     public function review(): BelongsTo
     {

@@ -33,7 +33,7 @@
                             <td>
                                 @if($booking->review)
                                     <span style="color:#15803d;font-size:.8rem;font-weight:600">
-                                        ✓ {{ str_repeat('★', $booking->review->rating) }}
+                                        ✓ {{ str_repeat('★', $booking->review->rating) }} / 10
                                         @unless($booking->review->is_active)
                                             <span style="color:#6b7f89">(nascosta)</span>
                                         @endunless

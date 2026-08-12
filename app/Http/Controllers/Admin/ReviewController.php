@@ -37,7 +37,7 @@ class ReviewController extends Controller
             return redirect()->route('admin.reviews.edit', $booking->review);
         }
 
-        $review = new Review(['booking_id' => $booking->id, 'rating' => 5]);
+        $review = new Review(['booking_id' => $booking->id, 'rating' => 10]);
         $review->setRelation('booking', $booking);
 
         // Pre-fill author_name with guest first name and source from booking
@@ -45,11 +45,15 @@ class ReviewController extends Controller
         $review->source = $booking->source ?? '';
 
         $translations = collect(self::LOCALES)->mapWithKeys(fn ($l) => [$l => '']);
+        $liked = collect(self::LOCALES)->mapWithKeys(fn ($l) => [$l => '']);
+        $disliked = collect(self::LOCALES)->mapWithKeys(fn ($l) => [$l => '']);
 
         return view('admin.reviews.form', [
             'review'       => $review,
             'booking'      => $booking,
             'translations' => $translations,
+            'liked'        => $liked,
+            'disliked'     => $disliked,
             'locales'      => self::LOCALES,
         ]);
     }
@@ -62,12 +66,20 @@ class ReviewController extends Controller
         $data = $request->validate([
             'author_name'      => ['required', 'string', 'max:255'],
             'source'           => ['nullable', 'string', 'max:255'],
-            'rating'           => ['required', 'integer', 'min:1', 'max:5'],
+            'rating'           => ['required', 'integer', 'min:1', 'max:10'],
             'is_active'        => ['boolean'],
             'translations.it'  => ['required', 'string', 'min:10'],
             'translations.en'  => ['nullable', 'string', 'min:10'],
             'translations.fr'  => ['nullable', 'string', 'min:10'],
             'translations.de'  => ['nullable', 'string', 'min:10'],
+            'liked.it'         => ['nullable', 'string', 'max:2000'],
+            'liked.en'         => ['nullable', 'string', 'max:2000'],
+            'liked.fr'         => ['nullable', 'string', 'max:2000'],
+            'liked.de'         => ['nullable', 'string', 'max:2000'],
+            'disliked.it'      => ['nullable', 'string', 'max:2000'],
+            'disliked.en'      => ['nullable', 'string', 'max:2000'],
+            'disliked.fr'      => ['nullable', 'string', 'max:2000'],
+            'disliked.de'      => ['nullable', 'string', 'max:2000'],
         ]);
 
         $review = Review::create([
@@ -80,8 +92,15 @@ class ReviewController extends Controller
 
         foreach (self::LOCALES as $locale) {
             $text = trim($data['translations'][$locale] ?? '');
-            if ($text !== '') {
-                $review->translations()->create(['locale' => $locale, 'text' => $text]);
+            $likedText = trim($data['liked'][$locale] ?? '');
+            $dislikedText = trim($data['disliked'][$locale] ?? '');
+            if ($text !== '' || $likedText !== '' || $dislikedText !== '') {
+                $review->translations()->create([
+                    'locale' => $locale,
+                    'text' => $text ?: null,
+                    'liked_text' => $likedText ?: null,
+                    'disliked_text' => $dislikedText ?: null,
+                ]);
             }
         }
 
@@ -99,11 +118,19 @@ class ReviewController extends Controller
         $translations = collect(self::LOCALES)->mapWithKeys(
             fn ($l) => [$l => $review->translations->firstWhere('locale', $l)?->text ?? '']
         );
+        $liked = collect(self::LOCALES)->mapWithKeys(
+            fn ($l) => [$l => $review->translations->firstWhere('locale', $l)?->liked_text ?? '']
+        );
+        $disliked = collect(self::LOCALES)->mapWithKeys(
+            fn ($l) => [$l => $review->translations->firstWhere('locale', $l)?->disliked_text ?? '']
+        );
 
         return view('admin.reviews.form', [
             'review'       => $review,
             'booking'      => $review->booking,
             'translations' => $translations,
+            'liked'        => $liked,
+            'disliked'     => $disliked,
             'locales'      => self::LOCALES,
         ]);
     }
@@ -116,12 +143,20 @@ class ReviewController extends Controller
         $data = $request->validate([
             'author_name'      => ['required', 'string', 'max:255'],
             'source'           => ['nullable', 'string', 'max:255'],
-            'rating'           => ['required', 'integer', 'min:1', 'max:5'],
+            'rating'           => ['required', 'integer', 'min:1', 'max:10'],
             'is_active'        => ['boolean'],
             'translations.it'  => ['required', 'string', 'min:10'],
             'translations.en'  => ['nullable', 'string', 'min:10'],
             'translations.fr'  => ['nullable', 'string', 'min:10'],
             'translations.de'  => ['nullable', 'string', 'min:10'],
+            'liked.it'         => ['nullable', 'string', 'max:2000'],
+            'liked.en'         => ['nullable', 'string', 'max:2000'],
+            'liked.fr'         => ['nullable', 'string', 'max:2000'],
+            'liked.de'         => ['nullable', 'string', 'max:2000'],
+            'disliked.it'      => ['nullable', 'string', 'max:2000'],
+            'disliked.en'      => ['nullable', 'string', 'max:2000'],
+            'disliked.fr'      => ['nullable', 'string', 'max:2000'],
+            'disliked.de'      => ['nullable', 'string', 'max:2000'],
         ]);
 
         $review->update([
@@ -133,10 +168,16 @@ class ReviewController extends Controller
 
         foreach (self::LOCALES as $locale) {
             $text = trim($data['translations'][$locale] ?? '');
-            if ($text !== '') {
+            $likedText = trim($data['liked'][$locale] ?? '');
+            $dislikedText = trim($data['disliked'][$locale] ?? '');
+            if ($text !== '' || $likedText !== '' || $dislikedText !== '') {
                 $review->translations()->updateOrCreate(
                     ['locale' => $locale],
-                    ['text' => $text]
+                    [
+                        'text' => $text ?: null,
+                        'liked_text' => $likedText ?: null,
+                        'disliked_text' => $dislikedText ?: null,
+                    ]
                 );
             } else {
                 $review->translations()->where('locale', $locale)->delete();

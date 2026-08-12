@@ -98,7 +98,7 @@ class BookingController extends Controller
 
     public function show(Booking $prenotazioni): View
     {
-        $prenotazioni->load('person', 'additionalGuests', 'bookingRequest', 'guestReports');
+        $prenotazioni->load('person', 'additionalGuests', 'bookingRequest', 'guestReports', 'review');
 
         $hostKeeperEmails = User::query()
             ->whereHas('role', fn ($query) => $query->where('name', 'host_keeper'))

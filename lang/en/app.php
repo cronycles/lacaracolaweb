@@ -332,6 +332,8 @@ return [
     'reviews_subtitle' => 'Real reviews.',
     'reviews_source'   => 'Via :source',
     'reviews_empty'    => 'No reviews yet.',
+    'reviews_liked'    => 'What guests liked',
+    'reviews_disliked' => 'What guests did not like',
 
     // --- Admin: Account Security ---
     'admin_account_title'              => 'Account Security',

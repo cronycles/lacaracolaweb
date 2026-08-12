@@ -49,9 +49,9 @@
                 <div>
                     <label class="form-label">Stelle <span style="color:#c62828">*</span></label>
                     <select name="rating" class="form-input">
-                        @for($s = 5; $s >= 1; $s--)
-                            <option value="{{ $s }}" {{ old('rating', $review->rating ?? 5) == $s ? 'selected' : '' }}>
-                                {{ str_repeat('★', $s) }}{{ str_repeat('☆', 5 - $s) }} ({{ $s }})
+                        @for($s = 10; $s >= 1; $s--)
+                            <option value="{{ $s }}" {{ old('rating', $review->rating ?? 10) == $s ? 'selected' : '' }}>
+                                {{ str_repeat('★', $s) }}{{ str_repeat('☆', 10 - $s) }} ({{ $s }}/10)
                             </option>
                         @endfor
                     </select>
@@ -92,6 +92,22 @@
                               placeholder="{{ $required ? 'Testo obbligatorio…' : 'Lascia vuoto per usare il fallback…' }}"
                     >{{ old('translations.' . $locale, $translations[$locale] ?? '') }}</textarea>
                     @error('translations.' . $locale) <p class="form-error">{{ $message }}</p> @enderror
+
+                    <label class="form-label" style="margin-top:.75rem">☺ Cosa è piaciuto</label>
+                    <textarea name="liked[{{ $locale }}]"
+                              class="form-input @error('liked.' . $locale) is-invalid @enderror"
+                              rows="2" maxlength="2000"
+                              placeholder="Cosa ha apprezzato l'ospite?"
+                    >{{ old('liked.' . $locale, $liked[$locale] ?? '') }}</textarea>
+                    @error('liked.' . $locale) <p class="form-error">{{ $message }}</p> @enderror
+
+                    <label class="form-label" style="margin-top:.75rem">☹ Cosa non è piaciuto</label>
+                    <textarea name="disliked[{{ $locale }}]"
+                              class="form-input @error('disliked.' . $locale) is-invalid @enderror"
+                              rows="2" maxlength="2000"
+                              placeholder="Cosa non ha apprezzato l'ospite?"
+                    >{{ old('disliked.' . $locale, $disliked[$locale] ?? '') }}</textarea>
+                    @error('disliked.' . $locale) <p class="form-error">{{ $message }}</p> @enderror
                 </div>
             @endforeach
         </div>
