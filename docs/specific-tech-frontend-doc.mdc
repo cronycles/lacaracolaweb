@@ -79,6 +79,7 @@ multiple included guests, the first is type `18` and the others are type `20`.
 # Important frontend contracts
 ## Public availability form
 - Date picker minimum nights comes from `data-min-nights`.
+- Date picker minimum check-in notice comes from `data-min-booking-lead-days`.
 - Guest capacity is validated in the browser from `data-max-beds`: adults + children must fit, while infants and pets are excluded.
 - Occupied dates are received from backend via `data-unavailable-dates`.
 - AJAX quote:

@@ -21,11 +21,16 @@ class BookingController extends Controller
 {
     public function quote(Request $request, PricingQuoteService $pricingQuoteService): JsonResponse
     {
+        $minBookingLeadDays = (int) config('apartment.booking.min_booking_lead_days', 0);
+        $earliestCheckin = now()->startOfDay()->addDays($minBookingLeadDays)->toDateString();
+
         $data = $request->validate([
-            'checkin'  => ['required', 'date', 'after_or_equal:today'],
+            'checkin'  => ['required', 'date', 'after_or_equal:' . $earliestCheckin],
             'checkout' => ['required', 'date', 'after:checkin'],
             'guests'   => ['nullable', 'integer', 'min:1', 'max:12'],
             'parking_requested' => ['nullable', 'boolean'],
+        ], [
+            'checkin.after_or_equal' => __('app.error_checkin_lead_time', ['days' => $minBookingLeadDays]),
         ]);
 
         $checkin = new \DateTimeImmutable($data['checkin']);
@@ -85,8 +90,11 @@ class BookingController extends Controller
                 : redirect()->route('booking.thanks');
         }
 
+        $minBookingLeadDays = (int) config('apartment.booking.min_booking_lead_days', 0);
+        $earliestCheckin = now()->startOfDay()->addDays($minBookingLeadDays)->toDateString();
+
         $data = $request->validate([
-            'checkin'    => ['required', 'date', 'after_or_equal:today'],
+            'checkin'    => ['required', 'date', 'after_or_equal:' . $earliestCheckin],
             'checkout'   => ['required', 'date', 'after:checkin'],
             'adults'     => ['required', 'integer', 'min:1', 'max:6'],
             'children'   => ['nullable', 'integer', 'min:0', 'max:6'],
@@ -104,6 +112,7 @@ class BookingController extends Controller
             'parking_requested' => ['nullable', 'boolean'],
             'accepted_terms' => ['required', 'accepted'],
         ], [
+            'checkin.after_or_equal' => __('app.error_checkin_lead_time', ['days' => $minBookingLeadDays]),
             'accepted_terms.required' => __('app.error_terms_required'),
             'accepted_terms.accepted' => __('app.error_terms_required'),
             'phone.regex'             => __('app.error_phone_digits_only'),

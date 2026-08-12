@@ -64,6 +64,7 @@ return [
     'error_max_nights'      => 'Le séjour maximum est de :nights nuits.',
     'error_max_guests'      => 'Le nombre maximum de personnes est de :guests. Les bébés et les animaux ne sont pas comptés.',
     'error_checkin_past'    => "La date d'arrivée ne peut pas être dans le passé.",
+    'error_checkin_lead_time' => 'L’arrivée doit être demandée au moins :days jours à l’avance.',
     'error_checkout_order'  => "Le départ doit être après l'arrivée.",
     'error_server'          => 'Une erreur est survenue. Veuillez réessayer.',
     'error_phone_digits_only' => "Saisissez uniquement le numéro, sans l'indicatif international (à choisir dans le menu déroulant à côté).",

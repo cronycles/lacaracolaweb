@@ -64,6 +64,7 @@ return [
     'error_max_nights'      => 'Der Höchstaufenthalt beträgt :nights Nächte.',
     'error_max_guests'      => 'Die maximale Gästezahl beträgt :guests. Kleinkinder und Haustiere werden nicht mitgezählt.',
     'error_checkin_past'    => 'Das Check-in-Datum kann nicht in der Vergangenheit liegen.',
+    'error_checkin_lead_time' => 'Der Check-in muss mindestens :days Tage im Voraus angefragt werden.',
     'error_checkout_order'  => 'Das Check-out muss nach dem Check-in liegen.',
     'error_server'          => 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
     'error_phone_digits_only' => 'Geben Sie nur die Nummer ohne internationale Vorwahl ein (die Vorwahl bitte im Auswahlmenü daneben wählen).',

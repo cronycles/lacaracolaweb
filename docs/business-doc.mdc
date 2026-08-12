@@ -29,6 +29,9 @@ alwaysApply: true
     - total and per-night average shown; full breakdown (stay, cleaning, linen) shown to user.
 - If a price cutoff date is configured, no public estimate is shown from cutoff onward.
 - Minimum nights constraint is configured in `config/apartment.php` (default 3).
+- Public check-in requires configurable advance notice from today, configured as
+  `booking.min_booking_lead_days` (default 7). The same rule is enforced by the
+  calendar and by backend request/quote validation.
 - Maximum nights constraint is configured in `config/apartment.php` (default 28).
 - Linen fee is per-guest; quote endpoint accepts `guests` (total of adults + children).
 - Occupancy is limited by `config/apartment.specs.beds`: adults + children must not exceed the configured beds; infants and pets do not count toward capacity.

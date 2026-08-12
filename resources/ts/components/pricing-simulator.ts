@@ -122,6 +122,7 @@ export function initPricingSimulator(): void {
             inputCheckin: checkinInput,
             inputCheckout: checkoutInput,
             minNights: parseInt(form.dataset['minNights'] ?? '3', 10),
+            minBookingLeadDays: 0,
             locale,
             hintCheckin: 'Seleziona la data di arrivo',
             hintCheckout: `Seleziona la data di partenza (min. ${form.dataset['minNights'] ?? '3'} notti)`,

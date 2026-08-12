@@ -47,6 +47,24 @@ class BookingLegalConsentTest extends TestCase
         Mail::assertNothingSent();
     }
 
+    public function test_request_with_too_soon_checkin_is_rejected(): void
+    {
+        Mail::fake();
+
+        $payload = array_merge($this->validPayload(), [
+            'checkin' => now()->addDays(6)->format('Y-m-d'),
+            'checkout' => now()->addDays(11)->format('Y-m-d'),
+            'accepted_terms' => '1',
+        ]);
+
+        $this->postJson(route('it.booking.request'), $payload)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['checkin']);
+
+        $this->assertDatabaseCount('booking_requests', 0);
+        Mail::assertNothingSent();
+    }
+
     public function test_request_with_accepted_terms_creates_booking_request_with_consent_proof(): void
     {
         Mail::fake();

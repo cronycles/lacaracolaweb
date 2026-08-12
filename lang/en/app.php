@@ -64,6 +64,7 @@ return [
     'error_max_nights'      => 'The maximum stay is :nights nights.',
     'error_max_guests'      => 'The maximum number of guests is :guests. Infants and pets are not counted.',
     'error_checkin_past'    => 'Check-in date cannot be in the past.',
+    'error_checkin_lead_time' => 'Check-in must be requested at least :days days in advance.',
     'error_checkout_order'  => 'Check-out must be after check-in.',
     'error_server'          => 'An error occurred. Please try again.',
     'error_phone_digits_only' => 'Enter only the number, without the international prefix (choose the prefix from the dropdown next to it).',

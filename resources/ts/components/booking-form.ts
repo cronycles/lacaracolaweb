@@ -37,6 +37,7 @@ export function initBookingForm(): void {
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
+    const MIN_BOOKING_LEAD_DAYS = parseInt(form.dataset['minBookingLeadDays'] ?? '0', 10);
     const MAX_BEDS = parseInt(form.dataset['maxBeds'] ?? '6', 10);
     const parkingCheckbox = form.querySelector<HTMLInputElement>('[name="parking_requested"]');
     const parkingPriceEl = form.querySelector<HTMLElement>('[data-parking-price]');
@@ -90,8 +91,10 @@ export function initBookingForm(): void {
         const today   = new Date();
         today.setHours(0, 0, 0, 0);
 
-        if (inDate < today) {
-            setFieldError('checkin', form.dataset['errorPast'] ?? 'Check-in cannot be in the past.');
+        const earliestCheckin = new Date(today);
+        earliestCheckin.setDate(earliestCheckin.getDate() + MIN_BOOKING_LEAD_DAYS);
+        if (inDate < earliestCheckin) {
+            setFieldError('checkin', form.dataset['errorLeadTime'] ?? 'Check-in date is too soon.');
             return false;
         }
         if (outDate <= inDate) {
@@ -272,6 +275,7 @@ export function initBookingForm(): void {
             inputCheckin:    checkin,
             inputCheckout:   checkout,
             minNights:       MIN_NIGHTS,
+            minBookingLeadDays: MIN_BOOKING_LEAD_DAYS,
             locale:          dpContainer.dataset['locale'] ?? 'it',
             hintCheckin:     dpContainer.dataset['hintCheckin']  ?? '',
             hintCheckout:    dpContainer.dataset['hintCheckout'] ?? '',

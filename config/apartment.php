@@ -81,6 +81,8 @@ return [
     'booking' => [
         // Global minimum nights for public availability request form.
         'min_nights'    => 3,
+        // Minimum number of days between today and the public check-in date.
+        'min_booking_lead_days' => 7,
         // Global maximum nights allowed per booking (linear amortisation model).
         'max_nights'    => 28,
         // Fixed cleaning fee (EUR) charged per booking (default pre-filled in admin form).

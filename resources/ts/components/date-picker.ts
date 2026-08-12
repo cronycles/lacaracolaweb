@@ -41,6 +41,7 @@ export interface DateRangePickerOptions {
     inputCheckin: HTMLInputElement;
     inputCheckout: HTMLInputElement;
     minNights: number;
+    minBookingLeadDays: number;
     locale: string;
     hintCheckin: string;
     hintCheckout: string;
@@ -56,6 +57,7 @@ type Phase = 'idle' | 'selecting-checkin' | 'selecting-checkout';
 
 export function createDateRangePicker(opts: DateRangePickerOptions): void {
     const today = startOfDay(new Date());
+    const earliestCheckin = addDays(today, opts.minBookingLeadDays);
     let phase: Phase = 'idle';
     let checkin: Date | null = null;
     let checkout: Date | null = null;
@@ -201,7 +203,7 @@ export function createDateRangePicker(opts: DateRangePickerOptions): void {
         const rangeEnd = checkout ?? (phase === 'selecting-checkout' ? hoverDate : null);
         const isRange  = !!(checkin && rangeEnd && date > checkin && date < rangeEnd);
 
-        let disabled = date < today;
+        let disabled = date < earliestCheckin;
         const isUnavailable = opts.unavailableDates.has(toIsoDate(date));
         if (isUnavailable) {
             disabled = true;

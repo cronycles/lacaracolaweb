@@ -118,6 +118,8 @@ Example: the tax-declaration flag defaults below used to live only in `BookingCo
 
 # Configuration and precedence
 - Source of truth booking defaults: `config/apartment.php`.
+- Public check-in lead time comes from `apartment.booking.min_booking_lead_days`
+  (default 7) and is enforced on both quote and availability request endpoints.
 - `settings` DB only for:
   - `booking_mode`
   - `booking_external_url`
