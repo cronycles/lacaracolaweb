@@ -49,4 +49,25 @@ readonly class GuestRecord
         public string  $documentIssuePlace,
         public string  $documentIssueCountryCode,
     ) {}
+
+    public function withDates(string $arrivalDate, int $stayNights): self
+    {
+        return new self(
+            tipoAlloggiato: $this->tipoAlloggiato,
+            arrivalDate: $arrivalDate,
+            stayNights: $stayNights,
+            lastName: $this->lastName,
+            firstName: $this->firstName,
+            gender: $this->gender,
+            birthDate: $this->birthDate,
+            birthMunicipality: $this->birthMunicipality,
+            birthProvince: $this->birthProvince,
+            birthCountryCode: $this->birthCountryCode,
+            nationalityCode: $this->nationalityCode,
+            documentType: $this->documentType,
+            documentNumber: $this->documentNumber,
+            documentIssuePlace: $this->documentIssuePlace,
+            documentIssueCountryCode: $this->documentIssueCountryCode,
+        );
+    }
 }

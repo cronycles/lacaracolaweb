@@ -249,6 +249,7 @@ validato contro l'elenco dei comuni italiani.
 ### Regole chiave
 - Il driver riceve solo `GuestRecord[]` — non tocca mai modelli Eloquent.
 - `GuestRecord` richiede `arrivalDate` (`d/m/Y` da `$booking->checkin->format('d/m/Y')`) e `stayNights` (da `$booking->nights`).
+- Il test tecnico con date simulate usa lo stesso payload del test normale, ma sostituisce solo le date con arrivo odierno e 3 notti; viene registrato nello storico con modalità `test_simulated` e non può inviare definitivamente.
 - **Tipo alloggiato — assegnazione automatica (non modificabile dall'utente):**
   - 1 solo ospite → `16` (Ospite singolo)
   - Più ospiti, primo ospite (capogruppo, `$i === 0`) → `18` (Capo gruppo)

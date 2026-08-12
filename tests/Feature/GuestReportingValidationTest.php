@@ -26,6 +26,7 @@ class GuestReportingValidationTest extends TestCase
 
     private User $admin;
     private int $driverCallCount = 0;
+    private array $driverGuests = [];
 
     protected function setUp(): void
     {
@@ -45,9 +46,13 @@ class GuestReportingValidationTest extends TestCase
         // Fake driver: counts calls (rejection test asserts it's never reached;
         // success test asserts it's reached exactly once).
         $callCounter = &$this->driverCallCount;
-        $this->app->bind(GuestReportingDriverInterface::class, function () use (&$callCounter) {
-            return new class($callCounter) implements GuestReportingDriverInterface {
-                public function __construct(private int &$callCounter) {}
+        $driverGuests = &$this->driverGuests;
+        $this->app->bind(GuestReportingDriverInterface::class, function () use (&$callCounter, &$driverGuests) {
+            return new class($callCounter, $driverGuests) implements GuestReportingDriverInterface {
+                public function __construct(
+                    private int &$callCounter,
+                    private array &$driverGuests,
+                ) {}
 
                 public function checkConnection(): bool
                 {
@@ -59,6 +64,7 @@ class GuestReportingValidationTest extends TestCase
                 public function testDraft(array $guests): SubmissionResult
                 {
                     $this->callCounter++;
+                    $this->driverGuests = $guests;
 
                     return SubmissionResult::success('OK');
                 }
@@ -177,6 +183,42 @@ class GuestReportingValidationTest extends TestCase
         $person->refresh();
         $this->assertSame('passport', $person->document_type);
         $this->assertSame(1, $this->driverCallCount, 'Driver must be called exactly once when validation passes.');
+    }
+
+    public function test_simulated_date_test_uses_today_and_three_nights(): void
+    {
+        $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
+        $booking = Booking::create([
+            'person_id' => $person->id,
+            'checkin'   => now()->addDays(14)->format('Y-m-d'),
+            'checkout'  => now()->addDays(18)->format('Y-m-d'),
+            'adults'    => 1,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.guest-reporting.test-simulated-dates', $booking), [
+                'guests' => [[
+                    'person_id'                  => $person->id,
+                    'include'                    => 1,
+                    'tipo_alloggiato'            => '16',
+                    'gender'                     => 'M',
+                    'birth_date'                 => '1990-01-01',
+                    'nationality_code'           => 'FR',
+                    'birth_country_code'         => 'FR',
+                    'birth_municipality'         => 'Paris',
+                    'document_type'              => 'passport',
+                    'document_number'            => 'X1234567',
+                    'document_issue_country_code' => 'FR',
+                    'document_issue_place'       => '',
+                ]],
+            ])
+            ->assertRedirect(route('admin.guest-reporting.show', $booking));
+
+        $guest = $this->driverGuests[0];
+        $this->assertSame(today()->format('d/m/Y'), $guest->arrivalDate);
+        $this->assertSame(3, $guest->stayNights);
+        $this->assertSame($booking->checkin->format('d/m/Y'), $booking->fresh()->checkin->format('d/m/Y'));
+        $this->assertSame('test_simulated', $booking->guestReports()->latest('id')->value('mode'));
     }
 
     public function test_single_included_guest_is_promoted_to_single_guest(): void

@@ -128,6 +128,10 @@ repeats the stay contact, house address with map links, cancellation deadline, a
     - canceled bookings remain in history but do not block availability,
     - restore is allowed only without conflicts,
     - physical deletion also removes linked availability block.
+- Guest reporting to Alloggiati Web:
+  - the normal draft test validates with the booking's real dates without sending;
+  - the technical test uses today's date and three nights without sending, so guest-data errors can be diagnosed before the booking date;
+  - both tests persist guest profile changes and are distinguished in the submission history.
 - People/guest management and stay history consultation.
 - Newsletter subscribers listing (sending not implemented).
 - Manual Interhome PDF import with booking/block creation.

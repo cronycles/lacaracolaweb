@@ -248,7 +248,7 @@
         @endforeach
 
         {{-- Action buttons --}}
-        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+        <div class="guest-reporting-actions">
             @if ($missingCount > 0)
                 <p style="font-size:.875rem;color:#dc2626;margin:0">
                     ⚠️ Aggiungi prima i {{ $missingCount }} ospiti mancanti per poter testare o inviare.
@@ -258,6 +258,12 @@
                         formaction="{{ route('admin.guest-reporting.test', $booking) }}"
                         class="btn btn--outline">
                     🔍 Testa bozza (senza inviare)
+                </button>
+                <button type="submit" form="guest-reporting-form"
+                        formaction="{{ route('admin.guest-reporting.test-simulated-dates', $booking) }}"
+                        class="btn btn--accent"
+                        title="Testa con arrivo oggi e 3 notti">
+                    🧪 Test tecnico (date simulate)
                 </button>
                 <button type="submit" form="guest-reporting-form"
                         formaction="{{ route('admin.guest-reporting.send', $booking) }}"
@@ -310,6 +316,8 @@
                                 <td>
                                     @if ($report->mode === 'test')
                                         <span class="badge badge--outline">Test</span>
+                                    @elseif ($report->mode === 'test_simulated')
+                                        <span class="badge badge--accent">Test date simulate</span>
                                     @else
                                         <span class="badge badge--primary">Invio</span>
                                     @endif

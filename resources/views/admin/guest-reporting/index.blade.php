@@ -50,6 +50,8 @@
                             <td>
                                 @if ($report->mode === 'test')
                                     <span class="badge badge--outline">Test</span>
+                                @elseif ($report->mode === 'test_simulated')
+                                    <span class="badge badge--accent">Test date simulate</span>
                                 @else
                                     <span class="badge badge--primary">Invio</span>
                                 @endif

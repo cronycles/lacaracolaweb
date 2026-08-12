@@ -60,12 +60,31 @@ class GuestReportingController extends Controller
     public function saveAndTest(Request $request, Booking $prenotazioni): RedirectResponse
     {
         $guests = $this->validateAndPersistGuests($request, $prenotazioni);
+        return $this->runTest($guests, $prenotazioni, 'test');
+    }
+
+    /** Persist guest data updates then test the draft using dates accepted by Alloggiati Web. */
+    public function saveAndTestWithSimulatedDates(Request $request, Booking $prenotazioni): RedirectResponse
+    {
+        $guests = $this->validateAndPersistGuests($request, $prenotazioni);
+        $simulatedArrival = today()->format('d/m/Y');
+        $guests = array_map(
+            fn (GuestRecord $guest) => $guest->withDates($simulatedArrival, 3),
+            $guests,
+        );
+
+        return $this->runTest($guests, $prenotazioni, 'test_simulated');
+    }
+
+    /** @param GuestRecord[] $guests */
+    private function runTest(array $guests, Booking $booking, string $mode): RedirectResponse
+    {
         $result = $this->driver->testDraft($guests);
 
         GuestReport::create([
-            'booking_id'     => $prenotazioni->id,
+            'booking_id'     => $booking->id,
             'driver'         => config('guest-reporting.default'),
-            'mode'           => 'test',
+            'mode'           => $mode,
             'status'         => $result->success ? 'success' : 'error',
             'guests_count'   => count($guests),
             'guests_payload' => array_map(fn (GuestRecord $g) => (array) $g, $guests),
@@ -75,7 +94,7 @@ class GuestReportingController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.guest-reporting.show', $prenotazioni)
+            ->route('admin.guest-reporting.show', $booking)
             ->with($result->success ? 'success' : 'error', $result->message)
             ->with('row_details', $result->rowDetails);
     }

@@ -15,6 +15,7 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - TypeScript in `resources/ts`.
 - PostCSS in `resources/css`.
 - Bundling/build with Vite.
+- Frontend work is mobile-first: every new or changed workflow must remain usable on narrow screens, with responsive controls that do not overflow or become ambiguous.
 
 ## Admin Telegram recipients
 

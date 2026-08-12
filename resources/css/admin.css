@@ -218,6 +218,7 @@ body {
 .badge--canceled  { background: #fee2e2; color: #991b1b; }
 .badge--paid      { background: #dcfce7; color: #166534; }
 .badge--unpaid    { background: #fef3c7; color: #92400e; }
+.badge--accent    { background: #fef9c3; color: #854d0e; }
 
 /* Guest count chips (adults/children/babies/pets) — kept visually separate
    instead of run-on text, used in booking-requests list "Ospiti" column. */
@@ -262,6 +263,13 @@ body {
 .btn--outline   { background: transparent; border: 1px solid var(--admin-border); color: #374151; }
 .btn--outline:hover { background: #f1f5f9; }
 .btn--sm { font-size: .75rem; padding: .3rem .6rem; }
+.guest-reporting-actions {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.guest-reporting-actions .btn { justify-content: center; }
 
 /* Booking detail action workflow */
 .booking-page { max-width: 760px; }
@@ -333,6 +341,8 @@ body {
 .booking-tools__actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 
 @media (max-width: 560px) {
+    .guest-reporting-actions { align-items: stretch; }
+    .guest-reporting-actions .btn { width: 100%; text-align: center; white-space: normal; }
     .booking-page { max-width: none; }
     .booking-header__danger { margin-left: 0; }
     .booking-step {
