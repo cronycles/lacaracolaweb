@@ -46,6 +46,11 @@ empty-recipient message.
 - `resources/ts/checkin.ts` (Vite entry for the public online check-in page)
 - `resources/ts/people-reporting-fields.ts` (shared by `admin.ts` and `checkin.ts`)
 
+## Public header navigation
+- The public header (`resources/views/components/nav.blade.php`) uses the same burger menu on mobile and desktop.
+- The burger is fixed to the left, the locale dropdown sits beside it, the logo is centered, and the booking CTA remains visible on the right.
+- The full navigation remains in the existing full-screen `.nav-mobile` panel; `resources/ts/components/mobile-nav.ts` controls it at every breakpoint.
+
 ## Guest reporting classification
 
 The admin guest-reporting form and public online check-in share the same

@@ -107,13 +107,9 @@
     }
 }
 
-/* Desktop styles — hidden on mobile, visible on tablet+ */
+/* Header language control, shared by mobile and desktop */
 .lang-dropdown--desktop {
-    display: none;
-
-    @media (min-width: 768px) {
-        display: inline-block;
-    }
+    display: inline-block;
 
     .lang-dropdown__toggle {
         display: flex;
