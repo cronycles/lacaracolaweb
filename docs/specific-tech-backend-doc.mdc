@@ -53,7 +53,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Sends `BookingConfirmedMail` to the booking's guest with payment instructions from the enabled `host_owner` user, a 48h payment deadline, and the free-cancellation deadline (`checkin` − `apartment.payment.free_cancellation_days`, omitted once elapsed)
   - BCCs the owner (`config('apartment.email')`) and includes the guest name plus configured check-in/check-out times in the stay summary
   - Also sends the Italian-only `BookingHostKeeperMail` to all users with the `host_keeper` role, BCCing the owner and including the guest's phone/email when present, guest counts, parking, cleaning and linen service costs, but never the guest price
-  - The booking detail page exposes protected GET previews for the guest confirmation, host keeper summary, payment-received, check-in reminder, and guest review request emails; previews render the same Mailable HTML without sending
+  - The booking detail page exposes protected GET previews for the guest confirmation, host keeper summary, payment-received, check-in reminder, and guest review request emails; it also exposes direct links to the public check-in and review forms for testing. Email previews render the same Mailable HTML without sending
   - The host owner tax code for the receipt comes from the same enabled `host_owner`; sending is blocked when no payment-enabled host owner exists. Host owners edit their own payment profile at `/admin/impostazioni/profilo-pagamenti`; super admins edit it in user management.
   - Sets `Booking.confirmation_sent_at`; the admin UI warns before resending if already sent
   - No automated cancellation job if unpaid after 48h — the owner cancels manually via the existing `cancel` action

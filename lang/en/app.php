@@ -306,9 +306,10 @@ return [
     'review_submitted_text' => 'Thank you. Your review has been received and will be checked before publication.',
     'review_edit_button' => 'Edit review', 'review_validation_error' => 'Check the required fields and try again.',
     'review_edit_confirm' => 'Do you want to edit the review? You will need to submit it again and existing translations will be removed.',
-    'review_request_mail_subject' => 'Tell us about your stay — La Caracola', 'review_request_mail_title' => 'How was your stay?',
-    'review_request_mail_intro' => 'Your stay ended on :checkout. We would love to receive your review.',
-    'review_request_mail_button' => 'Write your review', 'review_request_mail_footer' => 'The link will remain available for a limited time.',
+    'review_request_mail_subject' => 'Thank you for staying with us — La Caracola', 'review_request_mail_title' => 'How was your stay?',
+    'review_request_mail_thanks' => 'Thank you for choosing La Caracola for your stay. We hope you felt at home and took away some lovely memories of your time in Andora.',
+    'review_request_mail_intro' => 'Your stay ended on :checkout. If you have a moment, we would love to hear about your experience. Your feedback is valuable and helps us improve and welcome future guests.',
+    'review_request_mail_button' => 'Write your review', 'review_request_mail_footer' => 'It only takes a few minutes. The link will remain available for a limited time.',
 
     'places_title'          => 'Useful Places Nearby',
     'places_subtitle'       => 'Everything you need steps from La Caracola.',

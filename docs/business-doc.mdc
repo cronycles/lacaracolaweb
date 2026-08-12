@@ -57,7 +57,8 @@ alwaysApply: true
   the names of users with both a configured chat ID and notifications enabled.
   The booking workflow also provides protected browser previews for the guest
   confirmation, host keeper operational summary, payment-received, and online
-  check-in reminder emails. The host keeper summary includes the enabled host
+  check-in reminder emails, plus direct previews of the public check-in and
+  review forms. The host keeper summary includes the enabled host
   owner's fiscal identity and address, plus the cleaning/linen amounts and the
   corresponding receipt-of-payment breakdown. The numbered workflow indicators
   turn green only after the corresponding email was sent, online check-in was

@@ -78,7 +78,7 @@
                     <textarea id="review_disliked_text" name="disliked_text" rows="3" maxlength="2000">{{ old('disliked_text', $translation?->disliked_text) }}</textarea>
                     @error('disliked_text') <span class="booking-form__field-error">{{ $message }}</span> @enderror
                 </div>
-                <button type="submit" class="btn btn--primary">{{ __('app.review_confirm_button') }}</button>
+                <button type="submit" class="btn btn--primary booking-form__submit">{{ __('app.review_confirm_button') }}</button>
             </form>
         @endif
     </div>

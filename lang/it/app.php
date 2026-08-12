@@ -273,9 +273,10 @@ return [
     'review_submitted_text' => 'Grazie. La tua recensione è stata ricevuta e verrà verificata prima della pubblicazione.',
     'review_edit_button' => 'Modifica recensione', 'review_validation_error' => 'Controlla i campi obbligatori e riprova.',
     'review_edit_confirm' => 'Vuoi modificare la recensione? Dovrai inviarla nuovamente e le traduzioni esistenti verranno rimosse.',
-    'review_request_mail_subject' => 'Raccontaci del tuo soggiorno — La Caracola', 'review_request_mail_title' => 'Com’è stato il tuo soggiorno?',
-    'review_request_mail_intro' => 'Il tuo soggiorno è terminato il :checkout. Ci farebbe piacere ricevere una tua recensione.',
-    'review_request_mail_button' => 'Scrivi la tua recensione', 'review_request_mail_footer' => 'Il link resterà disponibile per un periodo limitato.',
+    'review_request_mail_subject' => 'Grazie per essere stato nostro ospite — La Caracola', 'review_request_mail_title' => 'Com’è stato il tuo soggiorno?',
+    'review_request_mail_thanks' => 'Grazie per aver scelto La Caracola per il tuo soggiorno. Speriamo che tu ti sia trovato bene e che abbia portato con te un bel ricordo del tempo trascorso ad Andora.',
+    'review_request_mail_intro' => 'Il tuo soggiorno è terminato il :checkout. Se ti va, raccontaci com’è stata la tua esperienza: la tua opinione è preziosa e ci aiuta a migliorare e a far conoscere la casa ad altri ospiti.',
+    'review_request_mail_button' => 'Scrivi la tua recensione', 'review_request_mail_footer' => 'Bastano pochi minuti. Il link resterà disponibile per un periodo limitato.',
 
     // --- Useful places ---
     'places_title'          => 'Posti Utili nelle Vicinanze',

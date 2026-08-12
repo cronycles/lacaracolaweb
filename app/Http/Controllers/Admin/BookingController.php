@@ -104,6 +104,9 @@ class BookingController extends Controller
         if (! $prenotazioni->review_token) {
             $prenotazioni->generateReviewToken();
         }
+        if (! $prenotazioni->checkin_token) {
+            $prenotazioni->generateCheckinToken();
+        }
 
         $hostKeeperEmails = User::query()
             ->whereHas('role', fn ($query) => $query->where('name', 'host_keeper'))

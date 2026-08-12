@@ -97,6 +97,7 @@
                     </form>
                     <div class="booking-step__previews">
                         <a href="{{ route('admin.bookings.email-preview', [$booking, 'checkin-reminder']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
+                        <a href="{{ route('checkin.show', $booking->checkin_token) }}" target="_blank" rel="noopener" class="booking-preview-link">Apri form check-in</a>
                     </div>
                     </div>
                 </div>

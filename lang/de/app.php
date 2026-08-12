@@ -305,9 +305,10 @@ return [
     'review_submitted_text' => 'Vielen Dank. Ihre Bewertung wurde erhalten und wird vor der Veröffentlichung geprüft.',
     'review_edit_button' => 'Bewertung bearbeiten', 'review_validation_error' => 'Prüfen Sie die Pflichtfelder und versuchen Sie es erneut.',
     'review_edit_confirm' => 'Möchten Sie die Bewertung bearbeiten? Sie müssen sie erneut senden und vorhandene Übersetzungen werden gelöscht.',
-    'review_request_mail_subject' => 'Erzählen Sie uns von Ihrem Aufenthalt — La Caracola', 'review_request_mail_title' => 'Wie war Ihr Aufenthalt?',
-    'review_request_mail_intro' => 'Ihr Aufenthalt endete am :checkout. Wir würden uns sehr über Ihre Bewertung freuen.',
-    'review_request_mail_button' => 'Bewertung schreiben', 'review_request_mail_footer' => 'Der Link bleibt nur für eine begrenzte Zeit verfügbar.',
+    'review_request_mail_subject' => 'Vielen Dank für Ihren Aufenthalt — La Caracola', 'review_request_mail_title' => 'Wie war Ihr Aufenthalt?',
+    'review_request_mail_thanks' => 'Vielen Dank, dass Sie sich für La Caracola entschieden haben. Wir hoffen, dass Sie sich bei uns wohlgefühlt haben und schöne Erinnerungen an Ihre Zeit in Andora mitnehmen konnten.',
+    'review_request_mail_intro' => 'Ihr Aufenthalt endete am :checkout. Wenn Sie ein paar Minuten Zeit haben, würden wir uns sehr über Ihre Erfahrungen freuen. Ihre Rückmeldung hilft uns, besser zu werden und zukünftige Gäste willkommen zu heißen.',
+    'review_request_mail_button' => 'Bewertung schreiben', 'review_request_mail_footer' => 'Die Bewertung dauert nur wenige Minuten. Der Link bleibt für eine begrenzte Zeit verfügbar.',
 
     'places_title'          => 'Nützliche Orte in der Nähe',
     'places_subtitle'       => 'Alles was Sie brauchen direkt vor La Caracola.',
