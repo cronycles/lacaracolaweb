@@ -1,5 +1,5 @@
 {{-- Navigation component --}}
-<nav class="nav" aria-label="Main navigation">
+<nav class="nav {{ request()->routeIs('*.home') ? 'nav--overlay' : '' }}" aria-label="Main navigation">
     <div class="container nav__inner">
 
         <div class="nav__controls">
@@ -35,14 +35,13 @@
             </div>
         </div>
 
-        {{-- Logo: brand symbol + name --}}
+        {{-- Logo: brand wordmark --}}
         <a href="{{ route_locale('home') }}" class="nav__logo" aria-label="{{ config('apartment.name') }}">
-            <img src="{{ asset('images/brand/logo-symbol-blue.svg') }}"
+            <img src="{{ asset('images/brand/logo-wordmark-blue.svg') }}"
                  alt=""
                  aria-hidden="true"
-                 width="54"
+                 width="180"
                  height="36">
-            <span class="nav__logo-name">{{ config('apartment.name') }}</span>
         </a>
 
         {{-- Booking CTA: visually separated button, not a plain nav link --}}
