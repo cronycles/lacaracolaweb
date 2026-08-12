@@ -50,10 +50,10 @@ otherwise `Modifica` and `Elimina`. The global admin sidebar does not contain a
 separate reviews entry.
 
 The review form accepts a rating from 1 to 10 and stores optional translated
-feedback for what guests liked and did not like. The public reviews page renders
-up to ten stars with wider spacing and shows the two feedback blocks only when
-their localized text is available, using a green smile for liked feedback and a
-dark sad face for disliked feedback.
+feedback for what guests liked and did not like. The rating is displayed as a
+numeric `X/10` score in the public page and admin summaries. The two feedback
+blocks appear only when their localized text is available, using a green smile
+for liked feedback and a dark sad face for disliked feedback.
 
 # Active TS modules
 - `resources/ts/components/booking-form.ts`

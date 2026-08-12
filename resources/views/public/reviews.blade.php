@@ -17,10 +17,8 @@
             <div class="reviews-grid">
                 @foreach($reviews as $review)
                     <div class="review-card">
-                        <div class="review-card__stars">
-                            @for($i = 1; $i <= 10; $i++)
-                                {{ $i <= $review->rating ? '★' : '☆' }}
-                            @endfor
+                        <div class="review-card__rating" aria-label="{{ $review->rating }}/10">
+                            <strong>{{ $review->rating }}</strong><span>/10</span>
                         </div>
                         <p class="review-card__text">"{{ $review->textForLocale(app()->getLocale()) }}"</p>
                         @if($review->likedTextForLocale(app()->getLocale()))

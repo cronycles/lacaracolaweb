@@ -51,7 +51,7 @@
                     <select name="rating" class="form-input">
                         @for($s = 10; $s >= 1; $s--)
                             <option value="{{ $s }}" {{ old('rating', $review->rating ?? 10) == $s ? 'selected' : '' }}>
-                                {{ str_repeat('★', $s) }}{{ str_repeat('☆', 10 - $s) }} ({{ $s }}/10)
+                                {{ $s }}/10
                             </option>
                         @endfor
                     </select>

@@ -118,7 +118,7 @@
                         <div class="booking-step__label">Recensione</div>
                         <div class="booking-step__status">
                             @if($booking->review)
-                                Inserita · {{ str_repeat('★', $booking->review->rating) }} / 10{{ $booking->review->is_active ? '' : ' · Nascosta' }}
+                                Inserita · {{ $booking->review->rating }} / 10{{ $booking->review->is_active ? '' : ' · Nascosta' }}
                             @else
                                 Non ancora inserita
                             @endif
