@@ -16,19 +16,6 @@ class ReviewController extends Controller
     private const LOCALES = ['it', 'en', 'fr', 'de'];
 
     /**
-     * List all bookings with their review status, ordered by checkout DESC.
-     */
-    public function index(): View
-    {
-        $bookings = Booking::with(['person', 'review'])
-            ->whereNull('canceled_at')
-            ->orderByDesc('checkout')
-            ->get();
-
-        return view('admin.reviews.index', compact('bookings'));
-    }
-
-    /**
      * Show the form to create a review for a specific booking.
      */
     public function create(Booking $booking): View
@@ -104,7 +91,7 @@ class ReviewController extends Controller
             }
         }
 
-        return redirect()->route('admin.reviews.index')
+        return redirect()->route('admin.bookings.show', $booking)
             ->with('success', 'Recensione aggiunta.');
     }
 
@@ -184,7 +171,7 @@ class ReviewController extends Controller
             }
         }
 
-        return redirect()->route('admin.reviews.index')
+        return redirect()->route('admin.bookings.show', $review->booking)
             ->with('success', 'Recensione aggiornata.');
     }
 
@@ -195,7 +182,7 @@ class ReviewController extends Controller
     {
         $review->delete();
 
-        return redirect()->route('admin.reviews.index')
+        return redirect()->route('admin.bookings.show', $review->booking_id)
             ->with('success', 'Recensione eliminata.');
     }
 }

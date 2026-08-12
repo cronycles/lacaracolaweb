@@ -10,6 +10,7 @@ use App\Http\Controllers\Public\TermsController;
 use App\Http\Controllers\Public\UsefulPlacesController;
 use App\Http\Controllers\Public\BookingController;
 use App\Http\Controllers\Public\CheckinController;
+use App\Http\Controllers\Public\ReviewController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\LegacyRedirectController;
 use App\Http\Controllers\LocaleController;
@@ -61,6 +62,11 @@ Route::get('/check-in/{token}', [CheckinController::class, 'show'])->name('check
 Route::post('/check-in/{token}/companions', [CheckinController::class, 'addCompanion'])->name('checkin.companions.store');
 Route::post('/check-in/{token}/edit', [CheckinController::class, 'beginEdit'])->name('checkin.edit');
 Route::post('/check-in/{token}/confirm', [CheckinController::class, 'confirm'])->name('checkin.confirm');
+
+// Public guest review (token-based, not locale-prefixed)
+Route::get('/review/{token}', [ReviewController::class, 'show'])->name('review.show');
+Route::post('/review/{token}/confirm', [ReviewController::class, 'confirm'])->name('review.confirm');
+Route::post('/review/{token}/edit', [ReviewController::class, 'beginEdit'])->name('review.edit');
 
 // --- Redirect old URLs without locale prefix (for SEO and backward compatibility) ---
 Route::get('/appartamento', [LegacyRedirectController::class, 'appartamento']);

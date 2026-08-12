@@ -298,6 +298,18 @@ return [
     'checkin_reminder_mail_button'  => 'Complete online check-in',
     'checkin_reminder_mail_footer'  => "If you've already completed this, please ignore this email.",
 
+    'review_page_title' => 'Your review', 'review_title' => 'Leave a review',
+    'review_intro' => 'Tell us about your stay. Your review will be checked before it is published.',
+    'review_rating_label' => 'Rating', 'review_text_label' => 'Your review',
+    'review_liked_label' => 'What did you like', 'review_disliked_label' => 'What did you not like',
+    'review_confirm_button' => 'Submit review', 'review_submitted_title' => 'Review submitted',
+    'review_submitted_text' => 'Thank you. Your review has been received and will be checked before publication.',
+    'review_edit_button' => 'Edit review', 'review_validation_error' => 'Check the required fields and try again.',
+    'review_edit_confirm' => 'Do you want to edit the review? You will need to submit it again and existing translations will be removed.',
+    'review_request_mail_subject' => 'Tell us about your stay — La Caracola', 'review_request_mail_title' => 'How was your stay?',
+    'review_request_mail_intro' => 'Your stay ended on :checkout. We would love to receive your review.',
+    'review_request_mail_button' => 'Write your review', 'review_request_mail_footer' => 'The link will remain available for a limited time.',
+
     'places_title'          => 'Useful Places Nearby',
     'places_subtitle'       => 'Everything you need steps from La Caracola.',
     'places_supermarkets'   => 'Supermarkets & Shopping',

@@ -9,6 +9,7 @@ use App\Mail\BookingConfirmedMail;
 use App\Mail\BookingHostKeeperMail;
 use App\Mail\BookingPaymentReceivedMail;
 use App\Mail\CheckinReminderMail;
+use App\Mail\ReviewRequestMail;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
@@ -100,6 +101,10 @@ class BookingController extends Controller
     {
         $prenotazioni->load('person', 'additionalGuests', 'bookingRequest', 'guestReports', 'review');
 
+        if (! $prenotazioni->review_token) {
+            $prenotazioni->generateReviewToken();
+        }
+
         $hostKeeperEmails = User::query()
             ->whereHas('role', fn ($query) => $query->where('name', 'host_keeper'))
             ->whereNotNull('email')
@@ -137,6 +142,7 @@ class BookingController extends Controller
             'host-keeper' => new BookingHostKeeperMail($prenotazioni),
             'payment-received' => new BookingPaymentReceivedMail($prenotazioni),
             'checkin-reminder' => new CheckinReminderMail($prenotazioni),
+            'review-request' => new ReviewRequestMail($prenotazioni),
             default => abort(404),
         };
 
@@ -236,6 +242,20 @@ class BookingController extends Controller
         $prenotazioni->update(['checkin_reminder_sent_at' => now()]);
 
         return redirect()->back()->with('success', 'Email di promemoria check-in online inviata a '.$prenotazioni->person->email.'.');
+    }
+
+    public function sendReviewRequestEmail(Booking $prenotazioni): RedirectResponse
+    {
+        $prenotazioni->load('person');
+
+        if (empty($prenotazioni->person->email)) {
+            return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
+        }
+
+        Mail::to($prenotazioni->person->email)->send(new ReviewRequestMail($prenotazioni));
+        $prenotazioni->update(['review_request_sent_at' => now()]);
+
+        return redirect()->back()->with('success', 'Email per la recensione inviata a '.$prenotazioni->person->email.'.');
     }
 
     /**

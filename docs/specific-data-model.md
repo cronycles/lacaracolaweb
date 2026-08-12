@@ -133,6 +133,9 @@ Individual stay/reservation records linked to a primary guest.
 | `checkin_token_expires_at` | TIMESTAMP | Token expiry, set to end of the checkout day when generated (nullable) |
 | `checkin_completed_at` | TIMESTAMP | When the guest explicitly confirmed the online check-in (nullable) |
 | `checkin_reminder_sent_at` | TIMESTAMP | When the check-in reminder email was last sent, manually or automatically (nullable) |
+| `review_token` | VARCHAR(64) | High-entropy public guest-review token (nullable, unique) |
+| `review_token_expires_at` | TIMESTAMP | Review link expiry: checkout plus `config/apartment.php` review days (nullable) |
+| `review_request_sent_at` | TIMESTAMP | When the guest review email was last sent (nullable) |
 | `telegram_notified_at` | TIMESTAMP | When the booking summary was last sent via Telegram (nullable) |
 | `locale`       | VARCHAR(5)       | Locale for the check-in page/emails (nullable, e.g. `it`/`en`/`fr`/`de`) |
 | `deleted_at`   | TIMESTAMP        | Soft delete timestamp (nullable)                   |
@@ -150,6 +153,7 @@ Individual stay/reservation records linked to a primary guest.
 - `confirmation_sent_at` prevents accidentally sending the payment-confirmation email twice; the send action warns before resending if already set
 - `checkin_token`/`checkin_token_expires_at` power the public online check-in link (see `docs/specific-tech-backend-doc.mdc` § Online check-in pubblico); not backfilled for existing bookings, generated on first need (e.g. when `BookingConfirmedMail` is sent)
 - `checkin_completed_at` is the single source of truth for "guest completed online check-in"; the guest can still edit data afterwards without clearing this flag
+- `review_token` is available from booking creation and expires after the configured post-checkout window; canceled bookings are rejected by the public review flow
 
 **Relations:**
 
@@ -447,6 +451,10 @@ optional feedback fields is available for that locale.
 Unique key: `(review_id, locale)`.
 
 The `reviews.rating` field is an unsigned tiny integer from 1 to 10.
+
+Each review also stores `original_locale`, the language used by the guest. A guest edit
+deletes all existing translations, writes only the newly submitted language, and hides the
+review again for manual approval.
 
 ---
 

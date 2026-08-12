@@ -83,11 +83,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::patch('/prenotazioni/{prenotazioni}/ripristina', [BookingController::class, 'restore'])->name('bookings.restore');
         Route::post('/prenotazioni/{prenotazioni}/notify-telegram', [BookingController::class, 'notifyTelegram'])->name('bookings.notify-telegram');
         Route::get('/prenotazioni/{prenotazioni}/email-preview/{emailType}', [BookingController::class, 'previewEmail'])
-            ->where('emailType', 'confirmation|host-keeper|payment-received|checkin-reminder')
+            ->where('emailType', 'confirmation|host-keeper|payment-received|checkin-reminder|review-request')
             ->name('bookings.email-preview');
         Route::post('/prenotazioni/{prenotazioni}/send-confirmation', [BookingController::class, 'sendConfirmationEmail'])->name('bookings.send-confirmation');
         Route::post('/prenotazioni/{prenotazioni}/send-payment-received', [BookingController::class, 'sendPaymentReceivedEmail'])->name('bookings.send-payment-received');
         Route::post('/prenotazioni/{prenotazioni}/send-checkin-reminder', [BookingController::class, 'sendCheckinReminderEmail'])->name('bookings.send-checkin-reminder');
+        Route::post('/prenotazioni/{prenotazioni}/send-review-request', [BookingController::class, 'sendReviewRequestEmail'])->name('bookings.send-review-request');
         Route::get('/prenotazioni/{prenotazioni}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
         Route::put('/prenotazioni/{prenotazioni}', [BookingController::class, 'update'])->name('bookings.update');
         Route::patch('/prenotazioni/{prenotazioni}', [BookingController::class, 'update']);
@@ -180,7 +181,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // ── manage_reviews ───────────────────────────────────────────────────────
 
     Route::middleware('permission:manage_reviews')->group(function () {
-        Route::get('/recensioni', [ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/recensioni/prenotazione/{booking}/crea', [ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/recensioni/prenotazione/{booking}', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/recensioni/{review}/modifica', [ReviewController::class, 'edit'])->name('reviews.edit');

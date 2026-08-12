@@ -123,6 +123,14 @@ repeats the stay contact, house address with map links, cancellation deadline, a
   made in, with a simple on-page language switcher (doesn't change the saved
   language, just how that visit is displayed).
 
+### Guest reviews
+
+- Each booking has one reusable guest-review link for the primary guest. The owner sends it manually from the booking detail workflow, which also offers an email preview and a direct form preview.
+- The link is available from booking creation and expires a configurable number of days after checkout (default 20); canceled bookings and expired links return 404.
+- The guest submits one rating, one main text, and optional liked/disliked feedback in one selected language. The guest name is displayed from the booking and cannot be edited.
+- After submission the guest sees a summary and can edit it through an explicit confirmation, like online check-in. Editing replaces all translations with the new original language and hides the review again.
+- Guest-submitted reviews are never published automatically. The owner edits translations and activates visibility from the booking detail workflow.
+
 ## Admin flows
 - Access via email/password.
 - Availability management (manual blocks and calendar visibility).

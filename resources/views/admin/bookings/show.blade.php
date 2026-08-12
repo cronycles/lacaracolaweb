@@ -122,20 +122,23 @@
                             @else
                                 Non ancora inserita
                             @endif
+                            · {{ $booking->review_request_sent_at ? 'Ultimo invio: '.$booking->review_request_sent_at->format('d/m/Y H:i') : 'Email non inviata' }}
                         </div>
                     </div>
                     <div class="booking-step__action">
-                        @if($booking->review)
-                            <a href="{{ route('admin.reviews.edit', $booking->review) }}" class="btn btn--outline btn--sm">Modifica</a>
-                            <form method="POST" action="{{ route('admin.reviews.destroy', $booking->review) }}" style="display:inline"
-                                  onsubmit="return confirm('Eliminare questa recensione?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn--outline btn--sm" style="color:#c62828">Elimina</button>
-                            </form>
-                        @else
-                            <a href="{{ route('admin.reviews.create', $booking) }}" class="booking-step__action btn btn--primary btn--sm">Aggiungi recensione</a>
-                        @endif
+                        <form method="POST" action="{{ route('admin.bookings.send-review-request', $booking) }}" class="js-confirm-send-mail"
+                              data-confirm-message="{{ $booking->review_request_sent_at ? 'Email recensione già inviata il '.$booking->review_request_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare all\'ospite il link per compilare la recensione?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
+                            @csrf
+                            <button type="submit" class="btn btn--primary btn--sm">{{ $booking->review_request_sent_at ? 'Invia di nuovo' : 'Invia recensione' }}</button>
+                            <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
+                        </form>
+                        <div class="booking-step__previews">
+                            <a href="{{ route('admin.bookings.email-preview', [$booking, 'review-request']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
+                            <a href="{{ route('review.show', $booking->review_token) }}" target="_blank" rel="noopener" class="booking-preview-link">Apri form recensione</a>
+                            @if($booking->review)
+                                <a href="{{ route('admin.reviews.edit', $booking->review) }}" class="booking-preview-link">Modifica recensione</a>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 @endif

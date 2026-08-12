@@ -5,7 +5,7 @@
 @section('content')
 
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem">
-        <a href="{{ route('admin.reviews.index') }}" style="color:#6b7f89;font-size:.875rem">← Recensioni</a>
+        <a href="{{ route('admin.bookings.show', $booking) }}" style="color:#6b7f89;font-size:.875rem">← Prenotazione</a>
         <h1 style="font-size:1.1rem;font-weight:700">
             {{ $review->exists ? 'Modifica recensione' : 'Nuova recensione' }}
         </h1>
@@ -116,7 +116,7 @@
             <button type="submit" class="btn btn--primary">
                 {{ $review->exists ? 'Salva modifiche' : 'Aggiungi recensione' }}
             </button>
-            <a href="{{ route('admin.reviews.index') }}" class="btn btn--outline">Annulla</a>
+            <a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn--outline">Annulla</a>
         </div>
 
     </form>

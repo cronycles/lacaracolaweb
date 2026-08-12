@@ -35,6 +35,9 @@ class Booking extends Model
         'checkin_token_expires_at',
         'checkin_completed_at',
         'checkin_reminder_sent_at',
+        'review_token',
+        'review_token_expires_at',
+        'review_request_sent_at',
         'telegram_notified_at',
         'locale',
         'income_amount',
@@ -67,6 +70,8 @@ class Booking extends Model
         'checkin_token_expires_at' => 'datetime',
         'checkin_completed_at' => 'datetime',
         'checkin_reminder_sent_at' => 'datetime',
+        'review_token_expires_at' => 'datetime',
+        'review_request_sent_at' => 'datetime',
         'telegram_notified_at' => 'datetime',
         'income_amount'    => 'decimal:2',
         'income_paid'      => 'boolean',
@@ -108,6 +113,12 @@ class Booking extends Model
             $booking->cleaning_tax ??= $defaults['cleaning'];
             $booking->linen_tax    ??= $defaults['linen'];
             $booking->parking_tax  ??= $defaults['parking'];
+        });
+
+        static::created(function (Booking $booking): void {
+            if ($booking->checkout && ! $booking->review_token) {
+                $booking->generateReviewToken();
+            }
         });
     }
 
@@ -245,6 +256,20 @@ class Booking extends Model
         $this->forceFill([
             'checkin_token'            => $token,
             'checkin_token_expires_at' => $this->checkout->copy()->endOfDay(),
+        ])->save();
+
+        return $token;
+    }
+
+    public function generateReviewToken(): string
+    {
+        do {
+            $token = Str::random(48);
+        } while (self::where('review_token', $token)->exists());
+
+        $this->forceFill([
+            'review_token'            => $token,
+            'review_token_expires_at' => $this->checkout->copy()->addDays((int) config('apartment.review.token_expiry_days', 20))->endOfDay(),
         ])->save();
 
         return $token;

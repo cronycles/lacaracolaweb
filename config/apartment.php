@@ -129,6 +129,11 @@ return [
         'reminder_lead_days' => env('APARTMENT_CHECKIN_REMINDER_LEAD_DAYS', 7),
     ],
 
+    // Guest review link validity after checkout.
+    'review' => [
+        'token_expiry_days' => env('APARTMENT_REVIEW_TOKEN_EXPIRY_DAYS', 20),
+    ],
+
     // --- INTERHOME integration ---
     'interhome' => [
         // Official Interhome listing code.

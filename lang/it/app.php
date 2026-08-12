@@ -265,6 +265,18 @@ return [
     'checkin_reminder_mail_button'  => 'Completa il check-in online',
     'checkin_reminder_mail_footer'  => 'Se hai già completato questi dati, ignora questa email.',
 
+    'review_page_title' => 'La tua recensione', 'review_title' => 'Lascia una recensione',
+    'review_intro' => 'Raccontaci com’è stato il tuo soggiorno. La recensione sarà verificata prima di essere pubblicata.',
+    'review_rating_label' => 'Valutazione', 'review_text_label' => 'La tua recensione',
+    'review_liked_label' => 'Cosa ti è piaciuto', 'review_disliked_label' => 'Cosa non ti è piaciuto',
+    'review_confirm_button' => 'Invia recensione', 'review_submitted_title' => 'Recensione inviata',
+    'review_submitted_text' => 'Grazie. La tua recensione è stata ricevuta e verrà verificata prima della pubblicazione.',
+    'review_edit_button' => 'Modifica recensione', 'review_validation_error' => 'Controlla i campi obbligatori e riprova.',
+    'review_edit_confirm' => 'Vuoi modificare la recensione? Dovrai inviarla nuovamente e le traduzioni esistenti verranno rimosse.',
+    'review_request_mail_subject' => 'Raccontaci del tuo soggiorno — La Caracola', 'review_request_mail_title' => 'Com’è stato il tuo soggiorno?',
+    'review_request_mail_intro' => 'Il tuo soggiorno è terminato il :checkout. Ci farebbe piacere ricevere una tua recensione.',
+    'review_request_mail_button' => 'Scrivi la tua recensione', 'review_request_mail_footer' => 'Il link resterà disponibile per un periodo limitato.',
+
     // --- Useful places ---
     'places_title'          => 'Posti Utili nelle Vicinanze',
     'places_subtitle'       => 'Tutto ciò che ti serve a pochi passi da La Caracola.',
