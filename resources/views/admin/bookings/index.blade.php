@@ -3,9 +3,21 @@
 @section('title', 'Prenotazioni')
 
 @section('content')
-    <div class="page-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <h1 style="font-size:1.1rem;font-weight:700">Prenotazioni</h1>
-        <a href="{{ route('admin.bookings.create') }}" class="btn btn--primary">+ Nuova prenotazione</a>
+    <div class="page-header-row" style="display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+        <div>
+            <h1 style="font-size:1.1rem;font-weight:700">Prenotazioni</h1>
+            @if(auth()->user()->hasPermission('manage_bookings'))
+                <a href="{{ route('admin.guest-reporting.index') }}" class="btn btn--outline btn--sm" style="margin-top:.5rem">Storico segnalazioni ospiti</a>
+            @endif
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+            @if(auth()->user()->hasPermission('import_pdf'))
+                <a href="{{ route('admin.bookings.import-pdf') }}" class="btn btn--outline">Import PDF</a>
+            @endif
+            @if(auth()->user()->hasPermission('manage_bookings'))
+                <a href="{{ route('admin.bookings.create') }}" class="btn btn--primary">+ Nuova prenotazione</a>
+            @endif
+        </div>
     </div>
 
     <div class="a-card">

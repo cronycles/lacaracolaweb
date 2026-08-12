@@ -162,6 +162,14 @@ multiple included guests, the first is type `18` and the others are type `20`.
   / `.badge--unpaid` (amber, new profile will be created) color classes — no new badge
   variants introduced.
 
+## Admin: booking navigation actions
+
+The admin sidebar keeps only the main `Prezzi` entry for pricing; stay discount
+rules are part of the pricing workflow and are not a separate navigation item.
+The guest-reporting history and Interhome PDF import are contextual actions on
+the bookings index. The PDF import sits beside `Nuova prenotazione`; the guest-
+reporting history is placed below the page title as a separate action.
+
 ## Admin: payment received email
 - Booking detail page (`resources/views/admin/bookings/show.blade.php`) exposes the `Segna incassato e conferma` action to users with `manage_bookings`.
 - The action confirms the browser prompt, marks the booking income as paid, sends the guest the payment-received email, and displays the last send timestamp. Resends use the same action after a second confirmation.

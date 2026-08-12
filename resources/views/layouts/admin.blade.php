@@ -41,11 +41,6 @@
                     💶 Prezzi
                 </a>
             </li>
-            <li>
-                <a href="{{ route('admin.stay-discounts.index') }}" @class(['active' => request()->routeIs('admin.stay-discounts*')])>
-                    🏷️ Sconti soggiorno
-                </a>
-            </li>
             @endif
             @if(auth()->user()->hasPermission('manage_bookings'))
             <li>
@@ -63,20 +58,6 @@
                     🏠 Prenotazioni
                 </a>
             </li>
-            @if(auth()->user()->hasPermission('manage_bookings'))
-            <li>
-                <a href="{{ route('admin.guest-reporting.index') }}" @class(['active' => request()->routeIs('admin.guest-reporting*')])>
-                    📋 Segnalazione Ospiti
-                </a>
-            </li>
-            @endif
-            @if(auth()->user()->hasPermission('import_pdf'))
-            <li>
-                <a href="{{ route('admin.bookings.import-pdf') }}" @class(['active' => request()->routeIs('admin.bookings.import-pdf*')])>
-                    📄 Import PDF
-                </a>
-            </li>
-            @endif
             <li>
                 <a href="{{ route('admin.people.index') }}" @class(['active' => request()->routeIs('admin.people*')])>
                     👥 Ospiti
