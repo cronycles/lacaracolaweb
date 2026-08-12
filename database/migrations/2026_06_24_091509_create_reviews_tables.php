@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('booking_id')->nullable()->constrained()->nullOnDelete();
             $table->string('author_name');
             $table->string('source')->nullable();
-            $table->unsignedTinyInteger('rating')->default(5);
+            $table->unsignedTinyInteger('rating')->default(10);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('review_id')->constrained()->cascadeOnDelete();
             $table->string('locale', 5);
-            $table->text('text');
+            $table->text('text')->nullable();
             $table->timestamps();
 
             $table->unique(['review_id', 'locale']);
