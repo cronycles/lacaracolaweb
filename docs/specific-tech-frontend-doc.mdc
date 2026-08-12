@@ -35,6 +35,12 @@ recipients are users with both a non-null `telegram_chat_id` and
 `telegram_notifications_enabled = true`; the UI shows their names, or an explicit
 empty-recipient message.
 
+The numbered steps in the booking workflow turn green independently when the
+corresponding action is genuinely complete: confirmation email sent,
+payment-received email sent, online check-in completed, or a definitive
+Alloggiati Web submission recorded with `mode = send` and `status = success`.
+Successful draft tests do not mark the reporting step complete.
+
 # Active TS modules
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`

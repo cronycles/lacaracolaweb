@@ -318,6 +318,10 @@ body {
     font-size: .8rem;
     font-weight: 700;
 }
+.booking-step__number--completed {
+    background: #dcfce7;
+    color: #15803d;
+}
 .booking-step__label { font-weight: 600; color: #1a2b34; }
 .booking-step__status { color: #6b7f89; font-size: .8rem; margin-top: .2rem; }
 .booking-step__action {

@@ -8,6 +8,7 @@
         $apartmentEmail = config('apartment.email');
         $hostKeeperSummary = $hostKeeperEmails !== [] ? implode(', ', $hostKeeperEmails) : 'nessun host keeper';
         $telegramSummary = $telegramRecipients !== [] ? implode(', ', $telegramRecipients) : 'nessun destinatario abilitato';
+        $alloggiatiWebReported = $booking->guestReports->contains(fn ($report) => $report->mode === 'send' && $report->status === 'success');
     @endphp
     <div class="booking-page">
         <div class="booking-header">
@@ -28,7 +29,7 @@
                 <h2 class="booking-workflow__title" id="booking-workflow-title">Stato e prossime azioni</h2>
 
                 <div class="booking-step">
-                    <span class="booking-step__number">1</span>
+                    <span class="booking-step__number{{ $booking->confirmation_sent_at ? ' booking-step__number--completed' : '' }}" title="{{ $booking->confirmation_sent_at ? 'Conferma prenotazione inviata' : 'Conferma prenotazione non ancora inviata' }}">1</span>
                     <div>
                         <div class="booking-step__label">Conferma prenotazione</div>
                         <div class="booking-step__status">
@@ -50,7 +51,7 @@
                 </div>
 
                 <div class="booking-step">
-                    <span class="booking-step__number">2</span>
+                    <span class="booking-step__number{{ $booking->payment_received_sent_at ? ' booking-step__number--completed' : '' }}" title="{{ $booking->payment_received_sent_at ? 'Conferma pagamento ricevuto inviata' : 'Conferma pagamento ricevuto non ancora inviata' }}">2</span>
                     <div>
                         <div class="booking-step__label">Pagamento ricevuto</div>
                         <div class="booking-step__status">
@@ -78,7 +79,7 @@
                 </div>
 
                 <div class="booking-step">
-                    <span class="booking-step__number">3</span>
+                    <span class="booking-step__number{{ $booking->checkin_completed_at ? ' booking-step__number--completed' : '' }}" title="{{ $booking->checkin_completed_at ? 'Check-in online completato' : 'Check-in online non ancora completato' }}">3</span>
                     <div>
                         <div class="booking-step__label">Check-in online</div>
                         <div class="booking-step__status">
@@ -100,7 +101,7 @@
                 </div>
 
                 <div class="booking-step">
-                    <span class="booking-step__number">4</span>
+                    <span class="booking-step__number{{ $alloggiatiWebReported ? ' booking-step__number--completed' : '' }}" title="{{ $alloggiatiWebReported ? 'Ospiti segnalati ad Alloggiati Web' : 'Ospiti non ancora segnalati ad Alloggiati Web' }}">4</span>
                     <div>
                         <div class="booking-step__label">Ospiti e Alloggiati Web</div>
                         <div class="booking-step__status">Disponibile anche se il check-in online non è stato completato</div>
