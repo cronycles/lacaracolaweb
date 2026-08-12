@@ -329,6 +329,18 @@ body {
     justify-content: center;
     border-radius: .5rem;
 }
+.booking-step__previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: .45rem;
+}
+.booking-preview-link {
+    color: #30596c;
+    font-size: .75rem;
+    font-weight: 600;
+    text-decoration: underline;
+}
 .booking-step__recipients {
     display: block;
     color: #6b7f89;
@@ -353,6 +365,7 @@ body {
     .booking-step__action .btn,
     .booking-step__action form { width: 100%; }
     .booking-step__action .btn { justify-content: center; white-space: normal; text-align: center; }
+    .booking-step__previews { gap: .35rem .75rem; }
     .booking-tools__actions .btn { flex: 1 1 100%; justify-content: center; }
 }
 

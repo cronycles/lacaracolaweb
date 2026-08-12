@@ -4,6 +4,16 @@
 
 @section('content')
 
+    @php
+        $cleaningAmount = (float) ($booking->cleaning_amount ?? 0);
+        $linenAmount = (float) ($booking->linen_amount ?? 0);
+        $serviceTotal = $cleaningAmount + $linenAmount;
+        $ownerAddress = implode(', ', array_filter([
+            $paymentOwner?->address_street,
+            trim(implode(' ', array_filter([$paymentOwner?->address_zip, $paymentOwner?->address_city]))),
+        ]));
+    @endphp
+
     <h1>🐚 Prenotazione confermata — La Caracola</h1>
 
     <p>È stata confermata una nuova prenotazione. Di seguito il riepilogo operativo per la casa.</p>
@@ -69,23 +79,54 @@
         <table>
             <tr>
                 <th>Costo totale servizio</th>
-                <td>€ {{ number_format((float) ($booking->cleaning_amount ?? 0) + (float) ($booking->linen_amount ?? 0), 2, ',', '.') }}</td>
+                <td><strong>€ {{ number_format($serviceTotal, 2, ',', '.') }}</strong></td>
             </tr>
             <tr>
                 <th>Dettaglio</th>
-                <td>Biancheria € {{ number_format((float) ($booking->linen_amount ?? 0), 2, ',', '.') }}; pulizie € {{ number_format((float) ($booking->cleaning_amount ?? 0), 2, ',', '.') }}</td>
+                <td>Pulizie € {{ number_format($cleaningAmount, 2, ',', '.') }}; biancheria € {{ number_format($linenAmount, 2, ',', '.') }}</td>
             </tr>
         </table>
     </div>
 
-    @if ($paymentOwner?->name || $paymentOwner?->tax_code)
+    @if ($paymentOwner?->name || $paymentOwner?->tax_code || $ownerAddress)
     <div class="callout">
-        La ricevuta deve essere intestata a <strong>{{ $paymentOwner?->name }}</strong><br>
+        <div class="section-title">Dati per la ricevuta fiscale della biancheria</div>
+        <strong>{{ $paymentOwner?->name }}</strong><br>
         @if ($paymentOwner?->tax_code)
-            Codice fiscale: <strong>{{ $paymentOwner->tax_code }}</strong>
+            Codice fiscale: {{ $paymentOwner->tax_code }}<br>
+        @endif
+        @if ($ownerAddress)
+            Indirizzo: {{ $ownerAddress }}
         @endif
     </div>
     @endif
+
+    <div class="section">
+        <div class="section-title">Dati per la ricevuta di incasso</div>
+        <p><strong>Committente:</strong> {{ $paymentOwner?->name }}@if($paymentOwner?->tax_code) — C.F. {{ $paymentOwner->tax_code }}@endif</p>
+        <table>
+            <tr>
+                <th>Compenso per servizio occasionale di check-in, check-out e pulizia immobile per il soggiorno dal {{ $booking->checkin->format('d/m/Y') }} al {{ $booking->checkout->format('d/m/Y') }}</th>
+                <td>€ {{ number_format($cleaningAmount, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <th>Rimborso spese in nome e per conto del committente per fornitura biancheria</th>
+                <td>€ {{ number_format($linenAmount, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <th>Corrispettivo lordo soggetto a tassazione</th>
+                <td>€ {{ number_format($cleaningAmount, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <th>Rimborso spese non imponibile (Art. 15 DPR 633/72)</th>
+                <td>€ {{ number_format($linenAmount, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <th><strong>Totale incassato tramite bonifico</strong></th>
+                <td><strong>€ {{ number_format($serviceTotal, 2, ',', '.') }}</strong></td>
+            </tr>
+        </table>
+    </div>
 
     <div class="footer">
         Riepilogo operativo inviato da <a href="https://lacaracolaandora.com">lacaracolaandora.com</a>.

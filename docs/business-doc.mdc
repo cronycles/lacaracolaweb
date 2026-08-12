@@ -52,6 +52,11 @@ alwaysApply: true
   in `BCC`, and, for the booking confirmation, the separate operational email
   recipients with the `host_keeper` role. The optional Telegram action shows
   the names of users with both a configured chat ID and notifications enabled.
+  The booking workflow also provides protected browser previews for the guest
+  confirmation, host keeper operational summary, payment-received, and online
+  check-in reminder emails. The host keeper summary includes the enabled host
+  owner's fiscal identity and address, plus the cleaning/linen amounts and the
+  corresponding receipt-of-payment breakdown.
 
 ### Pending availability requests (admin queue)
 - Every submitted availability request appears in a dedicated admin "Richieste"

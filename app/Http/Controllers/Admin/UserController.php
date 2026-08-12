@@ -40,6 +40,9 @@ class UserController extends Controller
             'role_id'          => ['nullable', 'exists:roles,id'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
             'tax_code'         => ['nullable', 'string', 'max:16'],
+            'address_street'   => ['nullable', 'string', 'max:255'],
+            'address_zip'      => ['nullable', 'string', 'max:10'],
+            'address_city'     => ['nullable', 'string', 'max:255'],
             'payment_beneficiary' => ['nullable', 'string', 'max:255'],
             'payment_iban'      => ['nullable', 'string', 'max:34'],
             'payment_bic'       => ['nullable', 'string', 'max:11'],
@@ -56,6 +59,9 @@ class UserController extends Controller
             'role_id'          => $data['role_id'] ?? null,
             'telegram_chat_id' => $data['telegram_chat_id'] ?? null,
             'tax_code'         => $isHostOwner ? ($data['tax_code'] ?? null) : null,
+            'address_street'   => $isHostOwner ? ($data['address_street'] ?? null) : null,
+            'address_zip'      => $isHostOwner ? ($data['address_zip'] ?? null) : null,
+            'address_city'     => $isHostOwner ? ($data['address_city'] ?? null) : null,
             'payment_beneficiary' => $isHostOwner ? ($data['payment_beneficiary'] ?? null) : null,
             'payment_iban'     => $isHostOwner ? ($data['payment_iban'] ?? null) : null,
             'payment_bic'      => $isHostOwner ? ($data['payment_bic'] ?? null) : null,
@@ -101,6 +107,9 @@ class UserController extends Controller
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
             'telegram_notifications_enabled' => ['boolean'],
             'tax_code'         => ['nullable', 'string', 'max:16'],
+            'address_street'   => ['nullable', 'string', 'max:255'],
+            'address_zip'      => ['nullable', 'string', 'max:10'],
+            'address_city'     => ['nullable', 'string', 'max:255'],
             'payment_beneficiary' => ['nullable', 'string', 'max:255'],
             'payment_iban'      => ['nullable', 'string', 'max:34'],
             'payment_bic'       => ['nullable', 'string', 'max:11'],
@@ -116,6 +125,9 @@ class UserController extends Controller
         $utenti->telegram_notifications_enabled = (bool) ($data['telegram_notifications_enabled'] ?? false);
         $isHostOwner = Role::whereKey($utenti->role_id)->where('name', 'host_owner')->exists();
         $utenti->tax_code = $isHostOwner ? ($data['tax_code'] ?? null) : null;
+        $utenti->address_street = $isHostOwner ? ($data['address_street'] ?? null) : null;
+        $utenti->address_zip = $isHostOwner ? ($data['address_zip'] ?? null) : null;
+        $utenti->address_city = $isHostOwner ? ($data['address_city'] ?? null) : null;
         $utenti->payment_beneficiary = $isHostOwner ? ($data['payment_beneficiary'] ?? null) : null;
         $utenti->payment_iban = $isHostOwner ? ($data['payment_iban'] ?? null) : null;
         $utenti->payment_bic = $isHostOwner ? ($data['payment_bic'] ?? null) : null;

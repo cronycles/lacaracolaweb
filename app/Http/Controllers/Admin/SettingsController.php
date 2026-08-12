@@ -63,6 +63,9 @@ class SettingsController extends Controller
 
         $data = $request->validate([
             'tax_code' => ['nullable', 'string', 'max:16'],
+            'address_street' => ['nullable', 'string', 'max:255'],
+            'address_zip' => ['nullable', 'string', 'max:10'],
+            'address_city' => ['nullable', 'string', 'max:255'],
             'payment_beneficiary' => ['nullable', 'string', 'max:255'],
             'payment_iban' => ['nullable', 'string', 'max:34'],
             'payment_bic' => ['nullable', 'string', 'max:11'],
@@ -71,6 +74,9 @@ class SettingsController extends Controller
 
         $user->update([
             'tax_code' => $data['tax_code'] ?? null,
+            'address_street' => $data['address_street'] ?? null,
+            'address_zip' => $data['address_zip'] ?? null,
+            'address_city' => $data['address_city'] ?? null,
             'payment_beneficiary' => $data['payment_beneficiary'] ?? null,
             'payment_iban' => $data['payment_iban'] ?? null,
             'payment_bic' => $data['payment_bic'] ?? null,

@@ -35,12 +35,18 @@
                             {{ $booking->confirmation_sent_at ? 'Ultimo invio: '.$booking->confirmation_sent_at->format('d/m/Y H:i') : 'Non ancora inviata' }}
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                    <div class="booking-step__action">
+                    <form method="POST" action="{{ route('admin.bookings.send-confirmation', $booking) }}" class="js-confirm-send-mail"
                                                     data-confirm-message="{{ $booking->confirmation_sent_at ? 'Email già inviata il '.$booking->confirmation_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare l\'email di conferma prenotazione con le istruzioni di pagamento?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}; email operativa separata agli host keeper: {{ $hostKeeperSummary }}.">
                         @csrf
                         <button type="submit" class="btn btn--outline btn--sm">{{ $booking->confirmation_sent_at ? 'Invia di nuovo' : 'Conferma prenotazione' }}</button>
                                                 <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }} · Host keeper: {{ $hostKeeperSummary }}</span>
                     </form>
+                    <div class="booking-step__previews">
+                        <a href="{{ route('admin.bookings.email-preview', [$booking, 'confirmation']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima cliente</a>
+                        <a href="{{ route('admin.bookings.email-preview', [$booking, 'host-keeper']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima host keeper</a>
+                    </div>
+                    </div>
                 </div>
 
                 <div class="booking-step">
@@ -58,12 +64,17 @@
                             @endif
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                    <div class="booking-step__action">
+                    <form method="POST" action="{{ route('admin.bookings.send-payment-received', $booking) }}" class="js-confirm-send-mail"
                                                     data-confirm-message="{{ $booking->payment_received_sent_at ? 'Conferma pagamento già inviata il '.$booking->payment_received_sent_at->format('d/m/Y H:i').'. Il pagamento risulta incassato. Inviare di nuovo?' : 'Segnare il pagamento come incassato e inviare la conferma all\'ospite?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
                         @csrf
                         <button type="submit" class="btn btn--primary btn--sm">{{ $booking->payment_received_sent_at ? 'Invia di nuovo' : 'Segna incassato e conferma' }}</button>
                                                 <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
                     </form>
+                    <div class="booking-step__previews">
+                        <a href="{{ route('admin.bookings.email-preview', [$booking, 'payment-received']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
+                    </div>
+                    </div>
                 </div>
 
                 <div class="booking-step">
@@ -75,12 +86,17 @@
                             · {{ $booking->checkin_reminder_sent_at ? 'Ultimo promemoria: '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i') : 'Promemoria non inviato' }}
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}" class="booking-step__action js-confirm-send-mail"
+                    <div class="booking-step__action">
+                    <form method="POST" action="{{ route('admin.bookings.send-checkin-reminder', $booking) }}" class="js-confirm-send-mail"
                                                     data-confirm-message="{{ $booking->checkin_reminder_sent_at ? 'Promemoria già inviato il '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare il promemoria check-in online?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
                         @csrf
                         <button type="submit" class="btn btn--outline btn--sm">{{ $booking->checkin_reminder_sent_at ? 'Invia di nuovo' : 'Invia promemoria check-in' }}</button>
                                                 <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
                     </form>
+                    <div class="booking-step__previews">
+                        <a href="{{ route('admin.bookings.email-preview', [$booking, 'checkin-reminder']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
+                    </div>
+                    </div>
                 </div>
 
                 <div class="booking-step">

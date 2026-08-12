@@ -18,6 +18,7 @@ use App\Services\TelegramBookingMessageBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -125,6 +126,21 @@ class BookingController extends Controller
             'hostKeeperEmails' => $hostKeeperEmails,
             'telegramRecipients' => $telegramRecipients,
         ]);
+    }
+
+    public function previewEmail(Booking $prenotazioni, string $emailType): Response
+    {
+        $prenotazioni->load('person', 'bookingRequest');
+
+        $mail = match ($emailType) {
+            'confirmation' => new BookingConfirmedMail($prenotazioni),
+            'host-keeper' => new BookingHostKeeperMail($prenotazioni),
+            'payment-received' => new BookingPaymentReceivedMail($prenotazioni),
+            'checkin-reminder' => new CheckinReminderMail($prenotazioni),
+            default => abort(404),
+        };
+
+        return response($mail->render())->header('Content-Type', 'text/html; charset=UTF-8');
     }
 
     public function edit(Booking $prenotazioni): View

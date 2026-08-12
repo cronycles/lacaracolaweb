@@ -29,6 +29,9 @@ Admin accounts for the apartment management system. Supports multiple users with
 | `email`      | VARCHAR(255) | Unique, used for login                    |
 | `phone`      | VARCHAR(32)  | Contact phone, used for host keeper emails (nullable) |
 | `tax_code` | VARCHAR(16) | Host owner's tax code (nullable) |
+| `address_street` | VARCHAR(255) | Host owner's fiscal street address (nullable) |
+| `address_zip` | VARCHAR(10) | Host owner's postal code (nullable) |
+| `address_city` | VARCHAR(255) | Host owner's city (nullable) |
 | `payment_beneficiary` | VARCHAR(255) | Bank-transfer beneficiary (nullable) |
 | `payment_iban` | VARCHAR(34) | Bank-transfer IBAN (nullable) |
 | `payment_bic` | VARCHAR(11) | Bank-transfer BIC/SWIFT (nullable) |

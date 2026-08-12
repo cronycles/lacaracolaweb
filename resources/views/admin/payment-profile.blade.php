@@ -17,6 +17,14 @@
                     <input type="text" id="tax_code" name="tax_code" class="form-input" value="{{ old('tax_code', $user->tax_code) }}">
                 </div>
                 <div class="form-group">
+                    <label class="form-label" for="address_street">Indirizzo fiscale</label>
+                    <input type="text" id="address_street" name="address_street" class="form-input" value="{{ old('address_street', $user->address_street) }}" placeholder="Via e numero civico">
+                    <div class="form-row" style="margin-top:.5rem">
+                        <input type="text" name="address_zip" class="form-input" value="{{ old('address_zip', $user->address_zip) }}" placeholder="CAP">
+                        <input type="text" name="address_city" class="form-input" value="{{ old('address_city', $user->address_city) }}" placeholder="Città">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-label" for="payment_beneficiary">Beneficiario</label>
                     <input type="text" id="payment_beneficiary" name="payment_beneficiary" class="form-input" value="{{ old('payment_beneficiary', $user->payment_beneficiary) }}">
                 </div>

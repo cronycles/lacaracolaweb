@@ -44,6 +44,9 @@ class BookingConfirmationEmailTest extends TestCase
             'payment_iban' => 'IT81A0301503200000005220710',
             'payment_bic' => 'FEBIITM2',
             'tax_code' => 'CRSMRC60D24D969K',
+            'address_street' => 'Via Lavagnino 1/1',
+            'address_zip' => '16152',
+            'address_city' => 'Genova',
             'payment_enabled' => true,
         ]);
     }
@@ -306,6 +309,19 @@ class BookingConfirmationEmailTest extends TestCase
         $this->assertStringContainsString('IT81A0301503200000005220710', $confirmationHtml);
         $this->assertStringContainsString('FEBIITM2', $confirmationHtml);
         $this->assertStringContainsString('CRSMRC60D24D969K', $hostKeeperHtml);
+        $this->assertStringContainsString('Via Lavagnino 1/1, 16152 Genova', $hostKeeperHtml);
+    }
+
+    public function test_booking_email_preview_links_render_the_expected_mails(): void
+    {
+        $booking = $this->createBooking();
+
+        foreach (['confirmation', 'host-keeper', 'payment-received', 'checkin-reminder'] as $emailType) {
+            $this->actingAs($this->admin)
+                ->get(route('admin.bookings.email-preview', [$booking, $emailType]))
+                ->assertOk()
+                ->assertHeader('content-type', 'text/html; charset=UTF-8');
+        }
     }
 
     public function test_rendered_mail_omits_children_babies_pets_rows_and_total_when_zero_or_unknown(): void

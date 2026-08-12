@@ -26,6 +26,11 @@
                 <div class="form-group">
                     <div class="form-label" style="margin-bottom:.5rem">Dati host owner e pagamento</div>
                     <input type="text" name="tax_code" class="form-input" value="{{ old('tax_code') }}" placeholder="Codice fiscale">
+                    <input type="text" name="address_street" class="form-input" value="{{ old('address_street') }}" placeholder="Indirizzo (via e numero civico)" style="margin-top:.5rem">
+                    <div class="form-row" style="margin-top:.5rem">
+                        <input type="text" name="address_zip" class="form-input" value="{{ old('address_zip') }}" placeholder="CAP">
+                        <input type="text" name="address_city" class="form-input" value="{{ old('address_city') }}" placeholder="Città">
+                    </div>
                     <input type="text" name="payment_beneficiary" class="form-input" value="{{ old('payment_beneficiary') }}" placeholder="Beneficiario" style="margin-top:.5rem">
                     <input type="text" name="payment_iban" class="form-input" value="{{ old('payment_iban') }}" placeholder="IBAN" style="margin-top:.5rem">
                     <input type="text" name="payment_bic" class="form-input" value="{{ old('payment_bic') }}" placeholder="BIC/SWIFT" style="margin-top:.5rem">

@@ -82,6 +82,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::patch('/prenotazioni/{prenotazioni}/annulla', [BookingController::class, 'cancel'])->name('bookings.cancel');
         Route::patch('/prenotazioni/{prenotazioni}/ripristina', [BookingController::class, 'restore'])->name('bookings.restore');
         Route::post('/prenotazioni/{prenotazioni}/notify-telegram', [BookingController::class, 'notifyTelegram'])->name('bookings.notify-telegram');
+        Route::get('/prenotazioni/{prenotazioni}/email-preview/{emailType}', [BookingController::class, 'previewEmail'])
+            ->where('emailType', 'confirmation|host-keeper|payment-received|checkin-reminder')
+            ->name('bookings.email-preview');
         Route::post('/prenotazioni/{prenotazioni}/send-confirmation', [BookingController::class, 'sendConfirmationEmail'])->name('bookings.send-confirmation');
         Route::post('/prenotazioni/{prenotazioni}/send-payment-received', [BookingController::class, 'sendPaymentReceivedEmail'])->name('bookings.send-payment-received');
         Route::post('/prenotazioni/{prenotazioni}/send-checkin-reminder', [BookingController::class, 'sendCheckinReminderEmail'])->name('bookings.send-checkin-reminder');
