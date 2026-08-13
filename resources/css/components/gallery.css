@@ -12,8 +12,10 @@
         overflow: hidden;
         cursor: pointer;
         position: relative;
+        align-self: start;
 
         img {
+            display: block;
             width: 100%;
             transition: transform var(--transition-slow);
         }
@@ -44,15 +46,18 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.92);
-    z-index: 200;
+    z-index: 1300;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    padding: var(--space-12) var(--space-16);
 
     &.open { display: flex; }
 
     img {
-        max-width: 90vw;
-        max-height: 90vh;
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
         border-radius: var(--radius-sm);
         object-fit: contain;
     }
@@ -81,9 +86,11 @@
         color: var(--color-white);
         font-size: 2rem;
         line-height: 1;
+        padding: 0 0 0.18em;
         cursor: pointer;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
             background: rgba(0,0,0,0.6);
