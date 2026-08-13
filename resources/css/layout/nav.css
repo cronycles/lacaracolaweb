@@ -5,7 +5,7 @@
 .nav {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1200;
     background: var(--color-white);
     border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
@@ -24,6 +24,47 @@
 
         .nav__burger span {
             background: var(--color-white);
+        }
+
+        .nav__burger[aria-expanded="true"] span {
+            background: var(--color-primary);
+        }
+
+        &:has(.nav__burger[aria-expanded="true"]) .nav__logo img {
+            filter: none;
+        }
+
+        .nav__inner {
+            max-width: none;
+            padding-inline: 0;
+        }
+
+        .nav__burger {
+            margin-left: 0;
+            align-self: flex-start;
+            border: 1px solid rgba(255, 255, 255, 0.75);
+        }
+
+        .nav__cta {
+            min-height: 64px;
+            border-radius: 0;
+            background: none;
+            color: var(--color-white);
+            border-color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+
+            &:hover {
+                background: var(--color-white);
+                color: var(--color-primary);
+                border-color: var(--color-white);
+            }
+        }
+
+        &:has(.nav__burger[aria-expanded="true"]) .nav__cta {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background: transparent;
         }
     }
 
@@ -99,6 +140,7 @@
         display: inline-flex;
         flex-shrink: 0;
         white-space: nowrap;
+        text-transform: uppercase;
     }
 
     &__lang {
@@ -137,20 +179,44 @@
     &__burger {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
         cursor: pointer;
-        padding: var(--space-2);
+        width: 64px;
+        height: 64px;
+        margin-left: calc(var(--space-4) * -1);
+        padding: 20px;
         background: none;
         border: none;
+        transition: background var(--transition-base), border-color var(--transition-base);
+
+        &:hover {
+            background: rgba(48, 89, 108, 0.08);
+        }
 
         span {
             display: block;
-            width: 24px;
+            width: 32px;
             height: 2px;
             background: var(--color-text);
-            transition: transform var(--transition-base);
+            transform-origin: center;
+            transition: background-color var(--transition-base), transform var(--transition-base), opacity var(--transition-base);
         }
 
+        &[aria-expanded="true"] {
+            span:nth-child(2) {
+                opacity: 0;
+            }
+
+            span:first-child {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            span:last-child {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
     }
 
     @media (max-width: 420px) {
@@ -172,26 +238,80 @@
 
 /* Mobile menu */
 .nav-mobile {
-    display: none;
+    display: flex;
     position: fixed;
     inset: 0;
-    background: var(--color-white);
+    background: transparent;
     z-index: 1100;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-8);
-    padding: var(--space-8) var(--space-4);
+    gap: var(--space-6);
+    padding: 6rem var(--space-4) var(--space-8);
     overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity var(--transition-slow),
+        visibility 0s linear 400ms;
+
+    &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: var(--color-white);
+        transform: translateY(-100%);
+        transition: transform 400ms ease-out;
+        z-index: -1;
+    }
 
     &.open {
-        display: flex;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+            opacity var(--transition-slow),
+            visibility 0s linear 0s;
+
+        &::before {
+            transform: translateY(0);
+        }
     }
 
     a {
         font-family: var(--font-serif);
         font-size: 1.5rem;
         color: var(--color-primary);
+        line-height: 1.2;
+        transform: translateY(-1rem);
+        opacity: 0;
+        transition: transform var(--transition-slow), opacity var(--transition-base);
+    }
+
+    &.open a {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    &.open a:nth-of-type(1) { transition-delay: 80ms; }
+    &.open a:nth-of-type(2) { transition-delay: 120ms; }
+    &.open a:nth-of-type(3) { transition-delay: 160ms; }
+    &.open a:nth-of-type(4) { transition-delay: 200ms; }
+    &.open a:nth-of-type(5) { transition-delay: 240ms; }
+    &.open a:nth-of-type(6) { transition-delay: 280ms; }
+    &.open a:nth-of-type(7) { transition-delay: 320ms; }
+
+    .lang-switcher-mobile {
+        opacity: 0;
+        transform: translateY(-1rem);
+        transition: transform var(--transition-slow), opacity var(--transition-base);
+    }
+
+    &.open .lang-switcher-mobile {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: 360ms;
     }
 
     a.nav-mobile__cta {
@@ -202,29 +322,13 @@
         background: var(--color-accent);
         padding: var(--space-3) var(--space-8);
         max-width: 38vw;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         transition: background var(--transition-fast), box-shadow var(--transition-fast);
 
         &:hover {
             background: var(--color-accent-light);
             box-shadow: var(--shadow-md);
-        }
-    }
-
-    &__close {
-        position: absolute;
-        top: var(--space-4);
-        right: var(--space-4);
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        line-height: 1;
-        cursor: pointer;
-        color: var(--color-text-muted);
-        padding: var(--space-2);
-        transition: color var(--transition-fast);
-
-        &:hover {
-            color: var(--color-primary);
         }
     }
 

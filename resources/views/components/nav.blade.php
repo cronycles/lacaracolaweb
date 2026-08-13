@@ -12,21 +12,14 @@
             <div class="lang-dropdown lang-dropdown--desktop" id="langDropdown">
                 <button class="lang-dropdown__toggle" aria-label="Select language" aria-expanded="false" aria-controls="lang-menu">
                     @php
-                        $flagPaths = [
-                            'it' => 'images/flags/it.svg',
-                            'en' => 'images/flags/en.svg',
-                            'fr' => 'images/flags/fr.svg',
-                            'de' => 'images/flags/de.svg',
-                        ];
                         $currentLocale = app()->getLocale();
                     @endphp
-                    <img src="{{ asset($flagPaths[$currentLocale] ?? $flagPaths['it']) }}" alt="" width="24" height="18" aria-hidden="true">
+                    <span>{{ strtoupper($currentLocale) }}</span>
                 </button>
                 <ul class="lang-dropdown__menu" id="lang-menu" role="listbox">
                     @foreach(['it','en','fr','de'] as $locale)
                         <li>
                             <button type="button" data-lang="{{ $locale }}" class="lang-dropdown__item" role="option" aria-selected="{{ app()->getLocale() === $locale ? 'true' : 'false' }}">
-                                <img src="{{ asset($flagPaths[$locale]) }}" alt="" width="24" height="18" aria-hidden="true">
                                 <span>{{ strtoupper($locale) }}</span>
                             </button>
                         </li>
@@ -57,7 +50,6 @@
 
 {{-- Mobile menu --}}
 <nav class="nav-mobile" id="mobile-menu" aria-label="Mobile navigation">
-    <button class="nav-mobile__close" aria-label="{{ __('app.apartment_gallery_close') }}">&#x2715;</button>
     <a href="{{ route_locale('home') }}">{{ __('app.nav_home') }}</a>
     <a href="{{ route_locale('apartment') }}">{{ __('app.nav_apartment') }}</a>
     <a href="{{ route_locale('map') }}">{{ __('app.nav_map') }}</a>
@@ -73,7 +65,6 @@
         @foreach(['it','en','fr','de'] as $locale)
             <button type="button" data-lang="{{ $locale }}" class="lang-switcher-mobile__btn" role="option"
                     aria-selected="{{ app()->getLocale() === $locale ? 'true' : 'false' }}">
-                <img src="{{ asset($flagPaths[$locale]) }}" alt="" width="24" height="18" aria-hidden="true">
                 <span>{{ strtoupper($locale) }}</span>
             </button>
         @endforeach

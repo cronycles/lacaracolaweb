@@ -50,6 +50,7 @@ empty-recipient message.
 - The public header (`resources/views/components/nav.blade.php`) uses the same burger menu on mobile and desktop.
 - The burger is fixed to the left, the locale dropdown sits beside it, the centered logo uses the compact SVG wordmark, and the booking CTA remains visible on the right. On the localized home routes, the navbar overlays the hero image without a white background and enlarges the wordmark for legibility; inner pages retain the solid navbar.
 - The full navigation remains in the existing full-screen `.nav-mobile` panel; `resources/ts/components/mobile-nav.ts` controls it at every breakpoint.
+- The burger stays at the left edge of the public header and controls the full-screen panel at every breakpoint. On home routes the transparent header and hero share the same top edge; the three burger lines morph into a visible X through `aria-expanded`, and pressing the same control closes it again.
 
 ## Guest reporting classification
 
