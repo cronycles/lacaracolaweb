@@ -51,11 +51,11 @@
         <h1 class="hero__title">{{ __('app.hero_title') }}</h1>
         <p class="hero__subtitle">{{ __('app.hero_subtitle') }}</p>
         <div class="hero__cta">
+            <a href="{{ route_locale('apartment') }}" class="hero__discover-link">
+                {{ __('app.hero_cta_discover') }} <span aria-hidden="true">→</span>
+            </a>
             <a href="{{ route_locale('home') }}#booking" class="btn btn--accent btn--lg">
                 {{ __('app.hero_cta_booking') }}
-            </a>
-            <a href="{{ route_locale('apartment') }}" class="btn btn--ghost btn--lg">
-                {{ __('app.hero_cta_discover') }}
             </a>
         </div>
     </div>

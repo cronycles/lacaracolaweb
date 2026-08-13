@@ -40,12 +40,13 @@
         font-size: 0.85rem;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        color: var(--color-accent);
+        color: var(--color-white);
         margin-bottom: var(--space-3);
     }
 
     &__title {
         font-family: var(--font-serif);
+        font-weight: 400;   
         font-size: clamp(2rem, 6vw, 4rem);
         line-height: 1.15;
         margin-bottom: var(--space-6);
@@ -62,9 +63,30 @@
 
     &__cta {
         display: flex;
+        flex-direction: column;
         gap: var(--space-4);
         justify-content: center;
         flex-wrap: wrap;
+        align-items: center;
+    }
+
+    &__discover-link {
+        color: var(--color-white);
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 0.25em;
+        transition: color var(--transition-fast), opacity var(--transition-fast);
+
+        &:hover,
+        &:focus-visible {
+            color: var(--color-accent-light);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-accent-light);
+            outline-offset: 4px;
+        }
     }
 }
 

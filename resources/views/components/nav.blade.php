@@ -55,7 +55,7 @@
     <a href="{{ route_locale('map') }}">{{ __('app.nav_map') }}</a>
     <a href="{{ route_locale('experiences') }}">{{ __('app.nav_experiences') }}</a>
     <a href="{{ route_locale('reviews') }}">{{ __('app.nav_reviews') }}</a>
-    <a href="{{ route_locale('home') }}#booking" class="nav-mobile__cta">{{ __('app.nav_booking') }}</a>
+    <a href="{{ route_locale('home') }}#booking">{{ __('app.nav_booking') }}</a>
     <a href="{{ route_locale('rules') }}">{{ __('app.nav_rules') }}</a>
     <a href="{{ route_locale('useful-places') }}">{{ __('app.nav_useful') }}</a>
     {{-- Admin area link (mobile) --}}
