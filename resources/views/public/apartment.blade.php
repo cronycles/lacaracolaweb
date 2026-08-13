@@ -46,6 +46,11 @@
 
         {{-- Lightbox --}}
         <div class="lightbox" role="dialog" aria-label="{{ __('app.apartment_gallery_fullscreen') }}" aria-modal="true">
+            <div class="lightbox__topbar">
+                <button class="lightbox__back" aria-label="{{ __('app.apartment_gallery_close') }}">×</button>
+                <span class="lightbox__counter" aria-live="polite">1 / {{ count(config('apartment.images.gallery')) }}</span>
+                <button class="lightbox__share" aria-label="Condividi il sito"><span aria-hidden="true">↥</span></button>
+            </div>
             <button class="lightbox__nav lightbox__nav--prev" aria-label="{{ __('app.apartment_gallery_prev') }}">‹</button>
             <img src="" alt="">
             <button class="lightbox__nav lightbox__nav--next" aria-label="{{ __('app.apartment_gallery_next') }}">›</button>

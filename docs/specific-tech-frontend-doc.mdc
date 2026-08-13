@@ -54,6 +54,9 @@ The lightbox keeps the image inside the usable viewport area with symmetric
 vertical and horizontal padding, so close controls and navigation do not crop
 the photo. Navigation buttons use explicit flex centering; the small bottom
 padding compensates for the optical baseline of the `‹` and `›` glyphs.
+On mobile it switches to an opaque black, edge-to-edge viewer with a top back
+control, live position counter, native site sharing, and swipe navigation; the
+desktop side arrows remain available at larger widths.
 
 ## Public header navigation
 - The public header (`resources/views/components/nav.blade.php`) uses the same
