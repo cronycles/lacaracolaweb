@@ -30,7 +30,7 @@
 
         {{-- Logo: brand wordmark --}}
         <a href="{{ route_locale('home') }}" class="nav__logo" aria-label="{{ config('apartment.name') }}">
-            <img src="{{ asset('images/brand/logo-wordmark-blue.svg') }}"
+            <img src="{{ asset('images/brand/logo-wordmark-white.svg') }}"
                  alt=""
                  aria-hidden="true"
                  width="180"

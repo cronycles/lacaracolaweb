@@ -19,7 +19,6 @@
 
         .nav__logo img {
             height: 72px;
-            filter: brightness(0) invert(1);
         }
 
         .nav__burger span {
