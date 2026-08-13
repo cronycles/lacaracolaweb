@@ -1,16 +1,22 @@
 /**
- * Hero — rotating image carousel (home page) + static variant
+ * Hero — static image background for the home page
  */
 
 .hero {
     position: relative;
-    min-height: 90vh;
+    min-height: 95vh;
     overflow: hidden;
     display: flex;
     align-items: center;
+    background-size: cover;
+    background-position: center;
 
     @media (min-width: 768px) {
         min-height: 100vh;
+    }
+
+     @media (max-width: 768px) {
+        background-position-x: -153px;
     }
 
     /* Overlay for text readability */
@@ -90,47 +96,3 @@
     }
 }
 
-/* Hero slide images */
-.hero-slider {
-    position: absolute;
-    inset: 0;
-
-    &__slide {
-        position: absolute;
-        inset: 0;
-        background-size: cover;
-        background-position: center;
-        opacity: 0;
-        transition: opacity 1s ease;
-
-        &.active {
-            opacity: 1;
-        }
-    }
-}
-
-/* Navigation dots */
-.hero-dots {
-    position: absolute;
-    bottom: var(--space-6);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: flex;
-    gap: var(--space-2);
-
-    button {
-        width: 8px;
-        height: 8px;
-        border-radius: var(--radius-full);
-        background: rgba(255,255,255,0.5);
-        border: none;
-        cursor: pointer;
-        transition: background var(--transition-fast), transform var(--transition-fast);
-
-        &.active {
-            background: var(--color-white);
-            transform: scale(1.4);
-        }
-    }
-}

@@ -37,14 +37,8 @@
 
 @section('content')
 
-{{-- Hero with rotating slides --}}
-<section class="hero" aria-label="Hero">
-    <div class="hero-slider" aria-hidden="true">
-        @foreach(config('apartment.images.hero') as $i => $heroPath)
-        <div class="hero-slider__slide {{ $i === 0 ? 'active' : '' }}"
-             style="background-image:url('{{ asset($heroPath) }}')"></div>
-        @endforeach
-    </div>
+{{-- Hero with a single static image --}}
+<section class="hero" aria-label="Hero" style="background-image:url('{{ asset(config('apartment.images.hero')) }}')">
 
     <div class="hero__content">
         <p class="hero__eyebrow">{{ __('app.hero_eyebrow') }}</p>
@@ -60,12 +54,6 @@
         </div>
     </div>
 
-    {{-- Navigation dots --}}
-    <div class="hero-dots" aria-label="Slide navigation">
-        <button class="active" aria-label="Slide 1"></button>
-        <button aria-label="Slide 2"></button>
-        <button aria-label="Slide 3"></button>
-    </div>
 </section>
 
 {{-- Feature highlights --}}

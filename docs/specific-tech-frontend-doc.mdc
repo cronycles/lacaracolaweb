@@ -38,7 +38,6 @@ empty-recipient message.
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`
 - `resources/ts/components/pricing-simulator.ts`
-- `resources/ts/components/hero-slider.ts`
 - `resources/ts/components/gallery.ts`
 - `resources/ts/components/map.ts`
 - `resources/ts/components/mobile-nav.ts`

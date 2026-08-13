@@ -150,12 +150,8 @@ return [
     // All paths are relative to public/ — use asset() helper in views.
     // Set a path to null to fall back to the placeholder URL defined in the view.
     'images' => [
-        // Hero slider (home page) — 3 slides
-        'hero' => [
-            'images/hero-1.jpg',
-            // 'images/hero-2.jpg',
-            // 'images/hero-3.jpg',
-        ],
+        // Static hero image for the home page.
+        'hero' => 'images/hero-1.jpg',
         // Apartment gallery — add or remove items freely
         'gallery' => [
             'images/apartment-1.jpg',

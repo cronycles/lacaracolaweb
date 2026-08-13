@@ -33,16 +33,12 @@ Composition:
 
 Naming:
 
-- hero-1.jpg, hero-2.jpg, hero-3.jpg
+- hero-1.jpg
 
 Config example:
 
 ```php
-'hero' => [
-    'images/hero-1.jpg',
-    'images/hero-2.jpg',
-    'images/hero-3.jpg',
-],
+'hero'    => 'images/hero-1.jpg',
 ```
 
 ### 2. Gallery — about 1200 x 800
