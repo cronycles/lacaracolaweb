@@ -45,6 +45,10 @@ empty-recipient message.
 - `resources/ts/checkin.ts` (Vite entry for the public online check-in page)
 - `resources/ts/people-reporting-fields.ts` (shared by `admin.ts` and `checkin.ts`)
 
+The public apartment gallery is rendered from `config/apartment.php` via the
+`images.gallery` array. Its CSS uses row-major Grid placement so the visual
+order and the lightbox navigation follow the configured array order.
+
 ## Public header navigation
 - The public header (`resources/views/components/nav.blade.php`) uses the same burger menu on mobile and desktop.
 - The burger is fixed to the left, the locale dropdown sits beside it, the centered logo uses the compact SVG wordmark, and the booking CTA remains visible on the right. On the localized home routes, the navbar overlays the hero image without a white background and enlarges the wordmark for legibility; inner pages retain the solid navbar.
