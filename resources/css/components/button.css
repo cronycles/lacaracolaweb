@@ -8,8 +8,8 @@
     justify-content: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: 600;
+    /*border-radius: var(--radius-md);
+    font-weight: 600;*/
     font-size: 0.95rem;
     cursor: pointer;
     border: 2px solid transparent;
@@ -21,6 +21,7 @@
         box-shadow var(--transition-fast);
     min-height: 44px; /* accessibility: min tap target */
     text-decoration: none;
+    text-transform: uppercase;
 
     &:active {
         transform: scale(0.98);
@@ -41,12 +42,13 @@
 
     /* Accent (gold) */
     &--accent {
-        background: var(--color-accent);
-        color: var(--color-primary-dark);
-        border-color: var(--color-accent);
+        background: var(--color-primary-dark);
+        color: var(--color-white);
+        border-color: var(--color-primary-dark);
 
         &:hover {
-            background: var(--color-accent-light);
+            background: var(--color-primary-light);
+            border-color: var(--color-primary-light);
             box-shadow: var(--shadow-md);
         }
     }
@@ -79,5 +81,5 @@
 
     /* Sizes */
     &--sm { padding: var(--space-2) var(--space-4); font-size: 0.85rem; }
-    &--lg { padding: var(--space-4) var(--space-8); font-size: 1.05rem; }
+    &--lg { padding: var(--space-4) var(--space-8); font-size: 0.95rem; }
 }
