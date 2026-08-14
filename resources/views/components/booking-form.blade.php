@@ -79,7 +79,7 @@
     </div>
 
     {{-- Guests row --}}
-    <div class="booking-form__row">
+    <div class="booking-form__row booking-form__row--compact-mobile">
         <div class="booking-form__group">
             <label for="adults">{{ __('app.booking_adults') }} *</label>
             <select id="adults" name="adults" required>
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <div class="booking-form__row">
+    <div class="booking-form__row booking-form__row--compact-mobile">
         <div class="booking-form__group">
             <label for="babies">👶 {{ __('app.booking_babies') }} <span class="booking-form__hint">({{ __('app.booking_babies_hint') }})</span></label>
             <select id="babies" name="babies">
@@ -130,7 +130,7 @@
     </div>
 
     {{-- Contact info --}}
-    <div class="booking-form__row">
+    <div class="booking-form__row booking-form__row--compact-mobile">
         <div class="booking-form__group">
             <label for="first_name">{{ __('app.booking_first_name') }} *</label>
             <input type="text" id="first_name" name="first_name" required minlength="3" maxlength="100" autocomplete="given-name">
