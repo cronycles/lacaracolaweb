@@ -78,7 +78,7 @@
 {{-- Booking CTA --}}
 <section class="section" style="background:var(--color-bg);text-align:center">
     <div class="container">
-        <h2 class="section-title">{{ __('app.apartment_cta_title') }}</h2>
+        <h2 class="section-title">{!! __('app.apartment_cta_title') !!}</h2>
         <p class="section-subtitle" style="margin-inline:auto">{{ __('app.apartment_cta_subtitle') }}</p>
         <a href="{{ route_locale('home') }}#booking" class="btn btn--primary btn--lg">{{ __('app.hero_cta_booking') }}</a>
     </div>
