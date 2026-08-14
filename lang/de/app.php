@@ -130,7 +130,7 @@ return [
     'apartment_amenities_kitchen' => 'Küche',
     'apartment_amenities_outdoors' => 'Außenbereiche und Lage',
     'apartment_gallery_title' => 'Galerie',
-    'apartment_cta_title'     => 'Lust auf Urlaub? Jetzt buchen',
+    'apartment_cta_title'     => 'Lust auf Urlaub?<br>Jetzt buchen',
     'apartment_cta_subtitle'  => 'Wir antworten innerhalb von 24 Stunden.',
     'apartment_gallery_fullscreen' => 'Vollbildansicht',
     'apartment_gallery_close' => 'Schließen',

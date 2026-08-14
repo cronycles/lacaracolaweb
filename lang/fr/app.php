@@ -130,7 +130,7 @@ return [
     'apartment_amenities_kitchen' => 'Cuisine',
     'apartment_amenities_outdoors' => 'Extérieurs et situation',
     'apartment_gallery_title' => 'Galerie',
-    'apartment_cta_title'     => 'Envie de vacances ? Réservez maintenant',
+    'apartment_cta_title'     => 'Envie de vacances ?<br>Réservez maintenant',
     'apartment_cta_subtitle'  => 'Nous répondons dans les 24 heures.',
     'apartment_gallery_fullscreen' => 'Vue en plein écran',
     'apartment_gallery_close' => 'Fermer',

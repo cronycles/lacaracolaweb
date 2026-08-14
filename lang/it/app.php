@@ -135,7 +135,7 @@ return [
     'apartment_amenities_kitchen' => 'Cucina',
     'apartment_amenities_outdoors' => 'Esterni e posizione',
     'apartment_gallery_title' => 'Galleria',
-    'apartment_cta_title'     => 'Voglia di vacanza? Prenota ora',
+    'apartment_cta_title'     => 'Voglia di vacanza?<br>Prenota ora',
     'apartment_cta_subtitle'  => 'Rispondiamo entro 24 ore.',
     'apartment_gallery_fullscreen' => 'Foto a schermo intero',
     'apartment_gallery_close' => 'Chiudi',
