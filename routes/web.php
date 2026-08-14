@@ -13,9 +13,12 @@ use App\Http\Controllers\Public\CheckinController;
 use App\Http\Controllers\Public\ReviewController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\LegacyRedirectController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Admin\LoginController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // --- Admin auth (no middleware guard — these are the login/logout endpoints) ---
 Route::get('/admin/login', [LoginController::class, 'showLogin'])->name('admin.login');

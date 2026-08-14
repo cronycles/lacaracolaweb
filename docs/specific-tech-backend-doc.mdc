@@ -21,6 +21,15 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Admin routes are in `routes/admin.php`, loaded by `bootstrap/app.php` inside `web` middleware.
 - Admin login is separate (`/admin/login`), logout is `/logout`.
 
+### SEO discovery endpoints
+- `GET /sitemap.xml` is generated dynamically from the registered localized `GET` routes.
+  Routes with dynamic parameters, non-public methods, and booking thank-you pages are excluded.
+- New public localized `GET` pages are included automatically when their route is registered in
+  the locale groups. Verify the sitemap when adding or changing public routes.
+- `public/robots.txt` must keep crawling enabled for the general user agent and must reference
+  `https://lacaracolaandora.com/sitemap.xml` with a `Sitemap` directive.
+- Token-based, transactional, admin, and form-submission endpoints must not be added to the sitemap.
+
 ## Public online check-in
 - `GET /check-in/{token}` renders the token-based guest form.
 - `POST /check-in/{token}/edit` explicitly invalidates a completed check-in and

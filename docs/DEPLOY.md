@@ -256,7 +256,9 @@ php -r "require '/home/lacaraco/lacaracola-app/vendor/autoload.php'; $app = requ
 2. Confirm CSS/JS assets load
 3. Test admin login
 4. Test booking form
-5. Check storage/logs/laravel.log for errors
+5. Open https://lacaracolaandora.com/robots.txt and confirm it contains the sitemap directive and no global `Disallow: /`
+6. Open https://lacaracolaandora.com/sitemap.xml and confirm it returns HTTP 200 with valid XML and localized public URLs
+7. Check storage/logs/laravel.log for errors
 
 ## Telegram Bot setup
 
