@@ -15,6 +15,10 @@ alwaysApply: true
 - Availability request supports two admin-selectable modes:
     - Internal form mode.
     - External link mode (external platform URL).
+- The homepage "why book direct" trust-badges section (best price, direct host
+  contact, transparent costs, secure booking) only shows in internal form mode
+  — it is hidden when the external-link mode is active, since those claims
+  don't apply to a redirect to a third-party booking platform.
 
 ### Availability form (form mode)
 - The calendar shows occupied days and makes them non-selectable.

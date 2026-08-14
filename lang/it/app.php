@@ -29,6 +29,15 @@ return [
     'feature_balcony'  => 'Balcone vivibile',
     'feature_beds'     => '6 posti letto',
 
+    // --- Direct-booking trust badges ---
+    'trust_badges_title'          => 'Perché Prenotare Direttamente con Noi',
+    'trust_badge_best_price'      => 'Miglior Prezzo Garantito',
+    'trust_badge_direct_contact'  => 'Contatto Diretto con l\'Host',
+    'trust_badge_transparent_costs' => 'Costi Trasparenti, Nessuna Sorpresa',
+    'trust_badge_secure_booking'  => 'Prenotazione Sicura',
+
+    'home_features_title'         => 'Cosa Offre l\'Appartamento',
+
     // --- Booking ---
     'booking_title'         => 'Prenota',
     'booking_subtitle'      => 'Seleziona le tue date e invia la richiesta. Ti confermeremo la disponibilità nel più breve tempo possibile per completare la tua prenotazione.',

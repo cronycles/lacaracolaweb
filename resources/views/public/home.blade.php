@@ -33,19 +33,22 @@
 
 </section>
 
-{{-- Feature highlights --}}
-<section class="section home-highlights" aria-label="Highlights">
+{{-- Trust badges: only relevant when the internal direct-booking form is active (not the external-platform flow) --}}
+@unless ($bookingMode === 'external' && $bookingExternalUrl)
+<section class="section home-trust-badges" aria-label="{{ __('app.trust_badges_title') }}">
     <div class="container">
+        <h2 class="section-title" style="text-align:center">{{ __('app.trust_badges_title') }}</h2>
         <div class="home-features">
-            @foreach(config('apartment.features') as $feature)
+            @foreach(config('apartment.trust_badges') as $badge)
             <div class="home-features__item">
-                <div class="home-features__item-icon" aria-hidden="true">{{ $feature['icon'] }}</div>
-                <h3 class="home-features__item-title">{{ __('app.' . $feature['key']) }}</h3>
+                <div class="home-features__item-icon" aria-hidden="true">{{ $badge['icon'] }}</div>
+                <h3 class="home-features__item-title">{{ __('app.' . $badge['key']) }}</h3>
             </div>
             @endforeach
         </div>
     </div>
 </section>
+@endunless
 
 {{-- Booking / Availability section --}}
 <section class="section" id="booking" aria-labelledby="booking-title" style="background:var(--color-bg)">
@@ -71,6 +74,21 @@
         @else
             @include('components.booking-form')
         @endif
+    </div>
+</section>
+
+{{-- Apartment feature highlights --}}
+<section class="section home-highlights" aria-label="{{ __('app.home_features_title') }}">
+    <div class="container">
+        <h2 class="section-title" style="text-align:center">{{ __('app.home_features_title') }}</h2>
+        <div class="home-features">
+            @foreach(config('apartment.features') as $feature)
+            <div class="home-features__item">
+                <div class="home-features__item-icon" aria-hidden="true">{{ $feature['icon'] }}</div>
+                <h3 class="home-features__item-title">{{ __('app.' . $feature['key']) }}</h3>
+            </div>
+            @endforeach
+        </div>
     </div>
 </section>
 

@@ -211,6 +211,14 @@ return [
         ['icon' => '🛏️', 'key' => 'feature_beds'],
     ],
 
+    // --- Direct-booking trust signals shown between the hero and the features (icon + lang key) ---
+    'trust_badges' => [
+        ['icon' => '🏷️', 'key' => 'trust_badge_best_price'],
+        ['icon' => '💬', 'key' => 'trust_badge_direct_contact'],
+        ['icon' => '📋', 'key' => 'trust_badge_transparent_costs'],
+        ['icon' => '🔒', 'key' => 'trust_badge_secure_booking'],
+    ],
+
     // --- House rules (icon + lang keys for title and body text) ---
     'rules' => [
         ['icon' => '🏠', 'title_key' => 'app.rules_respect_title',     'text_key' => 'app.rules_respect_text'],

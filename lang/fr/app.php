@@ -26,6 +26,15 @@ return [
     'feature_balcony'  => 'Grande terrasse',
     'feature_beds'     => '6 personnes',
 
+    // --- Direct-booking trust badges ---
+    'trust_badges_title'          => 'Pourquoi Réserver Directement',
+    'trust_badge_best_price'      => 'Meilleur Prix Garanti',
+    'trust_badge_direct_contact'  => "Contact Direct avec l'Hôte",
+    'trust_badge_transparent_costs' => 'Tarifs Transparents, Sans Surprise',
+    'trust_badge_secure_booking'  => 'Réservation Sécurisée',
+
+    'home_features_title'         => "Ce que Propose l'Appartement",
+
     'booking_title'         => 'Réserver',
     'booking_subtitle'      => 'Sélectionnez vos dates et envoyez votre demande. Nous vous confirmerons la disponibilité dans les plus brefs délais afin de finaliser votre réservation.',
     'booking_checkin'       => 'Arrivée',

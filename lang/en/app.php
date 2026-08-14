@@ -26,6 +26,15 @@ return [
     'feature_balcony'  => 'Spacious balcony',
     'feature_beds'     => '6 guests',
 
+    // --- Direct-booking trust badges ---
+    'trust_badges_title'          => 'Why Book Directly With Us',
+    'trust_badge_best_price'      => 'Best Price Guarantee',
+    'trust_badge_direct_contact'  => 'Direct Contact With Your Host',
+    'trust_badge_transparent_costs' => 'Transparent Costs, No Surprises',
+    'trust_badge_secure_booking'  => 'Secure Booking',
+
+    'home_features_title'         => 'What the Apartment Offers',
+
     'booking_title'         => 'Book',
     'booking_subtitle'      => 'Select your dates and send your request. We will confirm availability as soon as possible so you can complete your booking.',
     'booking_checkin'       => 'Check-in',

@@ -12,10 +12,10 @@
 
 ## 2. Phase 2 — Trust badges section
 
-- [ ] 2.1 Add `trust_badges` array to `config/apartment.php` (icon + lang key, same shape as `apartment.features`).
-- [ ] 2.2 Add trust-badge translation keys to `lang/{it,en,fr,de}/app.php` (best price guarantee, direct host communication, transparent costs, secure booking).
-- [ ] 2.3 Render the trust-badges section in `resources/views/public/home.blade.php` between the hero and the feature highlights.
-- [ ] 2.4 Verify the "costs" badge communicates transparency without claiming "no fees" (paid parking exists).
+- [x] 2.1 Add `trust_badges` array to `config/apartment.php` (icon + lang key, same shape as `apartment.features`).
+- [x] 2.2 Add trust-badge translation keys to `lang/{it,en,fr,de}/app.php` (best price guarantee, direct host communication, transparent costs, secure booking).
+- [x] 2.3 Render the trust-badges section in `resources/views/public/home.blade.php` as its own section, shown only when the internal direct-booking form is active (`@unless ($bookingMode === 'external' && $bookingExternalUrl)`).
+- [x] 2.4 Verify the "costs" badge communicates transparency without claiming "no fees" (paid parking exists).
 
 ## 3. Phase 3 — Pain-point sections (parking, WiFi, distances)
 
@@ -42,4 +42,5 @@
 
 ## 6. Documentation
 
-- [ ] 6.1 Update `docs/business-doc.mdc` and `docs/specific-tech-frontend-doc.mdc` to reflect the new homepage sections and guide-page capability once phases land.
+- [x] 6.1 Update `docs/business-doc.mdc` and `docs/specific-tech-frontend-doc.mdc` for Phases 1–2 (hero copy pattern, trust-badges conditional visibility, feature-highlights heading, `.home-features` grid convention).
+- [ ] 6.2 Update the same docs for Phases 3–5 (pain-point sections, guide pages, sitemap/schema enrichment) once implemented.

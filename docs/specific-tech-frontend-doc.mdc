@@ -45,6 +45,33 @@ localized content. When changing supported languages or public URL slugs,
 update `config/routes.php`, translations and route tests, then verify both the
 hreflang output and `sitemap.xml`.
 
+## Homepage content sections
+
+`resources/views/public/home.blade.php` renders, in order: hero (H1 in
+`app.hero_title` uses keyword-targeted copy per locale, e.g. "Ferienwohnung in
+Andora, Ligurien" for DE, "Italian Riviera" for EN — rendered with `{!! !!}`
+because it contains a `<br>` after the comma for a cleaner desktop line
+break), a conditional trust-badges section, the booking section, the apartment
+feature-highlights section, and the localized SEO text block.
+
+The trust-badges section (`config('apartment.trust_badges')`, same
+`['icon' => ..., 'key' => ...]` shape as `apartment.features`) only renders
+when the internal direct-booking form is active — it is wrapped in
+`@unless ($bookingMode === 'external' && $bookingExternalUrl)`, mirroring the
+exact condition used to pick the booking UI further down the page. Its
+"transparent costs" badge intentionally does not claim "no fees" since private
+parking is paid. The feature-highlights section (heading `app.home_features_title`)
+always renders regardless of booking mode. Both reuse the same `.home-features`
+CSS grid in `resources/css/pages/home.css` (2 columns from the smallest
+viewport, 4 columns from 1024px) — do not add a third near-identical grid
+without a heading, as two headless/identical grids stacked back-to-back read
+as one undifferentiated list.
+
+This is part of a multi-phase SEO/copy initiative tracked in
+`openspec/changes/seo-international-optimization/` (see its `tasks.md` for
+remaining phases: pain-point sections, guide pages, sitemap/schema
+enrichment).
+
 ## Vacation rental structured data
 
 The localized public home emits one `application/ld+json` block from

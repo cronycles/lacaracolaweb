@@ -1,5 +1,6 @@
 /** Home page specific styles */
-.home-highlights {
+.home-highlights,
+.home-trust-badges {
     padding-block: var(--space-8);
 
     @media (min-width: 768px) {
@@ -9,26 +10,33 @@
 
 .home-features {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
     margin-top: 0;
 
-    @media (min-width: 640px) { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 640px) { gap: var(--space-6); }
     @media (min-width: 1024px) { grid-template-columns: repeat(4, 1fr); }
 
     &__item {
         text-align: center;
-        padding: var(--space-6);
+        padding: var(--space-3);
+
+        @media (min-width: 640px) { padding: var(--space-6); }
 
         &-icon {
-            font-size: 2rem;
-            margin-bottom: var(--space-3);
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+
+            @media (min-width: 640px) { font-size: 2rem; margin-bottom: var(--space-3); }
         }
 
         &-title {
             font-weight: 600;
             color: var(--color-primary);
             margin-bottom: var(--space-2);
+            font-size: 0.95rem;
+
+            @media (min-width: 640px) { font-size: 1rem; }
         }
 
         &-text { font-size: 0.9rem; color: var(--color-text-muted); }

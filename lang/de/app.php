@@ -26,6 +26,15 @@ return [
     'feature_balcony'  => 'Großer Balkon',
     'feature_beds'     => '6 Schlafplätze',
 
+    // --- Direct-booking trust badges ---
+    'trust_badges_title'          => 'Warum direkt bei uns buchen',
+    'trust_badge_best_price'      => 'Bestpreisgarantie',
+    'trust_badge_direct_contact'  => 'Direkter Kontakt zum Gastgeber',
+    'trust_badge_transparent_costs' => 'Transparente Kosten, keine Überraschungen',
+    'trust_badge_secure_booking'  => 'Sichere Buchung',
+
+    'home_features_title'         => 'Was die Wohnung bietet',
+
     'booking_title'         => 'Buchen',
     'booking_subtitle'      => 'Wählen Sie Ihre Daten und senden Sie Ihre Anfrage. Wir bestätigen die Verfügbarkeit so schnell wie möglich, damit Sie Ihre Buchung abschließen können.',
     'booking_checkin'       => 'Anreise',
