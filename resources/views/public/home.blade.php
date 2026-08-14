@@ -19,7 +19,7 @@
 
     <div class="hero__content">
         <p class="hero__eyebrow">{{ __('app.hero_eyebrow') }}</p>
-        <h1 class="hero__title">{{ __('app.hero_title') }}</h1>
+        <h1 class="hero__title">{!! __('app.hero_title') !!}</h1>
         <p class="hero__subtitle">{{ __('app.hero_subtitle') }}</p>
         <div class="hero__cta">
             <a href="{{ route_locale('apartment') }}" class="hero__discover-link">

@@ -10,14 +10,14 @@ return [
     'nav_map'          => 'Lage',
     'nav_experiences'  => 'Erlebnisse',
     'nav_reviews'      => 'Bewertungen',
-    'nav_booking'      => 'Buchen',
+    'nav_booking'      => 'Jetzt Buchen',
     'nav_rules'        => 'Hausregeln',
     'nav_terms'        => 'Mietvertrag zur touristischen Nutzung',
     'nav_useful'       => 'Nützliche Orte',
 
-    'hero_eyebrow'     => 'Marina di Andora, Ligurien',
-    'hero_title'       => 'Direkt am Meer',
-    'hero_subtitle'    => 'Eine Wohnung, in der der Meeresduft durchs Fenster weht. Entspannen Sie sich, erkunden Sie die Ligurische Riviera, und kommen Sie jedes Jahr wieder.',
+    'hero_eyebrow'     => 'Andora, Ligurien – Blumenriviera',
+    'hero_title'       => 'Ferienwohnung in Andora,<br>Ligurien – Direkt am Meer',
+    'hero_subtitle'    => 'Ihre Ferienwohnung an der Blumenriviera: Der Duft des Meeres weht durchs Fenster. Entspannen Sie sich, erkunden Sie die ligurische Küste und kommen Sie jedes Jahr wieder.',
     'hero_cta_booking' => 'Jetzt Buchen',
     'hero_cta_discover'=> 'Die Wohnung entdecken',
 
@@ -85,10 +85,10 @@ return [
     'booking_external_btn'   => 'Jetzt Buchen',
 
     // --- SEO text blocks (bottom of home page) ---
-    'seo_home_h2' => 'Ferienwohnung in Andora - La Caracola',
-    'seo_home_p1' => '<strong>La Caracola</strong> ist eine einladende Ferienwohnung in <strong>Marina di Andora</strong>, an der wunderschönen <strong>westlichen ligurischen Riviera</strong>. Nur wenige Schritte vom Strand entfernt bietet sie Wohnzimmer, Küche, 2 Doppelzimmer und bis zu <strong>6 Schlafplätze</strong>, ideal für Paare und Familien.',
-    'seo_home_h3' => 'Kurzzeitvermietung nahe Alassio, Ligurien',
-    'seo_home_p2' => 'Wenn Sie eine <strong>Kurzzeitmiete in Andora</strong>, ein <strong>Ferienhaus am Meer in Ligurien</strong> oder eine <strong>Wohnung nahe Alassio</strong> suchen, ist La Caracola die passende Wahl.',
+    'seo_home_h2' => 'Ferienwohnung Andora – La Caracola an der Ligurischen Riviera',
+    'seo_home_p1' => '<strong>La Caracola</strong> ist eine einladende <strong>Ferienwohnung in Andora</strong>, in <strong>Marina di Andora</strong>, an der wunderschönen westlichen ligurischen Riviera – auch bekannt als <strong>Blumenriviera</strong>. Nur wenige Schritte vom Strand entfernt bietet sie Wohnzimmer, Küche, 2 Doppelzimmer und bis zu <strong>6 Schlafplätze</strong>, ideal für Paare und Familien.',
+    'seo_home_h3' => 'Unterkunft in Ligurien am Meer, nahe Alassio',
+    'seo_home_p2' => 'Ob Sie ein <strong>Ferienhaus an der Blumenriviera</strong>, eine <strong>Unterkunft in Ligurien am Meer</strong> oder ein <strong>Apartment nahe Alassio</strong> (Andora, Italien) suchen: La Caracola ist die passende Wahl für Ihren Urlaub.',
 
     'amenity_sea_view'      => 'Meerblick',
     'amenity_garden'        => 'Garten',

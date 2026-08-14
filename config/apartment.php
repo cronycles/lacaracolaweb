@@ -276,20 +276,20 @@ return [
     // --- SEO defaults per locale (override in lang files for more control) ---
     'seo' => [
         'it' => [
-            'title'       => 'La Caracola | Appartamento vacanza ad Andora — Due passi dal mare',
-            'description' => 'Affitta La Caracola ad Andora, Savona. Appartamento sul mare in Liguria: 2 camere, 6 posti letto, balcone con vista mare e giardino. Soggiorno minimo 3 notti.',
+            'title'       => 'La Caracola | Appartamento Vacanza ad Andora — Riviera dei Fiori, Liguria',
+            'description' => 'Affitta La Caracola ad Andora, nella Riviera dei Fiori (Liguria). Appartamento sul mare: 2 camere, 6 posti letto, balcone con vista mare e giardino, a pochi passi dalla spiaggia. Soggiorno minimo 3 notti.',
         ],
         'en' => [
-            'title'       => 'La Caracola | Holiday apartment in Andora — Steps from the sea',
-            'description' => 'Rent La Caracola in Andora, Liguria. Seaside apartment: 2 bedrooms, 6 guests, sea-view balcony and garden. Minimum stay 3 nights.',
+            'title'       => 'La Caracola | Self-Catering Holiday Apartment in Andora, Italian Riviera',
+            'description' => 'Rent La Caracola, a self-catering holiday apartment in Andora on the Italian Riviera (Liguria): 2 bedrooms, sleeps 6, sea-view balcony and garden, steps from the beach. Minimum stay 3 nights.',
         ],
         'fr' => [
-            'title'       => 'La Caracola | Appartement de vacances à Andora — À deux pas de la mer',
-            'description' => 'Louez La Caracola à Andora, Ligurie. Appartement bord de mer : 2 chambres, 6 personnes, balcon vue mer et jardin. Séjour minimum 3 nuits.',
+            'title'       => 'La Caracola | Appartement de Vacances à Andora — Riviera Italienne',
+            'description' => 'Louez La Caracola, appartement de vacances à Andora sur la Riviera italienne (Ligurie) : 2 chambres, 6 personnes, balcon vue mer et jardin, à deux pas de la plage. Séjour minimum 3 nuits.',
         ],
         'de' => [
-            'title'       => 'La Caracola | Ferienwohnung in Andora — Direkt am Meer',
-            'description' => 'Mieten Sie La Caracola in Andora, Ligurien. Meerblick-Wohnung: 2 Schlafzimmer, 6 Personen, Balkon mit Meerblick und Garten. Mindestaufenthalt 3 Nächte.',
+            'title'       => 'La Caracola | Ferienwohnung in Andora, Ligurien — Direkt am Meer',
+            'description' => 'Ferienwohnung La Caracola in Andora, an der Blumenriviera (Ligurien): 2 Schlafzimmer, 6 Schlafplätze, Balkon mit Meerblick und Garten, nur wenige Schritte zum Strand. Mindestaufenthalt 3 Nächte.',
         ],
     ],
 

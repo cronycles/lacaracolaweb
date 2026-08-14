@@ -10,14 +10,14 @@ return [
     'nav_map'          => 'Where We Are',
     'nav_experiences'  => 'Experiences',
     'nav_reviews'      => 'Reviews',
-    'nav_booking'      => 'Book',
+    'nav_booking'      => 'Book Now',
     'nav_rules'        => 'House Rules',
     'nav_terms'        => 'Tourist-Use Lease Agreement',
     'nav_useful'       => 'Useful Places',
 
-    'hero_eyebrow'     => 'Marina di Andora, Liguria',
-    'hero_title'       => 'Steps from the Sea',
-    'hero_subtitle'    => 'An apartment where the scent of the sea drifts through the windows. Relax, explore the Ligurian Riviera and come back every year.',
+    'hero_eyebrow'     => 'Andora, Italian Riviera (Liguria)',
+    'hero_title'       => 'Self-Catering Holiday Apartment in Andora,<br>Italian Riviera',
+    'hero_subtitle'    => 'A self-catering apartment steps from the sea, where the scent of salt air drifts through the windows. Relax on the Italian Riviera, explore Liguria and come back every year.',
     'hero_cta_booking' => 'Book Now',
     'hero_cta_discover'=> 'Discover the Apartment',
 
@@ -85,10 +85,10 @@ return [
     'booking_external_btn'   => 'Book Now',
 
     // --- SEO text blocks (bottom of home page) ---
-    'seo_home_h2' => 'Holiday apartment for rent in Andora - La Caracola',
-    'seo_home_p1' => '<strong>La Caracola</strong> is a welcoming holiday apartment in <strong>Marina di Andora</strong>, on the beautiful <strong>Western Ligurian Riviera</strong>. Just steps from the beach, it offers a living room, kitchen, 2 double bedrooms and up to <strong>6 beds</strong>, ideal for couples and families.',
-    'seo_home_h3' => 'Short-term rental near Alassio, Liguria',
-    'seo_home_p2' => 'If you are looking for a <strong>short-term rental in Andora</strong>, a <strong>holiday home in Liguria by the sea</strong> or an <strong>apartment near Alassio</strong>, La Caracola is the right choice for your stay.',
+    'seo_home_h2' => 'Holiday Home in Andora, Liguria – Vacation Rental Near Alassio',
+    'seo_home_p1' => '<strong>La Caracola</strong> is a welcoming <strong>self-catering</strong> holiday apartment in <strong>Marina di Andora</strong>, on the beautiful <strong>Italian Riviera</strong> (Western Liguria). Just steps from the beach, it offers a living room, kitchen, 2 double bedrooms and up to <strong>6 beds</strong>, ideal for couples and families.',
+    'seo_home_h3' => 'Vacation Rental Near Alassio, Liguria',
+    'seo_home_p2' => 'If you are looking for a <strong>beachfront apartment in Liguria</strong>, a <strong>holiday home in Andora</strong> or a <strong>vacation rental near Alassio</strong>, La Caracola is the right choice for your stay on the Italian Riviera.',
 
     'amenity_sea_view'      => 'Sea view',
     'amenity_garden'        => 'Garden',

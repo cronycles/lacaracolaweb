@@ -17,9 +17,9 @@ return [
     'nav_useful'       => 'Posti Utili',
 
     // --- Hero ---
-    'hero_eyebrow'     => 'Marina di Andora, Liguria',
-    'hero_title'       => 'A due Passi dal Mare',
-    'hero_subtitle'    => 'Un appartamento dove il profumo del mare entra dalla finestra. Rilassati, esplora la Riviera Ligure e ritorna qui ogni anno.',
+    'hero_eyebrow'     => 'Marina di Andora, Riviera dei Fiori',
+    'hero_title'       => 'Appartamento ad Andora,<br>a Due Passi dal Mare',
+    'hero_subtitle'    => 'Un appartamento nella Riviera dei Fiori dove il profumo del mare entra dalla finestra. Rilassati, esplora la Liguria e ritorna qui ogni anno.',
     'hero_cta_booking' => 'Prenota Ora',
     'hero_cta_discover'=> 'Scopri l\'Appartamento',
 
@@ -89,10 +89,10 @@ return [
     'booking_external_btn'   => 'Prenota Ora',
 
     // --- SEO text blocks (bottom of home page) ---
-    'seo_home_h2' => 'Appartamento in affitto ad Andora - La Caracola',
-    'seo_home_p1' => '<strong>La Caracola</strong> è un accogliente appartamento per vacanze situato a <strong>Marina di Andora</strong>, nel cuore della <strong>Riviera Ligure di Ponente</strong>, in provincia di Savona. A pochi passi dalla spiaggia, offre soggiorno, cucina, 2 camere da letto matrimoniali e fino a <strong>6 posti letto</strong>, perfetto per famiglie e coppie.',
-    'seo_home_h3' => 'Affitto breve Andora e dintorni',
-    'seo_home_p2' => 'Se stai cercando un <strong>affitto breve ad Andora</strong>, una <strong>casa vacanze sul mare in Liguria</strong> o un <strong>appartamento in affitto vicino ad Alassio</strong>, La Caracola è la scelta ideale. Goditi la Liguria tra borghi, spiagge e ottima cucina.',
+    'seo_home_h2' => 'Appartamento in Affitto ad Andora - La Caracola',
+    'seo_home_p1' => '<strong>La Caracola</strong> è un accogliente appartamento per vacanze situato a <strong>Marina di Andora</strong>, nel cuore della <strong>Riviera Ligure di Ponente</strong> — la <strong>Riviera dei Fiori</strong> — in provincia di Savona. A pochi passi dalla spiaggia, offre soggiorno, cucina, 2 camere da letto matrimoniali e fino a <strong>6 posti letto</strong>, perfetto per famiglie e coppie.',
+    'seo_home_h3' => 'Affitto Breve Andora e Dintorni',
+    'seo_home_p2' => 'Se stai cercando un <strong>affitto breve ad Andora</strong>, una <strong>casa vacanze sul mare in Liguria</strong> o un <strong>appartamento in affitto vicino ad Alassio</strong>, La Caracola è la scelta ideale nella Riviera dei Fiori. Goditi la Liguria tra borghi, spiagge e ottima cucina.',
 
     // --- Amenities ---
     'amenity_sea_view'      => 'Vista mare',
