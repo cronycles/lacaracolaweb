@@ -66,14 +66,16 @@ jobs:
           exit 1
 
       - name: Wait for repository update
-        run: sleep 15
+        # Give cPanel a short head start; the deployment step retries if sync
+        # is still in progress.
+        run: sleep 10
 
       - name: Run cPanel deployment tasks
         shell: bash
         run: |
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
-          for attempt in 1 2 3 4 5; do
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             RESPONSE=$(curl -k -s -w "\nHTTP_CODE:%{http_code}" \
               -G \
               -A "$UA" \
@@ -92,8 +94,9 @@ jobs:
                 echo "Deploy completed successfully"
                 exit 0
               else
-                echo "Deploy failed: $BODY"
-                exit 1
+                echo "Deploy is not ready yet, retrying in 10s: $BODY"
+                sleep 10
+                continue
               fi
             fi
 
