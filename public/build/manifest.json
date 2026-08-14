@@ -8,7 +8,7 @@
     "name": "phone-prefix-select"
   },
   "resources/css/admin.css": {
-    "file": "assets/admin-CdW6M9R1.css",
+    "file": "assets/admin-ZWon6x4r.css",
     "src": "resources/css/admin.css",
     "isEntry": true,
     "name": "admin",
@@ -17,7 +17,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-DAxnnKGl.css",
+    "file": "assets/app-Bm8pPcPk.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -67,7 +67,7 @@
     ]
   },
   "resources/ts/app.ts": {
-    "file": "assets/app-BI8jKLYV.js",
+    "file": "assets/app-Cce77Cxo.js",
     "name": "app",
     "src": "resources/ts/app.ts",
     "isEntry": true,
