@@ -16,6 +16,8 @@ class SitemapTest extends TestCase
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/xml');
+        $xml = new \DOMDocument();
+        self::assertTrue($xml->loadXML($response->getContent()));
         $response->assertSee('https://lacaracolaandora.com/it/appartamento', false);
         $response->assertSee('https://lacaracolaandora.com/en/apartment', false);
         $response->assertSee('https://lacaracolaandora.com/fr/avis', false);
