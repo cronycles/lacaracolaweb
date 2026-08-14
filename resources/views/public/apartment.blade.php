@@ -8,7 +8,7 @@
 <section class="section">
     <div class="container">
         <p class="section-subtitle">{{ config('apartment.address.city') }}, {{ config('apartment.address.region') }}</p>
-        <h1 class="section-title">{{ __('app.apartment_page_title') }}</h1>
+        <h1 class="section-title">{{ __('app.nav_apartment') }}</h1>
 
         {{-- Lead gallery: the apartment should be visible before its details. --}}
         <div class="gallery gallery--lead">
