@@ -37,35 +37,23 @@
 
 @section('content')
 
-{{-- Hero with rotating slides --}}
-<section class="hero" aria-label="Hero">
-    <div class="hero-slider" aria-hidden="true">
-        @foreach(config('apartment.images.hero') as $i => $heroPath)
-        <div class="hero-slider__slide {{ $i === 0 ? 'active' : '' }}"
-             style="background-image:url('{{ asset($heroPath) }}')"></div>
-        @endforeach
-    </div>
+{{-- Hero with a single static image --}}
+<section class="hero" aria-label="Hero" style="background-image:url('{{ asset(config('apartment.images.hero')) }}')">
 
     <div class="hero__content">
         <p class="hero__eyebrow">{{ __('app.hero_eyebrow') }}</p>
         <h1 class="hero__title">{{ __('app.hero_title') }}</h1>
         <p class="hero__subtitle">{{ __('app.hero_subtitle') }}</p>
         <div class="hero__cta">
+            <a href="{{ route_locale('apartment') }}" class="hero__discover-link">
+                {{ __('app.hero_cta_discover') }} <span aria-hidden="true">→</span>
+            </a>
             <a href="{{ route_locale('home') }}#booking" class="btn btn--accent btn--lg">
                 {{ __('app.hero_cta_booking') }}
-            </a>
-            <a href="{{ route_locale('apartment') }}" class="btn btn--ghost btn--lg">
-                {{ __('app.hero_cta_discover') }}
             </a>
         </div>
     </div>
 
-    {{-- Navigation dots --}}
-    <div class="hero-dots" aria-label="Slide navigation">
-        <button class="active" aria-label="Slide 1"></button>
-        <button aria-label="Slide 2"></button>
-        <button aria-label="Slide 3"></button>
-    </div>
 </section>
 
 {{-- Feature highlights --}}

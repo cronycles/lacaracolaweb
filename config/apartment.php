@@ -157,20 +157,34 @@ return [
     // All paths are relative to public/ — use asset() helper in views.
     // Set a path to null to fall back to the placeholder URL defined in the view.
     'images' => [
-        // Hero slider (home page) — 3 slides
-        'hero' => [
-            'images/hero-1.jpg',
-            'images/hero-2.jpg',
-            'images/hero-3.jpg',
-        ],
+        // Static hero image for the home page.
+        'hero' => 'images/hero-1.jpg',
         // Apartment gallery — add or remove items freely
         'gallery' => [
-            'images/apartment-1.jpg',
-            'images/apartment-2.jpg',
-            'images/apartment-3.jpg',
-            'images/apartment-4.jpg',
-            'images/apartment-5.jpg',
-            'images/apartment-6.jpg',
+            'images/apartment/cucina-01-squoosh.jpg',
+            'images/apartment/cucina-02-squoosh.jpg',
+            'images/apartment/cucina-03-squoosh.jpg',
+            'images/apartment/balcone-01-squoosh.jpg',
+            'images/apartment/balcone-02-squoosh.jpg',
+            'images/apartment/cdl-01-squoosh.jpg',
+            'images/apartment/cdl-02-squoosh.jpg',
+            'images/apartment/cdl-03-squoosh.jpg',
+            'images/apartment/bagno-01-squoosh.jpg',
+            'images/apartment/bagno-02-squoosh.jpg',
+            'images/apartment/bagno-03-squoosh.jpg',
+            'images/apartment/bagno-04-squoosh.jpg',
+            'images/apartment/cameretta-01-squoosh.jpg',
+            'images/apartment/cameretta-02-squoosh.jpg',
+            'images/apartment/cameretta-03-squoosh.jpg',
+            'images/apartment/esterno-01-squoosh.jpg',
+            'images/apartment/esterno-02-squoosh.jpg',
+            'images/apartment/esterno-03-squoosh.jpg',
+            'images/apartment/esterno-04-squoosh.jpg',
+            'images/apartment/esterno-05-squoosh.jpg',
+            'images/apartment/esterno-06-squoosh.jpg',
+            'images/apartment/esterno-07-squoosh.jpg',
+
+            
         ],
         // Open Graph / social sharing image
         'og' => 'images/og-default.png',

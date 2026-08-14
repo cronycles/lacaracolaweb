@@ -7,6 +7,9 @@ export function initGallery(): void {
     const lightbox = document.querySelector<HTMLElement>('.lightbox');
     const lightboxImg = lightbox?.querySelector<HTMLImageElement>('img');
     const closeBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__close');
+    const backBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__back');
+    const shareBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__share');
+    const counter = lightbox?.querySelector<HTMLElement>('.lightbox__counter');
     const prevBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__nav--prev');
     const nextBtn = lightbox?.querySelector<HTMLButtonElement>('.lightbox__nav--next');
 
@@ -19,12 +22,14 @@ export function initGallery(): void {
     if (images.length === 0) return;
 
     let currentIndex = 0;
+    let touchStartX = 0;
 
     const render = (index: number): void => {
         const safeIndex = (index + images.length) % images.length;
         currentIndex = safeIndex;
         lightboxImg.src = images[safeIndex].src;
         lightboxImg.alt = images[safeIndex].alt;
+        if (counter) counter.textContent = `${safeIndex + 1} / ${images.length}`;
     };
 
     const open = (index: number): void => {
@@ -48,6 +53,21 @@ export function initGallery(): void {
     });
 
     closeBtn?.addEventListener('click', close);
+    backBtn?.addEventListener('click', close);
+    shareBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const shareData = {
+            title: document.title,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            await navigator.share(shareData).catch(() => undefined);
+            return;
+        }
+
+        await navigator.clipboard?.writeText(shareData.url);
+    });
     prevBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         prev();
@@ -60,6 +80,18 @@ export function initGallery(): void {
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) close();
     });
+
+    lightbox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0]?.screenX ?? 0;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0]?.screenX ?? touchStartX;
+        const distance = touchEndX - touchStartX;
+        if (Math.abs(distance) < 50) return;
+        if (distance > 0) prev();
+        if (distance < 0) next();
+    }, { passive: true });
 
     // Keyboard controls in lightbox
     document.addEventListener('keydown', (e) => {

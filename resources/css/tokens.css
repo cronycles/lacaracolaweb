@@ -15,8 +15,8 @@
     --color-border:   #dde3e6;
 
     /* Typography */
-    --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
-    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sans:  'Roboto', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Open Sans', Georgia, serif;
     --font-brand: 'Montserrat', system-ui, sans-serif;
 
     /* Spacing scale */

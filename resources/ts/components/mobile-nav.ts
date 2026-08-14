@@ -8,15 +8,23 @@ export function initMobileNav(): void {
 
     if (!burger || !mobileMenu) return;
 
+    const burgerLines = burger.querySelectorAll<HTMLSpanElement>('span');
+
+    const setBurgerState = (isOpen: boolean): void => {
+        burger.setAttribute('aria-expanded', String(isOpen));
+    };
+
     const close = (): void => {
         mobileMenu.classList.remove('open');
-        burger.setAttribute('aria-expanded', 'false');
+        burger.classList.remove('open');
+        setBurgerState(false);
         document.body.style.overflow = '';
     };
 
     const toggle = (): void => {
         const isOpen = mobileMenu.classList.toggle('open');
-        burger.setAttribute('aria-expanded', String(isOpen));
+        burger.classList.toggle('open', isOpen);
+        setBurgerState(isOpen);
         // Prevent body scroll when menu is open
         document.body.style.overflow = isOpen ? 'hidden' : '';
     };
