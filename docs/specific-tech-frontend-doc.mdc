@@ -17,6 +17,15 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - Bundling/build with Vite.
 - Frontend work is mobile-first: every new or changed workflow must remain usable on narrow screens, with responsive controls that do not overflow or become ambiguous.
 
+## Google Analytics 4
+
+GA4 is loaded from the shared Blade layout (`resources/views/layouts/app.blade.php`)
+only when the Laravel environment is `production` and
+`config('analytics.ga4.measurement_id')` is configured. The measurement ID is kept
+in `config/analytics.php` and read from the `GA4_MEASUREMENT_ID` environment variable.
+It must be set in the production `.env`; it should remain empty in local and test
+environments so development traffic is not recorded.
+
 ## Admin Telegram recipients
 
 The admin user edit view (`resources/views/admin/users/edit.blade.php`) exposes the

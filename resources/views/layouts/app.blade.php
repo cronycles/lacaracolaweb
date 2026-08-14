@@ -37,6 +37,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
+    @if (app()->environment('production') && config('analytics.ga4.measurement_id'))
+        @php($ga4MeasurementId = config('analytics.ga4.measurement_id'))
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4MeasurementId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '{{ $ga4MeasurementId }}');
+        </script>
+    @endif
+
     {{-- Leaflet CSS (for map page) --}}
     @stack('head_css')
 
