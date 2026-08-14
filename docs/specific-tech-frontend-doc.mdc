@@ -129,6 +129,16 @@ numeric `X/10` score in the public page and admin summaries. The two feedback
 blocks appear only when their localized text is available, using a green smile
 for liked feedback and a dark sad face for disliked feedback.
 
+## Public apartment page
+
+`resources/views/public/apartment.blade.php` leads with the configured photo
+gallery, followed by the localized apartment title, essential capacity facts,
+and an early availability CTA linking to the booking flow. Amenities are
+presented in three decision-oriented groups (comfort, kitchen, and
+outdoor/location) rather than one undifferentiated list. The gallery items
+remain the source for the shared lightbox, and its configured array order
+determines both the visual order and navigation order.
+
 # Active TS modules
 - `resources/ts/components/booking-form.ts`
 - `resources/ts/components/date-picker.ts`
