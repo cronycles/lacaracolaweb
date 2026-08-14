@@ -11,6 +11,9 @@ This guide documents the production deploy setup for lacaracolaweb on SupportHos
 - Deploy trigger: push to main
 - SSL: AutoSSL / Let's Encrypt on apex and www
 - Cloudflare: proxy on apex/www after SSL verification, technical records on DNS only
+- Cloudflare may prepend a managed robots.txt section; after robots.txt changes, purge the
+  Cloudflare cache for `/robots.txt` or disable the managed robots.txt feature so the origin
+  file is served unchanged.
 - MySQL DB: lacaraco_lacaracolaweb
 - MySQL user: lacaraco_cronycles
 

@@ -30,6 +30,21 @@ GA4 uses `config('analytics.ga4.measurement_id')`, read from
 should remain empty in local and test environments so development traffic is not
 recorded.
 
+## Multilingual SEO
+
+The shared public layout (`resources/views/layouts/app.blade.php`) renders
+`hreflang` links for the equivalent localized version of the current public
+route. The route equivalence is resolved centrally by
+`App\Support\RouteHelper::alternates()` from `config/routes.php`; templates
+must not build hreflang URLs manually. The Italian equivalent is emitted as
+`x-default`.
+
+Thank-you pages and token-based pages such as online check-in and guest review
+do not expose hreflang links because they are transactional or not public
+localized content. When changing supported languages or public URL slugs,
+update `config/routes.php`, translations and route tests, then verify both the
+hreflang output and `sitemap.xml`.
+
 ## Admin Telegram recipients
 
 The admin user edit view (`resources/views/admin/users/edit.blade.php`) exposes the

@@ -30,6 +30,13 @@ Data model: [Specific Data Model](./specific-data-model.md).
   `https://lacaracolaandora.com/sitemap.xml` with a `Sitemap` directive.
 - Token-based, transactional, admin, and form-submission endpoints must not be added to the sitemap.
 
+### Hreflang metadata
+- The shared public layout generates `hreflang` links only for the equivalent localized route currently being viewed.
+- Locale names and localized slugs come from `config/routes.php`; do not duplicate the supported-locale list in SEO code.
+- `x-default` points to the Italian equivalent of the current public page.
+- Thank-you, token-based, admin, and form-submission routes do not receive hreflang metadata.
+- When adding or removing a locale, update `config/routes.php` and all translated public slugs, then verify hreflang tests and the sitemap.
+
 ## Public online check-in
 - `GET /check-in/{token}` renders the token-based guest form.
 - `POST /check-in/{token}/edit` explicitly invalidates a completed check-in and

@@ -31,11 +31,14 @@
     <meta property="og:image"       content="@yield('og_image', asset(config('apartment.images.og')))">
     <meta property="og:locale"      content="{{ str_replace('-', '_', app()->getLocale()) }}">
 
-    {{-- hreflang alternate links for multilingual SEO --}}
-    @foreach (['it', 'en', 'fr', 'de'] as $loc)
-        <link rel="alternate" hreflang="{{ $loc }}" href="{{ route_locale('home', [], $loc) }}">
+    {{-- hreflang alternate links for equivalent multilingual pages --}}
+    @php($hreflangAlternates = \App\Support\RouteHelper::alternates())
+    @foreach ($hreflangAlternates as $loc => $href)
+        <link rel="alternate" hreflang="{{ $loc }}" href="{{ $href }}">
     @endforeach
-    <link rel="alternate" hreflang="x-default" href="{{ route_locale('home') }}">
+    @if (isset($hreflangAlternates['it']))
+        <link rel="alternate" hreflang="x-default" href="{{ $hreflangAlternates['it'] }}">
+    @endif
 
     {{-- Schema.org JSON-LD for local SEO --}}
     @stack('schema')
