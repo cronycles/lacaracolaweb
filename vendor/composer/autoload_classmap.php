@@ -6581,6 +6581,7 @@ return array(
     'Tests\\Feature\\HostKeeperAuthorizationTest' => $baseDir . '/tests/Feature/HostKeeperAuthorizationTest.php',
     'Tests\\Feature\\HostKeeperViewTest' => $baseDir . '/tests/Feature/HostKeeperViewTest.php',
     'Tests\\Feature\\HreflangTest' => $baseDir . '/tests/Feature/HreflangTest.php',
+    'Tests\\Feature\\LocalesRenderTest' => $baseDir . '/tests/Feature/LocalesRenderTest.php',
     'Tests\\Feature\\PermissionOverrideTest' => $baseDir . '/tests/Feature/PermissionOverrideTest.php',
     'Tests\\Feature\\ReviewFlowTest' => $baseDir . '/tests/Feature/ReviewFlowTest.php',
     'Tests\\Feature\\SendCheckinRemindersTest' => $baseDir . '/tests/Feature/SendCheckinRemindersTest.php',

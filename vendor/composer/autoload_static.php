@@ -7101,6 +7101,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'Tests\\Feature\\HostKeeperAuthorizationTest' => __DIR__ . '/../..' . '/tests/Feature/HostKeeperAuthorizationTest.php',
         'Tests\\Feature\\HostKeeperViewTest' => __DIR__ . '/../..' . '/tests/Feature/HostKeeperViewTest.php',
         'Tests\\Feature\\HreflangTest' => __DIR__ . '/../..' . '/tests/Feature/HreflangTest.php',
+        'Tests\\Feature\\LocalesRenderTest' => __DIR__ . '/../..' . '/tests/Feature/LocalesRenderTest.php',
         'Tests\\Feature\\PermissionOverrideTest' => __DIR__ . '/../..' . '/tests/Feature/PermissionOverrideTest.php',
         'Tests\\Feature\\ReviewFlowTest' => __DIR__ . '/../..' . '/tests/Feature/ReviewFlowTest.php',
         'Tests\\Feature\\SendCheckinRemindersTest' => __DIR__ . '/../..' . '/tests/Feature/SendCheckinRemindersTest.php',
