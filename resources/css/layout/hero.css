@@ -40,6 +40,11 @@
         text-align: center;
         padding-inline: var(--space-4);
         width: 100%;
+        transform: translateY(1rem);
+
+        @media (max-width: 420px) {
+            transform: translateY(2rem);
+        }
     }
 
     &__eyebrow {

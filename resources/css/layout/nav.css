@@ -52,7 +52,6 @@
         }
 
         .nav__cta {
-            min-height: 64px;
             border-radius: 0;
             background: none;
             color: var(--color-white);
@@ -74,6 +73,12 @@
             color: var(--color-primary);
             border-color: var(--color-primary);
             background: transparent;
+        }
+
+        @media (min-width: 768px) {
+            .nav__cta {
+                min-height: 64px;
+            }
         }
     }
 
@@ -230,6 +235,39 @@
         }
     }
 
+    @media (max-width: 767px) {
+        &__controls,
+        &__cta {
+            align-self: flex-start;
+        }
+
+        &__burger {
+            gap: 5px;
+            width: 48px;
+            height: 48px;
+            padding: 14px;
+
+            span {
+                width: 24px;
+            }
+
+            &[aria-expanded="true"] {
+                span:first-child {
+                    transform: translateY(7px) rotate(45deg);
+                }
+
+                span:last-child {
+                    transform: translateY(-7px) rotate(-45deg);
+                }
+            }
+        }
+
+        &__cta.btn--sm {
+            padding: var(--space-2) var(--space-3);
+            font-size: 0.8rem;
+        }
+    }
+
     @media (max-width: 420px) {
         &__logo {
             img {
@@ -238,7 +276,7 @@
         }
 
         &--overlay .nav__logo img {
-            height: 52px;
+            height: 44px;
         }
 
         &--overlay .nav__logo {
