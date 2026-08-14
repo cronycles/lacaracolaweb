@@ -45,6 +45,25 @@ localized content. When changing supported languages or public URL slugs,
 update `config/routes.php`, translations and route tests, then verify both the
 hreflang output and `sitemap.xml`.
 
+## Vacation rental structured data
+
+The localized public home emits one `application/ld+json` block from
+`resources/views/components/schema-vacation-rental.blade.php`, included through
+the `schema` stack in `resources/views/public/home.blade.php`. It describes the
+property as a Schema.org `VacationRental` with an `Accommodation`, address,
+coordinates, images, occupancy, bedrooms, bathrooms, rooms, floor size, exact
+bed types, amenities, and configured check-in/check-out times.
+
+The component must remain data-driven. Stable property facts come from
+`config/apartment.php` (`schema`, `address`, `specs`, `amenities`, `images`, and
+`booking`); localized page descriptions come from the locale-specific SEO
+configuration. The stable identifier in `apartment.schema.identifier` must be
+the same for every locale. Do not add generic prices or availability to this
+static markup: both depend on requested dates and guest counts. When changing
+any property fact, image, amenity, bed detail, room count, surface, address,
+coordinate, or check-in/check-out time, update this schema's source data and
+its feature test together.
+
 ## Admin Telegram recipients
 
 The admin user edit view (`resources/views/admin/users/edit.blade.php`) exposes the

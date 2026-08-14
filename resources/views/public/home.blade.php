@@ -9,30 +9,7 @@
 @endpush
 
 @push('schema')
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@type": "LodgingBusiness",
-  "name": "{{ config('apartment.name') }}",
-  "description": "@yield('description')",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "{{ config('apartment.address.street') }}",
-    "addressLocality": "{{ config('apartment.address.city') }}",
-    "addressRegion": "{{ config('apartment.address.province') }}",
-    "postalCode": "{{ config('apartment.address.zip') }}",
-    "addressCountry": "{{ config('apartment.address.country') }}"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": {{ config('apartment.address.lat') }},
-    "longitude": {{ config('apartment.address.lng') }}
-  },
-  "url": "{{ url('/') }}",
-  "numberOfRooms": {{ config('apartment.specs.bedrooms') }},
-  "occupancy": { "@type": "QuantitativeValue", "maxValue": {{ config('apartment.specs.beds') }} }
-}
-</script>
+        @include('components.schema-vacation-rental', ['apartment' => $apartment])
 @endpush
 
 @section('content')

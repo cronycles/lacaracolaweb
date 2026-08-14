@@ -111,7 +111,7 @@ return [
     'amenity_bathroom'      => 'Bagno completo',
     'amenity_sofa_bed'      => 'Divano letto',
     'amenity_washing_machine' => 'Lavatrice',
-    'amenity_surface_100sqm' => 'Superficie 100 mq',
+    'amenity_surface_80sqm' => 'Superficie 80 mq',
     'amenity_pets_allowed' => 'Animali ammessi',
     'amenity_private_parking_on_request' => 'Parcheggio privato (su richiesta)',
     'amenity_non_smoking_rooms' => 'Camere non fumatori',

@@ -106,7 +106,7 @@ return [
     'amenity_bathroom'      => 'Full bathroom',
     'amenity_sofa_bed'      => 'Sofa bed',
     'amenity_washing_machine' => 'Washing machine',
-    'amenity_surface_100sqm' => '100 sqm surface',
+    'amenity_surface_80sqm' => '80 sqm surface',
     'amenity_pets_allowed' => 'Pets allowed',
     'amenity_private_parking_on_request' => 'Private parking (on request)',
     'amenity_non_smoking_rooms' => 'Non-smoking rooms',

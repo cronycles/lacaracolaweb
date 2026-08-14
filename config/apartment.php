@@ -38,6 +38,11 @@ return [
         'lng'      => 8.153381834769661,
     ],
 
+    // Stable identifier shared by every localized JSON-LD representation.
+    'schema' => [
+        'identifier' => 'la-caracola-andora',
+    ],
+
     // --- Property specs ---
     'specs' => [
         // Max bed places.
@@ -46,8 +51,16 @@ return [
         'bedrooms' => 2,
         // Number of bathrooms.
         'bathrooms' => 1,
-        // Total apartment square meters (optional).
-        'sqm'      => null,
+        // Total number of rooms, excluding bathroom and balcony.
+        'rooms'    => 3,
+        // Total apartment square meters.
+        'sqm'      => 80,
+        // Beds described by room for the VacationRental structured data.
+        'beds_detail' => [
+            ['number' => 1, 'type' => 'Double', 'location' => 'Bedroom'],
+            ['number' => 1, 'type' => 'Double', 'location' => 'Bedroom 2'],
+            ['number' => 1, 'type' => 'SofaBed', 'location' => 'Living room / kitchen'],
+        ],
         // Floor number.
         'floor'    => 1,
         // Whether sea view is available.
@@ -71,7 +84,7 @@ return [
         ['icon' => '🛁', 'key' => 'amenity_bathroom'],
         ['icon' => '🛏️', 'key' => 'amenity_sofa_bed'],
         ['icon' => '🫧', 'key' => 'amenity_washing_machine'],
-        ['icon' => '📐', 'key' => 'amenity_surface_100sqm'],
+        ['icon' => '📐', 'key' => 'amenity_surface_80sqm'],
         ['icon' => '🐕', 'key' => 'amenity_pets_allowed'],
         ['icon' => '🅿️', 'key' => 'amenity_private_parking_on_request'],
         ['icon' => '🚭', 'key' => 'amenity_non_smoking_rooms'],
