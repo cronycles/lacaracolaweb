@@ -118,7 +118,7 @@ return [
     'apartment_floor_label'   => 'Floor',
     'apartment_amenities_title' => 'Amenities',
     'apartment_gallery_title' => 'Gallery',
-    'apartment_cta_title'     => 'Ready to stay? Book now',
+    'apartment_cta_title'     => 'Ready for a holiday? Book now',
     'apartment_cta_subtitle'  => 'We reply within 24 hours.',
     'apartment_gallery_fullscreen' => 'Fullscreen view',
     'apartment_gallery_close' => 'Close',

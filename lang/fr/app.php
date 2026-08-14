@@ -118,7 +118,7 @@ return [
     'apartment_floor_label'   => 'Étage',
     'apartment_amenities_title' => 'Équipements',
     'apartment_gallery_title' => 'Galerie',
-    'apartment_cta_title'     => 'Envie d\'y séjourner ? Réservez maintenant',
+    'apartment_cta_title'     => 'Envie de vacances ? Réservez maintenant',
     'apartment_cta_subtitle'  => 'Nous répondons dans les 24 heures.',
     'apartment_gallery_fullscreen' => 'Vue en plein écran',
     'apartment_gallery_close' => 'Fermer',
