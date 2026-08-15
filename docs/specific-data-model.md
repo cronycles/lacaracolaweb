@@ -457,6 +457,10 @@ Each review also stores `original_locale`, the language used by the guest. A gue
 deletes all existing translations, writes only the newly submitted language, and hides the
 review again for manual approval.
 
+The `reviews.private_comment` field is a nullable TEXT containing the guest's optional
+private comment for the owner. It is not localized, is never rendered in public review
+pages, and remains attached to the review when the guest edits the public review form.
+
 ---
 
 ### 12. **role_permissions** *(pivot)*

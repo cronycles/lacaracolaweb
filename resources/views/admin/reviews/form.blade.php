@@ -112,6 +112,19 @@
             @endforeach
         </div>
 
+        <div class="a-card" style="margin-bottom:1.5rem">
+            <h2 style="font-size:.9rem;font-weight:700;margin-bottom:.25rem;color:#374151">Commento privato dell'ospite</h2>
+            <p style="font-size:.8rem;color:#6b7f89;margin-bottom:1rem">
+                Visibile solo nell'area amministrativa della recensione. Non viene pubblicato sul sito.
+            </p>
+            <textarea name="private_comment"
+                      class="form-input @error('private_comment') is-invalid @enderror"
+                      rows="4" maxlength="2000"
+                      placeholder="Commento visibile solo al proprietario…"
+            >{{ old('private_comment', $review->private_comment) }}</textarea>
+            @error('private_comment') <p class="form-error">{{ $message }}</p> @enderror
+        </div>
+
         <div style="display:flex;gap:.75rem">
             <button type="submit" class="btn btn--primary">
                 {{ $review->exists ? 'Salva modifiche' : 'Aggiungi recensione' }}

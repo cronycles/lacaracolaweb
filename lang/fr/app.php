@@ -313,6 +313,8 @@ return [
     'review_intro' => 'Parlez-nous de votre séjour. Votre avis sera vérifié avant sa publication.',
     'review_rating_label' => 'Évaluation', 'review_text_label' => 'Votre avis',
     'review_liked_label' => 'Ce que vous avez aimé', 'review_disliked_label' => 'Ce que vous avez moins aimé',
+    'review_private_comment_label' => 'Commentaire privé pour le propriétaire (facultatif)',
+    'review_private_comment_help' => 'Vous souhaitez signaler quelque chose directement au propriétaire ? Ce commentaire ne sera visible que par lui et ne sera pas publié sur le site.',
     'review_confirm_button' => 'Envoyer l’avis', 'review_submitted_title' => 'Avis envoyé',
     'review_submitted_text' => 'Merci. Votre avis a été reçu et sera vérifié avant sa publication.',
     'review_edit_button' => 'Modifier l’avis', 'review_validation_error' => 'Vérifiez les champs obligatoires et réessayez.',

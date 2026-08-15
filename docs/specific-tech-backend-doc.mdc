@@ -95,7 +95,11 @@ Data model: [Specific Data Model](./specific-data-model.md).
   `rating` is an integer from 1 to 10. Each `review_translations` row may also
   contain optional `liked_text` and `disliked_text`; the main review text is
   required in Italian and uses the existing locale -> English -> Italian
-  fallback.
+  fallback. The review itself may also contain an optional `private_comment`
+  entered by the guest; it is stored as a single non-localized field, is never
+  rendered publicly, and is available only in the protected review form for
+  authorized admin users. Editing the public review replaces translations but
+  preserves this private comment unless the guest changes it.
 - Canceled booking state is `canceled_at != null`.
 - Canceled bookings do not block public availability.
 - Booking restore is allowed only when no conflicts exist with active bookings or manual blocks.

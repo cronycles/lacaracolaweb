@@ -55,6 +55,7 @@ class ReviewController extends Controller
             'source'           => ['nullable', 'string', 'max:255'],
             'rating'           => ['required', 'integer', 'min:1', 'max:10'],
             'is_active'        => ['boolean'],
+            'private_comment'  => ['nullable', 'string', 'max:2000'],
             'translations.it'  => ['required', 'string', 'min:10'],
             'translations.en'  => ['nullable', 'string', 'min:10'],
             'translations.fr'  => ['nullable', 'string', 'min:10'],
@@ -75,6 +76,7 @@ class ReviewController extends Controller
             'source'      => $data['source'] ?? null,
             'rating'      => $data['rating'],
             'is_active'   => $request->boolean('is_active', true),
+            'private_comment' => trim($data['private_comment'] ?? '') ?: null,
         ]);
 
         foreach (self::LOCALES as $locale) {
@@ -132,6 +134,7 @@ class ReviewController extends Controller
             'source'           => ['nullable', 'string', 'max:255'],
             'rating'           => ['required', 'integer', 'min:1', 'max:10'],
             'is_active'        => ['boolean'],
+            'private_comment'  => ['nullable', 'string', 'max:2000'],
             'translations.it'  => ['required', 'string', 'min:10'],
             'translations.en'  => ['nullable', 'string', 'min:10'],
             'translations.fr'  => ['nullable', 'string', 'min:10'],
@@ -151,6 +154,7 @@ class ReviewController extends Controller
             'source'      => $data['source'] ?? null,
             'rating'      => $data['rating'],
             'is_active'   => $request->boolean('is_active', true),
+            'private_comment' => trim($data['private_comment'] ?? '') ?: null,
         ]);
 
         foreach (self::LOCALES as $locale) {

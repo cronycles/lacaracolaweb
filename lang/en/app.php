@@ -315,6 +315,8 @@ return [
     'review_intro' => 'Tell us about your stay. Your review will be checked before it is published.',
     'review_rating_label' => 'Rating', 'review_text_label' => 'Your review',
     'review_liked_label' => 'What did you like', 'review_disliked_label' => 'What did you not like',
+    'review_private_comment_label' => 'Private comment for the owner (optional)',
+    'review_private_comment_help' => 'Is there something you would like to tell the owner directly? This comment will only be visible to the owner and will not be published on the website.',
     'review_confirm_button' => 'Submit review', 'review_submitted_title' => 'Review submitted',
     'review_submitted_text' => 'Thank you. Your review has been received and will be checked before publication.',
     'review_edit_button' => 'Edit review', 'review_validation_error' => 'Check the required fields and try again.',

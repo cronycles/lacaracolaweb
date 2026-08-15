@@ -137,6 +137,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
 - Each booking has one reusable guest-review link for the primary guest. The owner sends it manually from the booking detail workflow, which also offers an email preview and a direct form preview.
 - The link is available from booking creation and expires a configurable number of days after checkout (default 20); canceled bookings and expired links return 404.
 - The guest submits one rating, one main text, and optional liked/disliked feedback in one selected language. The guest name is displayed from the booking and cannot be edited.
+- The guest can also leave an optional private comment for the owner. The form explains clearly that it is visible only to the owner and is not published. It is kept with the review and can be read or edited only from the protected review form in the admin area, not from the booking detail page or public review pages.
 - After submission the guest sees a summary and can edit it through an explicit confirmation, like online check-in. Editing replaces all translations with the new original language and hides the review again.
 - Guest-submitted reviews are never published automatically. The owner edits translations and activates visibility from the booking detail workflow.
 

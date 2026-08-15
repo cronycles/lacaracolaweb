@@ -39,6 +39,7 @@ class ReviewController extends Controller
             'text' => ['required', 'string', 'min:10', 'max:10000'],
             'liked_text' => ['nullable', 'string', 'max:2000'],
             'disliked_text' => ['nullable', 'string', 'max:2000'],
+            'private_comment' => ['nullable', 'string', 'max:2000'],
         ]);
 
         DB::transaction(function () use ($booking, $data, $locale): void {
@@ -52,6 +53,7 @@ class ReviewController extends Controller
                 'rating' => $data['rating'],
                 'is_active' => false,
                 'original_locale' => $locale,
+                'private_comment' => trim($data['private_comment'] ?? '') ?: null,
             ]);
             $review->save();
             $review->translations()->delete();

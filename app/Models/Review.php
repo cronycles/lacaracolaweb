@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Review extends Model
 {
-    protected $fillable = ['booking_id', 'author_name', 'source', 'rating', 'is_active', 'original_locale'];
+    protected $fillable = ['booking_id', 'author_name', 'source', 'rating', 'is_active', 'original_locale', 'private_comment'];
 
     protected $casts = [
         'rating'    => 'integer',

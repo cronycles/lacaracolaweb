@@ -282,6 +282,8 @@ return [
     'review_intro' => 'Raccontaci com’è stato il tuo soggiorno. La recensione sarà verificata prima di essere pubblicata.',
     'review_rating_label' => 'Valutazione', 'review_text_label' => 'La tua recensione',
     'review_liked_label' => 'Cosa ti è piaciuto', 'review_disliked_label' => 'Cosa non ti è piaciuto',
+    'review_private_comment_label' => 'Commento privato per il proprietario (opzionale)',
+    'review_private_comment_help' => 'Hai qualcosa da segnalare direttamente al proprietario? Questo commento sarà visibile esclusivamente al proprietario e non verrà pubblicato sul sito.',
     'review_confirm_button' => 'Invia recensione', 'review_submitted_title' => 'Recensione inviata',
     'review_submitted_text' => 'Grazie. La tua recensione è stata ricevuta e verrà verificata prima della pubblicazione.',
     'review_edit_button' => 'Modifica recensione', 'review_validation_error' => 'Controlla i campi obbligatori e riprova.',

@@ -314,6 +314,8 @@ return [
     'review_intro' => 'Erzählen Sie uns von Ihrem Aufenthalt. Ihre Bewertung wird vor der Veröffentlichung geprüft.',
     'review_rating_label' => 'Bewertung', 'review_text_label' => 'Ihre Bewertung',
     'review_liked_label' => 'Was hat Ihnen gefallen', 'review_disliked_label' => 'Was hat Ihnen nicht gefallen',
+    'review_private_comment_label' => 'Private Nachricht an den Eigentümer (optional)',
+    'review_private_comment_help' => 'Möchten Sie dem Eigentümer direkt etwas mitteilen? Dieser Kommentar ist nur für den Eigentümer sichtbar und wird nicht auf der Website veröffentlicht.',
     'review_confirm_button' => 'Bewertung senden', 'review_submitted_title' => 'Bewertung gesendet',
     'review_submitted_text' => 'Vielen Dank. Ihre Bewertung wurde erhalten und wird vor der Veröffentlichung geprüft.',
     'review_edit_button' => 'Bewertung bearbeiten', 'review_validation_error' => 'Prüfen Sie die Pflichtfelder und versuchen Sie es erneut.',

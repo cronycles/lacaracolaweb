@@ -44,6 +44,7 @@ class ReviewFlowTest extends TestCase
             'text' => 'A wonderful stay by the sea.',
             'liked_text' => 'The quiet terrace.',
             'disliked_text' => '',
+            'private_comment' => 'The bathroom light could be brighter.',
         ])->assertRedirect(route('review.show', ['token' => $booking->review_token, 'lang' => 'en']));
 
         $this->assertDatabaseHas('reviews', [
@@ -51,11 +52,16 @@ class ReviewFlowTest extends TestCase
             'rating' => 9,
             'original_locale' => 'en',
             'is_active' => false,
+            'private_comment' => 'The bathroom light could be brighter.',
         ]);
         $this->assertDatabaseHas('review_translations', [
             'locale' => 'en',
             'text' => 'A wonderful stay by the sea.',
         ]);
+
+        $this->get(route('review.show', $booking->review_token))
+            ->assertOk()
+            ->assertDontSee('The bathroom light could be brighter.');
     }
 
     public function test_guest_edit_replaces_all_translations_and_hides_review(): void
@@ -77,12 +83,14 @@ class ReviewFlowTest extends TestCase
         $this->post(route('review.confirm', $booking->review_token), [
             'rating' => 10,
             'text' => 'Nuovo testo italiano',
+            'private_comment' => 'La luce del bagno potrebbe essere più forte.',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('reviews', [
             'id' => $review->id,
             'original_locale' => 'it',
             'is_active' => false,
+            'private_comment' => 'La luce del bagno potrebbe essere più forte.',
         ]);
         $this->assertDatabaseHas('review_translations', [
             'review_id' => $review->id,

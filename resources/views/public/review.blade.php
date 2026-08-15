@@ -78,6 +78,12 @@
                     <textarea id="review_disliked_text" name="disliked_text" rows="3" maxlength="2000">{{ old('disliked_text', $translation?->disliked_text) }}</textarea>
                     @error('disliked_text') <span class="booking-form__field-error">{{ $message }}</span> @enderror
                 </div>
+                <div class="booking-form__group">
+                    <label for="review_private_comment">{{ __('app.review_private_comment_label') }}</label>
+                    <p style="color:var(--color-text-muted);font-size:.9rem;margin-top:0">{{ __('app.review_private_comment_help') }}</p>
+                    <textarea id="review_private_comment" name="private_comment" rows="4" maxlength="2000">{{ old('private_comment', $review?->private_comment) }}</textarea>
+                    @error('private_comment') <span class="booking-form__field-error">{{ $message }}</span> @enderror
+                </div>
                 <button type="submit" class="btn btn--primary booking-form__submit">{{ __('app.review_confirm_button') }}</button>
             </form>
         @endif
