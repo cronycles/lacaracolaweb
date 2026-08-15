@@ -36,6 +36,7 @@ export function initBookingForm(): void {
     const priceBox = form.querySelector<HTMLElement>('[data-price-box]');
     const priceValue = form.querySelector<HTMLElement>('[data-price-value]');
     const priceDetail = form.querySelector<HTMLElement>('[data-price-detail]');
+    const parkingTotalDetail = form.querySelector<HTMLElement>('[data-parking-total-detail]');
     const MIN_NIGHTS = parseInt(form.dataset['minNights'] ?? '3', 10);
     const MIN_BOOKING_LEAD_DAYS = parseInt(form.dataset['minBookingLeadDays'] ?? '0', 10);
     const MAX_BEDS = parseInt(form.dataset['maxBeds'] ?? '6', 10);
@@ -43,6 +44,7 @@ export function initBookingForm(): void {
     const parkingPriceEl = form.querySelector<HTMLElement>('[data-parking-price]');
     const parkingFeeCents = parseInt(form.dataset['parkingFeeCents'] ?? '0', 10);
     const parkingPriceLabel = form.dataset['parkingPriceLabel'] ?? ':price / giorno';
+    const parkingTotalLabel = form.dataset['parkingTotalLabel'] ?? 'Parcheggio: :price';
 
     // --- Field error helpers ---
 
@@ -142,6 +144,9 @@ export function initBookingForm(): void {
         if (priceBox) {
             priceBox.hidden = true;
         }
+        if (parkingTotalDetail) {
+            parkingTotalDetail.hidden = true;
+        }
     };
 
     const showPriceMessage = (value: string, detail: string): void => {
@@ -215,8 +220,9 @@ export function initBookingForm(): void {
                 // Only the total is shown to guests — the internal cost breakdown
                 // (stay/cleaning/linen/avg per night) is not public information.
                 let detail = data.message;
-                if (data.parking_requested) {
-                    detail += ` · ${parkingPriceLabel.replace(':price', formatCurrency(parkingFeeCents))}`;
+                if (data.parking_requested && typeof data.parking_cents === 'number' && parkingTotalDetail) {
+                    parkingTotalDetail.hidden = false;
+                    parkingTotalDetail.textContent = parkingTotalLabel.replace(':price', formatCurrency(data.parking_cents));
                 }
                 showPriceMessage(formatCurrency(data.total_cents), detail);
             })

@@ -64,8 +64,8 @@ class BookingController extends Controller
             ]);
         }
 
-        // Only the total is exposed to the public: cost breakdown (stay, cleaning,
-        // linen, avg/night) is internal pricing data and must never reach the guest.
+        // The public receives the house total and separately payable parking amount;
+        // the internal stay/cleaning/linen breakdown remains private.
         return response()->json([
             'available' => true,
             'nights' => $quote['nights'],

@@ -39,10 +39,17 @@
                 <td>{{ $booking->babies }}</td>
             </tr>
             @endif
-            @if ($booking->total_price !== null)
+            @if ($booking->house_price !== null)
             <tr>
-                <th>Prezzo totale</th>
-                <td><strong>€ {{ number_format($booking->total_price, 2, ',', '.') }}</strong></td>
+                <th>Prezzo totale casa</th>
+                <td><strong>€ {{ number_format($booking->house_price, 2, ',', '.') }}</strong></td>
+            </tr>
+            @endif
+            @if ($booking->parking_amount !== null)
+            <tr>
+                <th>Prezzo parcheggio</th>
+                <td>€ {{ number_format((float) $booking->parking_amount, 2, ',', '.') }}<br>
+                    <small>Da pagare in loco al momento dell'arrivo</small></td>
             </tr>
             @endif
         </table>

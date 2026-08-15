@@ -200,8 +200,8 @@ multiple included guests, the first is type `18` and the others are type `20`.
 - AJAX quote:
   - endpoint: `POST /{locale}/{availability-slug}/quote`
   - payload: `checkin`, `checkout`
-  - UI-consumed output: `available`, `total_cents`, `message`
-- Public UI shows only total (no technical breakdown).
+  - UI-consumed output: `available`, `total_cents` (house total), `parking_cents`, `parking_requested`, `message`
+- Public UI shows the house total separately from requested parking, which is payable locally on arrival.
 - A mandatory legal-consent checkbox (`accepted_terms`) sits right above the submit
   button, linking to the House Rules and Terms pages via `route_locale('rules')`
   / `route_locale('terms')`. The submit button (`resources/ts/components/booking-form.ts`)

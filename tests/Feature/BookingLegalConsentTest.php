@@ -227,7 +227,7 @@ class BookingLegalConsentTest extends TestCase
         $this->assertTrue($bookingRequest->parking_requested);
         $this->assertSame(number_format($parkingAmount, 2, '.', ''), $bookingRequest->estimated_parking_amount);
         $this->assertSame(
-            number_format(500 + (float) config('apartment.booking.cleaning_fee', 0) + 50 + $parkingAmount, 2, '.', ''),
+            number_format(500 + (float) config('apartment.booking.cleaning_fee', 0) + 50, 2, '.', ''),
             $bookingRequest->estimated_total_amount
         );
     }

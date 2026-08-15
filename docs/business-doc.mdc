@@ -29,8 +29,9 @@ alwaysApply: true
 - Public price estimate (linear amortisation model):
     - uses recurring month/day pricing rules to sum nightly rates,
     - adds fixed costs once per booking: cleaning fee + linen fee × guests,
+  - shows private parking separately when requested: parking fee per day × nights, payable locally on arrival,
     - no percentage discounts; average per night decreases naturally as nights increase,
-    - total and per-night average shown; full breakdown (stay, cleaning, linen) shown to user.
+  - house total and per-night average shown; parking is excluded from the house total.
 - If a price cutoff date is configured, no public estimate is shown from cutoff onward.
 - Minimum nights constraint is configured in `config/apartment.php` (default 3).
 - Public check-in requires configurable advance notice from today, configured as

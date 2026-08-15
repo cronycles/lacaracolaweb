@@ -69,7 +69,8 @@
             @if ($booking->parking_amount !== null)
             <tr>
                 <th>Costo parcheggio</th>
-                <td>€ {{ number_format((float) $booking->parking_amount, 2, ',', '.') }}</td>
+                <td>€ {{ number_format((float) $booking->parking_amount, 2, ',', '.') }}<br>
+                    <small>Da riscuotere in loco</small></td>
             </tr>
             @endif
         </table>

@@ -93,8 +93,8 @@ export function initPricingSimulator(): void {
                 const avgPerNight  = data.avg_per_night_cents ?? 0;
                 const total        = data.total_cents ?? 0;
 
-                summaryEl.textContent = `${nights} notti · ${guests} ospiti · Totale ${formatCurrency(total)} · Media ${formatCurrency(avgPerNight)}/notte`;
-                const parkingDetail = parking > 0 ? ` · Parcheggio ${formatCurrency(parking)}` : '';
+                summaryEl.textContent = `${nights} notti · ${guests} ospiti · Totale casa ${formatCurrency(total)} · Media ${formatCurrency(avgPerNight)}/notte`;
+                const parkingDetail = parking > 0 ? ` · Parcheggio ${formatCurrency(parking)} da pagare in loco` : '';
                 breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)} · Biancheria ${formatCurrency(linen)}${parkingDetail}`;
 
                 resultBox.style.display = 'block';

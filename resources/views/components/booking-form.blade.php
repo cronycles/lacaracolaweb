@@ -26,6 +26,7 @@
       data-label-loading="{{ __('app.booking_loading') }}"
     data-price-loading="{{ __('app.booking_price_loading') }}"
     data-parking-price-label="{{ __('app.booking_parking_price') }}"
+    data-parking-total-label="{{ __('app.booking_parking_total') }}"
     data-parking-fee-cents="{{ (int) config('apartment.booking.parking_fee_per_day', 0) * 100 }}"
     data-unavailable-dates='@json($unavailableDates ?? [])'
       novalidate>
@@ -76,6 +77,7 @@
         <p class="booking-form__price-title">{{ __('app.booking_price_title') }}</p>
         <p class="booking-form__price-value" data-price-value>—</p>
         <p class="booking-form__price-detail" data-price-detail></p>
+        <p class="booking-form__price-detail" data-parking-total-detail hidden></p>
     </div>
 
     {{-- Guests row --}}

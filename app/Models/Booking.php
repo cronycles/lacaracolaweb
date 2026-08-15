@@ -202,7 +202,19 @@ class Booking extends Model
         return (float) ($this->cleaning_amount ?? 0) + (float) ($this->linen_amount ?? 0);
     }
 
-    /** Total price for the guest (stay + cleaning + linen + parking), null if none of the amounts are known yet */
+    /** Total house price (stay + cleaning + linen), null if none of those amounts are known yet */
+    public function getHousePriceAttribute(): ?float
+    {
+        if ($this->income_amount === null && $this->cleaning_amount === null && $this->linen_amount === null) {
+            return null;
+        }
+
+        return (float) ($this->income_amount ?? 0)
+            + (float) ($this->cleaning_amount ?? 0)
+            + (float) ($this->linen_amount ?? 0);
+    }
+
+    /** Total price for the booking (house price + parking), null if none of the amounts are known yet */
     public function getTotalPriceAttribute(): ?float
     {
         if ($this->income_amount === null && $this->cleaning_amount === null && $this->linen_amount === null && $this->parking_amount === null) {

@@ -16,7 +16,7 @@ class PricingQuoteService
      *   fixed_costs = cleaning_fee + (linen_fee_per_person × guests)
      *   avg_per_night = total / nights
      *
-    * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: int|null, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
+        * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: int|null, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
      */
     public function calculate(string $checkin, string $checkout, int $guests = 1, bool $parkingRequested = false): array
     {
@@ -63,7 +63,8 @@ class PricingQuoteService
             ? ((int) config('apartment.booking.parking_fee_per_day', 0)) * 100 * $nights
             : 0;
 
-        $totalCents = $stayCents + $cleaningCents + $linenCents + $parkingCents;
+        // The house price is payable by bank transfer; parking is collected locally.
+        $totalCents = $stayCents + $cleaningCents + $linenCents;
         $avgPerNightCents = $nights > 0 ? (int) round($totalCents / $nights) : 0;
 
         return [
