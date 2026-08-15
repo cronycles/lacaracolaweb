@@ -272,10 +272,12 @@ class BookingController extends Controller
             return redirect()->back()->with('error', "Impossibile inviare: l'ospite non ha un indirizzo email.");
         }
 
+        $wasAlreadyPaid = (bool) $prenotazioni->income_paid;
+
         Mail::to($prenotazioni->person->email)->send(new BookingPaymentReceivedMail($prenotazioni));
         $prenotazioni->update([
             'income_paid' => true,
-            'income_paid_at' => $prenotazioni->income_paid_at ?? today(),
+            'income_paid_at' => $wasAlreadyPaid ? $prenotazioni->income_paid_at : today(),
             'payment_received_sent_at' => now(),
         ]);
 

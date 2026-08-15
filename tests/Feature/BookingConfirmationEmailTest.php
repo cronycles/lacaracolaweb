@@ -137,6 +137,7 @@ class BookingConfirmationEmailTest extends TestCase
             'linen_amount' => 20,
             'parking_amount' => 30,
             'income_paid' => false,
+            'income_paid_at' => now()->subDays(3),
         ]);
 
         $this->actingAs($this->admin)
