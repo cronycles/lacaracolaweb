@@ -245,6 +245,13 @@ class Booking extends Model
         return $this->canceled_at !== null;
     }
 
+    public function hasActiveReviewWindow(): bool
+    {
+        return ! $this->isCanceled()
+            && filled($this->review_token)
+            && $this->review_token_expires_at?->isFuture();
+    }
+
     /**
      * Generate (or regenerate) a high-entropy check-in token for this booking,
      * expiring at the end of the checkout day. Persists the change immediately.

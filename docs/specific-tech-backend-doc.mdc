@@ -69,7 +69,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Sends `BookingConfirmedMail` to the booking's guest with payment instructions from the enabled `host_owner` user, a 48h payment deadline, and the free-cancellation deadline (`checkin` − `apartment.payment.free_cancellation_days`, omitted once elapsed)
   - BCCs the owner (`config('apartment.email')`) and includes the guest name plus configured check-in/check-out times in the stay summary
   - Also sends the Italian-only `BookingHostKeeperMail` to all users with the `host_keeper` role, BCCing the owner and including the guest's phone/email when present, guest counts, parking, cleaning and linen service costs, but never the guest price
-  - The booking detail page exposes protected GET previews for the guest confirmation, host keeper summary, payment-received, check-in reminder, and guest review request emails; it also exposes direct links to the public check-in and review forms for testing. Email previews render the same Mailable HTML without sending
+  - The booking detail page exposes protected GET previews for the guest confirmation, host keeper summary, payment-received, check-in reminder, and guest review request emails; it also exposes direct links to the public check-in and review forms for testing while their guest tokens are active. Email previews render the same Mailable HTML without sending
   - The host owner tax code for the receipt comes from the same enabled `host_owner`; sending is blocked when no payment-enabled host owner exists. Host owners edit their own payment profile at `/admin/impostazioni/profilo-pagamenti`; super admins edit it in user management.
   - Sets `Booking.confirmation_sent_at`; the admin UI warns before resending if already sent
   - No automated cancellation job if unpaid after 48h — the owner cancels manually via the existing `cancel` action
@@ -92,6 +92,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 # Domain invariants
 - Reviews are managed from each booking detail page by users with `manage_reviews`; the standalone review list is removed.
 - Guest reviews use `GET /review/{token}` and `POST /review/{token}/confirm` with a booking-bound token. The token expires after `config('apartment.review.token_expiry_days')` days after checkout, rejects canceled bookings, and supports a confirmed edit flow. Every guest submission stores one locale, deletes previous translations, and sets `is_active = false` for manual review.
+  Admin users with `manage_reviews` can always open the protected create/edit review form from step 5, regardless of the guest token expiry; only the guest-facing form, request email, and public form preview are limited by the active review window.
   `rating` is an integer from 1 to 10. Each `review_translations` row may also
   contain optional `liked_text` and `disliked_text`; the main review text is
   required in Italian and uses the existing locale -> English -> Italian

@@ -110,4 +110,16 @@ class ReviewFlowTest extends TestCase
 
         $this->get(route('review.show', $booking->review_token))->assertNotFound();
     }
+
+    public function test_review_window_is_independent_from_admin_review_access(): void
+    {
+        $booking = $this->createBooking();
+
+        $this->assertTrue($booking->hasActiveReviewWindow());
+
+        $booking->forceFill(['review_token_expires_at' => now()->subMinute()])->save();
+        $booking->refresh();
+
+        $this->assertFalse($booking->hasActiveReviewWindow());
+    }
 }

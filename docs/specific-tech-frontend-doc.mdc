@@ -123,6 +123,11 @@ action is contextual: it offers `Aggiungi recensione` when no review exists,
 otherwise `Modifica` and `Elimina`. The global admin sidebar does not contain a
 separate reviews entry.
 
+The admin create/edit action is always available, including for historical
+bookings after the guest review link expires. Guest-facing actions (send
+request, email preview, and public form preview) are shown only while the
+booking's review token is active.
+
 The review form accepts a rating from 1 to 10 and stores optional translated
 feedback for what guests liked and did not like. It also offers an optional
 private comment with explicit copy stating that it is visible only to the owner

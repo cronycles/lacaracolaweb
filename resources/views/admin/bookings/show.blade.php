@@ -9,6 +9,7 @@
         $hostKeeperSummary = $hostKeeperEmails !== [] ? implode(', ', $hostKeeperEmails) : 'nessun host keeper';
         $telegramSummary = $telegramRecipients !== [] ? implode(', ', $telegramRecipients) : 'nessun destinatario abilitato';
         $alloggiatiWebReported = $booking->guestReports->contains(fn ($report) => $report->mode === 'send' && $report->status === 'success');
+        $guestReviewAvailable = $booking->hasActiveReviewWindow();
     @endphp
     <div class="booking-page">
         <div class="booking-header">
@@ -128,17 +129,25 @@
                         </div>
                     </div>
                     <div class="booking-step__action">
-                        <form method="POST" action="{{ route('admin.bookings.send-review-request', $booking) }}" class="js-confirm-send-mail"
-                              data-confirm-message="{{ $booking->review_request_sent_at ? 'Email recensione già inviata il '.$booking->review_request_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare all\'ospite il link per compilare la recensione?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
-                            @csrf
-                            <button type="submit" class="btn btn--primary btn--sm">{{ $booking->review_request_sent_at ? 'Invia di nuovo' : 'Invia recensione' }}</button>
-                            <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
-                        </form>
+                        @if($guestReviewAvailable)
+                            <form method="POST" action="{{ route('admin.bookings.send-review-request', $booking) }}" class="js-confirm-send-mail"
+                                  data-confirm-message="{{ $booking->review_request_sent_at ? 'Email recensione già inviata il '.$booking->review_request_sent_at->format('d/m/Y H:i').'. Inviare di nuovo?' : 'Inviare all\'ospite il link per compilare la recensione?' }} Destinatari: ospite {{ $guestEmail }}; BCC {{ $apartmentEmail }}.">
+                                @csrf
+                                <button type="submit" class="btn btn--primary btn--sm">{{ $booking->review_request_sent_at ? 'Invia di nuovo' : 'Invia recensione' }}</button>
+                                <span class="booking-step__recipients">A: {{ $guestEmail }} · BCC: {{ $apartmentEmail }}</span>
+                            </form>
+                        @else
+                            <span class="booking-step__status">Finestra per l'ospite scaduta</span>
+                        @endif
                         <div class="booking-step__previews">
-                            <a href="{{ route('admin.bookings.email-preview', [$booking, 'review-request']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
-                            <a href="{{ route('review.show', $booking->review_token) }}" target="_blank" rel="noopener" class="booking-preview-link">Apri form recensione</a>
+                            @if($guestReviewAvailable)
+                                <a href="{{ route('admin.bookings.email-preview', [$booking, 'review-request']) }}" target="_blank" rel="noopener" class="booking-preview-link">Anteprima email</a>
+                                <a href="{{ route('review.show', $booking->review_token) }}" target="_blank" rel="noopener" class="booking-preview-link">Apri form recensione</a>
+                            @endif
                             @if($booking->review)
                                 <a href="{{ route('admin.reviews.edit', $booking->review) }}" class="booking-preview-link">Modifica recensione</a>
+                            @else
+                                <a href="{{ route('admin.reviews.create', $booking) }}" class="booking-preview-link">Aggiungi recensione</a>
                             @endif
                         </div>
                     </div>
