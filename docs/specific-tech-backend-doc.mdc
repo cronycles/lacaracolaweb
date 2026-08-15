@@ -77,7 +77,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
   - Sends `BookingPaymentReceivedMail` only to the guest, with `config('apartment.email')` in BCC
   - Includes booking summary, prominent online check-in link, configured host keeper names/emails, house address, and Google Maps/Apple Maps/OpenStreetMap links
   - After a successful send, sets `income_paid = true`, stores `income_paid_at` as today, and updates `Booking.payment_received_sent_at`; resends are allowed after a browser confirmation
-- Check-in reminder email (admin or scheduled): the manual endpoint and `checkin:send-reminders` both update `Booking.checkin_reminder_sent_at` after a successful send; the timestamp represents the last manual or automatic send
+- Check-in reminder email (admin or scheduled): the manual endpoint and `checkin:send-reminders` both update `Booking.checkin_reminder_sent_at` after a successful send; the timestamp represents the last manual or automatic send. The scheduled command sends only when `Booking.checkin_reminder_enabled` is true; the manual action remains available regardless of this setting.
 - Completed online check-in email (`CheckinCompletedMail`): sent automatically to the guest after
   `POST /check-in/{token}/confirm` succeeds. It confirms that the online check-in is complete,
   repeats the host keeper contact, house address and map links, free-cancellation deadline, and

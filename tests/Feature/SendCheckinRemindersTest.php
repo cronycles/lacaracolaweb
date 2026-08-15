@@ -45,6 +45,7 @@ class SendCheckinRemindersTest extends TestCase
         $completed  = $this->createBooking($targetCheckin, ['checkin_completed_at' => now()]);
         $canceled   = $this->createBooking($targetCheckin, ['canceled_at' => now()]);
         $tooEarly   = $this->createBooking($targetCheckin->copy()->addDays(3));
+        $disabled   = $this->createBooking($targetCheckin, ['checkin_reminder_enabled' => false]);
 
         $this->artisan('checkin:send-reminders')->assertExitCode(0);
 
@@ -54,6 +55,19 @@ class SendCheckinRemindersTest extends TestCase
         });
 
         $this->assertNotNull($matching->fresh()->checkin_reminder_sent_at);
+        $this->assertNull($disabled->fresh()->checkin_reminder_sent_at);
+    }
+
+    public function test_does_not_send_reminder_when_automatic_reminders_are_disabled(): void
+    {
+        Mail::fake();
+
+        $leadDays = (int) config('apartment.checkin.reminder_lead_days', 7);
+        $this->createBooking(now()->addDays($leadDays), ['checkin_reminder_enabled' => false]);
+
+        $this->artisan('checkin:send-reminders')->assertExitCode(0);
+
+        Mail::assertNotSent(CheckinReminderMail::class);
     }
 
     public function test_no_reminder_when_already_completed(): void

@@ -33,6 +33,7 @@ class SendCheckinReminders extends Command
             ->whereNull('canceled_at')
             ->whereNull('deleted_at')
             ->whereNull('checkin_completed_at')
+            ->where('checkin_reminder_enabled', true)
             ->whereDate('checkin', $targetDate)
             ->get();
 

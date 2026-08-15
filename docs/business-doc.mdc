@@ -125,8 +125,9 @@ repeats the stay contact, house address with map links, cancellation deadline, a
   check-in, and the guest must submit all data again to complete it.
 - If check-in still isn't completed a configurable number of days before
   arrival (default 7), the guest receives an automatic reminder email with the
-  same check-in link. No reminder is sent once check-in is completed or if the
-  booking was canceled.
+  same check-in link, unless automatic reminders are disabled for that booking.
+  No reminder is sent once check-in is completed or if the booking was canceled.
+  The admin can still send the reminder manually.
 - The check-in page shows in the language the original request/booking was
   made in, with a simple on-page language switcher (doesn't change the saved
   language, just how that visit is displayed).

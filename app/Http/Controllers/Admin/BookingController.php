@@ -363,6 +363,7 @@ class BookingController extends Controller
             'source' => ['required', 'in:direct,airbnb,booking,interhome'],
             'external_ref' => ['nullable', 'string', 'max:60'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'checkin_reminder_enabled' => ['required', 'boolean'],
             'income_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'income_paid' => ['nullable', 'boolean'],
             'income_paid_at' => ['nullable', 'date'],

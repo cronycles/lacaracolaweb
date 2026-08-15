@@ -86,6 +86,7 @@
                         <div class="booking-step__status">
                             {{ $booking->checkin_completed_at ? 'Completato il '.$booking->checkin_completed_at->format('d/m/Y H:i') : 'Non ancora completato' }}
                             · {{ $booking->checkin_reminder_sent_at ? 'Ultimo promemoria: '.$booking->checkin_reminder_sent_at->format('d/m/Y H:i') : 'Promemoria non inviato' }}
+                            · {{ $booking->checkin_reminder_enabled ? 'Invio automatico attivo' : 'Invio automatico disattivato' }}
                         </div>
                     </div>
                     <div class="booking-step__action">

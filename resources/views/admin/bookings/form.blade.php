@@ -133,6 +133,20 @@
                     @error('notes') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="form-section-divider">
+                    Comunicazioni automatiche
+                </div>
+                <div class="form-group">
+                    <label class="payment-table__check">
+                        <input type="hidden" name="checkin_reminder_enabled" value="0">
+                        <input type="checkbox" id="checkin_reminder_enabled" name="checkin_reminder_enabled" value="1" class="form-checkbox"
+                               @checked(old('checkin_reminder_enabled', $booking->exists ? $booking->checkin_reminder_enabled : true))>
+                        <span>Inviare automaticamente il promemoria check-in</span>
+                    </label>
+                    <span class="form-hint">Il promemoria viene inviato 7 giorni prima del check-in se il check-in online non e ancora completato.</span>
+                    @error('checkin_reminder_enabled') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
                 {{-- Financial --}}
                 <div class="form-section-divider">
                     Dati economici
