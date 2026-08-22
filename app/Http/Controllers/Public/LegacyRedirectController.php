@@ -69,7 +69,7 @@ class LegacyRedirectController extends Controller
 
     public function home(): RedirectResponse
     {
-        return $this->localRedirect('home', 307);
+        return redirect(route_locale('home', [], 'it'), 301);
     }
 
     public function contattaci(): RedirectResponse

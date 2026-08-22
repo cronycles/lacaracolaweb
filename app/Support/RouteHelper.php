@@ -73,7 +73,6 @@ class RouteHelper
     {
         $locale = $locale ?? app()->getLocale();
         $routeName = "{$locale}.{$name}";
-        $params['locale'] = $locale;
 
         return route($routeName, $params);
     }
