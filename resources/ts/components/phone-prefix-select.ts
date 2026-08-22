@@ -312,11 +312,14 @@ export function initPhonePrefixSelects(): void {
     if (options.length === 0) return;
 
     document.querySelectorAll<HTMLElement>('[data-phone-prefix-wrap]').forEach((wrap) => {
+        if (wrap.dataset.phonePrefixInitialized === 'true') return;
+
         const phoneInput   = wrap.querySelector<HTMLInputElement>('[data-phone-number]');
         const prefixHidden = wrap.querySelector<HTMLInputElement>('[data-phone-prefix]');
         if (!phoneInput || !prefixHidden) return;
 
         const currentDial = prefixHidden.dataset.currentValue ?? '';
+        wrap.dataset.phonePrefixInitialized = 'true';
         const ps = new PhonePrefixSelect(wrap, phoneInput, prefixHidden);
         ps.setOptions(options, currentDial);
     });

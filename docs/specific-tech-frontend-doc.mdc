@@ -156,6 +156,7 @@ determines both the visual order and navigation order.
 - `resources/ts/components/map.ts`
 - `resources/ts/components/mobile-nav.ts`
 - `resources/ts/components/lang-switcher.ts`
+- `resources/ts/components/phone-prefix-select.ts` (idempotent because admin loads both app and admin entrypoints)
 - `resources/ts/checkin.ts` (Vite entry for the public online check-in page)
 - `resources/ts/people-reporting-fields.ts` (shared by `admin.ts` and `checkin.ts`)
 
