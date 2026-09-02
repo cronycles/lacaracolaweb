@@ -113,6 +113,19 @@ return [
         'checkout_time' => '10:00',
     ],
 
+    // --- External calendar synchronization ---
+    'calendar' => [
+        'export_token' => env('CALENDAR_EXPORT_TOKEN', ''),
+        'timezone' => env('CALENDAR_TIMEZONE', 'Europe/Rome'),
+        'http_timeout' => (int) env('CALENDAR_HTTP_TIMEOUT', 10),
+        'providers' => [
+            'airbnb' => 'Airbnb',
+            'booking' => 'Booking.com',
+            'hometogo' => 'HomeToGo',
+            'google_calendar' => 'Google Calendar',
+        ],
+    ],
+
     // --- House rules: parameter values (used in rule text templates) ---
     'rules_values' => [
         // Heating operating hours (in season).

@@ -9,6 +9,7 @@
         "php": "^8.3",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "sabre/vobject": "^4.5",
         "smalot/pdfparser": "^2.12"
     },
     "require-dev": {

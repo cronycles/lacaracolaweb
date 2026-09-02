@@ -1,10 +1,10 @@
 ## 1. Foundation and dependencies
 
-- [ ] 1.1 Add `sabre/vobject` as the PHP iCalendar parsing/generation dependency and refresh Composer metadata.
-- [ ] 1.2 Add configuration for the export token, calendar timezone, configured check-in/check-out times, HTTP timeout, and the four fixed provider keys.
-- [ ] 1.3 Add migrations for external calendar provider configuration/state and current provider events, including unique provider/UID and availability indexes.
-- [ ] 1.4 Add `ExternalCalendarProvider` and `ExternalCalendarEvent` models with casts, relationships, fillable fields, and enabled/successful-sync query helpers.
-- [ ] 1.5 Add model factories or test helpers needed to create provider configurations and external events in feature tests.
+- [x] 1.1 Add `sabre/vobject` as the PHP iCalendar parsing/generation dependency and refresh Composer metadata.
+- [x] 1.2 Add configuration for the export token, calendar timezone, configured check-in/check-out times, HTTP timeout, and the four fixed provider keys.
+- [x] 1.3 Add migrations for external calendar provider configuration/state and current provider events, including unique provider/UID and availability indexes.
+- [x] 1.4 Add `ExternalCalendarProvider` and `ExternalCalendarEvent` models with casts, relationships, fillable fields, and enabled/successful-sync query helpers.
+- [x] 1.5 Add model factories or test helpers needed to create provider configurations and external events in feature tests.
 
 ## 2. Local iCalendar export
 

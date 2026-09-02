@@ -23,7 +23,7 @@ class LocalesRenderTest extends TestCase
             try {
                 $response = $this->get($path);
                 echo "Status Code: " . $response->status() . "\n";
-                if ($response->status() \!== 200) {
+                if ($response->status() !== 200) {
                     echo "Response content excerpt (first 500 chars):\n";
                     echo substr($response->getContent(), 0, 500) . "\n";
                 }
@@ -31,7 +31,7 @@ class LocalesRenderTest extends TestCase
                 $html = $response->getContent();
                 
                 foreach ($keywords as $keyword) {
-                    $found = stripos($html, $keyword) \!== false;
+                    $found = stripos($html, $keyword) !== false;
                     echo "Keyword '$keyword': " . ($found ? "FOUND" : "NOT FOUND") . "\n";
                 }
             } catch (\Exception $e) {
