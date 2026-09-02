@@ -10,6 +10,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('external_calendar_events')) {
+            return;
+        }
+
         Schema::create('external_calendar_events', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('external_calendar_provider_id')
