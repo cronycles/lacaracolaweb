@@ -24,18 +24,25 @@ happen.
   to type into that portal's calendar for that period.
 - New `App\Services\OtaPortalNightlyRateService` computing, for a given
   `price_per_night` (from a `PricingRule`), a blended nightly rate per portal:
-  - Reference stay length fixed at `min_nights` (currently 3) — below the
-    weekly-discount threshold, so the portal's own automatic length discount
-    (already assumed identical to the direct site's, per `tax-gross-up-pricing`)
-    is left to apply itself dynamically and is not pre-baked into the rate.
-  - Reference guest count fixed at the apartment's bed capacity
-    (`config('apartment.specs.beds')`, currently 6) — the maximum any real
-    booking could have — so cleaning + linen (grossed up for tax, same as the
-    direct site) is always fully recovered regardless of how many guests
-    actually book via the portal, guaranteeing the portal rate is never lower
-    than what the same booking would cost directly.
+  - Reference stay length and reference guest count are **editable from
+    Settings** (new `pricing_portal_reference_nights` /
+    `pricing_portal_reference_guests` keys, same pattern as the other
+    `pricing_*` settings), defaulting to `config('apartment.booking.min_nights')`
+    (currently 3) and `config('apartment.specs.beds')` (currently 6) — i.e. the
+    apartment's real minimum stay and maximum occupancy — so the amounts stay
+    editable without a deploy if the owner ever needs to tune them, without
+    losing the sensible built-in defaults.
+  - At the default reference guest count (bed capacity), cleaning + linen
+    (grossed up for tax, same as the direct site) is always fully recovered
+    regardless of how many guests actually book via the portal, guaranteeing
+    the portal rate is never lower than what the same booking would cost
+    directly. Lowering this setting below bed capacity reopens that risk (see
+    design.md) — the Settings UI documents this trade-off.
   - Same tax gross-up + portal commission formula as `OtaPortalPricingService`,
-    reused/shared rather than duplicated.
+    reused/shared rather than duplicated, now also applying the same
+    weekly/monthly length-discount lookup to the reference stay (needed for
+    correctness now that the reference nights count is no longer guaranteed to
+    stay below the discount threshold).
   - Final suggested nightly rate rounded to the nearest whole euro (not €5 like
     the guest-facing total) so Airbnb and HomeToGo — which share the same
     default commission — land on the same or very close numbers, and
@@ -46,9 +53,10 @@ happen.
 ### New Capabilities
 - `ota-portal-price-table`: a per-pricing-period table of suggested blended
   nightly rates for Airbnb/Booking.com/HomeToGo, computed from the direct
-  site's `pricing_rules`, reference stay length and guest count fixed to
-  guarantee the portal rate is never cheaper than the equivalent direct
-  booking.
+  site's `pricing_rules`, with a settings-editable reference stay length and
+  guest count (defaulting to the apartment's minimum stay and maximum
+  occupancy) to guarantee the portal rate is never cheaper than the
+  equivalent direct booking at default settings.
 
 ### Modified Capabilities
 _None — the `ota-portal-pricing` capability from `tax-gross-up-pricing` has not
@@ -59,7 +67,8 @@ apply; this change only adds a new, separate capability._
 
 - `app/Services/OtaPortalNightlyRateService.php` — new service (shares the
   weekly/monthly discount trait and commission/tax-rate settings already
-  introduced by `tax-gross-up-pricing`, but does not use the discount here).
+  introduced by `tax-gross-up-pricing`, applying the discount to the
+  reference stay since reference nights is now settings-editable).
 - `app/Http/Controllers/Admin/PricingController.php` (or a new controller) —
   new read-only action listing `PricingRule`s with computed portal columns.
 - `resources/views/admin/pricing/portal-prices.blade.php` (new view).
@@ -67,6 +76,10 @@ apply; this change only adds a new, separate capability._
   `manage_pricing` permission group.
 - No database changes — reuses existing `pricing_rules` table and the
   `pricing_commission_*`/`pricing_tax_rate`/`pricing_tax_gross_up_items`
-  `Setting` keys added by `tax-gross-up-pricing`.
+  `Setting` keys added by `tax-gross-up-pricing`, plus 2 new keys
+  (`pricing_portal_reference_nights`, `pricing_portal_reference_guests`).
+- `app/Http/Controllers/Admin/SettingsController.php` +
+  `resources/views/admin/settings.blade.php` — 2 new fields in the existing
+  "Fiscalità e prezzi" card.
 - Tests: new unit tests for `OtaPortalNightlyRateService`, feature test for the
-  new admin route/permission.
+  new admin route/permission and for persisting the 2 new settings.
