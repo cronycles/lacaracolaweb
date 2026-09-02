@@ -8,11 +8,11 @@
 
 ## 2. Local iCalendar export
 
-- [ ] 2.1 Implement a dedicated service that collects active bookings, pending requests, and manual owner/maintenance blocks while excluding canceled, declined, and converted duplicate records.
-- [ ] 2.2 Implement generic blocked-event generation with stable UIDs, UTC `DTSTART`/`DTEND`, `DTSTAMP`, `SUMMARY`, `STATUS`, and `TRANSP`, without personal data.
-- [ ] 2.3 Handle exclusive checkout dates and same-day blocks in the export representation so importing portals preserve the intended blocked days.
-- [ ] 2.4 Add the public export controller and `/api/calendar/export?t=TOKEN` route with constant-time token validation and the required calendar attachment headers.
-- [ ] 2.5 Add feature tests for valid/invalid tokens, headers, iCalendar validity, exported record types, exclusions, privacy, UTC conversion, and same-day behavior.
+- [x] 2.1 Implement a dedicated service that collects active bookings, pending requests, and manual owner/maintenance blocks while excluding canceled, declined, and converted duplicate records.
+- [x] 2.2 Implement generic blocked-event generation with stable UIDs, UTC `DTSTART`/`DTEND`, `DTSTAMP`, `SUMMARY`, `STATUS`, and `TRANSP`, without personal data.
+- [x] 2.3 Handle exclusive checkout dates and same-day blocks in the export representation so importing portals preserve the intended blocked days.
+- [x] 2.4 Add the public export controller and `/api/calendar/export?t=TOKEN` route with constant-time token validation and the required calendar attachment headers.
+- [x] 2.5 Add feature tests for valid/invalid tokens, headers, iCalendar validity, exported record types, exclusions, privacy, UTC conversion, and same-day behavior.
 
 ## 3. External feed parsing and synchronization
 
