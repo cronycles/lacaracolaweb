@@ -27,11 +27,11 @@
 
 ## 4. Admin provider settings
 
-- [ ] 4.1 Add provider configuration fields and validation to the existing admin Settings flow, including URL and enabled state for all four providers.
-- [ ] 4.2 Enforce `host_owner` and `super_admin` authorization for provider configuration and manual synchronization, excluding `host_keeper`.
-- [ ] 4.3 Add synchronous per-provider manual synchronization actions that reuse the scheduled synchronization service.
-- [ ] 4.4 Add Settings UI panels with URL, enabled toggle, sync action, status badge, timestamps, imported count, and latest error.
-- [ ] 4.5 Add tests for authorized/unauthorized access, persistence, validation, manual sync results, and status rendering data.
+- [x] 4.1 Add provider configuration fields and validation to the existing admin Settings flow, including URL and enabled state for all four providers.
+- [x] 4.2 Enforce `host_owner` and `super_admin` authorization for provider configuration and manual synchronization, excluding `host_keeper`.
+- [x] 4.3 Add synchronous per-provider manual synchronization actions that reuse the scheduled synchronization service.
+- [x] 4.4 Add Settings UI panels with URL, enabled toggle, sync action, status badge, timestamps, imported count, and latest error.
+- [x] 4.5 Add tests for authorized/unauthorized access, persistence, validation, manual sync results, and status rendering data.
 
 ## 5. Availability integration
 

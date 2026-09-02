@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\BookingGuestController;
 use App\Http\Controllers\Admin\BookingRequestController;
-use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FinancialAttachmentController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\Admin\InterhomePdfImportController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\PricingController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StayDiscountRuleController;
 use App\Http\Controllers\Admin\TaxDeclarationController;
@@ -163,6 +163,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::middleware('permission:manage_settings')->group(function () {
         Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');
         Route::put('/impostazioni', [SettingsController::class, 'update'])->name('settings.update');
+        Route::put('/impostazioni/calendari-esterni/{provider}', [SettingsController::class, 'updateCalendarProvider'])->name('settings.calendar-providers.update');
+        Route::post('/impostazioni/calendari-esterni/{provider}/sincronizza', [SettingsController::class, 'syncCalendarProvider'])->name('settings.calendar-providers.sync');
     });
 
     // ── manage_newsletter ────────────────────────────────────────────────────
@@ -188,4 +190,3 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::delete('/recensioni/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 });
-
