@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\BookingConfirmedMail;
 use App\Mail\BookingHostKeeperMail;
 use App\Mail\BookingPaymentReceivedMail;
+use App\Mail\CheckinCompletedMail;
 use App\Mail\CheckinReminderMail;
 use App\Mail\ReviewRequestMail;
 use App\Models\AvailabilityBlock;
@@ -145,6 +146,7 @@ class BookingController extends Controller
             'host-keeper' => new BookingHostKeeperMail($prenotazioni),
             'payment-received' => new BookingPaymentReceivedMail($prenotazioni),
             'checkin-reminder' => new CheckinReminderMail($prenotazioni),
+            'checkin-completed' => new CheckinCompletedMail($prenotazioni),
             'review-request' => new ReviewRequestMail($prenotazioni),
             default => abort(404),
         };

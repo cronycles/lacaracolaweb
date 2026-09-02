@@ -26,8 +26,8 @@
         </table>
     </div>
 
-    <div class="section">
-        <div class="section-title">Il tuo contatto per il tuo soggiorno</div>
+    <div class="payment-section">
+        <div class="payment-title">Il tuo contatto per il tuo soggiorno</div>
         <p>Qualche giorno prima del tuo arrivo, il/la host keeper ti contatterà per organizzare il check-in. Per qualsiasi domanda puoi contattarlo/a direttamente:</p>
         @forelse ($hostKeepers as $hostKeeper)
             <p><strong>{{ $hostKeeper->name }}</strong><br>
