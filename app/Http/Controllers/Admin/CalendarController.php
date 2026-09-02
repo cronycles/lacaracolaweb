@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
+use App\Models\ExternalCalendarEvent;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,6 +31,14 @@ class CalendarController extends Controller
         $blocks = AvailabilityBlock::whereNull('booking_id')
             ->whereDate('start_date', '<=', $windowEnd->toDateString())
             ->whereDate('end_date', '>=', $windowStart->toDateString())
+            ->orderBy('start_date')
+            ->get();
+
+        $externalEvents = ExternalCalendarEvent::query()
+            ->with('provider')
+            ->whereHas('provider', fn ($query) => $query->availableForAvailability())
+            ->whereDate('start_date', '<=', $windowEnd->toDateString())
+            ->whereDate('end_date', '>', $windowStart->toDateString())
             ->orderBy('start_date')
             ->get();
 
@@ -75,6 +84,7 @@ class CalendarController extends Controller
             if ($blockType === 'owner') {
                 if ($blockStart->equalTo($blockEnd)) {
                     $ownerDays[$blockStart->format('Y-m-d')] = true;
+
                     continue;
                 }
 
@@ -92,6 +102,7 @@ class CalendarController extends Controller
 
             if ($blockStart->equalTo($blockEnd)) {
                 $maintenanceDays[$blockStart->format('Y-m-d')] = true;
+
                 continue;
             }
 
@@ -101,6 +112,23 @@ class CalendarController extends Controller
             $cursor = $blockStart->copy()->addDay();
             while ($cursor->lt($blockEnd)) {
                 $maintenanceDays[$cursor->format('Y-m-d')] = true;
+                $cursor->addDay();
+            }
+        }
+
+        $externalDays = [];
+        foreach ($externalEvents as $event) {
+            $cursor = Carbon::parse($event->start_date)->startOfDay();
+            $endDate = Carbon::parse($event->end_date)->startOfDay();
+            $detail = sprintf(
+                '%s: %s - %s',
+                config("apartment.calendar.providers.{$event->provider->key}", $event->provider->key),
+                $cursor->format('d/m/Y'),
+                $endDate->format('d/m/Y'),
+            );
+
+            while ($cursor->lt($endDate)) {
+                $externalDays[$cursor->format('Y-m-d')][] = $detail;
                 $cursor->addDay();
             }
         }
@@ -120,6 +148,7 @@ class CalendarController extends Controller
         return view('admin.calendar', [
             'bookings' => $bookings,
             'blocks' => $blocks,
+            'externalEvents' => $externalEvents,
             'today' => Carbon::today()->format('Y-m-d'),
             'todayCarbon' => Carbon::today(),
             'months' => $months,
@@ -132,6 +161,7 @@ class CalendarController extends Controller
             'maintenanceDays' => $maintenanceDays,
             'maintenanceArrivalDays' => $maintenanceArrivalDays,
             'maintenanceDepartureDays' => $maintenanceDepartureDays,
+            'externalDays' => $externalDays,
             'windowCenterMonth' => $centerMonth->format('Y-m'),
             'previousWindowMonth' => $centerMonth->copy()->subMonth()->format('Y-m'),
             'nextWindowMonth' => $centerMonth->copy()->addMonth()->format('Y-m'),
@@ -148,9 +178,9 @@ class CalendarController extends Controller
     {
         $data = $request->validate([
             'start_date' => ['required', 'date'],
-            'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
-            'reason'     => ['required', 'in:owner,maintenance'],
-            'notes'      => ['nullable', 'string', 'max:255'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'reason' => ['required', 'in:owner,maintenance'],
+            'notes' => ['nullable', 'string', 'max:255'],
         ]);
 
         AvailabilityBlock::create($data);
@@ -216,8 +246,16 @@ class CalendarController extends Controller
             ->whereNull('booking_id')
             ->max('end_date');
 
-        $minDateRaw = collect([$minBooking, $minBlock])->filter()->min();
-        $maxDateRaw = collect([$maxBooking, $maxBlock])->filter()->max();
+        $minExternalEvent = ExternalCalendarEvent::query()
+            ->whereHas('provider', fn ($query) => $query->availableForAvailability())
+            ->min('start_date');
+
+        $maxExternalEvent = ExternalCalendarEvent::query()
+            ->whereHas('provider', fn ($query) => $query->availableForAvailability())
+            ->max('end_date');
+
+        $minDateRaw = collect([$minBooking, $minBlock, $minExternalEvent])->filter()->min();
+        $maxDateRaw = collect([$maxBooking, $maxBlock, $maxExternalEvent])->filter()->max();
 
         $defaultStart = now()->startOfMonth()->subMonths(12);
         $defaultEnd = now()->startOfMonth()->addMonths(24);

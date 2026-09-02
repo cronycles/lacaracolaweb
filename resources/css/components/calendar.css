@@ -254,6 +254,13 @@
     color: #1a2b34;
 }
 
+.cal-day--external {
+    background-color: rgba(14, 116, 144, 0.14);
+    background-image: repeating-linear-gradient(135deg, transparent 0 5px, rgba(14, 116, 144, 0.25) 5px 7px);
+    border-color: #0e7490;
+    color: #164e63;
+}
+
 .cal-window-nav {
     display: flex;
     align-items: center;
@@ -320,6 +327,15 @@
     box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0ea5e9;
     z-index: 1;
     font-weight: 700;
+}
+
+.dot-external,
+.event-item__bar--external {
+    background: #0e7490;
+}
+
+.event-item--external {
+    background: rgba(14, 116, 144, 0.08);
 }
 
 @media (max-width: 640px) {

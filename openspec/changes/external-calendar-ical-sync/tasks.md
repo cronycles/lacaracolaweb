@@ -42,10 +42,10 @@
 
 ## 6. Admin calendar presentation
 
-- [ ] 6.1 Load enabled external events for the visible calendar window without changing local booking/block records.
-- [ ] 6.2 Render external blocked days with a distinct translucent visual treatment and provider identity.
-- [ ] 6.3 Expose normalized date range and provider details through the calendar tooltip/detail surface.
-- [ ] 6.4 Add frontend/admin tests or focused regression coverage for visibility, disabled providers, and coexistence with local bookings and manual blocks.
+- [x] 6.1 Load enabled external events for the visible calendar window without changing local booking/block records.
+- [x] 6.2 Render external blocked days with a distinct translucent visual treatment and provider identity.
+- [x] 6.3 Expose normalized date range and provider details through the calendar tooltip/detail surface.
+- [x] 6.4 Add frontend/admin tests or focused regression coverage for visibility, disabled providers, and coexistence with local bookings and manual blocks.
 
 ## 7. Documentation and deployment
 

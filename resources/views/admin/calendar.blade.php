@@ -101,9 +101,13 @@
                                         if ($dateKey === $today) {
                                             $dayClasses[] = 'cal-day--today';
                                         }
+                                        $externalDetails = $externalDays[$dateKey] ?? [];
+                                        if ($externalDetails !== []) {
+                                            $dayClasses[] = 'cal-day--external';
+                                        }
                                     @endphp
 
-                                    <span @class($dayClasses)>{{ $day }}</span>
+                                    <span @class($dayClasses) @if($externalDetails !== []) title="{{ implode(' | ', $externalDetails) }}" @endif>{{ $day }}</span>
                                 @endfor
                             </div>
                         </div>
@@ -115,9 +119,10 @@
                     <span><span class="cal-legend__dot dot-booked"></span>Prenotazione</span>
                     <span><span class="cal-legend__dot dot-owner"></span>Uso proprietario</span>
                     <span><span class="cal-legend__dot dot-maintenance"></span>Chiusa</span>
+                    <span><span class="cal-legend__dot dot-external"></span>Calendario esterno</span>
                 </div>
 
-                @if ($bookings->isEmpty() && $blocks->isEmpty())
+                @if ($bookings->isEmpty() && $blocks->isEmpty() && $externalEvents->isEmpty())
                     <p style="color:#6b7f89;font-size:.875rem">Nessun evento nel periodo selezionato.</p>
                 @else
                     <ul class="event-list">
@@ -181,6 +186,20 @@
                                 </div>
                                 <div style="flex-shrink:0">
                                     <a href="{{ route('admin.bookings.show-block', $block) }}" class="btn btn--outline btn--sm">Dettaglio</a>
+                                </div>
+                            </li>
+                        @endforeach
+
+                        @foreach ($externalEvents as $event)
+                            <li class="event-item event-item--external" title="{{ config("apartment.calendar.providers.{$event->provider->key}", $event->provider->key) }}: {{ $event->start_date->format('d/m/Y') }} - {{ $event->end_date->format('d/m/Y') }}">
+                                <div class="event-item__bar event-item__bar--external"></div>
+                                <div style="flex:1">
+                                    <div class="event-item__name">
+                                        <span class="badge badge--external">{{ config("apartment.calendar.providers.{$event->provider->key}", $event->provider->key) }}</span>
+                                    </div>
+                                    <div class="event-item__dates">
+                                        {{ $event->start_date->format('d/m/Y') }} → {{ $event->end_date->format('d/m/Y') }}
+                                    </div>
                                 </div>
                             </li>
                         @endforeach
