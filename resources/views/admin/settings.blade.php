@@ -163,6 +163,36 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Riferimento tabella prezzi portali</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                        <div>
+                            <label class="form-label" for="pricing_portal_reference_nights" style="font-size:.8rem">Notti di riferimento</label>
+                            <input type="number" id="pricing_portal_reference_nights" name="pricing_portal_reference_nights" class="form-input"
+                                   min="1" step="1"
+                                   value="{{ old('pricing_portal_reference_nights', $pricingSettings['portal_reference_nights']) }}">
+                            @error('pricing_portal_reference_nights')
+                                <div class="form-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="form-label" for="pricing_portal_reference_guests" style="font-size:.8rem">Ospiti di riferimento</label>
+                            <input type="number" id="pricing_portal_reference_guests" name="pricing_portal_reference_guests" class="form-input"
+                                   min="1" step="1"
+                                   value="{{ old('pricing_portal_reference_guests', $pricingSettings['portal_reference_guests']) }}">
+                            @error('pricing_portal_reference_guests')
+                                <div class="form-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Usati per calcolare la <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">tabella prezzi portali</a>:
+                        cambiare le notti di riferimento influisce sull'applicazione dello sconto soggiorno a quel calcolo;
+                        impostare gli ospiti di riferimento sotto la capienza massima dell'appartamento può far sì che un prezzo
+                        portale risulti più economico di una prenotazione diretta equivalente con più ospiti.
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn--primary">Salva fiscalità e prezzi</button>
             </form>
         </div>

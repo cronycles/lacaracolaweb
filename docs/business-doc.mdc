@@ -156,6 +156,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
     - accepts date range + guest count,
     - shows full breakdown (stay subtotal, stay-length discount, cleaning, linen, tax gross-up, total, avg/night) plus suggested Airbnb/Booking.com/HomeToGo listing prices,
     - updates automatically when dates or guest count change.
+- `admin/prezzi-portali` ("Prezzi portali") is a read-only page listing every pricing-rule period with one suggested blended nightly rate per portal (Airbnb/Booking.com/HomeToGo), amortising cleaning + linen + tax gross-up over a reference stay length/guest count (no separate cleaning-fee line shown on the portal). Unlike the price simulator above (one simulated stay at a time), this mirrors the whole `admin/prezzi` table so the owner can populate a portal's yearly calendar in one pass. The reference nights/guests are editable from Settings ("Fiscalità e prezzi"), defaulting to the apartment's minimum stay and bed capacity so the suggested rate is never cheaper than an equivalent direct booking.
 - Booking management:
     - reversible logical cancellation via `canceled_at`,
     - canceled bookings remain in history but do not block availability,

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
+use App\Services\OtaPortalNightlyRateService;
 use App\Services\OtaPortalPricingService;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
@@ -24,6 +25,20 @@ class PricingController extends Controller
             ->get();
 
         return view('admin.pricing.index', compact('rules'));
+    }
+
+    /** Read-only table of suggested blended nightly rates per portal, one row per pricing rule. */
+    public function portalPrices(OtaPortalNightlyRateService $otaPortalNightlyRateService): View
+    {
+        $rules = PricingRule::orderBy('start_month')
+            ->orderBy('start_day')
+            ->get();
+
+        $portalRates = $rules->mapWithKeys(fn (PricingRule $rule): array => [
+            $rule->id => $otaPortalNightlyRateService->ratesFor($rule),
+        ]);
+
+        return view('admin.pricing.portal-prices', compact('rules', 'portalRates'));
     }
 
     public function create(): View

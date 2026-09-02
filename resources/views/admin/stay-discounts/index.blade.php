@@ -5,7 +5,10 @@
 @section('content')
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:.75rem;flex-wrap:wrap">
         <h1 style="font-size:1.1rem;font-weight:700">Formula di calcolo prezzi</h1>
-        <a href="{{ route('admin.pricing.index') }}" class="btn btn--outline">← Prezzi base</a>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <a href="{{ route('admin.pricing.portal-prices') }}" class="btn btn--outline">Prezzi portali</a>
+            <a href="{{ route('admin.pricing.index') }}" class="btn btn--outline">← Prezzi base</a>
+        </div>
     </div>
 
     <div class="a-card" style="max-width:720px">

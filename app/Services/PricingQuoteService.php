@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\PricingRule;
-use App\Models\Setting;
 use App\Services\Concerns\ResolvesLengthDiscountRate;
+use App\Services\Concerns\ResolvesTaxGrossUp;
 use Carbon\Carbon;
 
 class PricingQuoteService
 {
     use ResolvesLengthDiscountRate;
+    use ResolvesTaxGrossUp;
 
     /**
      * Calculate the full price breakdown for a stay using the linear amortisation model, plus the
@@ -72,17 +73,8 @@ class PricingQuoteService
         $stayDiscountCents = (int) round($stayGrossCents * $lengthDiscountRate);
         $discountedStayCents = $stayGrossCents - $stayDiscountCents;
 
-        $taxRate = $this->resolveTaxRate();
-        $taxGrossUpItems = $this->resolveTaxGrossUpItems();
         // Only cleaning/linen actually contribute to total_cents today; parking is collected locally.
-        $taxableCents = 0;
-        if (in_array('cleaning', $taxGrossUpItems, true)) {
-            $taxableCents += $cleaningCents;
-        }
-        if (in_array('linen', $taxGrossUpItems, true)) {
-            $taxableCents += $linenCents;
-        }
-        $taxGrossUpCents = (int) round($taxableCents * $taxRate);
+        $taxGrossUpCents = $this->taxGrossUpCents($cleaningCents, $linenCents);
 
         // The house price is payable by bank transfer; parking is collected locally.
         $rawTotalCents = $discountedStayCents + $taxGrossUpCents + $cleaningCents + $linenCents;
@@ -132,20 +124,6 @@ class PricingQuoteService
             'total_cents' => null,
             'avg_per_night_cents' => null,
         ];
-    }
-
-    private function resolveTaxRate(): float
-    {
-        return (float) Setting::get('pricing_tax_rate', '0.21');
-    }
-
-    /** @return list<string> */
-    private function resolveTaxGrossUpItems(): array
-    {
-        $raw = Setting::get('pricing_tax_gross_up_items', '["cleaning","linen"]');
-        $decoded = json_decode((string) $raw, true);
-
-        return is_array($decoded) ? array_values($decoded) : ['cleaning', 'linen'];
     }
 
     /** Year-specific overrides only match their exact year; recurring rules (year=null) match every year. */

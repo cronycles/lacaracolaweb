@@ -76,6 +76,8 @@ class SettingsController extends Controller
             'pricing_commission_hometogo' => ['required', 'numeric', 'min:0', 'max:100'],
             'pricing_weekly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
             'pricing_monthly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_portal_reference_nights' => ['required', 'integer', 'min:1'],
+            'pricing_portal_reference_guests' => ['required', 'integer', 'min:1'],
         ]);
 
         Setting::set('pricing_tax_rate', (string) ($data['pricing_tax_rate'] / 100));
@@ -85,11 +87,13 @@ class SettingsController extends Controller
         Setting::set('pricing_commission_hometogo', (string) ($data['pricing_commission_hometogo'] / 100));
         Setting::set('pricing_weekly_discount_percent', (string) ($data['pricing_weekly_discount_percent'] / 100));
         Setting::set('pricing_monthly_discount_percent', (string) ($data['pricing_monthly_discount_percent'] / 100));
+        Setting::set('pricing_portal_reference_nights', (string) $data['pricing_portal_reference_nights']);
+        Setting::set('pricing_portal_reference_guests', (string) $data['pricing_portal_reference_guests']);
 
         return back()->with('success', 'Impostazioni di fiscalità e prezzi salvate.');
     }
 
-    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float} */
+    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float, portal_reference_nights: int, portal_reference_guests: int} */
     private function pricingSettings(): array
     {
         $items = json_decode((string) Setting::get('pricing_tax_gross_up_items', self::PRICING_SETTING_DEFAULTS['pricing_tax_gross_up_items']), true);
@@ -102,6 +106,9 @@ class SettingsController extends Controller
             'commission_hometogo' => (float) Setting::get('pricing_commission_hometogo', self::PRICING_SETTING_DEFAULTS['pricing_commission_hometogo']),
             'weekly_discount_percent' => (float) Setting::get('pricing_weekly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_weekly_discount_percent']),
             'monthly_discount_percent' => (float) Setting::get('pricing_monthly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_monthly_discount_percent']),
+            // Defaults sourced from apartment.php (real min stay / bed capacity), not a fixed literal like the other pricing_* keys.
+            'portal_reference_nights' => (int) Setting::get('pricing_portal_reference_nights', (string) config('apartment.booking.min_nights', 3)),
+            'portal_reference_guests' => (int) Setting::get('pricing_portal_reference_guests', (string) config('apartment.specs.beds', 6)),
         ];
     }
 

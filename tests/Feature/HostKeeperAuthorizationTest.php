@@ -74,6 +74,13 @@ class HostKeeperAuthorizationTest extends TestCase
             ->assertRedirect('/admin/');
     }
 
+    public function test_host_keeper_cannot_access_portal_price_table(): void
+    {
+        $this->actingAs($this->hostKeeper)
+            ->get('/admin/prezzi-portali')
+            ->assertRedirect('/admin/');
+    }
+
     public function test_host_keeper_cannot_access_stay_discounts(): void
     {
         $this->actingAs($this->hostKeeper)

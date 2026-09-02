@@ -41,6 +41,8 @@ class PricingSettingsTest extends TestCase
                 'pricing_commission_hometogo' => 16,
                 'pricing_weekly_discount_percent' => 12,
                 'pricing_monthly_discount_percent' => 22,
+                'pricing_portal_reference_nights' => 4,
+                'pricing_portal_reference_guests' => 5,
             ])
             ->assertRedirect();
 
@@ -51,6 +53,8 @@ class PricingSettingsTest extends TestCase
         $this->assertSame('0.16', Setting::get('pricing_commission_hometogo'));
         $this->assertSame('0.12', Setting::get('pricing_weekly_discount_percent'));
         $this->assertSame('0.22', Setting::get('pricing_monthly_discount_percent'));
+        $this->assertSame('4', Setting::get('pricing_portal_reference_nights'));
+        $this->assertSame('5', Setting::get('pricing_portal_reference_guests'));
     }
 
     public function test_updating_pricing_settings_rejects_out_of_range_values(): void
@@ -63,10 +67,31 @@ class PricingSettingsTest extends TestCase
                 'pricing_commission_hometogo' => 16,
                 'pricing_weekly_discount_percent' => 12,
                 'pricing_monthly_discount_percent' => 22,
+                'pricing_portal_reference_nights' => 3,
+                'pricing_portal_reference_guests' => 6,
             ])
             ->assertSessionHasErrors(['pricing_tax_rate']);
 
         $this->assertNull(Setting::get('pricing_tax_rate'));
+    }
+
+    public function test_updating_pricing_settings_rejects_non_positive_reference_values(): void
+    {
+        $this->actingAs($this->admin)
+            ->put(route('admin.settings.pricing.update'), [
+                'pricing_tax_rate' => 21,
+                'pricing_commission_airbnb' => 16,
+                'pricing_commission_booking' => 17,
+                'pricing_commission_hometogo' => 16,
+                'pricing_weekly_discount_percent' => 12,
+                'pricing_monthly_discount_percent' => 22,
+                'pricing_portal_reference_nights' => 0,
+                'pricing_portal_reference_guests' => -1,
+            ])
+            ->assertSessionHasErrors(['pricing_portal_reference_nights', 'pricing_portal_reference_guests']);
+
+        $this->assertNull(Setting::get('pricing_portal_reference_nights'));
+        $this->assertNull(Setting::get('pricing_portal_reference_guests'));
     }
 
     public function test_simulate_response_includes_tax_gross_up_discount_and_portal_fields(): void

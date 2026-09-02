@@ -77,6 +77,7 @@
         <h1 style="font-size:1.1rem;font-weight:700">Regole di prezzo</h1>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
             <a href="{{ route('admin.stay-discounts.index') }}" class="btn btn--outline">Formula prezzi</a>
+            <a href="{{ route('admin.pricing.portal-prices') }}" class="btn btn--outline">Prezzi portali</a>
             <a href="{{ route('admin.pricing.create') }}" class="btn btn--primary">+ Nuova regola</a>
         </div>
     </div>
