@@ -16,14 +16,14 @@
 
 ## 3. External feed parsing and synchronization
 
-- [ ] 3.1 Implement an iCalendar parser adapter for folded lines, all-day events, UTC events, timezone-aware events, UIDs, cancellation, and transparent transport.
-- [ ] 3.2 Normalize external event values to Europe/Rome day ranges, including the same-day timed-event rule and exclusive multi-day end date.
-- [ ] 3.3 Implement an HTTP feed client with bounded timeout, successful-response validation, and useful provider-scoped errors.
-- [ ] 3.4 Implement the provider synchronization service with syncing/success/error state transitions and independent provider execution.
-- [ ] 3.5 Replace a provider's current events atomically only after complete feed validation; preserve previous events on failures and clear them for a valid empty calendar.
-- [ ] 3.6 Add the Artisan synchronization command with optional single-provider selection and clear console results.
-- [ ] 3.7 Register the all-provider command in `routes/console.php` with a 15-minute schedule.
-- [ ] 3.8 Add unit and feature tests using representative Booking.com and Google Calendar fixtures for parsing, timezone conversion, filtering, idempotency, empty feeds, failures, and provider isolation.
+- [x] 3.1 Implement an iCalendar parser adapter for folded lines, all-day events, UTC events, timezone-aware events, UIDs, cancellation, and transparent transport.
+- [x] 3.2 Normalize external event values to Europe/Rome day ranges, including the same-day timed-event rule and exclusive multi-day end date.
+- [x] 3.3 Implement an HTTP feed client with bounded timeout, successful-response validation, and useful provider-scoped errors.
+- [x] 3.4 Implement the provider synchronization service with syncing/success/error state transitions and independent provider execution.
+- [x] 3.5 Replace a provider's current events atomically only after complete feed validation; preserve previous events on failures and clear them for a valid empty calendar.
+- [x] 3.6 Add the Artisan synchronization command with optional single-provider selection and clear console results.
+- [x] 3.7 Register the all-provider command in `routes/console.php` with a 15-minute schedule.
+- [x] 3.8 Add unit and feature tests using representative Booking.com and Google Calendar fixtures for parsing, timezone conversion, filtering, idempotency, empty feeds, failures, and provider isolation.
 
 ## 4. Admin provider settings
 
