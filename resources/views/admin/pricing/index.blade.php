@@ -51,6 +51,23 @@
             <p style="font-size:.85rem;color:#6b7f89;margin-bottom:.35rem">Dettaglio simulazione (Ammortamento Lineare)</p>
             <p id="pricing-sim-summary" style="font-weight:600;margin-bottom:.4rem">—</p>
             <p id="pricing-sim-breakdown" style="font-size:.9rem;color:#374151">—</p>
+            <p id="pricing-sim-discount" style="font-size:.85rem;color:#166534;margin-top:.4rem"></p>
+            <p id="pricing-sim-tax" style="font-size:.85rem;color:#374151;margin-top:.2rem"></p>
+
+            <div id="pricing-sim-portals" style="margin-top:.75rem;display:none;grid-template-columns:repeat(3, 1fr);gap:.6rem">
+                <div class="a-card" style="padding:.6rem .75rem;margin:0">
+                    <div style="font-size:.75rem;color:#6b7f89;font-weight:600">Airbnb</div>
+                    <div id="pricing-sim-portal-airbnb" style="font-size:.85rem;color:#374151">—</div>
+                </div>
+                <div class="a-card" style="padding:.6rem .75rem;margin:0">
+                    <div style="font-size:.75rem;color:#6b7f89;font-weight:600">Booking.com</div>
+                    <div id="pricing-sim-portal-booking" style="font-size:.85rem;color:#374151">—</div>
+                </div>
+                <div class="a-card" style="padding:.6rem .75rem;margin:0">
+                    <div style="font-size:.75rem;color:#6b7f89;font-weight:600">HomeToGo</div>
+                    <div id="pricing-sim-portal-hometogo" style="font-size:.85rem;color:#374151">—</div>
+                </div>
+            </div>
         </div>
 
         <p id="pricing-sim-error" style="margin-top:.75rem;font-size:.85rem;color:#991b1b;display:none"></p>

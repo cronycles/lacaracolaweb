@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
+use App\Services\OtaPortalPricingService;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -90,7 +91,7 @@ class PricingController extends Controller
         return redirect()->route('admin.pricing.index')->with('success', "Prezzi {$verb} in bulk di {$amount}€ per notte su tutte le regole.");
     }
 
-    public function simulate(Request $request, PricingQuoteService $pricingQuoteService): JsonResponse
+    public function simulate(Request $request, PricingQuoteService $pricingQuoteService, OtaPortalPricingService $otaPortalPricingService): JsonResponse
     {
         $data = $request->validate([
             'checkin'  => ['required', 'date'],
@@ -135,12 +136,17 @@ class PricingController extends Controller
             'nights' => $quote['nights'],
             'guests' => $quote['guests'],
             'stay_cents' => $quote['stay_cents'],
+            'stay_gross_cents' => $quote['stay_gross_cents'],
+            'stay_discount_cents' => $quote['stay_discount_cents'],
+            'length_discount_rate' => $quote['length_discount_rate'],
+            'tax_gross_up_cents' => $quote['tax_gross_up_cents'],
             'cleaning_cents' => $quote['cleaning_cents'],
             'linen_cents' => $quote['linen_cents'],
             'parking_requested' => $quote['parking_requested'],
             'parking_cents' => $quote['parking_cents'],
             'total_cents' => $quote['total_cents'],
             'avg_per_night_cents' => $quote['avg_per_night_cents'],
+            'portals' => $otaPortalPricingService->suggest($quote['total_cents'], $quote['nights']),
         ]);
     }
 

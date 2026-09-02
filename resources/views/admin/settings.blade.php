@@ -75,6 +75,98 @@
             </form>
         </div>
 
+        {{-- Fiscalità e prezzi card --}}
+        <div class="a-card" style="margin-top:1.5rem">
+            <div class="a-card__title">Fiscalità e prezzi</div>
+
+            <p style="font-size:.875rem;color:#6b7f89;margin-bottom:1.25rem">
+                Aliquota fiscale sui costi accessori, commissioni dei portali e sconti soggiorno
+                applicati al prezzo reale delle prenotazioni dirette.
+            </p>
+
+            <form method="POST" action="{{ route('admin.settings.pricing.update') }}">
+                @csrf
+                @method('PUT')
+
+                <div class="form-group">
+                    <label class="form-label" for="pricing_tax_rate">Aliquota fiscale (%)</label>
+                    <input type="number" id="pricing_tax_rate" name="pricing_tax_rate" class="form-input"
+                           min="0" max="100" step="0.01"
+                           value="{{ old('pricing_tax_rate', $pricingSettings['tax_rate'] * 100) }}">
+                    @error('pricing_tax_rate')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Costi soggetti a maggiorazione fiscale</label>
+                    @php($grossUpItems = old('pricing_tax_gross_up_items', $pricingSettings['tax_gross_up_items']))
+                    <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;margin-bottom:.35rem">
+                        <input type="checkbox" name="pricing_tax_gross_up_items[]" value="cleaning" {{ in_array('cleaning', $grossUpItems, true) ? 'checked' : '' }}>
+                        Pulizie
+                    </label>
+                    <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;margin-bottom:.35rem">
+                        <input type="checkbox" name="pricing_tax_gross_up_items[]" value="linen" {{ in_array('linen', $grossUpItems, true) ? 'checked' : '' }}>
+                        Biancheria
+                    </label>
+                    <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem">
+                        <input type="checkbox" name="pricing_tax_gross_up_items[]" value="parking" {{ in_array('parking', $grossUpItems, true) ? 'checked' : '' }}>
+                        Parcheggio
+                    </label>
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Il parcheggio è pagato in loco in contanti: questa casella non ha ancora effetto sul totale.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Commissioni portali (%)</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+                        <div>
+                            <label class="form-label" for="pricing_commission_airbnb" style="font-size:.8rem">Airbnb</label>
+                            <input type="number" id="pricing_commission_airbnb" name="pricing_commission_airbnb" class="form-input"
+                                   min="0" max="100" step="0.01"
+                                   value="{{ old('pricing_commission_airbnb', $pricingSettings['commission_airbnb'] * 100) }}">
+                        </div>
+                        <div>
+                            <label class="form-label" for="pricing_commission_booking" style="font-size:.8rem">Booking.com</label>
+                            <input type="number" id="pricing_commission_booking" name="pricing_commission_booking" class="form-input"
+                                   min="0" max="100" step="0.01"
+                                   value="{{ old('pricing_commission_booking', $pricingSettings['commission_booking'] * 100) }}">
+                        </div>
+                        <div>
+                            <label class="form-label" for="pricing_commission_hometogo" style="font-size:.8rem">HomeToGo</label>
+                            <input type="number" id="pricing_commission_hometogo" name="pricing_commission_hometogo" class="form-input"
+                                   min="0" max="100" step="0.01"
+                                   value="{{ old('pricing_commission_hometogo', $pricingSettings['commission_hometogo'] * 100) }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sconto soggiorno (%)</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                        <div>
+                            <label class="form-label" for="pricing_weekly_discount_percent" style="font-size:.8rem">Settimanale (7+ notti)</label>
+                            <input type="number" id="pricing_weekly_discount_percent" name="pricing_weekly_discount_percent" class="form-input"
+                                   min="0" max="100" step="0.01"
+                                   value="{{ old('pricing_weekly_discount_percent', $pricingSettings['weekly_discount_percent'] * 100) }}">
+                        </div>
+                        <div>
+                            <label class="form-label" for="pricing_monthly_discount_percent" style="font-size:.8rem">Mensile (28+ notti)</label>
+                            <input type="number" id="pricing_monthly_discount_percent" name="pricing_monthly_discount_percent" class="form-input"
+                                   min="0" max="100" step="0.01"
+                                   value="{{ old('pricing_monthly_discount_percent', $pricingSettings['monthly_discount_percent'] * 100) }}">
+                        </div>
+                    </div>
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Lo sconto mensile sostituisce, non si somma, a quello settimanale.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn--primary">Salva fiscalità e prezzi</button>
+            </form>
+        </div>
+
         <div style="margin-top:1.5rem">
             <h2 style="font-size:1.1rem;margin:0 0 .75rem">Calendari esterni</h2>
 

@@ -1,15 +1,26 @@
 import { createDateRangePicker } from './date-picker';
 
+interface PortalSuggestion {
+    total_cents: number;
+    avg_per_night_cents: number;
+    commission_rate: number;
+}
+
 interface SimulationResponse {
     available: boolean;
     nights?: number;
     guests?: number;
     stay_cents?: number;
+    stay_gross_cents?: number;
+    stay_discount_cents?: number;
+    length_discount_rate?: number;
+    tax_gross_up_cents?: number;
     cleaning_cents?: number;
     linen_cents?: number;
     total_cents?: number;
     parking_cents?: number;
     avg_per_night_cents?: number;
+    portals?: Record<string, PortalSuggestion>;
     message?: string;
 }
 
@@ -22,9 +33,12 @@ export function initPricingSimulator(): void {
     const resultBox = document.querySelector<HTMLElement>('#pricing-sim-result');
     const summaryEl = document.querySelector<HTMLElement>('#pricing-sim-summary');
     const breakdownEl = document.querySelector<HTMLElement>('#pricing-sim-breakdown');
+    const discountEl = document.querySelector<HTMLElement>('#pricing-sim-discount');
+    const taxEl = document.querySelector<HTMLElement>('#pricing-sim-tax');
+    const portalsBox = document.querySelector<HTMLElement>('#pricing-sim-portals');
     const errorEl = document.querySelector<HTMLElement>('#pricing-sim-error');
 
-    if (!checkinInput || !checkoutInput || !resultBox || !summaryEl || !breakdownEl || !errorEl) {
+    if (!checkinInput || !checkoutInput || !resultBox || !summaryEl || !breakdownEl || !discountEl || !taxEl || !portalsBox || !errorEl) {
         return;
     }
 
@@ -92,10 +106,36 @@ export function initPricingSimulator(): void {
                 const parking      = data.parking_cents ?? 0;
                 const avgPerNight  = data.avg_per_night_cents ?? 0;
                 const total        = data.total_cents ?? 0;
+                const stayDiscount = data.stay_discount_cents ?? 0;
+                const lengthDiscountRate = data.length_discount_rate ?? 0;
+                const taxGrossUp   = data.tax_gross_up_cents ?? 0;
 
                 summaryEl.textContent = `${nights} notti · ${guests} ospiti · Totale casa ${formatCurrency(total)} · Media ${formatCurrency(avgPerNight)}/notte`;
                 const parkingDetail = parking > 0 ? ` · Parcheggio ${formatCurrency(parking)} da pagare in loco` : '';
                 breakdownEl.textContent = `Soggiorno ${formatCurrency(stay)} · Pulizie ${formatCurrency(cleaning)} · Biancheria ${formatCurrency(linen)}${parkingDetail}`;
+
+                discountEl.textContent = stayDiscount > 0
+                    ? `Sconto soggiorno (${(lengthDiscountRate * 100).toFixed(0)}%): −${formatCurrency(stayDiscount)}`
+                    : '';
+
+                taxEl.textContent = taxGrossUp > 0
+                    ? `Maggiorazione fiscale su costi accessori: +${formatCurrency(taxGrossUp)}`
+                    : '';
+
+                const portals = data.portals;
+                if (portals) {
+                    const portalLabels: Record<string, string> = { airbnb: 'airbnb', booking: 'booking', hometogo: 'hometogo' };
+                    (Object.keys(portalLabels) as Array<keyof typeof portalLabels>).forEach((key) => {
+                        const portalEl = document.querySelector<HTMLElement>(`#pricing-sim-portal-${key}`);
+                        const portal = portals[key];
+                        if (portalEl && portal) {
+                            portalEl.textContent = `${formatCurrency(portal.total_cents)} · ${formatCurrency(portal.avg_per_night_cents)}/notte (comm. ${(portal.commission_rate * 100).toFixed(1)}%)`;
+                        }
+                    });
+                    portalsBox.style.display = 'grid';
+                } else {
+                    portalsBox.style.display = 'none';
+                }
 
                 resultBox.style.display = 'block';
             })

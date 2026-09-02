@@ -150,11 +150,11 @@ repeats the stay contact, house address with map links, cancellation deadline, a
 - Availability management (manual blocks and calendar visibility).
 - Recurring pricing rule management (month/day). Optional `year` override on a rule makes it apply only to that specific year (and take priority over recurring rules), used for movable holidays (Easter/Pentecost) whose dates shift annually.
 - Easter's date/window is kept in sync automatically (`pricing:sync-easter`, scheduled yearly). Pentecost/Pfingstferien pricing must be reviewed manually every year (German school holiday dates aren't a fixed offset from Easter).
-- `admin/sconti-soggiorno` is a read-only informational page explaining the linear amortisation formula and fixed costs. No editable discount rules.
+- `admin/sconti-soggiorno` is a read-only informational page explaining the linear amortisation formula, the weekly/monthly stay-length discount and the tax gross-up. The weekly (7+ nights) and monthly (28+ nights) discount percentages, the tax rate on accessory costs, and the 3 OTA portal commission rates are configured from Settings ("Fiscalità e prezzi"); this page itself still only renders static documentation, not editable rules.
 - Price simulation in pricing page:
     - uses the same engine as public quote,
     - accepts date range + guest count,
-    - shows full breakdown (stay subtotal, cleaning, linen, total, avg/night),
+    - shows full breakdown (stay subtotal, stay-length discount, cleaning, linen, tax gross-up, total, avg/night) plus suggested Airbnb/Booking.com/HomeToGo listing prices,
     - updates automatically when dates or guest count change.
 - Booking management:
     - reversible logical cancellation via `canceled_at`,

@@ -189,17 +189,17 @@ class BookingLegalConsentTest extends TestCase
 
         $bookingRequest = BookingRequest::first();
 
-        // 5 nights × 100€ = 500€ stay + config cleaning/linen fees.
+        // 5 nights × 100€ = 500€ stay (no length discount below 7 nights) + config cleaning/linen
+        // fees, plus the default 21% tax gross-up on cleaning+linen (150€ × 0.21 = 31.50€), folded
+        // into the stay portion and rounded to the nearest €5: 500 + 31.50 = 531.50 → stay absorbs
+        // the -1.50€ rounding delta down to 680.00€ total, i.e. 530.00€ stay.
         $cleaningFee = (float) config('apartment.booking.cleaning_fee', 0);
         $linenFee = ((float) config('apartment.booking.linen_fee_per_person', 0)) * 2;
 
-        $this->assertSame('500.00', $bookingRequest->estimated_stay_amount);
+        $this->assertSame('530.00', $bookingRequest->estimated_stay_amount);
         $this->assertSame(number_format($cleaningFee, 2, '.', ''), $bookingRequest->estimated_cleaning_amount);
         $this->assertSame(number_format($linenFee, 2, '.', ''), $bookingRequest->estimated_linen_amount);
-        $this->assertSame(
-            number_format(500 + $cleaningFee + $linenFee, 2, '.', ''),
-            $bookingRequest->estimated_total_amount
-        );
+        $this->assertSame('680.00', $bookingRequest->estimated_total_amount);
     }
 
     public function test_successful_request_adds_the_requested_parking_to_the_server_computed_estimate(): void
@@ -226,9 +226,7 @@ class BookingLegalConsentTest extends TestCase
 
         $this->assertTrue($bookingRequest->parking_requested);
         $this->assertSame(number_format($parkingAmount, 2, '.', ''), $bookingRequest->estimated_parking_amount);
-        $this->assertSame(
-            number_format(500 + (float) config('apartment.booking.cleaning_fee', 0) + 50, 2, '.', ''),
-            $bookingRequest->estimated_total_amount
-        );
+        // Parking is never part of the taxed/total amount (paid locally in cash).
+        $this->assertSame('680.00', $bookingRequest->estimated_total_amount);
     }
 }

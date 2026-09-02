@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\PricingRule;
+use App\Models\Setting;
+use App\Services\Concerns\ResolvesLengthDiscountRate;
 use Carbon\Carbon;
 
 class PricingQuoteService
 {
+    use ResolvesLengthDiscountRate;
+
     /**
-     * Calculate the full price breakdown for a stay using the linear amortisation model.
+     * Calculate the full price breakdown for a stay using the linear amortisation model, plus the
+     * weekly/monthly stay-length discount and the tax gross-up on accessory costs.
      *
-     * Formula: Total = fixed_costs + sum(nightly_rate per night)
+     * Formula: Total = fixed_costs + sum(nightly_rate per night), discounted and tax-grossed-up
      *   fixed_costs = cleaning_fee + (linen_fee_per_person × guests)
      *   avg_per_night = total / nights
      *
-        * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: int|null, stay_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
+     * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: int|null, stay_cents: int|null, stay_gross_cents: int|null, stay_discount_cents: int|null, length_discount_rate: float|null, tax_gross_up_cents: int|null, cleaning_cents: int|null, linen_cents: int|null, total_cents: int|null, avg_per_night_cents: int|null}
      */
     public function calculate(string $checkin, string $checkout, int $guests = 1, bool $parkingRequested = false): array
     {
@@ -34,7 +39,7 @@ class PricingQuoteService
 
         $rules = PricingRule::query()->get();
 
-        $stayCents = 0;
+        $stayGrossCents = 0;
         $cursor = $checkinDate->copy();
 
         while ($cursor->lt($checkoutDate)) {
@@ -51,7 +56,7 @@ class PricingQuoteService
                 return $this->unavailable($nights, $guests, $parkingRequested);
             }
 
-            $stayCents += (int) $ruleForNight->price_per_night;
+            $stayGrossCents += (int) $ruleForNight->price_per_night;
             $cursor->addDay();
         }
 
@@ -63,7 +68,28 @@ class PricingQuoteService
             ? ((int) config('apartment.booking.parking_fee_per_day', 0)) * 100 * $nights
             : 0;
 
+        $lengthDiscountRate = $this->lengthDiscountRateForNights($nights);
+        $stayDiscountCents = (int) round($stayGrossCents * $lengthDiscountRate);
+        $discountedStayCents = $stayGrossCents - $stayDiscountCents;
+
+        $taxRate = $this->resolveTaxRate();
+        $taxGrossUpItems = $this->resolveTaxGrossUpItems();
+        // Only cleaning/linen actually contribute to total_cents today; parking is collected locally.
+        $taxableCents = 0;
+        if (in_array('cleaning', $taxGrossUpItems, true)) {
+            $taxableCents += $cleaningCents;
+        }
+        if (in_array('linen', $taxGrossUpItems, true)) {
+            $taxableCents += $linenCents;
+        }
+        $taxGrossUpCents = (int) round($taxableCents * $taxRate);
+
         // The house price is payable by bank transfer; parking is collected locally.
+        $rawTotalCents = $discountedStayCents + $taxGrossUpCents + $cleaningCents + $linenCents;
+        $roundedTotalCents = (int) round($rawTotalCents / 500) * 500;
+        $roundingAdjustmentCents = $roundedTotalCents - $rawTotalCents;
+
+        $stayCents = $discountedStayCents + $taxGrossUpCents + $roundingAdjustmentCents;
         $totalCents = $stayCents + $cleaningCents + $linenCents;
         $avgPerNightCents = $nights > 0 ? (int) round($totalCents / $nights) : 0;
 
@@ -74,6 +100,10 @@ class PricingQuoteService
             'parking_requested' => $parkingRequested,
             'parking_cents' => $parkingCents,
             'stay_cents' => $stayCents,
+            'stay_gross_cents' => $stayGrossCents,
+            'stay_discount_cents' => $stayDiscountCents,
+            'length_discount_rate' => $lengthDiscountRate,
+            'tax_gross_up_cents' => $taxGrossUpCents,
             'cleaning_cents' => $cleaningCents,
             'linen_cents' => $linenCents,
             'total_cents' => $totalCents,
@@ -82,7 +112,7 @@ class PricingQuoteService
     }
 
     /**
-    * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: null, stay_cents: null, cleaning_cents: null, linen_cents: null, total_cents: null, avg_per_night_cents: null}
+     * @return array{available: bool, nights: int, guests: int, parking_requested: bool, parking_cents: null, stay_cents: null, stay_gross_cents: null, stay_discount_cents: null, length_discount_rate: null, tax_gross_up_cents: null, cleaning_cents: null, linen_cents: null, total_cents: null, avg_per_night_cents: null}
      */
     private function unavailable(int $nights, int $guests, bool $parkingRequested = false): array
     {
@@ -93,11 +123,29 @@ class PricingQuoteService
             'parking_requested' => $parkingRequested,
             'parking_cents' => null,
             'stay_cents' => null,
+            'stay_gross_cents' => null,
+            'stay_discount_cents' => null,
+            'length_discount_rate' => null,
+            'tax_gross_up_cents' => null,
             'cleaning_cents' => null,
             'linen_cents' => null,
             'total_cents' => null,
             'avg_per_night_cents' => null,
         ];
+    }
+
+    private function resolveTaxRate(): float
+    {
+        return (float) Setting::get('pricing_tax_rate', '0.21');
+    }
+
+    /** @return list<string> */
+    private function resolveTaxGrossUpItems(): array
+    {
+        $raw = Setting::get('pricing_tax_gross_up_items', '["cleaning","linen"]');
+        $decoded = json_decode((string) $raw, true);
+
+        return is_array($decoded) ? array_values($decoded) : ['cleaning', 'linen'];
     }
 
     /** Year-specific overrides only match their exact year; recurring rules (year=null) match every year. */

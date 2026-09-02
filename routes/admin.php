@@ -163,6 +163,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::middleware('permission:manage_settings')->group(function () {
         Route::get('/impostazioni', [SettingsController::class, 'index'])->name('settings');
         Route::put('/impostazioni', [SettingsController::class, 'update'])->name('settings.update');
+        Route::put('/impostazioni/prezzi', [SettingsController::class, 'updatePricing'])->name('settings.pricing.update');
         Route::put('/impostazioni/calendari-esterni/{provider}', [SettingsController::class, 'updateCalendarProvider'])->name('settings.calendar-providers.update');
         Route::post('/impostazioni/calendari-esterni/{provider}/sincronizza', [SettingsController::class, 'syncCalendarProvider'])->name('settings.calendar-providers.sync');
     });

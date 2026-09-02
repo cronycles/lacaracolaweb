@@ -19,6 +19,17 @@ use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
+    /** Defaults documented in openspec/changes/tax-gross-up-pricing/design.md, Decision 1. */
+    private const PRICING_SETTING_DEFAULTS = [
+        'pricing_tax_rate' => '0.21',
+        'pricing_tax_gross_up_items' => '["cleaning","linen"]',
+        'pricing_commission_airbnb' => '0.155',
+        'pricing_commission_booking' => '0.165',
+        'pricing_commission_hometogo' => '0.155',
+        'pricing_weekly_discount_percent' => '0.10',
+        'pricing_monthly_discount_percent' => '0.20',
+    ];
+
     /** Show the settings page. */
     public function index(): View
     {
@@ -28,6 +39,7 @@ class SettingsController extends Controller
             'bookingMode' => Setting::get('booking_mode', 'form'),
             'bookingExternalUrl' => Setting::get('booking_external_url', ''),
             'calendarProviders' => $this->calendarProviders(),
+            'pricingSettings' => $this->pricingSettings(),
         ]);
     }
 
@@ -50,6 +62,47 @@ class SettingsController extends Controller
         Setting::set('booking_external_url', $data['booking_external_url'] ?? '');
 
         return back()->with('success', 'Impostazioni salvate con successo.');
+    }
+
+    /** Persist tax/portal-commission/length-discount pricing settings. */
+    public function updatePricing(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'pricing_tax_rate' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_tax_gross_up_items' => ['array'],
+            'pricing_tax_gross_up_items.*' => [Rule::in(['cleaning', 'linen', 'parking'])],
+            'pricing_commission_airbnb' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_commission_booking' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_commission_hometogo' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_weekly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
+            'pricing_monthly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        Setting::set('pricing_tax_rate', (string) ($data['pricing_tax_rate'] / 100));
+        Setting::set('pricing_tax_gross_up_items', json_encode(array_values($data['pricing_tax_gross_up_items'] ?? [])));
+        Setting::set('pricing_commission_airbnb', (string) ($data['pricing_commission_airbnb'] / 100));
+        Setting::set('pricing_commission_booking', (string) ($data['pricing_commission_booking'] / 100));
+        Setting::set('pricing_commission_hometogo', (string) ($data['pricing_commission_hometogo'] / 100));
+        Setting::set('pricing_weekly_discount_percent', (string) ($data['pricing_weekly_discount_percent'] / 100));
+        Setting::set('pricing_monthly_discount_percent', (string) ($data['pricing_monthly_discount_percent'] / 100));
+
+        return back()->with('success', 'Impostazioni di fiscalità e prezzi salvate.');
+    }
+
+    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float} */
+    private function pricingSettings(): array
+    {
+        $items = json_decode((string) Setting::get('pricing_tax_gross_up_items', self::PRICING_SETTING_DEFAULTS['pricing_tax_gross_up_items']), true);
+
+        return [
+            'tax_rate' => (float) Setting::get('pricing_tax_rate', self::PRICING_SETTING_DEFAULTS['pricing_tax_rate']),
+            'tax_gross_up_items' => is_array($items) ? array_values($items) : ['cleaning', 'linen'],
+            'commission_airbnb' => (float) Setting::get('pricing_commission_airbnb', self::PRICING_SETTING_DEFAULTS['pricing_commission_airbnb']),
+            'commission_booking' => (float) Setting::get('pricing_commission_booking', self::PRICING_SETTING_DEFAULTS['pricing_commission_booking']),
+            'commission_hometogo' => (float) Setting::get('pricing_commission_hometogo', self::PRICING_SETTING_DEFAULTS['pricing_commission_hometogo']),
+            'weekly_discount_percent' => (float) Setting::get('pricing_weekly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_weekly_discount_percent']),
+            'monthly_discount_percent' => (float) Setting::get('pricing_monthly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_monthly_discount_percent']),
+        ];
     }
 
     public function updateCalendarProvider(Request $request, ExternalCalendarProvider $provider): RedirectResponse
