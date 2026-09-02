@@ -41,7 +41,6 @@
 ## 3. Admin controller & route
 
 - [ ] 3.1 Add a `portalPrices(): View` action to `Admin\PricingController`
-  (or a new `Admin\OtaPortalPriceController` if preferred for separation)
   fetching all `PricingRule`s (same ordering as `index()`) and, for each,
   the output of `OtaPortalNightlyRateService::ratesFor()`.
 - [ ] 3.2 Add route `GET admin/prezzi-portali` → `admin.pricing.portal-prices`

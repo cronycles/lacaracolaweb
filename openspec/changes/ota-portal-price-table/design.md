@@ -18,10 +18,11 @@ portals (available on some of them): cleaning + linen must be invisibly folded
 into the nightly rate, exactly like the direct site's `stay_cents` already
 does. This creates the core technical constraint this design solves: a single
 static nightly rate cannot literally track a real per-guest cost (linen scales
-with guest count), so a fixed reference guest count must be chosen once, and it
-must be conservative enough that the resulting rate can never end up cheaper
-than what an equivalent-length direct booking would cost, for any real guest
-count 1–6 (the apartment's bed capacity, `config('apartment.specs.beds')`).
+with guest count), so a reference guest count must be chosen (see Decision 2),
+defaulting to a value conservative enough that the resulting rate can never
+end up cheaper than what an equivalent-length direct booking would cost, for
+any real guest count 1–6 (the apartment's bed capacity,
+`config('apartment.specs.beds')`).
 
 ## Goals / Non-Goals
 
@@ -33,8 +34,11 @@ count 1–6 (the apartment's bed capacity, `config('apartment.specs.beds')`).
   stay would cost via the direct site, for any guest count up to the
   apartment's bed capacity — a hard requirement confirmed by the owner, not a
   "usually true" heuristic.
-- Make the table fast to use once a year: no manual per-period computation, no
-  extra settings beyond what `tax-gross-up-pricing` already introduced.
+- Make the table fast to use once a year: no manual per-period computation.
+  The 2 new settings this feature needs (reference nights/guests) follow the
+  exact same editable-`Setting`-with-fallback-default pattern already used by
+  every `pricing_*` setting from `tax-gross-up-pricing`, so nothing needs
+  configuring out of the box.
 
 **Non-Goals:**
 - Do not expose a separate portal "cleaning fee" input/column — deliberately
@@ -148,6 +152,13 @@ for one real/simulated stay (guest count baked in by the caller). This new
 `PricingRule` row) and internally fixes both reference nights and guests —
 different inputs/purpose, so a separate, small service is clearer than
 overloading the existing one with two calling conventions.
+
+### 4b. New action on the existing `Admin\PricingController`, not a new controller
+The new `portalPrices()` action is added to `Admin\PricingController`
+(already houses `index`/`create`/`store`/`edit`/`update`/`destroy`/
+`bulkAdjust`/`simulate` — all pricing-related admin actions), rather than a
+new dedicated controller, to keep every pricing-admin action in one place,
+consistent with the existing file.
 
 ### 5. New dedicated read-only admin page, not new columns on `admin/prezzi`
 The owner asked for "una tabella a parte" — a separate table, not a wider

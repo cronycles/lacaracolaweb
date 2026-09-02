@@ -69,8 +69,8 @@ apply; this change only adds a new, separate capability._
   weekly/monthly discount trait and commission/tax-rate settings already
   introduced by `tax-gross-up-pricing`, applying the discount to the
   reference stay since reference nights is now settings-editable).
-- `app/Http/Controllers/Admin/PricingController.php` (or a new controller) —
-  new read-only action listing `PricingRule`s with computed portal columns.
+- `app/Http/Controllers/Admin/PricingController.php` — new `portalPrices()`
+  read-only action listing `PricingRule`s with computed portal columns.
 - `resources/views/admin/pricing/portal-prices.blade.php` (new view).
 - `routes/admin.php` — new `GET admin/prezzi-portali` route under the existing
   `manage_pricing` permission group.

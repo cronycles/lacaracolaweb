@@ -25,8 +25,9 @@ and HomeToGo, without requiring any separate data entry from the existing
 ### Requirement: Blended nightly rate calculation
 For each `PricingRule`, the system SHALL compute a suggested nightly rate per
 portal that folds cleaning fee, linen fee and the tax gross-up into a single
-number, using a fixed reference stay length and a fixed reference guest count,
-without exposing separate cost line items.
+number, using a reference stay length and reference guest count (both
+editable via Settings, defaulting to the apartment's minimum stay and bed
+capacity), without exposing separate cost line items.
 
 #### Scenario: Reference stay length defaults to the configured minimum nights
 - **WHEN** computing the suggested nightly rate for a pricing rule and no
