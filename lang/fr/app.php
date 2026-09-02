@@ -63,6 +63,7 @@ return [
     'booking_price_title'   => 'Estimation du prix',
     'booking_price_loading' => 'Calcul du prix en cours…',
     'booking_price_unavailable' => 'Prix non disponible pour toutes les nuits sélectionnées.',
+    'booking_dates_unavailable' => 'Les dates sélectionnées ne sont pas disponibles.',
     'booking_price_stay'    => 'Séjour',
     'booking_price_discount' => 'Remise séjour',
     'booking_price_cleaning' => 'Ménage',

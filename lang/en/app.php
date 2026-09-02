@@ -63,6 +63,7 @@ return [
     'booking_price_title'   => 'Price estimate',
     'booking_price_loading' => 'Calculating price…',
     'booking_price_unavailable' => 'Price unavailable for all selected nights.',
+    'booking_dates_unavailable' => 'The selected dates are not available.',
     'booking_price_stay'    => 'Stay',
     'booking_price_discount' => 'Stay discount',
     'booking_price_cleaning' => 'Cleaning',

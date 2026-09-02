@@ -35,10 +35,10 @@
 
 ## 5. Availability integration
 
-- [ ] 5.1 Extend the shared public availability query/service to include enabled providers with at least one successful synchronization.
-- [ ] 5.2 Apply half-open day-range overlap rules and same-day external blocks consistently with existing bookings and manual blocks.
-- [ ] 5.3 Recheck external conflicts in the availability-request submission path before persisting a request or pending block.
-- [ ] 5.4 Add tests proving quote rejection, request rejection, checkout-day availability, disabled-provider exclusion, and never-synchronized-provider exclusion.
+- [x] 5.1 Extend the shared public availability query/service to include enabled providers with at least one successful synchronization.
+- [x] 5.2 Apply half-open day-range overlap rules and same-day external blocks consistently with existing bookings and manual blocks.
+- [x] 5.3 Recheck external conflicts in the availability-request submission path before persisting a request or pending block.
+- [x] 5.4 Add tests proving quote rejection, request rejection, checkout-day availability, disabled-provider exclusion, and never-synchronized-provider exclusion.
 
 ## 6. Admin calendar presentation
 

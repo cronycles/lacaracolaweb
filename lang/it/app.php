@@ -67,6 +67,7 @@ return [
     'booking_price_title'   => 'Stima prezzo',
     'booking_price_loading' => 'Calcolo prezzo in corso…',
     'booking_price_unavailable' => 'Prezzo non disponibile per tutte le notti selezionate.',
+    'booking_dates_unavailable' => 'Le date selezionate non sono disponibili.',
     'booking_price_stay'    => 'Soggiorno',
     'booking_price_discount' => 'Sconto soggiorno',
     'booking_price_cleaning' => 'Pulizie',

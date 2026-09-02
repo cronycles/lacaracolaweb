@@ -63,6 +63,7 @@ return [
     'booking_price_title'   => 'Preisvorschau',
     'booking_price_loading' => 'Preis wird berechnet…',
     'booking_price_unavailable' => 'Preis nicht für alle ausgewählten Nächte verfügbar.',
+    'booking_dates_unavailable' => 'Die ausgewählten Daten sind nicht verfügbar.',
     'booking_price_stay'    => 'Aufenthalt',
     'booking_price_discount' => 'Aufenthaltsrabatt',
     'booking_price_cleaning' => 'Reinigung',

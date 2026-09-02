@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Country;
+use App\Models\ExternalCalendarEvent;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\View\View;
@@ -16,12 +17,12 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        $apartment          = config('apartment');
-        $bookingMode        = Setting::get('booking_mode', 'form');
+        $apartment = config('apartment');
+        $bookingMode = Setting::get('booking_mode', 'form');
         $bookingExternalUrl = Setting::get('booking_external_url', '');
         $unavailableDates = $this->unavailableDatesForPublicCalendar();
-        $countries        = Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray();
-        $countriesDial    = Country::whereNotNull('iso2')->whereNotNull('dial_code')->orderBy('name_it')->pluck('dial_code', 'iso2')->toArray();
+        $countries = Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray();
+        $countriesDial = Country::whereNotNull('iso2')->whereNotNull('dial_code')->orderBy('name_it')->pluck('dial_code', 'iso2')->toArray();
 
         return view('public.home', compact('apartment', 'bookingMode', 'bookingExternalUrl', 'unavailableDates', 'countries', 'countriesDial'));
     }
@@ -50,6 +51,12 @@ class HomeController extends Controller
         $pendingBlocks = AvailabilityBlock::query()
             ->whereNull('booking_id')
             ->whereNotNull('booking_request_id')
+            ->whereDate('start_date', '<=', $windowEnd->toDateString())
+            ->whereDate('end_date', '>', $today->toDateString())
+            ->get(['start_date', 'end_date']);
+
+        $externalEvents = ExternalCalendarEvent::query()
+            ->whereHas('provider', fn ($query) => $query->availableForAvailability())
             ->whereDate('start_date', '<=', $windowEnd->toDateString())
             ->whereDate('end_date', '>', $today->toDateString())
             ->get(['start_date', 'end_date']);
@@ -87,6 +94,20 @@ class HomeController extends Controller
         foreach ($pendingBlocks as $block) {
             $cursor = Carbon::parse($block->start_date)->startOfDay();
             $endDate = Carbon::parse($block->end_date)->startOfDay();
+
+            if ($cursor->lt($today)) {
+                $cursor = $today->copy();
+            }
+
+            while ($cursor->lt($endDate)) {
+                $dates[$cursor->format('Y-m-d')] = true;
+                $cursor->addDay();
+            }
+        }
+
+        foreach ($externalEvents as $event) {
+            $cursor = Carbon::parse($event->start_date)->startOfDay();
+            $endDate = Carbon::parse($event->end_date)->startOfDay();
 
             if ($cursor->lt($today)) {
                 $cursor = $today->copy();
