@@ -38,6 +38,14 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Thank-you, token-based, admin, and form-submission routes do not receive hreflang metadata.
 - When adding or removing a locale, update `config/routes.php` and all translated public slugs, then verify hreflang tests and the sitemap.
 
+## External iCalendar synchronization
+- Public export: `GET /api/calendar/export?t=TOKEN` returns a `text/calendar; charset=UTF-8` attachment when `t` constant-time matches `config('apartment.calendar.export_token')`; missing/invalid tokens return 403. It is token-based and must never enter the sitemap.
+- `IcalCalendarExportService` emits generic `VEVENT`s for active bookings, pending requests, and owner/maintenance blocks. UIDs are stable, dates use local configured check-in/check-out times converted to UTC, and the feed contains no guest or internal data.
+- `ExternalCalendarIcalParser` uses `sabre/vobject` for folded lines, DATE/DATE-TIME, UTC, and `TZID` values. It normalizes to Europe/Rome dates, ignores canceled/transparent entries, requires UID/DTSTART/DTEND, and blocks a same-day timed event for one day.
+- `ExternalCalendarFeedClient` downloads with `apartment.calendar.http_timeout`; `ExternalCalendarSyncService` independently synchronizes enabled providers and atomically replaces a provider's rows only after complete validation. HTTP/download/parsing failures preserve current events and save `sync_status=error` with `latest_error`; valid empty feeds clear them.
+- `calendar:sync-external [--provider=KEY]` is scheduled every 15 minutes in `routes/console.php`. The Settings manual action reuses the same service. Settings configuration and manual sync are explicitly restricted to `host_owner` and `super_admin`.
+- `AvailabilityService` is the shared public conflict authority: active bookings, pending blocks, owner/maintenance blocks, and enabled providers with `last_successful_sync_at` are checked with half-open intervals `[start, end)`. Quote and request submission both call it; the latter rejects before persistence.
+
 ## Public online check-in
 - `GET /check-in/{token}` renders the token-based guest form.
 - `POST /check-in/{token}/edit` explicitly invalidates a completed check-in and
@@ -137,6 +145,7 @@ Example: the tax-declaration flag defaults below used to live only in `BookingCo
 | `SendTelegramBookingReminders --type=checkin` | daily at `apartment.booking.checkin_time` | Arrival reminders |
 | `SendTelegramBookingReminders --type=checkout` | daily at `apartment.booking.checkout_time` | Departure reminders |
 | `SyncEasterPricingRule` (`pricing:sync-easter`) | yearly, Nov 1st 03:00 | Creates/updates next year's Easter pricing rule |
+| `SyncExternalCalendars` (`calendar:sync-external`) | every 15 minutes | Downloads and replaces valid enabled external iCalendar feeds |
 
 # Configuration and precedence
 - Source of truth booking defaults: `config/apartment.php`.
@@ -147,6 +156,7 @@ Example: the tax-declaration flag defaults below used to live only in `BookingCo
   - `booking_external_url`
 - Do not use `settings` for `min_nights`, `max_nights`, `cleaning_fee`, `linen_fee_per_person`, `hide_price_from`.
 - `PricingQuoteService::calculate()` signature: `(string $checkin, string $checkout, int $guests = 1, bool $parkingRequested = false)`. Returns `total_cents` as the house total (`stay + cleaning + linen`) and `parking_cents` separately. No discount logic.
+- `apartment.calendar` config contains `export_token`, `timezone`, `http_timeout`, and the fixed provider labels. `apartment.booking.checkin_time` and `checkout_time` define export event times.
 
 # Quick checklist before changing backend
 1. Confirm impacted endpoints/routes (`routes/web.php`, `routes/admin.php`).

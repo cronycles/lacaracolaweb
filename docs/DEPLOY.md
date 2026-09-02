@@ -138,6 +138,12 @@ ADMIN_PASSWORD=YOUR_ADMIN_PASSWORD
 # Telegram Bot (optional — omit if not using notifications)
 TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
 TELEGRAM_WEBHOOK_SECRET=YOUR_RANDOM_SECRET
+
+# External iCalendar synchronization
+# Generate a long random token; keep it secret because it grants read access to blocked dates.
+CALENDAR_EXPORT_TOKEN=YOUR_LONG_RANDOM_TOKEN
+CALENDAR_TIMEZONE=Europe/Rome
+CALENDAR_HTTP_TIMEOUT=10
 ```
 
 ## APP_KEY generation
@@ -210,7 +216,7 @@ php artisan db:seed --class=AdminUserSeeder --force
 ## Laravel Scheduler — cPanel Cron Job
 
 The Laravel scheduler must be triggered every minute by a system cron job.
-Without this, scheduled commands (including Telegram reminders) never run.
+Without this, scheduled commands (including Telegram reminders and the external calendar sync every 15 minutes) never run.
 
 In cPanel → **Cron Jobs**, add the following entry (every minute):
 
@@ -224,6 +230,13 @@ To verify the scheduler is working, run manually from the cPanel terminal:
 cd /home/lacaraco/lacaracola-app
 php artisan schedule:run --verbose
 ```
+
+### External iCalendar setup and operations
+
+1. Set `CALENDAR_EXPORT_TOKEN` in the production `.env` to a high-entropy secret and run `php artisan config:clear` after deployment. The public export URL is `https://lacaracolaandora.com/api/calendar/export?t=TOKEN`; it intentionally contains generic blocked dates only. Do not publish the URL or token.
+2. In Admin -> Impostazioni, paste the iCalendar URL for each desired provider and enable it. Use `Sincronizza` to verify the first import; the scheduled `calendar:sync-external` command then runs every 15 minutes through the existing every-minute cron.
+3. Investigate a Settings error before trusting new availability. The latest valid external events intentionally remain active after HTTP or parse failures to avoid double bookings. A provider's valid empty calendar is a successful synchronization and clears its retained events.
+4. For server diagnostics, run `php artisan calendar:sync-external --provider=airbnb` or `php artisan calendar:sync-external`; provider errors are printed to the console and stored as the latest provider error.
 
 ## SSL and HTTPS
 

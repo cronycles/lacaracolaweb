@@ -25,7 +25,9 @@ alwaysApply: true
 - Occupancy is computed from:
     - active bookings (not canceled),
   - manual blocks,
-  - pending availability requests (check-in inclusive, check-out exclusive).
+  - pending availability requests (check-in inclusive, check-out exclusive),
+  - enabled external calendars that have completed at least one successful sync.
+- External calendar blocks use check-in/start inclusive and checkout/end exclusive dates; a same-day timed external event blocks that single day. The server repeats this check immediately before creating an availability request to prevent a double booking after the calendar has loaded.
 - Public price estimate (linear amortisation model):
     - uses recurring month/day pricing rules to sum nightly rates,
     - adds fixed costs once per booking: cleaning fee + linen fee × guests,
@@ -143,6 +145,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
 - Guest-submitted reviews are never published automatically. The owner edits translations and activates visibility from the booking detail workflow.
 
 ## Admin flows
+- External calendars: `host_owner` and `super_admin` configure the four supported provider URLs (Airbnb, Booking.com, HomeToGo, Google Calendar) in Settings, enable/disable each feed, and may sync one provider immediately. The system syncs enabled feeds every 15 minutes. A failed provider retains its last valid blocks and displays the failure; a valid empty feed clears its blocks. External blocks are read-only, visibly distinct in the admin calendar, and never become local bookings.
 - Access via email/password.
 - Availability management (manual blocks and calendar visibility).
 - Recurring pricing rule management (month/day). Optional `year` override on a rule makes it apply only to that specific year (and take priority over recurring rules), used for movable holidays (Easter/Pentecost) whose dates shift annually.

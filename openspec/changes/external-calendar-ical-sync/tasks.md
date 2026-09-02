@@ -49,9 +49,11 @@
 
 ## 7. Documentation and deployment
 
-- [ ] 7.1 Update `docs/specific-data-model.md` with provider configuration/state and external event tables and relationships.
-- [ ] 7.2 Update `docs/specific-tech-backend-doc.mdc` with routes, services, authorization, availability behavior, parser rules, and scheduler registration.
-- [ ] 7.3 Update `docs/specific-tech-frontend-doc.mdc` with Settings controls and calendar visualization behavior.
-- [ ] 7.4 Update `docs/business-doc.mdc` with external calendar exchange and blocking rules.
-- [ ] 7.5 Update `docs/DEPLOY.md` with `CALENDAR_EXPORT_TOKEN`, the existing scheduler cron requirement, provider setup, and operational error handling.
-- [ ] 7.6 Run the focused test suite, static checks, and the full application test suite; record any pre-existing unrelated failures separately.
+- [x] 7.1 Update `docs/specific-data-model.md` with provider configuration/state and external event tables and relationships.
+- [x] 7.2 Update `docs/specific-tech-backend-doc.mdc` with routes, services, authorization, availability behavior, parser rules, and scheduler registration.
+- [x] 7.3 Update `docs/specific-tech-frontend-doc.mdc` with Settings controls and calendar visualization behavior.
+- [x] 7.4 Update `docs/business-doc.mdc` with external calendar exchange and blocking rules.
+- [x] 7.5 Update `docs/DEPLOY.md` with `CALENDAR_EXPORT_TOKEN`, the existing scheduler cron requirement, provider setup, and operational error handling.
+- [x] 7.6 Run the focused test suite, static checks, and the full application test suite; record any pre-existing unrelated failures separately.
+
+Validation completed: focused external-calendar tests, Pint on all external-calendar PHP files, `npm run build`, and `php artisan test` pass (139 tests, 579 assertions). Global Pint remains non-green for unrelated legacy files; global ESLint reports existing `navigator` references in `resources/ts/components/gallery.ts` and unused `burgerLines` variables in `resources/ts/components/mobile-nav.ts`.

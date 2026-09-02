@@ -8,7 +8,7 @@ Data model for La Caracola (single-property rental management).
 
 ## Quick map
 
-- Availability: `bookings` + `availability_blocks`
+- Availability: `bookings` + `availability_blocks` + eligible `external_calendar_events`
 - Pricing: `pricing_rules` + `stay_discount_rules`
 - Runtime DB settings: only `booking_mode`, `booking_external_url`
 - Config source of truth: `config/apartment.php`
@@ -292,6 +292,44 @@ Explicit date ranges when the apartment is unavailable (booked, maintenance, or 
 
 - N → 1 `bookings` (optional, can be created for manual blocks without booking)
 - N → 1 `booking_requests` (optional, for temporary pending blocks)
+
+---
+
+### 5b. **external_calendar_providers**
+
+Fixed iCalendar provider configuration and last synchronization state. The Settings page creates one record for each supported key: `airbnb`, `booking`, `hometogo`, and `google_calendar`.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `id` | BIGINT PK | Auto-increment |
+| `key` | VARCHAR, unique | Stable supported-provider key |
+| `url` | VARCHAR, nullable | Provider iCalendar URL |
+| `enabled` | BOOLEAN | Excludes retained events when false |
+| `sync_status` | VARCHAR(30) | `never_synced`, `syncing`, `success`, or `error` |
+| `last_sync_attempt_at` | TIMESTAMP, nullable | Latest sync start |
+| `last_successful_sync_at` | TIMESTAMP, nullable | Required before events affect availability |
+| `imported_event_count` | UNSIGNED INTEGER | Current-event count from the latest valid feed |
+| `latest_error` | TEXT, nullable | Latest HTTP/download/parse failure |
+
+Index: `(enabled, last_successful_sync_at)`.
+
+**Relations:** 1 -> N `external_calendar_events`.
+
+### 5c. **external_calendar_events**
+
+Current normalized blocks imported from one provider. No guest, summary, description, source reference, or event-history data is stored.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `id` | BIGINT PK | Auto-increment |
+| `external_calendar_provider_id` | BIGINT FK | References `external_calendar_providers.id`, cascade delete |
+| `external_uid` | VARCHAR | Provider VEVENT UID, used for diagnostics/idempotency |
+| `start_date` | DATE | Included local Europe/Rome day |
+| `end_date` | DATE | Excluded local Europe/Rome day |
+
+Unique key: `(external_calendar_provider_id, external_uid)`. Availability index: `(start_date, end_date)`.
+
+Provider events are replaced only after an entire feed validates. Failed feeds preserve the previous rows; a valid empty feed clears them.
 
 ---
 
@@ -583,6 +621,7 @@ people (1) ──→ (N) bookings
 bookings (N) ──→ (1) people
 bookings (1) ──→ (1) availability_blocks (optional)
 availability_blocks (N) ──→ (1) bookings (optional)
+external_calendar_providers (1) ──→ (N) external_calendar_events
 
 financial_entries (1) ──→ (N) financial_attachments (polymorphic)
 bookings (1) ──→ (N) financial_attachments (polymorphic)
@@ -618,3 +657,4 @@ guest_types: standalone lookup (seeded from tipo_alloggiato.csv)
 5. **Config vs settings precedence:**
     - `config/apartment.php` is the source of truth for booking defaults (`min_nights`, `cleaning_fee`, `hide_price_from`).
     - `settings` persists only `booking_mode` and `booking_external_url`.
+    - iCalendar token, timezone, timeout, and fixed provider list are stable values in `config/apartment.php`; provider URLs, enabled state, and sync status are operational DB data.

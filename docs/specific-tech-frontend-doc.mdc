@@ -278,6 +278,11 @@ multiple included guests, the first is type `18` and the others are type `20`.
   / `.badge--unpaid` (amber, new profile will be created) color classes — no new badge
   variants introduced.
 
+## Admin: external calendars
+- `resources/views/admin/settings.blade.php` shows fixed Airbnb, Booking.com, HomeToGo, and Google Calendar panels to `host_owner` and `super_admin` only. Each panel has iCalendar URL, enabled checkbox, manual sync button, status, attempt/success timestamps, current imported count, and last error.
+- `resources/views/admin/calendar.blade.php` loads eligible external events in the visible three-month window. Their day cells use `.cal-day--external`, a translucent teal striped treatment; the event list and native tooltip expose provider and normalized start/end dates. External rows are read-only and never render as local bookings or editable manual blocks.
+- The public date picker receives eligible external event dates in the existing `data-unavailable-dates` payload. Their range is start-inclusive/end-exclusive, including same-day timed imports normalized to one blocked day.
+
 ## Admin: booking navigation actions
 
 The admin sidebar keeps only the main `Prezzi` entry for pricing; stay discount
