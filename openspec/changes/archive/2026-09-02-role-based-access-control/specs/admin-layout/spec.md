@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Admin navigation sidebar
 The admin navigation sidebar SHALL conditionally show/hide links based on user permissions. Users without access to a feature SHALL NOT see the corresponding sidebar link.

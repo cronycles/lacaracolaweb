@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Dashboard displays financial summary
 The admin dashboard SHALL display financial totals (income, expenses, balance) for the current year. Host keeper users SHALL NOT see the accounting/financial section.

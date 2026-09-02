@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Booking visibility and editing
 Super admin users MAY create, edit, cancel, and restore bookings. Host keeper users SHALL only view bookings in read-only mode. The field `income_amount` SHALL NOT be visible to host keeper users **anywhere** (neither in the booking list nor in the booking detail). Only `cleaning_amount` and `linen_amount` are visible to host keeper.

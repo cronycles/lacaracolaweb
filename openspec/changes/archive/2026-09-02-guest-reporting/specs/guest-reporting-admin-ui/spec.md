@@ -99,3 +99,13 @@ No delete or retry actions. Read-only audit log.
 
 ### Requirement: Navigation entry
 The admin sidebar SHALL include an "Alloggiati" entry after "Prenotazioni", visible only to users with `manage_bookings`, linking to `admin.guest-reporting.index`.
+
+#### Scenario: Entry visible to authorized user
+- **GIVEN** a user with the `manage_bookings` permission
+- **WHEN** the admin sidebar is rendered
+- **THEN** an "Alloggiati" entry appears after "Prenotazioni", linking to `admin.guest-reporting.index`
+
+#### Scenario: Entry hidden from unauthorized user
+- **GIVEN** a user without the `manage_bookings` permission
+- **WHEN** the admin sidebar is rendered
+- **THEN** the "Alloggiati" entry is not shown

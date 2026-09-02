@@ -1,5 +1,8 @@
-## ADDED Requirements
+# guest-reports Specification
 
+## Purpose
+TBD - created by archiving change guest-reporting. Update Purpose after archive.
+## Requirements
 ### Requirement: Every SOAP operation is recorded
 The system SHALL create one `GuestReport` record after every `testDraft()` or `sendGuests()` call, regardless of outcome (success or error).
 
@@ -14,7 +17,7 @@ The system SHALL create one `GuestReport` record after every `testDraft()` or `s
 ---
 
 ### Requirement: GuestReport model schema
-Table `guest_reports`:
+The system SHALL persist every guest-reporting submission in a `guest_reports` table with the following schema:
 
 | Column | Type | Notes |
 |--------|------|-------|
@@ -33,6 +36,11 @@ Table `guest_reports`:
 
 **No soft deletes** — audit records are immutable.
 
+#### Scenario: Record stores full audit trail
+- **GIVEN** a `GuestReport` row created after a submission
+- **WHEN** the row is inspected
+- **THEN** it contains `driver`, `mode`, `status`, `guests_count`, `guests_payload`, `soap_response`, `error_message`, and `submitted_at` matching the submission that produced it
+
 ---
 
 ### Requirement: Submission linked to booking detail
@@ -42,3 +50,4 @@ The booking detail page (`bookings/show.blade.php`) SHALL display the most recen
 - **GIVEN** an `GuestReport` with `booking_id = 42`
 - **WHEN** the admin views the history page
 - **THEN** the "Prenotazione" column shows a link to `/admin/prenotazioni/42`
+

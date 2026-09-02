@@ -97,6 +97,16 @@ Field encoding rules:
 
 Unknown types SHALL map to `ALTR`.
 
+#### Scenario: Known document type mapped
+- **GIVEN** internal type `passport`
+- **WHEN** `documentTypeToAlloggiati('passport')` is called
+- **THEN** it returns `APAT`
+
+#### Scenario: Unknown type falls back to ALTR
+- **GIVEN** internal type `foo`
+- **WHEN** `documentTypeToAlloggiati('foo')` is called
+- **THEN** it returns `ALTR`
+
 ---
 
 ### Requirement: SubmissionResult captures full SOAP response
