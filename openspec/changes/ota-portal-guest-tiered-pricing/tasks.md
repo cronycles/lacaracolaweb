@@ -1,21 +1,21 @@
 ## 1. Settings: new/removed keys
 
-- [ ] 1.1 Add `pricing_cleaning_fee`, `pricing_linen_fee_per_person`,
+- [x] 1.1 Add `pricing_cleaning_fee`, `pricing_linen_fee_per_person`,
       `pricing_min_nights`, `pricing_extra_guest_fee` to
       `SettingsController::PRICING_SETTING_DEFAULTS` is not applicable (these 3
       default from `config/apartment.php`, not a fixed literal, like the removed
       reference settings did) — instead resolve each with
       `Setting::get('pricing_X', (string) config('apartment.booking.X', <default>))`,
       except `pricing_extra_guest_fee` which defaults to the fixed literal `'12'`.
-- [ ] 1.2 Remove `pricing_portal_reference_nights` and
+- [x] 1.2 Remove `pricing_portal_reference_nights` and
       `pricing_portal_reference_guests` from `updatePricing()` validation,
       persistence, and `pricingSettings()`.
-- [ ] 1.3 Add validation + persistence in `updatePricing()` for the 4 new
+- [x] 1.3 Add validation + persistence in `updatePricing()` for the 4 new
       keys: `pricing_cleaning_fee` (integer, min 0), `pricing_linen_fee_per_person`
       (integer, min 0), `pricing_min_nights` (integer, min 1, max
       `config('apartment.booking.max_nights') - 1`), `pricing_extra_guest_fee`
       (integer, min 0).
-- [ ] 1.4 Extend `pricingSettings()` to expose the 4 new current/default
+- [x] 1.4 Extend `pricingSettings()` to expose the 4 new current/default
       values (drop the 2 removed ones) for the Settings view.
 
 ## 2. Settings UI

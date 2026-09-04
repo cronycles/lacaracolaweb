@@ -28,6 +28,8 @@ class SettingsController extends Controller
         'pricing_commission_hometogo' => '0.155',
         'pricing_weekly_discount_percent' => '0.10',
         'pricing_monthly_discount_percent' => '0.20',
+        // Fixed literal (not config-sourced), per ota-portal-guest-tiered-pricing/design.md, Decision 5.
+        'pricing_extra_guest_fee' => '12',
     ];
 
     /** Show the settings page. */
@@ -76,8 +78,10 @@ class SettingsController extends Controller
             'pricing_commission_hometogo' => ['required', 'numeric', 'min:0', 'max:100'],
             'pricing_weekly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
             'pricing_monthly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
-            'pricing_portal_reference_nights' => ['required', 'integer', 'min:1'],
-            'pricing_portal_reference_guests' => ['required', 'integer', 'min:1'],
+            'pricing_cleaning_fee' => ['required', 'integer', 'min:0', 'max:99999'],
+            'pricing_linen_fee_per_person' => ['required', 'integer', 'min:0', 'max:99999'],
+            'pricing_min_nights' => ['required', 'integer', 'min:1', 'max:' . max(1, ((int) config('apartment.booking.max_nights', 28)) - 1)],
+            'pricing_extra_guest_fee' => ['required', 'integer', 'min:0', 'max:99999'],
         ]);
 
         Setting::set('pricing_tax_rate', (string) ($data['pricing_tax_rate'] / 100));
@@ -87,13 +91,15 @@ class SettingsController extends Controller
         Setting::set('pricing_commission_hometogo', (string) ($data['pricing_commission_hometogo'] / 100));
         Setting::set('pricing_weekly_discount_percent', (string) ($data['pricing_weekly_discount_percent'] / 100));
         Setting::set('pricing_monthly_discount_percent', (string) ($data['pricing_monthly_discount_percent'] / 100));
-        Setting::set('pricing_portal_reference_nights', (string) $data['pricing_portal_reference_nights']);
-        Setting::set('pricing_portal_reference_guests', (string) $data['pricing_portal_reference_guests']);
+        Setting::set('pricing_cleaning_fee', (string) $data['pricing_cleaning_fee']);
+        Setting::set('pricing_linen_fee_per_person', (string) $data['pricing_linen_fee_per_person']);
+        Setting::set('pricing_min_nights', (string) $data['pricing_min_nights']);
+        Setting::set('pricing_extra_guest_fee', (string) $data['pricing_extra_guest_fee']);
 
         return back()->with('success', 'Impostazioni di fiscalità e prezzi salvate.');
     }
 
-    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float, portal_reference_nights: int, portal_reference_guests: int} */
+    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float, cleaning_fee: int, linen_fee_per_person: int, min_nights: int, extra_guest_fee: int} */
     private function pricingSettings(): array
     {
         $items = json_decode((string) Setting::get('pricing_tax_gross_up_items', self::PRICING_SETTING_DEFAULTS['pricing_tax_gross_up_items']), true);
@@ -106,9 +112,11 @@ class SettingsController extends Controller
             'commission_hometogo' => (float) Setting::get('pricing_commission_hometogo', self::PRICING_SETTING_DEFAULTS['pricing_commission_hometogo']),
             'weekly_discount_percent' => (float) Setting::get('pricing_weekly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_weekly_discount_percent']),
             'monthly_discount_percent' => (float) Setting::get('pricing_monthly_discount_percent', self::PRICING_SETTING_DEFAULTS['pricing_monthly_discount_percent']),
-            // Defaults sourced from apartment.php (real min stay / bed capacity), not a fixed literal like the other pricing_* keys.
-            'portal_reference_nights' => (int) Setting::get('pricing_portal_reference_nights', (string) config('apartment.booking.min_nights', 3)),
-            'portal_reference_guests' => (int) Setting::get('pricing_portal_reference_guests', (string) config('apartment.specs.beds', 6)),
+            // Defaults sourced from apartment.php (real cleaning/linen/min-stay values), not a fixed literal like pricing_extra_guest_fee.
+            'cleaning_fee' => (int) Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100)),
+            'linen_fee_per_person' => (int) Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25)),
+            'min_nights' => (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3)),
+            'extra_guest_fee' => (int) Setting::get('pricing_extra_guest_fee', self::PRICING_SETTING_DEFAULTS['pricing_extra_guest_fee']),
         ];
     }
 
