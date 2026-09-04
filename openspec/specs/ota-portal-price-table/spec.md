@@ -35,57 +35,54 @@ and HomeToGo, without requiring any separate data entry from the existing
 ### Requirement: Blended nightly rate calculation
 
 For each `PricingRule`, the system SHALL compute a suggested nightly rate per
-portal that folds cleaning fee, linen fee and the tax gross-up into a single
-number, using a reference stay length and reference guest count (both
-editable via Settings, defaulting to the apartment's minimum stay and bed
-capacity), without exposing separate cost line items.
+portal that folds the linen cost for a fixed 2-guest reference and the
+cleaning fee's tax gross-up (but never the cleaning fee amount itself) into
+the direct nightly rate, then divides by the portal's commission — without
+exposing the cleaning fee amount anywhere in this calculation, and without
+treating the reference guest count as configurable.
 
-#### Scenario: Reference stay length defaults to the configured minimum nights
+#### Scenario: Reference guest count is fixed at 2, not configurable
 
-- **WHEN** computing the suggested nightly rate for a pricing rule and no
-  `pricing_portal_reference_nights` setting has been saved
-- **THEN** the system uses `config('apartment.booking.min_nights')` as the
-  number of nights over which cleaning, linen and the tax gross-up are
-  amortised
+- **WHEN** computing the linen portion of the suggested nightly rate for any
+  `PricingRule`
+- **THEN** the system always uses 2 as the guest count, regardless of the
+  apartment's real bed capacity, and no Setting exists to change this value
 
-#### Scenario: Reference stay length is editable from Settings
+#### Scenario: Reference stay length comes from the minimum-stay setting
 
-- **WHEN** an authorized user saves a `pricing_portal_reference_nights` value
-  from `admin/impostazioni`
-- **THEN** the portal price table uses that value as the reference stay
-  length instead of the `apartment.php` default, including applying the same
-  weekly/monthly length discount tiers as the direct site if the value
-  crosses those thresholds
+- **WHEN** computing how many nights the 2-guest linen recovery is amortised
+  over
+- **THEN** the system uses `pricing_min_nights` (falling back to
+  `config('apartment.booking.min_nights')`, 3, when unset) — the same value
+  that governs the site's real minimum bookable stay, not a separate
+  portal-only reference value
 
-#### Scenario: Reference guest count defaults to the apartment's bed capacity
+#### Scenario: Cleaning fee amount is excluded from the nightly rate, but its tax gross-up is recovered
 
-- **WHEN** computing the linen fee portion of the suggested nightly rate and
-  no `pricing_portal_reference_guests` setting has been saved
-- **THEN** the system uses `config('apartment.specs.beds')` as the guest
-  count, regardless of how many guests any real booking might have
+- **WHEN** computing the suggested nightly rate for any portal
+- **THEN** the cleaning fee amount (`pricing_cleaning_fee`) itself does not
+  contribute to the computed figure — it is only ever shown as a separate,
+  flat reference value for the owner to type into each portal's own
+  cleaning-fee field — but the tax gross-up on that amount is still recovered
+  alongside the linen recovery, so a 2-guest, minimum-stay portal booking
+  does not net noticeably less than the equivalent direct booking
 
-#### Scenario: Reference guest count is editable from Settings
+#### Scenario: Linen cost and the cleaning fee's tax are grossed-up together
 
-- **WHEN** an authorized user saves a `pricing_portal_reference_guests` value
-  from `admin/impostazioni`
-- **THEN** the portal price table uses that value as the reference guest
-  count instead of the bed-capacity default, and the Settings page displays a
-  note that values below bed capacity may allow a portal price to undercut an
-  equivalent direct booking with more guests
-
-#### Scenario: Tax gross-up applied consistently with the direct site
-
-- **WHEN** computing the reference total for a pricing rule
-- **THEN** the system applies the same `pricing_tax_rate` and
-  `pricing_tax_gross_up_items` settings, and the same taxable cleaning/linen
-  selection logic, as `PricingQuoteService::calculate()`
+- **WHEN** computing the recoverable amount for the 2-guest reference
+- **THEN** the system applies the same `pricing_tax_rate` and the
+  `cleaning`/`linen` entries of `pricing_tax_gross_up_items` used by
+  `PricingQuoteService` to the reference linen cost and the cleaning fee
+  amount together, so disabling either toggle site-wide also affects this
+  calculation, while the cleaning fee amount itself still never appears
+  added to the nightly rate
 
 #### Scenario: Portal commission applied per portal
 
-- **WHEN** deriving each portal's suggested nightly rate from the reference
-  total
-- **THEN** the system divides by `(1 - commission_rate)` using that portal's
-  `pricing_commission_*` setting, consistent with `OtaPortalPricingService`
+- **WHEN** deriving each portal's suggested nightly rate
+- **THEN** the system adds the per-night linen recovery amount to the
+  `PricingRule`'s `price_per_night` and divides the sum by
+  `(1 - commission_rate)` using that portal's `pricing_commission_*` setting
 
 #### Scenario: Final rate rounded to the nearest euro
 
@@ -93,17 +90,56 @@ capacity), without exposing separate cost line items.
 - **THEN** the system rounds it to the nearest whole euro (not the €5
   rounding used for the guest-facing direct total)
 
-### Requirement: Portal rate never undercuts the direct price at default settings
+### Requirement: Portal price table legend
 
-The suggested portal nightly rate SHALL never be lower, for any real booking
-of the same length and any guest count up to the apartment's bed capacity,
-than the equivalent direct-site total computed by `PricingQuoteService`, when
-the reference nights/guests settings are left at their defaults.
+The portal price table page SHALL display a legend, above the per-period
+table, explaining what to configure on each portal and how the shown figures
+were derived.
 
-#### Scenario: Full-occupancy booking via a portal is never cheaper than direct
+#### Scenario: Legend shows the fixed cleaning fee and its Settings source
 
-- **WHEN** a guest books the maximum number of guests the apartment holds, for
-  the default reference stay length, through a portal at its suggested
-  nightly rate
-- **THEN** the total the owner receives net of commission is greater than or
-  equal to what the same booking would net on the direct site
+- **WHEN** an authorized user opens the portal price table
+- **THEN** the legend shows the current `pricing_cleaning_fee` value and
+  states that it should be typed directly into each portal's cleaning-fee
+  field, unchanged
+
+#### Scenario: Legend shows the extra-guest surcharge and its trigger guest count
+
+- **WHEN** an authorized user opens the portal price table
+- **THEN** the legend shows the current `pricing_extra_guest_fee` value,
+  states it applies identically to all 3 portals starting from the 3rd
+  guest, and links to `admin/impostazioni` to edit it
+
+#### Scenario: Legend includes per-portal notes
+
+- **WHEN** an authorized user opens the portal price table
+- **THEN** the legend notes that Airbnb and Booking.com have no per-guest
+  linen field, and that HomeToGo has one but it is deliberately left unused
+  to keep all 3 portals configured identically
+
+#### Scenario: Legend documents the cleaning-fee commission trade-off
+
+- **WHEN** an authorized user opens the portal price table
+- **THEN** the legend states that the flat cleaning fee is not
+  commission-grossed, so each portal keeps roughly
+  `cleaning_fee × commission_rate` of it instead of passing it through to the
+  owner, so this trade-off is documented for future reference if the owner
+  wants to revisit it
+
+### Requirement: Extra-guest-per-night surcharge is a single, manually-editable setting
+
+The system SHALL expose one euro amount, `pricing_extra_guest_fee`, editable
+from `admin/impostazioni`, shared identically across Airbnb, Booking.com and
+HomeToGo — not derived per portal at request time.
+
+#### Scenario: Default value applies when unset
+
+- **WHEN** no `pricing_extra_guest_fee` setting has ever been saved
+- **THEN** the system treats the value as `12` (euros per night per guest)
+
+#### Scenario: Admin updates the extra-guest surcharge
+
+- **WHEN** an authorized user saves a new `pricing_extra_guest_fee` value from
+  `admin/impostazioni`
+- **THEN** the portal price table legend and the simulator's guest-facing
+  portal totals immediately reflect the new value for all 3 portals equally

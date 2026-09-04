@@ -154,9 +154,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('/prezzi/variazione-bulk', [PricingController::class, 'bulkAdjust'])->name('pricing.bulk-adjust');
         Route::get('/prezzi-portali', [PricingController::class, 'portalPrices'])->name('pricing.portal-prices');
         Route::resource('prezzi', PricingController::class)->names('pricing');
-        Route::resource('sconti-soggiorno', StayDiscountRuleController::class)
-            ->parameters(['sconti-soggiorno' => 'stay_discount_rule'])
-            ->names('stay-discounts');
+        Route::get('/sconti-soggiorno', [StayDiscountRuleController::class, 'index'])->name('stay-discounts.index');
     });
 
     // ── manage_settings ──────────────────────────────────────────────────────
