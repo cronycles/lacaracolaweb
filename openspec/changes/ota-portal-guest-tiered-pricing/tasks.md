@@ -20,7 +20,7 @@
 
 ## 2. Settings UI
 
-- [ ] 2.1 In `resources/views/admin/settings.blade.php`, replace the
+- [x] 2.1 In `resources/views/admin/settings.blade.php`, replace the
       "Riferimento tabella prezzi portali" field group with 3 groups in the same
       "Fiscalità e prezzi" card: "Costi fissi per soggiorno" (pulizie, biancheria),
       "Soggiorno minimo" (notti minime, with a help note that it also changes the

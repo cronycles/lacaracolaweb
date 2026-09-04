@@ -164,32 +164,58 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Riferimento tabella prezzi portali</label>
+                    <label class="form-label">Costi fissi per soggiorno</label>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
                         <div>
-                            <label class="form-label" for="pricing_portal_reference_nights" style="font-size:.8rem">Notti di riferimento</label>
-                            <input type="number" id="pricing_portal_reference_nights" name="pricing_portal_reference_nights" class="form-input"
-                                   min="1" step="1"
-                                   value="{{ old('pricing_portal_reference_nights', $pricingSettings['portal_reference_nights']) }}">
-                            @error('pricing_portal_reference_nights')
+                            <label class="form-label" for="pricing_cleaning_fee" style="font-size:.8rem">Pulizie (€/soggiorno)</label>
+                            <input type="number" id="pricing_cleaning_fee" name="pricing_cleaning_fee" class="form-input"
+                                   min="0" step="1"
+                                   value="{{ old('pricing_cleaning_fee', $pricingSettings['cleaning_fee']) }}">
+                            @error('pricing_cleaning_fee')
                                 <div class="form-error">{{ $message }}</div>
                             @enderror
                         </div>
                         <div>
-                            <label class="form-label" for="pricing_portal_reference_guests" style="font-size:.8rem">Ospiti di riferimento</label>
-                            <input type="number" id="pricing_portal_reference_guests" name="pricing_portal_reference_guests" class="form-input"
-                                   min="1" step="1"
-                                   value="{{ old('pricing_portal_reference_guests', $pricingSettings['portal_reference_guests']) }}">
-                            @error('pricing_portal_reference_guests')
+                            <label class="form-label" for="pricing_linen_fee_per_person" style="font-size:.8rem">Biancheria (€/ospite)</label>
+                            <input type="number" id="pricing_linen_fee_per_person" name="pricing_linen_fee_per_person" class="form-input"
+                                   min="0" step="1"
+                                   value="{{ old('pricing_linen_fee_per_person', $pricingSettings['linen_fee_per_person']) }}">
+                            @error('pricing_linen_fee_per_person')
                                 <div class="form-error">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
-                        Usati per calcolare la <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">tabella prezzi portali</a>:
-                        cambiare le notti di riferimento influisce sull'applicazione dello sconto soggiorno a quel calcolo;
-                        impostare gli ospiti di riferimento sotto la capienza massima dell'appartamento può far sì che un prezzo
-                        portale risulti più economico di una prenotazione diretta equivalente con più ospiti.
+                        Usati sia nel prezzo del sito diretto, sia nel calcolo della
+                        <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">tabella prezzi portali</a>.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pricing_min_nights">Soggiorno minimo (notti)</label>
+                    <input type="number" id="pricing_min_nights" name="pricing_min_nights" class="form-input" style="max-width:160px"
+                           min="1" step="1"
+                           value="{{ old('pricing_min_nights', $pricingSettings['min_nights']) }}">
+                    @error('pricing_min_nights')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Attenzione: cambia anche la durata minima prenotabile sul sito diretto (form di prenotazione),
+                        non solo il calcolo della tabella prezzi portali.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pricing_extra_guest_fee">Supplemento ospite extra (portali)</label>
+                    <input type="number" id="pricing_extra_guest_fee" name="pricing_extra_guest_fee" class="form-input" style="max-width:160px"
+                           min="0" step="1"
+                           value="{{ old('pricing_extra_guest_fee', $pricingSettings['extra_guest_fee']) }}">
+                    @error('pricing_extra_guest_fee')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        €/notte/ospite dal 3° ospite in poi, applicato identicamente su Airbnb, Booking.com e HomeToGo.
+                        Vedi la <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">tabella prezzi portali</a> per la legenda completa.
                     </div>
                 </div>
 
