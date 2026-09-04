@@ -22,7 +22,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'view_accounting',  'description' => 'Accede alla contabilità, al campo income_amount e al widget finanziario nella dashboard'],
             ['name' => 'manage_pricing',   'description' => 'Gestisce regole prezzi e sconti soggiorno'],
             ['name' => 'manage_settings',  'description' => 'Accede e modifica le impostazioni generali'],
-            ['name' => 'manage_newsletter','description' => 'Gestisce le iscrizioni alla newsletter'],
+            ['name' => 'manage_newsletter', 'description' => 'Gestisce le iscrizioni alla newsletter'],
             ['name' => 'manage_users',     'description' => 'Gestisce gli utenti admin (non delegabile via override)'],
             ['name' => 'manage_reviews',   'description' => 'Gestisce le recensioni pubbliche'],
         ];

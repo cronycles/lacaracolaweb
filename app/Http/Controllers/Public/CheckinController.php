@@ -14,12 +14,12 @@ use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Services\GuestReporting\GuestClassifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\View\View;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Throwable;
 
 /**
@@ -54,12 +54,12 @@ class CheckinController extends Controller
         $totalGuests = $guests->count();
 
         return view('public.checkin', [
-            'booking'      => $booking,
-            'guests'       => $guests,
-            'totalGuests'  => $totalGuests,
+            'booking' => $booking,
+            'guests' => $guests,
+            'totalGuests' => $totalGuests,
             'canAddCompanion' => $totalGuests < $booking->total_guests,
-            'comuniNames'  => ItalianMunicipalities::allValidNames(),
-            'countries'    => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'comuniNames' => ItalianMunicipalities::allValidNames(),
+            'countries' => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
         ]);
     }
 
@@ -78,7 +78,7 @@ class CheckinController extends Controller
 
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:100'],
-            'last_name'  => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
         ]);
 
         $data['first_name'] = mb_convert_case(mb_strtolower(trim($data['first_name'])), MB_CASE_TITLE, 'UTF-8');
@@ -86,7 +86,7 @@ class CheckinController extends Controller
 
         $person = Person::create([
             'first_name' => $data['first_name'],
-            'last_name'  => $data['last_name'],
+            'last_name' => $data['last_name'],
         ]);
 
         $booking->additionalGuests()->syncWithoutDetaching([$person->id]);
@@ -144,7 +144,7 @@ class CheckinController extends Controller
         } catch (Throwable $exception) {
             Log::error('Online check-in confirmation failed.', [
                 'booking_id' => $booking->id,
-                'exception'  => $exception,
+                'exception' => $exception,
             ]);
 
             return redirect()
@@ -153,16 +153,16 @@ class CheckinController extends Controller
                 ->with('error', __('app.checkin_save_error'));
         }
 
-            if ($booking->person?->email) {
-                try {
-                    Mail::to($booking->person->email)->send(new CheckinCompletedMail($booking));
-                } catch (Throwable $exception) {
-                    Log::error('CheckinCompletedMail failed to send.', [
-                        'booking_id' => $booking->id,
-                        'exception'  => $exception,
-                    ]);
-                }
+        if ($booking->person?->email) {
+            try {
+                Mail::to($booking->person->email)->send(new CheckinCompletedMail($booking));
+            } catch (Throwable $exception) {
+                Log::error('CheckinCompletedMail failed to send.', [
+                    'booking_id' => $booking->id,
+                    'exception' => $exception,
+                ]);
             }
+        }
 
         return redirect()
             ->route('checkin.show', $token);
@@ -183,9 +183,9 @@ class CheckinController extends Controller
         foreach ($guests as $i => $guest) {
             $rowInput = is_array($rawGuests[$i] ?? null) ? $rawGuests[$i] : [];
             $guestsInput[$i] = array_merge($rowInput, [
-                'person_id'       => $guest->id,
+                'person_id' => $guest->id,
                 'tipo_alloggiato' => $guestTypes[$i],
-                'include'         => 1,
+                'include' => 1,
             ]);
         }
 

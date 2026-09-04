@@ -26,11 +26,11 @@ class TelegramWebhookController extends Controller
         // Extract and explicitly log chat_id and text for easy discovery.
         if (isset($update['message'])) {
             $chatId = $update['message']['chat']['id'] ?? null;
-            $text   = $update['message']['text'] ?? null;
+            $text = $update['message']['text'] ?? null;
 
             Log::channel('telegram')->info('Telegram message', [
                 'chat_id' => $chatId,
-                'text'    => $text,
+                'text' => $text,
             ]);
         }
 

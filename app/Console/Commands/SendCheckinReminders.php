@@ -52,7 +52,7 @@ class SendCheckinReminders extends Command
                 $this->line("Check-in reminder sent for booking #{$booking->id}");
             } catch (\Throwable $e) {
                 Log::error('CheckinReminderMail failed to send', [
-                    'error'      => $e->getMessage(),
+                    'error' => $e->getMessage(),
                     'booking_id' => $booking->id,
                 ]);
             }

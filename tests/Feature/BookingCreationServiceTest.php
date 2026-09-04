@@ -23,24 +23,24 @@ class BookingCreationServiceTest extends TestCase
     {
         $existing = Person::create([
             'first_name' => 'Anna',
-            'last_name'  => 'Verdi',
-            'email'      => 'anna@example.com',
+            'last_name' => 'Verdi',
+            'email' => 'anna@example.com',
         ]);
 
-        $booking = (new BookingCreationService())->createFromParsed([
-            'first_name'   => 'Anna',
-            'last_name'    => 'Verdi',
-            'email'        => 'anna@example.com',
-            'phone'        => null,
-            'checkin'      => now()->addDays(5)->format('Y-m-d'),
-            'checkout'     => now()->addDays(10)->format('Y-m-d'),
-            'adults'       => 2,
-            'children'     => 0,
-            'babies'       => 0,
-            'pets'         => 0,
-            'source'       => 'interhome',
+        $booking = (new BookingCreationService)->createFromParsed([
+            'first_name' => 'Anna',
+            'last_name' => 'Verdi',
+            'email' => 'anna@example.com',
+            'phone' => null,
+            'checkin' => now()->addDays(5)->format('Y-m-d'),
+            'checkout' => now()->addDays(10)->format('Y-m-d'),
+            'adults' => 2,
+            'children' => 0,
+            'babies' => 0,
+            'pets' => 0,
+            'source' => 'interhome',
             'external_ref' => 'REF123',
-            'notes'        => null,
+            'notes' => null,
         ]);
 
         $this->assertSame($existing->id, $booking->person_id);
@@ -50,20 +50,20 @@ class BookingCreationServiceTest extends TestCase
 
     public function test_create_from_parsed_creates_new_person_when_no_match(): void
     {
-        $booking = (new BookingCreationService())->createFromParsed([
-            'first_name'   => 'Luca',
-            'last_name'    => 'Bianchi',
-            'email'        => null,
-            'phone'        => null,
-            'checkin'      => now()->addDays(5)->format('Y-m-d'),
-            'checkout'     => now()->addDays(10)->format('Y-m-d'),
-            'adults'       => 1,
-            'children'     => 0,
-            'babies'       => 0,
-            'pets'         => 0,
-            'source'       => 'interhome',
+        $booking = (new BookingCreationService)->createFromParsed([
+            'first_name' => 'Luca',
+            'last_name' => 'Bianchi',
+            'email' => null,
+            'phone' => null,
+            'checkin' => now()->addDays(5)->format('Y-m-d'),
+            'checkout' => now()->addDays(10)->format('Y-m-d'),
+            'adults' => 1,
+            'children' => 0,
+            'babies' => 0,
+            'pets' => 0,
+            'source' => 'interhome',
             'external_ref' => null,
-            'notes'        => null,
+            'notes' => null,
         ]);
 
         $this->assertSame('Luca', $booking->person->first_name);
@@ -72,13 +72,13 @@ class BookingCreationServiceTest extends TestCase
 
     public function test_preview_match_does_not_create_or_persist_anything(): void
     {
-        $service = new BookingCreationService();
+        $service = new BookingCreationService;
 
         $match = $service->previewMatch([
             'first_name' => 'Nobody',
-            'last_name'  => 'Here',
-            'email'      => null,
-            'phone'      => null,
+            'last_name' => 'Here',
+            'email' => null,
+            'phone' => null,
         ]);
 
         $this->assertNull($match);
@@ -96,18 +96,18 @@ class BookingCreationServiceTest extends TestCase
     {
         $existing = Person::create([
             'first_name' => 'Daniele',
-            'last_name'  => 'Crosetti',
-            'email'      => 'cronycles@gmail.com',
+            'last_name' => 'Crosetti',
+            'email' => 'cronycles@gmail.com',
         ]);
         $existing->delete();
 
         $this->assertTrue($existing->fresh()->trashed());
 
-        $person = (new BookingCreationService())->findOrCreatePerson([
+        $person = (new BookingCreationService)->findOrCreatePerson([
             'first_name' => 'Daniele',
-            'last_name'  => 'Crosetti',
-            'email'      => 'cronycles@gmail.com',
-            'phone'      => '+39 629919011',
+            'last_name' => 'Crosetti',
+            'email' => 'cronycles@gmail.com',
+            'phone' => '+39 629919011',
         ]);
 
         $this->assertSame($existing->id, $person->id);

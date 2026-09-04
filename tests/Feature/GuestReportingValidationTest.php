@@ -10,8 +10,10 @@ use App\Models\Country;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\GuestReporting\SubmissionResult;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Fixtures\FakeGuestReportingDriver;
 use Tests\TestCase;
 
 /**
@@ -25,7 +27,9 @@ class GuestReportingValidationTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private int $driverCallCount = 0;
+
     private array $driverGuests = [];
 
     protected function setUp(): void
@@ -36,8 +40,8 @@ class GuestReportingValidationTest extends TestCase
         Country::firstOrCreate(['iso2' => 'IT'], ['name_it' => 'Italia']);
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
 
         $superAdminRole = Role::where('name', 'super_admin')->first();
@@ -48,34 +52,7 @@ class GuestReportingValidationTest extends TestCase
         $callCounter = &$this->driverCallCount;
         $driverGuests = &$this->driverGuests;
         $this->app->bind(GuestReportingDriverInterface::class, function () use (&$callCounter, &$driverGuests) {
-            return new class($callCounter, $driverGuests) implements GuestReportingDriverInterface {
-                public function __construct(
-                    private int &$callCounter,
-                    private array &$driverGuests,
-                ) {}
-
-                public function checkConnection(): bool
-                {
-                    $this->callCounter++;
-
-                    return true;
-                }
-
-                public function testDraft(array $guests): SubmissionResult
-                {
-                    $this->callCounter++;
-                    $this->driverGuests = $guests;
-
-                    return SubmissionResult::success('OK');
-                }
-
-                public function sendGuests(array $guests): SubmissionResult
-                {
-                    $this->callCounter++;
-
-                    return SubmissionResult::success('OK');
-                }
-            };
+            return new FakeGuestReportingDriver($callCounter, $driverGuests);
         });
     }
 
@@ -84,26 +61,26 @@ class GuestReportingValidationTest extends TestCase
         $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
         $booking = Booking::create([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 1,
         ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.guest-reporting.test', $booking), [
                 'guests' => [[
-                    'person_id'                   => $person->id,
-                    'include'                     => 1,
-                    'tipo_alloggiato'              => '16',
-                    'gender'                       => 'M',
-                    'birth_date'                   => '1990-01-01',
-                    'nationality_code'             => 'FR',
-                    'birth_country_code'           => 'FR',
-                    'birth_municipality'           => 'Paris',
-                    'document_type'                => '',
-                    'document_number'               => '',
-                    'document_issue_country_code'  => '',
-                    'document_issue_place'          => '',
+                    'person_id' => $person->id,
+                    'include' => 1,
+                    'tipo_alloggiato' => '16',
+                    'gender' => 'M',
+                    'birth_date' => '1990-01-01',
+                    'nationality_code' => 'FR',
+                    'birth_country_code' => 'FR',
+                    'birth_municipality' => 'Paris',
+                    'document_type' => '',
+                    'document_number' => '',
+                    'document_issue_country_code' => '',
+                    'document_issue_place' => '',
                 ]],
             ])
             ->assertSessionHasErrors([
@@ -122,27 +99,27 @@ class GuestReportingValidationTest extends TestCase
         $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
         $booking = Booking::create([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 1,
         ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.guest-reporting.test', $booking), [
                 'guests' => [[
-                    'person_id'                   => $person->id,
-                    'include'                     => 1,
-                    'tipo_alloggiato'              => '16',
-                    'gender'                       => 'M',
-                    'birth_date'                   => '1990-01-01',
-                    'nationality_code'             => 'IT',
-                    'birth_country_code'           => 'IT',
-                    'birth_municipality'           => 'Genova',
-                    'birth_province'               => '',
-                    'document_type'                => 'passport',
-                    'document_number'              => 'X1234567',
-                    'document_issue_country_code'  => 'IT',
-                    'document_issue_place'         => 'Genova',
+                    'person_id' => $person->id,
+                    'include' => 1,
+                    'tipo_alloggiato' => '16',
+                    'gender' => 'M',
+                    'birth_date' => '1990-01-01',
+                    'nationality_code' => 'IT',
+                    'birth_country_code' => 'IT',
+                    'birth_municipality' => 'Genova',
+                    'birth_province' => '',
+                    'document_type' => 'passport',
+                    'document_number' => 'X1234567',
+                    'document_issue_country_code' => 'IT',
+                    'document_issue_place' => 'Genova',
                 ]],
             ])
             ->assertSessionHasErrors(['guests.0.birth_province']);
@@ -155,26 +132,26 @@ class GuestReportingValidationTest extends TestCase
         $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
         $booking = Booking::create([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 1,
         ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.guest-reporting.test', $booking), [
                 'guests' => [[
-                    'person_id'                   => $person->id,
-                    'include'                     => 1,
-                    'tipo_alloggiato'              => '16',
-                    'gender'                       => 'M',
-                    'birth_date'                   => '1990-01-01',
-                    'nationality_code'             => 'FR',
-                    'birth_country_code'           => 'FR',
-                    'birth_municipality'           => 'Paris',
-                    'document_type'                => 'passport',
-                    'document_number'               => 'X1234567',
-                    'document_issue_country_code'  => 'FR',
-                    'document_issue_place'          => '',
+                    'person_id' => $person->id,
+                    'include' => 1,
+                    'tipo_alloggiato' => '16',
+                    'gender' => 'M',
+                    'birth_date' => '1990-01-01',
+                    'nationality_code' => 'FR',
+                    'birth_country_code' => 'FR',
+                    'birth_municipality' => 'Paris',
+                    'document_type' => 'passport',
+                    'document_number' => 'X1234567',
+                    'document_issue_country_code' => 'FR',
+                    'document_issue_place' => '',
                 ]],
             ])
             ->assertRedirect(route('admin.guest-reporting.show', $booking))
@@ -190,26 +167,26 @@ class GuestReportingValidationTest extends TestCase
         $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi']);
         $booking = Booking::create([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(14)->format('Y-m-d'),
-            'checkout'  => now()->addDays(18)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(14)->format('Y-m-d'),
+            'checkout' => now()->addDays(18)->format('Y-m-d'),
+            'adults' => 1,
         ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.guest-reporting.test-simulated-dates', $booking), [
                 'guests' => [[
-                    'person_id'                  => $person->id,
-                    'include'                    => 1,
-                    'tipo_alloggiato'            => '16',
-                    'gender'                     => 'M',
-                    'birth_date'                 => '1990-01-01',
-                    'nationality_code'           => 'FR',
-                    'birth_country_code'         => 'FR',
-                    'birth_municipality'         => 'Paris',
-                    'document_type'              => 'passport',
-                    'document_number'            => 'X1234567',
+                    'person_id' => $person->id,
+                    'include' => 1,
+                    'tipo_alloggiato' => '16',
+                    'gender' => 'M',
+                    'birth_date' => '1990-01-01',
+                    'nationality_code' => 'FR',
+                    'birth_country_code' => 'FR',
+                    'birth_municipality' => 'Paris',
+                    'document_type' => 'passport',
+                    'document_number' => 'X1234567',
                     'document_issue_country_code' => 'FR',
-                    'document_issue_place'       => '',
+                    'document_issue_place' => '',
                 ]],
             ])
             ->assertRedirect(route('admin.guest-reporting.show', $booking));
@@ -227,9 +204,9 @@ class GuestReportingValidationTest extends TestCase
         $included = Person::create(['first_name' => 'Luca', 'last_name' => 'Bianchi']);
         $booking = Booking::create([
             'person_id' => $excluded->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => 2,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 2,
         ]);
         $booking->additionalGuests()->attach($included->id);
 
@@ -238,22 +215,22 @@ class GuestReportingValidationTest extends TestCase
                 'guests' => [
                     [
                         'person_id' => $excluded->id,
-                        'include'   => 0,
+                        'include' => 0,
                         'tipo_alloggiato' => '18',
                     ],
                     [
-                        'person_id'                  => $included->id,
-                        'include'                    => 1,
-                        'tipo_alloggiato'             => '20',
-                        'gender'                      => 'M',
-                        'birth_date'                  => '1990-01-01',
-                        'nationality_code'            => 'FR',
-                        'birth_country_code'          => 'FR',
-                        'birth_municipality'          => 'Paris',
-                        'document_type'               => 'passport',
-                        'document_number'             => 'X1234567',
+                        'person_id' => $included->id,
+                        'include' => 1,
+                        'tipo_alloggiato' => '20',
+                        'gender' => 'M',
+                        'birth_date' => '1990-01-01',
+                        'nationality_code' => 'FR',
+                        'birth_country_code' => 'FR',
+                        'birth_municipality' => 'Paris',
+                        'document_type' => 'passport',
+                        'document_number' => 'X1234567',
                         'document_issue_country_code' => 'FR',
-                        'document_issue_place'        => '',
+                        'document_issue_place' => '',
                     ],
                 ],
             ])

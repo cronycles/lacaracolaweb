@@ -80,7 +80,7 @@ class SettingsController extends Controller
             'pricing_monthly_discount_percent' => ['required', 'numeric', 'min:0', 'max:100'],
             'pricing_cleaning_fee' => ['required', 'integer', 'min:0', 'max:99999'],
             'pricing_linen_fee_per_person' => ['required', 'integer', 'min:0', 'max:99999'],
-            'pricing_min_nights' => ['required', 'integer', 'min:1', 'max:' . max(1, ((int) config('apartment.booking.max_nights', 28)) - 1)],
+            'pricing_min_nights' => ['required', 'integer', 'min:1', 'max:'.max(1, ((int) config('apartment.booking.max_nights', 28)) - 1)],
             'pricing_extra_guest_fee' => ['required', 'integer', 'min:0', 'max:99999'],
         ]);
 

@@ -32,12 +32,12 @@ return new class extends Migration
             ->get(['id', 'checkin', 'checkout'])
             ->each(function (object $request) use ($now): void {
                 DB::table('availability_blocks')->insert([
-                    'start_date'        => $request->checkin,
-                    'end_date'          => $request->checkout,
-                    'reason'            => 'pending',
+                    'start_date' => $request->checkin,
+                    'end_date' => $request->checkout,
+                    'reason' => 'pending',
                     'booking_request_id' => $request->id,
-                    'created_at'         => $now,
-                    'updated_at'         => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]);
             });
     }

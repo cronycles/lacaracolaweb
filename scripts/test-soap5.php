@@ -1,21 +1,22 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+require __DIR__.'/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/..');
 $dotenv->safeLoad();
 
-$utente   = $_ENV['GUEST_REPORTING_UTENTE'] ?? '';
+$utente = $_ENV['GUEST_REPORTING_UTENTE'] ?? '';
 $password = $_ENV['GUEST_REPORTING_PASSWORD'] ?? '';
-$wsKey    = $_ENV['GUEST_REPORTING_WS_KEY'] ?? '';
+$wsKey = $_ENV['GUEST_REPORTING_WS_KEY'] ?? '';
 
 $client = new SoapClient(
     'https://alloggiatiweb.poliziadistato.it/service/service.asmx?wsdl',
     ['trace' => true, 'exceptions' => false, 'encoding' => 'UTF-8', 'soap_version' => SOAP_1_1, 'cache_wsdl' => WSDL_CACHE_DISK]
 );
 
-$tr    = $client->GenerateToken(['Utente' => $utente, 'Password' => $password, 'WsKey' => $wsKey]);
+$tr = $client->GenerateToken(['Utente' => $utente, 'Password' => $password, 'WsKey' => $wsKey]);
 $token = (string) ($tr->GenerateTokenResult->token ?? '');
-echo "Token OK: " . strlen($token) . " chars\n\n";
+echo 'Token OK: '.strlen($token)." chars\n\n";
 
 function w(string &$s, string $val, int $start, int $len): void
 {
@@ -27,14 +28,15 @@ function testRecord(SoapClient $client, string $utente, string $token, string $l
     $elenco = ['string' => [$record]];
     $result = $client->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => $elenco]);
     if ($result instanceof SoapFault) {
-        echo "$label → FAULT: " . $result->getMessage() . "\n";
+        echo "$label → FAULT: ".$result->getMessage()."\n";
+
         return;
     }
     $esito = $result->TestResult->esito ?? false;
     $detail = $result->result->Dettaglio->EsitoOperazioneServizio ?? null;
     $error = $detail ? $detail->ErroreDettaglio : '??';
     $valid = $result->result->SchedineValide ?? 0;
-    echo "$label → esito=" . ($esito ? 'true' : 'false') . " valid=$valid error=$error\n";
+    echo "$label → esito=".($esito ? 'true' : 'false')." valid=$valid error=$error\n";
 }
 
 $r4 = str_repeat(' ', 168);
@@ -49,7 +51,6 @@ w($r4, '1', 94, 1);               // Sesso (1 = Maschio, 2 = Femmina)
 
 w($r4, '15/06/1985', 95, 10);     // Data Nascita (Formato gg/mm/aaaa)
 
-
 w($r4, '407010025', 105, 9);      // Comune Nascita (407010025 = GENOVA, vedi tabella comuni.csv)
 w($r4, 'GE', 114, 2);             // Provincia Nascita (GE) --> 2 caratteri
 
@@ -63,9 +64,9 @@ w($r4, '407010025', 159, 9);      // Luogo Rilascio Documento (407010025 = GENOV
 // Taglio e controllo finale della stringa a esattamente 168 caratteri
 $r4 = substr(str_pad($r4, 168, ' '), 0, 168);
 
-echo "Lunghezza stringa r4: " . strlen($r4) . " caratteri\n";
+echo 'Lunghezza stringa r4: '.strlen($r4)." caratteri\n";
 
-testRecord($client, $utente, $token, "Test finale con codici estratti dalle tabelle", $r4);
+testRecord($client, $utente, $token, 'Test finale con codici estratti dalle tabelle', $r4);
 
 // ---------------------------------------------------------------------------
 // Test ospite STRANIERO (tipo 16 — singolo, tedesco, nato in Germania)
@@ -89,8 +90,8 @@ w($rStraniero, 'C00000001', 139, 20);      // Numero Documento
 w($rStraniero, '100000216', 159, 9);       // Luogo Rilascio: GERMANIA (stato)
 
 $rStraniero = substr(str_pad($rStraniero, 168, ' '), 0, 168);
-echo "\nLunghezza stringa straniero: " . strlen($rStraniero) . " caratteri\n";
+echo "\nLunghezza stringa straniero: ".strlen($rStraniero)." caratteri\n";
 
-testRecord($client, $utente, $token, "Test ospite straniero (DE, tipo 16, PASOR)", $rStraniero);
+testRecord($client, $utente, $token, 'Test ospite straniero (DE, tipo 16, PASOR)', $rStraniero);
 
 echo "\nDone.\n";

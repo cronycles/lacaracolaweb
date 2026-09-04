@@ -1,6 +1,7 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+
+require __DIR__.'/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/..');
 $dotenv->safeLoad();
 
 $utente = $_ENV['GUEST_REPORTING_UTENTE'] ?? '';
@@ -12,18 +13,20 @@ $client = new SoapClient(
     ['trace' => true, 'exceptions' => true, 'encoding' => 'UTF-8', 'soap_version' => SOAP_1_1, 'cache_wsdl' => WSDL_CACHE_NONE]
 );
 $tr = $client->GenerateToken(['Utente' => $utente, 'Password' => $password, 'WsKey' => $wsKey]);
-$token = (string)($tr->GenerateTokenResult->token ?? '');
-echo "Token len=" . strlen($token) . "\n";
+$token = (string) ($tr->GenerateTokenResult->token ?? '');
+echo 'Token len='.strlen($token)."\n";
 
-function w(string &$s, string $val, int $start, int $len): void {
+function w(string &$s, string $val, int $start, int $len): void
+{
     $s = substr_replace($s, str_pad(substr($val, 0, $len), $len), $start, $len);
 }
 
-function testRecord(SoapClient $c, string $utente, string $token, string $record, string $label): void {
+function testRecord(SoapClient $c, string $utente, string $token, string $record, string $label): void
+{
     $r = $c->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => ['string' => [$record]]]);
     $detail = $r->result->Dettaglio->EsitoOperazioneServizio ?? null;
     $valid = $r->result->SchedineValide ?? 0;
-    echo "$label (len=" . strlen($record) . ", valid=$valid): " . ($detail ? $detail->ErroreDettaglio : 'SUCCESSO!') . "\n";
+    echo "$label (len=".strlen($record).", valid=$valid): ".($detail ? $detail->ErroreDettaglio : 'SUCCESSO!')."\n";
 }
 
 // Test 1: Original layout (cognome at pos 2) with tipo 16, doc type PASOR (5 chars)

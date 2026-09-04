@@ -1,21 +1,22 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+require __DIR__.'/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/..');
 $dotenv->safeLoad();
 
-$utente   = $_ENV['GUEST_REPORTING_UTENTE'] ?? '';
+$utente = $_ENV['GUEST_REPORTING_UTENTE'] ?? '';
 $password = $_ENV['GUEST_REPORTING_PASSWORD'] ?? '';
-$wsKey    = $_ENV['GUEST_REPORTING_WS_KEY'] ?? '';
+$wsKey = $_ENV['GUEST_REPORTING_WS_KEY'] ?? '';
 
 $client = new SoapClient(
     'https://alloggiatiweb.poliziadistato.it/service/service.asmx?wsdl',
     ['trace' => true, 'exceptions' => true, 'encoding' => 'UTF-8', 'soap_version' => SOAP_1_1, 'cache_wsdl' => WSDL_CACHE_NONE]
 );
 
-$tr    = $client->GenerateToken(['Utente' => $utente, 'Password' => $password, 'WsKey' => $wsKey]);
+$tr = $client->GenerateToken(['Utente' => $utente, 'Password' => $password, 'WsKey' => $wsKey]);
 $token = (string) ($tr->GenerateTokenResult->token ?? '');
-echo "Token OK: " . strlen($token) . " chars\n";
+echo 'Token OK: '.strlen($token)." chars\n";
 
 function w(string &$s, string $val, int $start, int $len): void
 {
@@ -55,17 +56,17 @@ w($recordA, 'AB123456', 134, 15);
 w($recordA, '201', 149, 4);
 
 echo "=== FORMAT A (with data_arrivo at pos 2) ===\n";
-echo "len=" . strlen($recordA) . "\n";
+echo 'len='.strlen($recordA)."\n";
 $elencoA = ['string' => [$recordA]];
 $resultA = $client->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => $elencoA]);
-echo json_encode($resultA, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n";
+echo json_encode($resultA, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n\n";
 
 // Test multiple date formats and also try CRLF-embedded records
 $formats = [
-    'dmY'   => date('dmY'),     // 01072025
-    'Ymd'   => date('Ymd'),     // 20250701
-    'mdY'   => date('mdY'),     // 07012025
-    'dmy'   => date('dmy'),     // 010725
+    'dmY' => date('dmY'),     // 01072025
+    'Ymd' => date('Ymd'),     // 20250701
+    'mdY' => date('mdY'),     // 07012025
+    'dmy' => date('dmy'),     // 010725
 ];
 
 foreach ($formats as $fmt => $dateVal) {
@@ -83,7 +84,7 @@ foreach ($formats as $fmt => $dateVal) {
     w($r, '201', 149, 4);
     $res = $client->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => ['string' => [$r]]]);
     $detail = $res->result->Dettaglio->EsitoOperazioneServizio ?? null;
-    echo "date fmt $fmt ($dateVal): " . ($detail ? $detail->ErroreDettaglio : 'OK?') . "\n";
+    echo "date fmt $fmt ($dateVal): ".($detail ? $detail->ErroreDettaglio : 'OK?')."\n";
 }
 
 // Also test with CRLF embedded in each record element
@@ -99,6 +100,6 @@ w($r2, '201', 128, 3);
 w($r2, 'APA', 131, 3);
 w($r2, 'AB123456', 134, 15);
 w($r2, '201', 149, 4);
-$res2 = $client->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => ['string' => [$r2 . "\r\n"]]]);
+$res2 = $client->Test(['Utente' => $utente, 'token' => $token, 'ElencoSchedine' => ['string' => [$r2."\r\n"]]]);
 $detail2 = $res2->result->Dettaglio->EsitoOperazioneServizio ?? null;
-echo "With CRLF: " . ($detail2 ? $detail2->ErroreDettaglio : 'OK?') . "\n";
+echo 'With CRLF: '.($detail2 ? $detail2->ErroreDettaglio : 'OK?')."\n";

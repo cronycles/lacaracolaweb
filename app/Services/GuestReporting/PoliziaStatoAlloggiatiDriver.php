@@ -50,32 +50,77 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     private const RECORD_LENGTH = 168;
 
     // Field positions (0-indexed start, length) — from TracciatoRecord.png
-    private const FIELD_TIPO_ALLOGGIATO_START   = 0;   private const FIELD_TIPO_ALLOGGIATO_LEN   = 2;
-    private const FIELD_DATA_ARRIVO_START        = 2;   private const FIELD_DATA_ARRIVO_LEN        = 10;
-    private const FIELD_GIORNI_PERM_START        = 12;  private const FIELD_GIORNI_PERM_LEN        = 2;
-    private const FIELD_COGNOME_START            = 14;  private const FIELD_COGNOME_LEN            = 50;
-    private const FIELD_NOME_START               = 64;  private const FIELD_NOME_LEN               = 30;
-    private const FIELD_SESSO_START              = 94;  private const FIELD_SESSO_LEN              = 1;
-    private const FIELD_DATA_NASCITA_START       = 95;  private const FIELD_DATA_NASCITA_LEN       = 10;
-    private const FIELD_COMUNE_NASCITA_START     = 105; private const FIELD_COMUNE_NASCITA_LEN     = 9;
-    private const FIELD_PROVINCIA_NASCITA_START  = 114; private const FIELD_PROVINCIA_NASCITA_LEN  = 2;
-    private const FIELD_STATO_NASCITA_START      = 116; private const FIELD_STATO_NASCITA_LEN      = 9;
-    private const FIELD_CITTADINANZA_START       = 125; private const FIELD_CITTADINANZA_LEN       = 9;
-    private const FIELD_TIPO_DOC_START           = 134; private const FIELD_TIPO_DOC_LEN           = 5;
-    private const FIELD_NUM_DOC_START            = 139; private const FIELD_NUM_DOC_LEN            = 20;
-    private const FIELD_LUOGO_RIL_START          = 159; private const FIELD_LUOGO_RIL_LEN          = 9;
+    private const FIELD_TIPO_ALLOGGIATO_START = 0;
+
+    private const FIELD_TIPO_ALLOGGIATO_LEN = 2;
+
+    private const FIELD_DATA_ARRIVO_START = 2;
+
+    private const FIELD_DATA_ARRIVO_LEN = 10;
+
+    private const FIELD_GIORNI_PERM_START = 12;
+
+    private const FIELD_GIORNI_PERM_LEN = 2;
+
+    private const FIELD_COGNOME_START = 14;
+
+    private const FIELD_COGNOME_LEN = 50;
+
+    private const FIELD_NOME_START = 64;
+
+    private const FIELD_NOME_LEN = 30;
+
+    private const FIELD_SESSO_START = 94;
+
+    private const FIELD_SESSO_LEN = 1;
+
+    private const FIELD_DATA_NASCITA_START = 95;
+
+    private const FIELD_DATA_NASCITA_LEN = 10;
+
+    private const FIELD_COMUNE_NASCITA_START = 105;
+
+    private const FIELD_COMUNE_NASCITA_LEN = 9;
+
+    private const FIELD_PROVINCIA_NASCITA_START = 114;
+
+    private const FIELD_PROVINCIA_NASCITA_LEN = 2;
+
+    private const FIELD_STATO_NASCITA_START = 116;
+
+    private const FIELD_STATO_NASCITA_LEN = 9;
+
+    private const FIELD_CITTADINANZA_START = 125;
+
+    private const FIELD_CITTADINANZA_LEN = 9;
+
+    private const FIELD_TIPO_DOC_START = 134;
+
+    private const FIELD_TIPO_DOC_LEN = 5;
+
+    private const FIELD_NUM_DOC_START = 139;
+
+    private const FIELD_NUM_DOC_LEN = 20;
+
+    private const FIELD_LUOGO_RIL_START = 159;
+
+    private const FIELD_LUOGO_RIL_LEN = 9;
 
     private readonly string $utente;
+
     private readonly string $password;
+
     private readonly string $wsKey;
+
     private readonly ?string $idAppartamento;
+
     private readonly string $cacheKey;
 
     public function __construct(array $config)
     {
-        $this->utente         = (string) ($config['utente'] ?? '');
-        $this->password       = (string) ($config['password'] ?? '');
-        $this->wsKey          = (string) ($config['ws_key'] ?? '');
+        $this->utente = (string) ($config['utente'] ?? '');
+        $this->password = (string) ($config['password'] ?? '');
+        $this->wsKey = (string) ($config['ws_key'] ?? '');
         $this->idAppartamento = isset($config['id_appartamento']) && $config['id_appartamento'] !== ''
             ? (string) $config['id_appartamento']
             : null;
@@ -89,11 +134,11 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     public function checkConnection(): bool
     {
         try {
-            $token  = $this->getToken();
+            $token = $this->getToken();
             $client = $this->createSoapClient();
             $result = $client->Authentication_Test([
                 'Utente' => $this->utente,
-                'token'  => $token,
+                'token' => $token,
             ]);
 
             return isset($result->Authentication_TestResult->esito) &&
@@ -106,26 +151,28 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     public function testDraft(array $guests): SubmissionResult
     {
         try {
-            $token      = $this->getToken();
-            $client     = $this->createSoapClient();
-            $elenco     = $this->buildElenco($guests);
-            $raw        = $this->callTestMethod($client, $token, $elenco);
+            $token = $this->getToken();
+            $client = $this->createSoapClient();
+            $elenco = $this->buildElenco($guests);
+            $raw = $this->callTestMethod($client, $token, $elenco);
+
             return $this->parseResponse($raw, 'test');
         } catch (Throwable $e) {
-            return SubmissionResult::failure('Errore durante il test: ' . $e->getMessage());
+            return SubmissionResult::failure('Errore durante il test: '.$e->getMessage());
         }
     }
 
     public function sendGuests(array $guests): SubmissionResult
     {
         try {
-            $token  = $this->getToken();
+            $token = $this->getToken();
             $client = $this->createSoapClient();
             $elenco = $this->buildElenco($guests);
-            $raw    = $this->callSendMethod($client, $token, $elenco);
+            $raw = $this->callSendMethod($client, $token, $elenco);
+
             return $this->parseResponse($raw, 'send');
         } catch (Throwable $e) {
-            return SubmissionResult::failure('Errore durante l\'invio: ' . $e->getMessage());
+            return SubmissionResult::failure('Errore durante l\'invio: '.$e->getMessage());
         }
     }
 
@@ -145,22 +192,22 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 
         try {
             $result = $client->GenerateToken([
-                'Utente'   => $this->utente,
+                'Utente' => $this->utente,
                 'Password' => $this->password,
-                'WsKey'    => $this->wsKey,
+                'WsKey' => $this->wsKey,
             ]);
         } catch (SoapFault $e) {
-            throw new RuntimeException('Alloggiati Web GenerateToken failed: ' . $e->getMessage(), 0, $e);
+            throw new RuntimeException('Alloggiati Web GenerateToken failed: '.$e->getMessage(), 0, $e);
         }
 
         // Verified response structure:
         //   $result->GenerateTokenResult->{token, issued, expires}
         //   $result->result->{esito, ErroreCod, ErroreDes, ErroreDettaglio}
         $tokenResult = $result->GenerateTokenResult ?? null;
-        $token       = (string) ($tokenResult->token ?? '');
+        $token = (string) ($tokenResult->token ?? '');
 
         if ($token === '') {
-            $res  = $result->result ?? null;
+            $res = $result->result ?? null;
             $desc = ($res->ErroreDes ?? '') ?: ($res->ErroreDettaglio ?? '') ?: 'token vuoto — verificare utente/password/ws_key';
             throw new RuntimeException("Alloggiati Web authentication error: {$desc}");
         }
@@ -182,9 +229,9 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 
     /**
      * Build the ElencoSchedine array from an array of GuestRecords.
-    * The WSDL defines ElencoSchedine as ArrayOfString, so each 168-character
-    * record is sent as a separate element. The SOAP array provides row
-    * boundaries, so terminators must not be included in the elements.
+     * The WSDL defines ElencoSchedine as ArrayOfString, so each 168-character
+     * record is sent as a separate element. The SOAP array provides row
+     * boundaries, so terminators must not be included in the elements.
      *
      * @param  GuestRecord[]  $guests
      * @return array{string: string[]}
@@ -297,16 +344,16 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     {
         if ($this->idAppartamento !== null) {
             return $client->GestioneAppartamenti_Test([
-                'Utente'         => $this->utente,
-                'token'          => $token,
+                'Utente' => $this->utente,
+                'token' => $token,
                 'ElencoSchedine' => $elenco,
                 'IdAppartamento' => $this->idAppartamento,
             ]);
         }
 
         return $client->Test([
-            'Utente'         => $this->utente,
-            'token'          => $token,
+            'Utente' => $this->utente,
+            'token' => $token,
             'ElencoSchedine' => $elenco,
         ]);
     }
@@ -315,16 +362,16 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     {
         if ($this->idAppartamento !== null) {
             return $client->GestioneAppartamenti_Send([
-                'Utente'         => $this->utente,
-                'token'          => $token,
+                'Utente' => $this->utente,
+                'token' => $token,
                 'ElencoSchedine' => $elenco,
                 'IdAppartamento' => $this->idAppartamento,
             ]);
         }
 
         return $client->Send([
-            'Utente'         => $this->utente,
-            'token'          => $token,
+            'Utente' => $this->utente,
+            'token' => $token,
             'ElencoSchedine' => $elenco,
         ]);
     }
@@ -338,8 +385,8 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         $rawJson = json_encode($raw, JSON_UNESCAPED_UNICODE) ?: null;
 
         // The result property name differs between Test/Send and GestioneAppartamenti variants
-        $resultKey  = $mode === 'test' ? 'TestResult' : 'SendResult';
-        $appartKey  = $mode === 'test' ? 'GestioneAppartamenti_TestResult' : 'GestioneAppartamenti_SendResult';
+        $resultKey = $mode === 'test' ? 'TestResult' : 'SendResult';
+        $appartKey = $mode === 'test' ? 'GestioneAppartamenti_TestResult' : 'GestioneAppartamenti_SendResult';
         $resultProp = $raw->{$resultKey} ?? $raw->{$appartKey} ?? null;
 
         if ($resultProp === null) {
@@ -348,16 +395,17 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
 
         // The service returns esito as boolean (true = ok, false = error)
         // and error detail in ErroreCod / ErroreDes / ErroreDettaglio
-        $esito       = $resultProp->esito ?? false;
-        $errorCod    = (string) ($resultProp->ErroreCod ?? '');
-        $errorDes    = (string) ($resultProp->ErroreDes ?? '');
+        $esito = $resultProp->esito ?? false;
+        $errorCod = (string) ($resultProp->ErroreCod ?? '');
+        $errorDes = (string) ($resultProp->ErroreDes ?? '');
         $errorDetail = (string) ($resultProp->ErroreDettaglio ?? '');
 
         $topLevelOk = $esito === true || $esito === 1 || ($esito !== false && (int) $esito === 0 && $errorCod === '');
 
         // Top-level failure (auth/transport error)
-        if (!$topLevelOk) {
+        if (! $topLevelOk) {
             $description = $errorDetail ?: $errorDes ?: "Errore servizio (cod: {$errorCod}).";
+
             return SubmissionResult::failure($description, $rawJson);
         }
 
@@ -365,38 +413,38 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
         // the request was received, but the actual per-schedina validation results live in
         // $raw->result->Dettaglio->EsitoOperazioneServizio and $raw->result->SchedineValide.
         // We must check those to determine real success or failure.
-        $rowDetails   = [];
-        $resultData   = $raw->result ?? null;
+        $rowDetails = [];
+        $resultData = $raw->result ?? null;
         $checkedNested = false;
 
         if ($resultData !== null) {
             $schedineValide = isset($resultData->SchedineValide) ? (int) $resultData->SchedineValide : null;
-            $esitoItems     = $resultData->Dettaglio->EsitoOperazioneServizio ?? null;
+            $esitoItems = $resultData->Dettaglio->EsitoOperazioneServizio ?? null;
 
             if ($esitoItems !== null) {
                 $checkedNested = true;
-                $items         = is_array($esitoItems) ? $esitoItems : [$esitoItems];
+                $items = is_array($esitoItems) ? $esitoItems : [$esitoItems];
                 $errorMessages = [];
 
                 foreach ($items as $i => $item) {
-                    $rowEsito   = $item->esito ?? true;
-                    $rowOk      = $rowEsito === true || $rowEsito === 1;
-                    $rowErrDes  = (string) ($item->ErroreDettaglio ?? $item->ErroreDes ?? '');
-                    $rowErrCod  = (string) ($item->ErroreCod ?? '');
+                    $rowEsito = $item->esito ?? true;
+                    $rowOk = $rowEsito === true || $rowEsito === 1;
+                    $rowErrDes = (string) ($item->ErroreDettaglio ?? $item->ErroreDes ?? '');
+                    $rowErrCod = (string) ($item->ErroreCod ?? '');
 
                     $rowDetails[] = [
-                        'row'         => $i + 1,
-                        'esito'       => $rowOk ? '1' : '0',
+                        'row' => $i + 1,
+                        'esito' => $rowOk ? '1' : '0',
                         'descrizione' => $rowErrDes ?: ($rowErrCod ? "Errore cod: {$rowErrCod}" : ''),
                     ];
 
-                    if (!$rowOk && $rowErrDes !== '') {
+                    if (! $rowOk && $rowErrDes !== '') {
                         $errorMessages[] = $rowErrDes;
                     }
                 }
 
-                $hasRowErrors = !empty($errorMessages);
-                $noValidRows  = $schedineValide !== null && $schedineValide === 0;
+                $hasRowErrors = ! empty($errorMessages);
+                $noValidRows = $schedineValide !== null && $schedineValide === 0;
 
                 if ($hasRowErrors || $noValidRows) {
                     $description = $errorMessages
@@ -404,20 +452,21 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
                         : ($schedineValide !== null
                             ? "Nessuna schedina valida (SchedineValide: {$schedineValide})."
                             : 'Schedine non accettate dal servizio.');
+
                     return SubmissionResult::failure($description, $rawJson);
                 }
             }
         }
 
         // Fallback: parse per-row details from the old response structure
-        if (!$checkedNested) {
+        if (! $checkedNested) {
             $righe = $resultProp->DettaglioEsito ?? $resultProp->Risultato ?? null;
             if ($righe !== null) {
                 $items = is_array($righe) ? $righe : [$righe];
                 foreach ($items as $item) {
                     $rowDetails[] = [
-                        'row'         => (int) ($item->riga ?? 0),
-                        'esito'       => (string) ($item->esito ?? ''),
+                        'row' => (int) ($item->riga ?? 0),
+                        'esito' => (string) ($item->esito ?? ''),
                         'descrizione' => (string) ($item->descrizione ?? $item->ErroreDes ?? ''),
                     ];
                 }
@@ -441,12 +490,12 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
      */
     private function countryIsoToAlloggiati(string $iso): string
     {
-        $iso  = mb_strtoupper(trim($iso));
+        $iso = mb_strtoupper(trim($iso));
         $code = Country::where('iso2', $iso)->value('alloggiati_code');
 
         if ($code === null) {
             throw new RuntimeException(
-                "Unmapped ISO country code for Alloggiati Web: [{$iso}]. " .
+                "Unmapped ISO country code for Alloggiati Web: [{$iso}]. ".
                 'Add it to the countries table (run CountriesSeeder or insert manually).'
             );
         }
@@ -458,10 +507,10 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     private function documentTypeToAlloggiati(string $type): string
     {
         return match ($type) {
-            'passport'         => 'PASOR', // PASSAPORTO ORDINARIO
-            'id_card'          => 'IDENT', // CARTA DI IDENTITA'
-            'driving_license'  => 'PATEN', // PATENTE DI GUIDA
-            default            => 'CERID', // CERTIFICATO D'IDENTITA' (fallback)
+            'passport' => 'PASOR', // PASSAPORTO ORDINARIO
+            'id_card' => 'IDENT', // CARTA DI IDENTITA'
+            'driving_license' => 'PATEN', // PATENTE DI GUIDA
+            default => 'CERID', // CERTIFICATO D'IDENTITA' (fallback)
         };
     }
 
@@ -483,14 +532,14 @@ class PoliziaStatoAlloggiatiDriver implements GuestReportingDriverInterface
     {
         try {
             return new SoapClient(self::WSDL, [
-                'trace'        => false,
-                'exceptions'   => true,
-                'encoding'     => 'UTF-8',
+                'trace' => false,
+                'exceptions' => true,
+                'encoding' => 'UTF-8',
                 'soap_version' => SOAP_1_1,
-                'cache_wsdl'   => WSDL_CACHE_BOTH,
+                'cache_wsdl' => WSDL_CACHE_BOTH,
             ]);
         } catch (SoapFault $e) {
-            throw new RuntimeException('Cannot connect to Alloggiati Web WSDL: ' . $e->getMessage(), 0, $e);
+            throw new RuntimeException('Cannot connect to Alloggiati Web WSDL: '.$e->getMessage(), 0, $e);
         }
     }
 }

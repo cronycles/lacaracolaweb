@@ -11,9 +11,9 @@ use App\Services\BookingCreationService;
 use App\Services\InterhomePdfBookingParser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Throwable;
 
@@ -75,7 +75,7 @@ class InterhomePdfImportController extends Controller
     public function confirm(Request $request, BookingCreationService $creationService): RedirectResponse
     {
         $preview = $request->session()->get(self::PREVIEW_SESSION_KEY);
-        if (!$preview || empty($preview['rows'])) {
+        if (! $preview || empty($preview['rows'])) {
             return redirect()
                 ->route('admin.bookings.import-pdf')
                 ->with('error', 'Nessuna anteprima disponibile. Carica prima un PDF.');
@@ -92,11 +92,13 @@ class InterhomePdfImportController extends Controller
             $currentStatus = $this->resolveImportStatus($row);
             if (($currentStatus['status'] ?? '') === 'duplicate') {
                 $duplicates++;
+
                 continue;
             }
 
             if (($currentStatus['status'] ?? '') !== 'new') {
                 $skipped++;
+
                 continue;
             }
 
@@ -116,7 +118,7 @@ class InterhomePdfImportController extends Controller
                     'pets' => (int) ($row['pets'] ?? 0),
                     'source' => $row['source'] === 'owner' ? 'owner' : 'interhome',
                     'external_ref' => $row['external_ref'] ?: null,
-                    'notes' => 'Imported from Interhome PDF: ' . ($preview['filename'] ?? 'unknown file'),
+                    'notes' => 'Imported from Interhome PDF: '.($preview['filename'] ?? 'unknown file'),
                 ]);
 
                 $created++;
@@ -125,7 +127,7 @@ class InterhomePdfImportController extends Controller
 
                 $errorDetails[] = [
                     'external_ref' => (string) ($row['external_ref'] ?? ''),
-                    'guest' => trim(((string) ($row['first_name'] ?? '')) . ' ' . ((string) ($row['last_name'] ?? ''))),
+                    'guest' => trim(((string) ($row['first_name'] ?? '')).' '.((string) ($row['last_name'] ?? ''))),
                     'message' => $exception->getMessage(),
                 ];
             }
@@ -156,16 +158,16 @@ class InterhomePdfImportController extends Controller
     }
 
     /**
-     * @param  array<string, mixed> $row
+     * @param  array<string, mixed>  $row
      * @return array{status: string, status_reason: string}
      */
     private function resolveImportStatus(array $row): array
     {
-        if (!empty($row['skip_import'])) {
+        if (! empty($row['skip_import'])) {
             return ['status' => 'skipped', 'status_reason' => (string) ($row['skip_reason'] ?? 'Riga non importabile')];
         }
 
-        if (!empty($row['external_ref'])) {
+        if (! empty($row['external_ref'])) {
             $existsByRef = Booking::where('external_ref', $row['external_ref'])->exists();
             if ($existsByRef) {
                 return ['status' => 'duplicate', 'status_reason' => 'Rif. esterno già presente'];

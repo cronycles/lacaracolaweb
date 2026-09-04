@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Booking;
-use App\Services\TelegramService;
 use App\Services\TelegramBookingMessageBuilder;
+use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -20,10 +20,10 @@ class SendTelegramBookingReminders extends Command
     {
         $type = $this->option('type');
 
-        $checkinLeadDays  = (int) config('telegram.checkin_lead_days', 1);
+        $checkinLeadDays = (int) config('telegram.checkin_lead_days', 1);
         $checkoutLeadDays = (int) config('telegram.checkout_lead_days', 1);
 
-        $checkinDate  = Carbon::today()->addDays($checkinLeadDays)->toDateString();
+        $checkinDate = Carbon::today()->addDays($checkinLeadDays)->toDateString();
         $checkoutDate = Carbon::today()->addDays($checkoutLeadDays)->toDateString();
 
         // Arrival reminders
@@ -67,7 +67,7 @@ class SendTelegramBookingReminders extends Command
     {
         $person = $booking->person;
 
-        $lines   = [];
+        $lines = [];
         $lines[] = "\u{1F514} Arrivo domani \u{2014} {$person->full_name}";
 
         if (! empty($person->phone)) {
@@ -95,7 +95,7 @@ class SendTelegramBookingReminders extends Command
     {
         $person = $booking->person;
 
-        $lines   = [];
+        $lines = [];
         $lines[] = "\u{1F514} Partenza domani \u{2014} {$person->full_name}";
 
         if (! empty($person->phone)) {

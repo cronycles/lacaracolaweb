@@ -20,17 +20,17 @@ return new class extends Migration
 
         // Apply config defaults to existing rows
         $defaults = config('finance.tax_declaration_defaults', [
-            'income'   => true,
+            'income' => true,
             'cleaning' => true,
-            'linen'    => true,
-            'parking'  => false,
+            'linen' => true,
+            'parking' => false,
         ]);
 
         DB::table('bookings')->update([
-            'income_tax'   => $defaults['income']   ? 1 : 0,
-            'cleaning_tax' => $defaults['cleaning']  ? 1 : 0,
-            'linen_tax'    => $defaults['linen']     ? 1 : 0,
-            'parking_tax'  => $defaults['parking']   ? 1 : 0,
+            'income_tax' => $defaults['income'] ? 1 : 0,
+            'cleaning_tax' => $defaults['cleaning'] ? 1 : 0,
+            'linen_tax' => $defaults['linen'] ? 1 : 0,
+            'parking_tax' => $defaults['parking'] ? 1 : 0,
         ]);
     }
 

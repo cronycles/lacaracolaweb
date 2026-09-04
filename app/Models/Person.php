@@ -38,10 +38,10 @@ class Person extends Model
     ];
 
     protected $casts = [
-        'birth_date'               => 'date',
-        'newsletter_subscribed'    => 'boolean',
+        'birth_date' => 'date',
+        'newsletter_subscribed' => 'boolean',
         'newsletter_subscribed_at' => 'datetime',
-        'newsletter_opted_out'     => 'boolean',
+        'newsletter_opted_out' => 'boolean',
     ];
 
     /** Full name helper */
@@ -118,7 +118,7 @@ class Person extends Model
         }
 
         // Regional indicator symbols: A=🇦 (U+1F1E6), offset from ord('A')=65 is 127397
-        return mb_chr(127397 + ord($code[0])) . mb_chr(127397 + ord($code[1]));
+        return mb_chr(127397 + ord($code[0])).mb_chr(127397 + ord($code[1]));
     }
 
     public function autoSubscribeToNewsletter(): void
@@ -193,7 +193,7 @@ class Person extends Model
                 // Mai in nessuna prenotazione (né come capogruppo né come ospite)
                 $q->where(function (Builder $inner): void {
                     $inner->whereDoesntHave('bookings')
-                          ->whereNotIn('id', DB::table('booking_person')->select('person_id'));
+                        ->whereNotIn('id', DB::table('booking_person')->select('person_id'));
                 });
                 // Oppure ha già condiviso una prenotazione con questo capogruppo
                 if ($relatedIds->isNotEmpty()) {

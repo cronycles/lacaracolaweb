@@ -18,8 +18,8 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
     public function test_each_array_item_contains_only_the_168_character_record(): void
     {
         Country::create([
-            'iso2'            => 'FR',
-            'name_it'         => 'Francia',
+            'iso2' => 'FR',
+            'name_it' => 'Francia',
             'alloggiati_code' => '201000200',
         ]);
 
@@ -53,8 +53,8 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
     public function test_free_text_is_normalized_to_printable_ascii(): void
     {
         Country::create([
-            'iso2'            => 'FR',
-            'name_it'         => 'Francia',
+            'iso2' => 'FR',
+            'name_it' => 'Francia',
             'alloggiati_code' => '201000200',
         ]);
 
@@ -62,8 +62,8 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
             tipoAlloggiato: '18',
             arrivalDate: '10/08/2026',
             stayNights: 2,
-            lastName: "Àlvarez Ñørgaard ç ¢ 😀",
-            firstName: "Zoë Łukáš",
+            lastName: 'Àlvarez Ñørgaard ç ¢ 😀',
+            firstName: 'Zoë Łukáš',
             gender: 'F',
             birthDate: '1990-01-01',
             birthMunicipality: 'Paris',
@@ -71,7 +71,7 @@ class PoliziaStatoAlloggiatiDriverTest extends TestCase
             birthCountryCode: 'FR',
             nationalityCode: 'FR',
             documentType: 'passport',
-            documentNumber: "AB¢-ç😀123",
+            documentNumber: 'AB¢-ç😀123',
             documentIssuePlace: '',
             documentIssueCountryCode: 'FR',
         );

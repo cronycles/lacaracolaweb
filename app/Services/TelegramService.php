@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
     private string $token;
+
     private string $apiUrl;
 
     public function __construct()
     {
-        $this->token  = (string) config('services.telegram.token');
+        $this->token = (string) config('services.telegram.token');
         $this->apiUrl = rtrim((string) config('services.telegram.api_url', 'https://api.telegram.org/bot'), '/');
     }
 
@@ -29,14 +30,14 @@ class TelegramService
         try {
             $response = Http::post("{$this->apiUrl}{$this->token}/sendMessage", [
                 'chat_id' => $chatId,
-                'text'    => $text,
+                'text' => $text,
             ]);
 
             if (! $response->successful()) {
                 Log::channel('telegram')->error('Telegram sendMessage failed', [
                     'chat_id' => $chatId,
-                    'status'  => $response->status(),
-                    'body'    => $response->body(),
+                    'status' => $response->status(),
+                    'body' => $response->body(),
                 ]);
 
                 return false;
@@ -46,7 +47,7 @@ class TelegramService
         } catch (ConnectionException $e) {
             Log::channel('telegram')->error('Telegram sendMessage connection error', [
                 'chat_id' => $chatId,
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return false;

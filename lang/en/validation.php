@@ -197,18 +197,18 @@ return [
     */
 
     'attributes' => [
-        'checkin'  => 'check-in',
+        'checkin' => 'check-in',
         'checkout' => 'check-out',
-        'adults'   => 'adults',
+        'adults' => 'adults',
         'children' => 'children',
-        'babies'   => 'infants',
-        'pets'     => 'pets',
+        'babies' => 'infants',
+        'pets' => 'pets',
         'first_name' => 'first name',
         'last_name' => 'last name',
-        'email'    => 'email',
-        'phone'    => 'phone',
+        'email' => 'email',
+        'phone' => 'phone',
         'phone_prefix' => 'phone prefix',
-        'message'  => 'message',
+        'message' => 'message',
     ],
 
 ];

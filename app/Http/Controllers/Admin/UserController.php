@@ -33,39 +33,39 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'             => ['required', 'string', 'max:255'],
-            'email'            => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone'            => ['nullable', 'string', 'max:32'],
-            'password'         => ['required', 'string', 'min:8', 'confirmed'],
-            'role_id'          => ['nullable', 'exists:roles,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:32'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role_id' => ['nullable', 'exists:roles,id'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
-            'tax_code'         => ['nullable', 'string', 'max:16'],
-            'address_street'   => ['nullable', 'string', 'max:255'],
-            'address_zip'      => ['nullable', 'string', 'max:10'],
-            'address_city'     => ['nullable', 'string', 'max:255'],
+            'tax_code' => ['nullable', 'string', 'max:16'],
+            'address_street' => ['nullable', 'string', 'max:255'],
+            'address_zip' => ['nullable', 'string', 'max:10'],
+            'address_city' => ['nullable', 'string', 'max:255'],
             'payment_beneficiary' => ['nullable', 'string', 'max:255'],
-            'payment_iban'      => ['nullable', 'string', 'max:34'],
-            'payment_bic'       => ['nullable', 'string', 'max:11'],
-            'payment_enabled'  => ['boolean'],
+            'payment_iban' => ['nullable', 'string', 'max:34'],
+            'payment_bic' => ['nullable', 'string', 'max:11'],
+            'payment_enabled' => ['boolean'],
         ]);
 
         $isHostOwner = Role::whereKey($data['role_id'] ?? null)->where('name', 'host_owner')->exists();
 
         User::create([
-            'name'             => $data['name'],
-            'email'            => $data['email'],
-            'phone'            => $data['phone'] ?? null,
-            'password'         => Hash::make($data['password']),
-            'role_id'          => $data['role_id'] ?? null,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'password' => Hash::make($data['password']),
+            'role_id' => $data['role_id'] ?? null,
             'telegram_chat_id' => $data['telegram_chat_id'] ?? null,
-            'tax_code'         => $isHostOwner ? ($data['tax_code'] ?? null) : null,
-            'address_street'   => $isHostOwner ? ($data['address_street'] ?? null) : null,
-            'address_zip'      => $isHostOwner ? ($data['address_zip'] ?? null) : null,
-            'address_city'     => $isHostOwner ? ($data['address_city'] ?? null) : null,
+            'tax_code' => $isHostOwner ? ($data['tax_code'] ?? null) : null,
+            'address_street' => $isHostOwner ? ($data['address_street'] ?? null) : null,
+            'address_zip' => $isHostOwner ? ($data['address_zip'] ?? null) : null,
+            'address_city' => $isHostOwner ? ($data['address_city'] ?? null) : null,
             'payment_beneficiary' => $isHostOwner ? ($data['payment_beneficiary'] ?? null) : null,
-            'payment_iban'     => $isHostOwner ? ($data['payment_iban'] ?? null) : null,
-            'payment_bic'      => $isHostOwner ? ($data['payment_bic'] ?? null) : null,
-            'payment_enabled'  => $isHostOwner && (bool) ($data['payment_enabled'] ?? false),
+            'payment_iban' => $isHostOwner ? ($data['payment_iban'] ?? null) : null,
+            'payment_bic' => $isHostOwner ? ($data['payment_bic'] ?? null) : null,
+            'payment_enabled' => $isHostOwner && (bool) ($data['payment_enabled'] ?? false),
         ]);
 
         return redirect()->route('admin.users.index')
@@ -74,26 +74,26 @@ class UserController extends Controller
 
     public function edit(User $utenti): View
     {
-        $roles       = Role::orderBy('name')->get();
+        $roles = Role::orderBy('name')->get();
         $permissions = Permission::where('name', '!=', 'manage_users')->orderBy('name')->get();
 
         $utenti->load('role.permissions', 'permissionOverrides', 'permissionDenials');
 
         // Effective state: checked if the user effectively has the permission
         // (role grant or explicit grant, minus explicit denials)
-        $rolePermissionIds   = $utenti->role?->permissions->pluck('id')->toArray() ?? [];
-        $overrideIds         = $utenti->permissionOverrides->pluck('id')->toArray();
-        $denialIds           = $utenti->permissionDenials->pluck('id')->toArray();
+        $rolePermissionIds = $utenti->role?->permissions->pluck('id')->toArray() ?? [];
+        $overrideIds = $utenti->permissionOverrides->pluck('id')->toArray();
+        $denialIds = $utenti->permissionDenials->pluck('id')->toArray();
         $effectivePermissionIds = array_values(array_diff(
             array_unique(array_merge($rolePermissionIds, $overrideIds)),
             $denialIds
         ));
 
         return view('admin.users.edit', [
-            'user'                   => $utenti,
-            'roles'                  => $roles,
-            'permissions'            => $permissions,
-            'rolePermissionIds'      => $rolePermissionIds,
+            'user' => $utenti,
+            'roles' => $roles,
+            'permissions' => $permissions,
+            'rolePermissionIds' => $rolePermissionIds,
             'effectivePermissionIds' => $effectivePermissionIds,
         ]);
     }
@@ -101,26 +101,26 @@ class UserController extends Controller
     public function update(Request $request, User $utenti): RedirectResponse
     {
         $data = $request->validate([
-            'email'            => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($utenti->id)],
-            'role_id'          => ['nullable', 'exists:roles,id'],
-            'phone'            => ['nullable', 'string', 'max:32'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($utenti->id)],
+            'role_id' => ['nullable', 'exists:roles,id'],
+            'phone' => ['nullable', 'string', 'max:32'],
             'telegram_chat_id' => ['nullable', 'string', 'max:64'],
             'telegram_notifications_enabled' => ['boolean'],
-            'tax_code'         => ['nullable', 'string', 'max:16'],
-            'address_street'   => ['nullable', 'string', 'max:255'],
-            'address_zip'      => ['nullable', 'string', 'max:10'],
-            'address_city'     => ['nullable', 'string', 'max:255'],
+            'tax_code' => ['nullable', 'string', 'max:16'],
+            'address_street' => ['nullable', 'string', 'max:255'],
+            'address_zip' => ['nullable', 'string', 'max:10'],
+            'address_city' => ['nullable', 'string', 'max:255'],
             'payment_beneficiary' => ['nullable', 'string', 'max:255'],
-            'payment_iban'      => ['nullable', 'string', 'max:34'],
-            'payment_bic'       => ['nullable', 'string', 'max:11'],
-            'payment_enabled'  => ['boolean'],
-            'permissions'      => ['nullable', 'array'],
-            'permissions.*'    => ['exists:permissions,id'],
+            'payment_iban' => ['nullable', 'string', 'max:34'],
+            'payment_bic' => ['nullable', 'string', 'max:11'],
+            'payment_enabled' => ['boolean'],
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['exists:permissions,id'],
         ]);
 
-        $utenti->email            = $data['email'];
-        $utenti->role_id          = $data['role_id'] ?? null;
-        $utenti->phone            = $data['phone'] ?? null;
+        $utenti->email = $data['email'];
+        $utenti->role_id = $data['role_id'] ?? null;
+        $utenti->phone = $data['phone'] ?? null;
         $utenti->telegram_chat_id = $data['telegram_chat_id'] ?? null;
         $utenti->telegram_notifications_enabled = (bool) ($data['telegram_notifications_enabled'] ?? false);
         $isHostOwner = Role::whereKey($utenti->role_id)->where('name', 'host_owner')->exists();
@@ -137,7 +137,7 @@ class UserController extends Controller
         // Reload role permissions after potential role change
         $utenti->load('role.permissions');
 
-        $checkedIds     = array_map('intval', $data['permissions'] ?? []);
+        $checkedIds = array_map('intval', $data['permissions'] ?? []);
         $allPermissions = Permission::where('name', '!=', 'manage_users')->get();
 
         // Build sync payload:
@@ -148,7 +148,7 @@ class UserController extends Controller
         $syncData = [];
         foreach ($allPermissions as $perm) {
             $isChecked = in_array($perm->id, $checkedIds);
-            $fromRole  = $utenti->role && $utenti->role->permissions->contains('id', $perm->id);
+            $fromRole = $utenti->role && $utenti->role->permissions->contains('id', $perm->id);
 
             if ($isChecked && ! $fromRole) {
                 $syncData[$perm->id] = ['denied' => false];

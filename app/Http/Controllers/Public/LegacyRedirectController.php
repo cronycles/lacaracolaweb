@@ -80,6 +80,7 @@ class LegacyRedirectController extends Controller
     private function localRedirect(string $routeName, int $status): RedirectResponse
     {
         $locale = session('locale', 'it');
+
         return redirect(route_locale($routeName, [], $locale), $status);
     }
 }

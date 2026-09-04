@@ -29,7 +29,7 @@ class SitemapController extends Controller
         $xml .= "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 
         foreach ($urls as $url) {
-            $xml .= "  <url><loc>".htmlspecialchars($url, ENT_XML1, 'UTF-8')."</loc></url>\n";
+            $xml .= '  <url><loc>'.htmlspecialchars($url, ENT_XML1, 'UTF-8')."</loc></url>\n";
         }
 
         $xml .= "</urlset>\n";

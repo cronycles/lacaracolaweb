@@ -50,18 +50,18 @@ trait PersistsGuestReportingData
      * Identical for every caller; `$request` is needed by the closures to read
      * sibling fields for the same row index.
      *
-     * @param string[] $countryCodes
+     * @param  string[]  $countryCodes
      */
     protected function guestReportingValidationRules(Request $request, array $countryCodes): array
     {
         $rules = [
-            'guests'                                      => ['required', 'array', 'min:1'],
-            'guests.*.person_id'                          => ['required', 'integer', 'exists:people,id'],
-            'guests.*.include'                            => ['sometimes', 'nullable'],
-            'guests.*.tipo_alloggiato'                    => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19', '20'])],
-            'guests.*.gender'                             => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['M', 'F'])],
-            'guests.*.birth_date'                         => ['required_if:guests.*.include,1', 'nullable', 'date'],
-            'guests.*.birth_municipality'                 => [
+            'guests' => ['required', 'array', 'min:1'],
+            'guests.*.person_id' => ['required', 'integer', 'exists:people,id'],
+            'guests.*.include' => ['sometimes', 'nullable'],
+            'guests.*.tipo_alloggiato' => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['16', '17', '18', '19', '20'])],
+            'guests.*.gender' => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in(['M', 'F'])],
+            'guests.*.birth_date' => ['required_if:guests.*.include,1', 'nullable', 'date'],
+            'guests.*.birth_municipality' => [
                 'required_if:guests.*.include,1', 'nullable', 'string', 'max:100',
                 function ($attribute, $value, $fail) use ($request) {
                     $idx = explode('.', $attribute)[1];
@@ -71,8 +71,8 @@ trait PersistsGuestReportingData
                     }
                 },
             ],
-            'guests.*.birth_country_code'                 => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
-            'guests.*.nationality_code'                   => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
+            'guests.*.birth_country_code' => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
+            'guests.*.nationality_code' => ['required_if:guests.*.include,1', 'nullable', 'string', Rule::in($countryCodes)],
         ];
 
         // Document fields need explicit per-index rules (rather than the
@@ -149,34 +149,34 @@ trait PersistsGuestReportingData
     {
         $person = Person::findOrFail((int) $guestData['person_id']);
         $person->update([
-            'gender'                      => $guestData['gender'],
-            'birth_date'                  => $guestData['birth_date'] ?? $person->birth_date,
-            'birth_municipality'          => $guestData['birth_municipality'],
-            'birth_province'              => $guestData['birth_province'] ?? null,
-            'birth_country_code'          => $guestData['birth_country_code'],
-            'nationality_code'            => $guestData['nationality_code'],
-            'document_type'               => $guestData['document_type'] ?? null,
-            'document_number'             => $guestData['document_number'] ?? null,
-            'document_issue_place'        => $guestData['document_issue_place'] ?? null,
+            'gender' => $guestData['gender'],
+            'birth_date' => $guestData['birth_date'] ?? $person->birth_date,
+            'birth_municipality' => $guestData['birth_municipality'],
+            'birth_province' => $guestData['birth_province'] ?? null,
+            'birth_country_code' => $guestData['birth_country_code'],
+            'nationality_code' => $guestData['nationality_code'],
+            'document_type' => $guestData['document_type'] ?? null,
+            'document_number' => $guestData['document_number'] ?? null,
+            'document_issue_place' => $guestData['document_issue_place'] ?? null,
             'document_issue_country_code' => $guestData['document_issue_country_code'] ?? null,
         ]);
 
         return new GuestRecord(
-            tipoAlloggiato:            $guestData['tipo_alloggiato'],
-            arrivalDate:               $booking->checkin->format('d/m/Y'),
-            stayNights:                $booking->nights,
-            lastName:                  $person->last_name,
-            firstName:                 $person->first_name,
-            gender:                    $guestData['gender'],
-            birthDate:                 $person->birth_date?->format('Y-m-d') ?? $guestData['birth_date'],
-            birthMunicipality:         $guestData['birth_municipality'],
-            birthProvince:             $guestData['birth_province'] ?? null,
-            birthCountryCode:          $guestData['birth_country_code'],
-            nationalityCode:           $guestData['nationality_code'],
-            documentType:              $guestData['document_type'] ?? '',
-            documentNumber:            $guestData['document_number'] ?? '',
-            documentIssuePlace:        $guestData['document_issue_place'] ?? '',
-            documentIssueCountryCode:  $guestData['document_issue_country_code'] ?? '',
+            tipoAlloggiato: $guestData['tipo_alloggiato'],
+            arrivalDate: $booking->checkin->format('d/m/Y'),
+            stayNights: $booking->nights,
+            lastName: $person->last_name,
+            firstName: $person->first_name,
+            gender: $guestData['gender'],
+            birthDate: $person->birth_date?->format('Y-m-d') ?? $guestData['birth_date'],
+            birthMunicipality: $guestData['birth_municipality'],
+            birthProvince: $guestData['birth_province'] ?? null,
+            birthCountryCode: $guestData['birth_country_code'],
+            nationalityCode: $guestData['nationality_code'],
+            documentType: $guestData['document_type'] ?? '',
+            documentNumber: $guestData['document_number'] ?? '',
+            documentIssuePlace: $guestData['document_issue_place'] ?? '',
+            documentIssueCountryCode: $guestData['document_issue_country_code'] ?? '',
         );
     }
 }

@@ -12,18 +12,19 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $email    = env('ADMIN_EMAIL', 'admin@lacaracola.it');
+        $email = env('ADMIN_EMAIL', 'admin@lacaracola.it');
         $password = env('ADMIN_PASSWORD');
 
         if (! $password) {
             $this->command->error('ADMIN_PASSWORD non impostata in .env — seeder annullato.');
+
             return;
         }
 
         $user = User::updateOrCreate(
             ['email' => $email],
             [
-                'name'     => 'Admin',
+                'name' => 'Admin',
                 'password' => Hash::make($password),
             ]
         );

@@ -30,15 +30,15 @@ class CheckinFormTest extends TestCase
     {
         $person = Person::create([
             'first_name' => 'Anna',
-            'last_name'  => 'Verdi',
-            'email'      => 'anna.verdi@example.com',
+            'last_name' => 'Verdi',
+            'email' => 'anna.verdi@example.com',
         ]);
 
         $booking = Booking::create(array_merge([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => $adults,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => $adults,
         ], $overrides));
 
         $booking->generateCheckinToken();
@@ -49,16 +49,16 @@ class CheckinFormTest extends TestCase
     private function guestPayload(int $personId, bool $withDocument): array
     {
         return [
-            'person_id'                   => $personId,
-            'gender'                      => 'M',
-            'birth_date'                  => '1990-01-01',
-            'nationality_code'            => 'FR',
-            'birth_country_code'          => 'FR',
-            'birth_municipality'          => 'Paris',
-            'document_type'               => $withDocument ? 'passport' : '',
-            'document_number'             => $withDocument ? 'X1234567' : '',
+            'person_id' => $personId,
+            'gender' => 'M',
+            'birth_date' => '1990-01-01',
+            'nationality_code' => 'FR',
+            'birth_country_code' => 'FR',
+            'birth_municipality' => 'Paris',
+            'document_type' => $withDocument ? 'passport' : '',
+            'document_number' => $withDocument ? 'X1234567' : '',
             'document_issue_country_code' => $withDocument ? 'FR' : '',
-            'document_issue_place'        => '',
+            'document_issue_place' => '',
         ];
     }
 
@@ -75,10 +75,10 @@ class CheckinFormTest extends TestCase
             'guests.0.document_issue_country_code',
         ]);
 
-                // Full data is saved and confirmed in one request.
-                $this->post(route('checkin.confirm', $booking->checkin_token), [
+        // Full data is saved and confirmed in one request.
+        $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
-                ])->assertRedirect(route('checkin.show', $booking->checkin_token));
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $booking->person->refresh();
         $this->assertSame('passport', $booking->person->document_type);
@@ -139,9 +139,9 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.companions.store', $booking->checkin_token), [
             'first_name' => 'Extra',
-            'last_name'  => 'Guest',
+            'last_name' => 'Guest',
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHas('error');
+            ->assertSessionHas('error');
 
         $this->assertSame(0, $booking->additionalGuests()->count());
     }
@@ -152,9 +152,9 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.companions.store', $booking->checkin_token), [
             'first_name' => 'Extra',
-            'last_name'  => 'Guest',
+            'last_name' => 'Guest',
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertSame(1, $booking->additionalGuests()->count());
         $this->assertSame('Extra', $booking->additionalGuests()->first()->first_name);
@@ -166,7 +166,7 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.companions.store', $booking->checkin_token), [
             'first_name' => ' mARCO ',
-            'last_name'  => 'rOSSI',
+            'last_name' => 'rOSSI',
         ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $companion = $booking->additionalGuests()->first();
@@ -184,7 +184,7 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$payload],
-                ])->assertRedirect(route('checkin.show', $booking->checkin_token));
+        ])->assertRedirect(route('checkin.show', $booking->checkin_token));
 
         $booking->person->refresh();
         $this->assertSame('Genova', $booking->person->birth_municipality);
@@ -197,13 +197,13 @@ class CheckinFormTest extends TestCase
 
         $this->post(route('checkin.companions.store', $booking->checkin_token), [
             'first_name' => 'Extra',
-            'last_name'  => 'Guest',
-            'guests'     => [[
+            'last_name' => 'Guest',
+            'guests' => [[
                 'gender' => 'F',
             ]],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHas('success')
-          ->assertSessionHasInput('guests.0.gender', 'F');
+            ->assertSessionHas('success')
+            ->assertSessionHasInput('guests.0.gender', 'F');
     }
 
     public function test_confirmation_is_rejected_when_a_booked_guest_has_not_been_added(): void
@@ -213,7 +213,7 @@ class CheckinFormTest extends TestCase
         $this->post(route('checkin.confirm', $booking->checkin_token), [
             'guests' => [$this->guestPayload($booking->person_id, withDocument: true)],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHas('error');
+            ->assertSessionHas('error');
 
         $this->assertNull($booking->fresh()->checkin_completed_at);
     }
@@ -281,8 +281,8 @@ class CheckinFormTest extends TestCase
                 'gender' => 'M',
             ]],
         ])->assertRedirect(route('checkin.show', $booking->checkin_token))
-          ->assertSessionHasErrors()
-          ->assertSessionHasInput('guests.0.gender', 'M');
+            ->assertSessionHasErrors()
+            ->assertSessionHasInput('guests.0.gender', 'M');
 
         $this->assertNull($booking->fresh()->checkin_completed_at);
     }

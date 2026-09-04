@@ -35,9 +35,9 @@ class ItalianMunicipalities
     /**
      * Find the 9-digit Alloggiati Web code for an Italian municipality.
      *
-     * @param  string      $name      Municipality name (case-insensitive)
-     * @param  string|null $province  Optional 2-char province abbreviation for disambiguation
-     * @return string|null            9-digit code, or null if not found
+     * @param  string  $name  Municipality name (case-insensitive)
+     * @param  string|null  $province  Optional 2-char province abbreviation for disambiguation
+     * @return string|null 9-digit code, or null if not found
      */
     public static function findCode(string $name, ?string $province = null): ?string
     {

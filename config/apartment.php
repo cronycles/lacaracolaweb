@@ -10,32 +10,32 @@ return [
 
     // --- Branding ---
     // Public brand name shown across the website.
-    'name'    => 'La Caracola',
+    'name' => 'La Caracola',
     // Short marketing sentence used in hero/meta contexts.
     'tagline' => 'A due passi dal mare — Andora, Liguria',
     // Contact email shown in public and used for booking requests.
-    'email'   => env('APARTMENT_EMAIL', 'info@lacaracolaandora.com'),
+    'email' => env('APARTMENT_EMAIL', 'info@lacaracolaandora.com'),
     // Contact phone shown in public pages/footer.
-    'phone'   => env('APARTMENT_PHONE', ''),
+    'phone' => env('APARTMENT_PHONE', ''),
 
     // --- Address ---
     'address' => [
         // Street and civic number of the apartment.
-        'street'   => 'Via Aurelia 64',
+        'street' => 'Via Aurelia 64',
         // City/locality.
-        'city'     => 'Andora',
+        'city' => 'Andora',
         // Province/area code.
         'province' => 'Savona',
         // Postal code.
-        'zip'      => '17051',
+        'zip' => '17051',
         // Region used in SEO text and schema.
-        'region'   => 'Liguria',
+        'region' => 'Liguria',
         // Country name used in schema/address blocks.
-        'country'  => 'Italy',
+        'country' => 'Italy',
         // Latitude for map pin and schema.org geo data.
-        'lat'      => 43.95255349558721,
+        'lat' => 43.95255349558721,
         // Longitude for map pin and schema.org geo data.
-        'lng'      => 8.153381834769661,
+        'lng' => 8.153381834769661,
     ],
 
     // Stable identifier shared by every localized JSON-LD representation.
@@ -46,15 +46,15 @@ return [
     // --- Property specs ---
     'specs' => [
         // Max bed places.
-        'beds'     => 6,
+        'beds' => 6,
         // Number of bedrooms.
         'bedrooms' => 2,
         // Number of bathrooms.
         'bathrooms' => 1,
         // Total number of rooms, excluding bathroom and balcony.
-        'rooms'    => 3,
+        'rooms' => 3,
         // Total apartment square meters.
-        'sqm'      => 80,
+        'sqm' => 80,
         // Beds described by room for the VacationRental structured data.
         'beds_detail' => [
             ['number' => 1, 'type' => 'Double', 'location' => 'Bedroom'],
@@ -62,7 +62,7 @@ return [
             ['number' => 1, 'type' => 'SofaBed', 'location' => 'Living room / kitchen'],
         ],
         // Floor number.
-        'floor'    => 1,
+        'floor' => 1,
         // Whether sea view is available.
         'sea_view' => true,
     ],
@@ -93,13 +93,13 @@ return [
     // --- Booking defaults (overridden from admin area) ---
     'booking' => [
         // Global minimum nights for public availability request form.
-        'min_nights'    => 3,
+        'min_nights' => 3,
         // Minimum number of days between today and the public check-in date.
         'min_booking_lead_days' => 7,
         // Global maximum nights allowed per booking (linear amortisation model).
-        'max_nights'    => 28,
+        'max_nights' => 28,
         // Fixed cleaning fee (EUR) charged per booking (default pre-filled in admin form).
-        'cleaning_fee'  => 100,
+        'cleaning_fee' => 100,
         // Fixed linen fee (EUR) per guest charged per booking (default pre-filled in admin form).
         'linen_fee_per_person' => 25,
         // Parking fee (EUR) per night charged per booking (default pre-filled in admin form).
@@ -108,7 +108,7 @@ return [
         // Examples: null (always show), '2027-01-01' (hide prices for stays on/after 2027-01-01).
         'hide_price_from' => '2027-09-01',
         // Informational check-in time shown to users/operations.
-        'checkin_time'  => '15:00',
+        'checkin_time' => '15:00',
         // Informational check-out time shown to users/operations.
         'checkout_time' => '10:00',
     ],
@@ -129,18 +129,18 @@ return [
     // --- House rules: parameter values (used in rule text templates) ---
     'rules_values' => [
         // Heating operating hours (in season).
-        'heating_start'       => '07:00',
-        'heating_end'         => '22:00',
+        'heating_start' => '07:00',
+        'heating_end' => '22:00',
         // Quiet hours: night range.
-        'quiet_night_start'   => '23:00',
-        'quiet_night_end'     => '07:00',
+        'quiet_night_start' => '23:00',
+        'quiet_night_end' => '07:00',
         // Quiet hours: afternoon range.
         'quiet_afternoon_start' => '13:30',
-        'quiet_afternoon_end'   => '16:00',
+        'quiet_afternoon_end' => '16:00',
         // Check-in security deposit in EUR.
-        'checkin_deposit'     => '€200',
+        'checkin_deposit' => '€200',
         // Key loss penalty fee in EUR.
-        'key_loss_fee'        => '€150',
+        'key_loss_fee' => '€150',
     ],
 
     // --- Bank transfer payment instructions (stored on the selected host owner) ---
@@ -165,15 +165,15 @@ return [
     // --- INTERHOME integration ---
     'interhome' => [
         // Official Interhome listing code.
-        'code'     => 'IT1850.726.1',
+        'code' => 'IT1850.726.1',
         // External Interhome URL for Flow C when used.
-        'listing'  => env('INTERHOME_LISTING_URL', ''),
+        'listing' => env('INTERHOME_LISTING_URL', ''),
     ],
 
     // --- External booking platforms (for badge/link display) ---
     'platforms' => [
         // Airbnb listing URL (optional).
-        'airbnb'  => env('AIRBNB_LISTING_URL', ''),
+        'airbnb' => env('AIRBNB_LISTING_URL', ''),
         // Booking.com listing URL (optional).
         'booking' => env('BOOKING_LISTING_URL', ''),
     ],
@@ -210,7 +210,6 @@ return [
             'images/apartment/esterno-06-squoosh.jpg',
             'images/apartment/esterno-07-squoosh.jpg',
 
-            
         ],
         // Open Graph / social sharing image
         'og' => 'images/og-default.png',
@@ -297,19 +296,19 @@ return [
     // --- SEO defaults per locale (override in lang files for more control) ---
     'seo' => [
         'it' => [
-            'title'       => 'La Caracola | Appartamento Vacanza ad Andora — Riviera dei Fiori, Liguria',
+            'title' => 'La Caracola | Appartamento Vacanza ad Andora — Riviera dei Fiori, Liguria',
             'description' => 'Affitta La Caracola ad Andora, nella Riviera dei Fiori (Liguria). Appartamento sul mare: 2 camere, 6 posti letto, balcone con vista mare e giardino, a pochi passi dalla spiaggia. Soggiorno minimo 3 notti.',
         ],
         'en' => [
-            'title'       => 'La Caracola | Self-Catering Holiday Apartment in Andora, Italian Riviera',
+            'title' => 'La Caracola | Self-Catering Holiday Apartment in Andora, Italian Riviera',
             'description' => 'Rent La Caracola, a self-catering holiday apartment in Andora on the Italian Riviera (Liguria): 2 bedrooms, sleeps 6, sea-view balcony and garden, steps from the beach. Minimum stay 3 nights.',
         ],
         'fr' => [
-            'title'       => 'La Caracola | Appartement de Vacances à Andora — Riviera Italienne',
+            'title' => 'La Caracola | Appartement de Vacances à Andora — Riviera Italienne',
             'description' => 'Louez La Caracola, appartement de vacances à Andora sur la Riviera italienne (Ligurie) : 2 chambres, 6 personnes, balcon vue mer et jardin, à deux pas de la plage. Séjour minimum 3 nuits.',
         ],
         'de' => [
-            'title'       => 'La Caracola | Ferienwohnung in Andora, Ligurien — Direkt am Meer',
+            'title' => 'La Caracola | Ferienwohnung in Andora, Ligurien — Direkt am Meer',
             'description' => 'Ferienwohnung La Caracola in Andora, an der Blumenriviera (Ligurien): 2 Schlafzimmer, 6 Schlafplätze, Balkon mit Meerblick und Garten, nur wenige Schritte zum Strand. Mindestaufenthalt 3 Nächte.',
         ],
     ],

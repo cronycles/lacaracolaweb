@@ -9,6 +9,8 @@ use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\GuestTypesSeeder;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -29,8 +31,8 @@ class GuestReportingClassificationRegressionTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
         $this->seed(GuestTypesSeeder::class);
 
@@ -44,9 +46,9 @@ class GuestReportingClassificationRegressionTest extends TestCase
 
         $booking = Booking::create([
             'person_id' => $primary->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => $totalGuests,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => $totalGuests,
         ]);
 
         for ($i = 1; $i < $totalGuests; $i++) {

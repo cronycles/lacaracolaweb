@@ -24,7 +24,7 @@ class LocaleController extends Controller
     {
         $locale = $request->query('locale');
 
-        if (!in_array($locale, self::SUPPORTED)) {
+        if (! in_array($locale, self::SUPPORTED)) {
             return redirect('/');
         }
 

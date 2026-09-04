@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Session;
 class SetLocale
 {
     private const SUPPORTED = ['it', 'en', 'fr', 'de'];
-    private const FALLBACK   = 'it';
+
+    private const FALLBACK = 'it';
+
     private const SESSION_KEY = 'locale';
 
     public function handle(Request $request, Closure $next): mixed
@@ -39,7 +41,7 @@ class SetLocale
         // Iterating all accepted languages would pick up secondary preferences (e.g. 'en')
         // for a Spanish user, causing the wrong locale instead of the Italian fallback.
         $accepted = $request->getLanguages();
-        if (!empty($accepted)) {
+        if (! empty($accepted)) {
             $primary = strtolower(substr($accepted[0], 0, 2));
             if (in_array($primary, self::SUPPORTED, true)) {
                 return $primary;

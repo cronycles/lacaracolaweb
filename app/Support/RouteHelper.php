@@ -65,9 +65,9 @@ class RouteHelper
      * Generate a localized route URL.
      *
      * @param  string  $name  Route name without locale prefix (e.g. 'apartment', 'map')
-     * @param  array   $params  Additional route parameters
+     * @param  array  $params  Additional route parameters
      * @param  string|null  $locale  Override locale (defaults to current locale)
-     * @return string  Full URL
+     * @return string Full URL
      */
     public static function locale(string $name, array $params = [], ?string $locale = null): string
     {
@@ -77,5 +77,3 @@ class RouteHelper
         return route($routeName, $params);
     }
 }
-
-

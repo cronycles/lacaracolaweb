@@ -11,9 +11,9 @@ use App\Models\Booking;
 use App\Models\BookingRequest;
 use App\Services\BookingCreationService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class BookingRequestController extends Controller
@@ -31,7 +31,7 @@ class BookingRequestController extends Controller
 
         return view('admin.booking-requests.index', [
             'requests' => $requests,
-            'matches'  => $matches,
+            'matches' => $matches,
         ]);
     }
 
@@ -42,37 +42,37 @@ class BookingRequestController extends Controller
             $person = $creationService->findOrCreatePerson($this->personData($bookingRequest));
 
             $booking = Booking::create([
-                'person_id'          => $person->id,
+                'person_id' => $person->id,
                 'booking_request_id' => $bookingRequest->id,
-                'checkin'            => $bookingRequest->checkin,
-                'checkout'           => $bookingRequest->checkout,
-                'adults'             => $bookingRequest->adults,
-                'children'           => $bookingRequest->children,
-                'babies'             => $bookingRequest->babies,
-                'pets'               => $bookingRequest->pets,
-                'source'             => 'direct',
-                'locale'             => $bookingRequest->locale,
-                'notes'              => $bookingRequest->message,
+                'checkin' => $bookingRequest->checkin,
+                'checkout' => $bookingRequest->checkout,
+                'adults' => $bookingRequest->adults,
+                'children' => $bookingRequest->children,
+                'babies' => $bookingRequest->babies,
+                'pets' => $bookingRequest->pets,
+                'source' => 'direct',
+                'locale' => $bookingRequest->locale,
+                'notes' => $bookingRequest->message,
                 // Pre-fill the financial fields with the price quoted to the guest
                 // on the public form, so the owner just has to verify/adjust it.
-                'income_amount'      => $bookingRequest->estimated_stay_amount,
-                'cleaning_amount'    => $bookingRequest->estimated_cleaning_amount,
-                'linen_amount'       => $bookingRequest->estimated_linen_amount,
-                'parking_amount'     => $bookingRequest->estimated_parking_amount,
+                'income_amount' => $bookingRequest->estimated_stay_amount,
+                'cleaning_amount' => $bookingRequest->estimated_cleaning_amount,
+                'linen_amount' => $bookingRequest->estimated_linen_amount,
+                'parking_amount' => $bookingRequest->estimated_parking_amount,
             ]);
 
             $block = AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->first();
             if ($block) {
                 $block->update([
-                    'reason'             => 'booked',
-                    'booking_id'         => $booking->id,
+                    'reason' => 'booked',
+                    'booking_id' => $booking->id,
                     'booking_request_id' => null,
                 ]);
             } else {
                 AvailabilityBlock::create([
                     'start_date' => $bookingRequest->checkin,
-                    'end_date'   => $bookingRequest->checkout,
-                    'reason'     => 'booked',
+                    'end_date' => $bookingRequest->checkout,
+                    'reason' => 'booked',
                     'booking_id' => $booking->id,
                 ]);
             }
@@ -97,9 +97,9 @@ class BookingRequestController extends Controller
                 ->send(new BookingRequestDeclinedMail($bookingRequest));
         } catch (\Throwable $e) {
             Log::error('BookingRequestDeclinedMail failed to send', [
-                'error'              => $e->getMessage(),
+                'error' => $e->getMessage(),
                 'booking_request_id' => $bookingRequest->id,
-                'email'              => $bookingRequest->email,
+                'email' => $bookingRequest->email,
             ]);
         }
 
@@ -124,9 +124,9 @@ class BookingRequestController extends Controller
     {
         return [
             'first_name' => $bookingRequest->first_name,
-            'last_name'  => $bookingRequest->last_name,
-            'email'      => $bookingRequest->email,
-            'phone'      => $bookingRequest->phone,
+            'last_name' => $bookingRequest->last_name,
+            'email' => $bookingRequest->email,
+            'phone' => $bookingRequest->phone,
         ];
     }
 }

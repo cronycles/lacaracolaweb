@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Mail\CheckinReminderMail;
 use App\Models\Booking;
 use App\Models\Person;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -15,22 +16,22 @@ class SendCheckinRemindersTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createBooking(\Carbon\Carbon $checkin, array $overrides = []): Booking
+    private function createBooking(Carbon $checkin, array $overrides = []): Booking
     {
         static $counter = 0;
         $counter++;
 
         $person = Person::create([
             'first_name' => 'Guest',
-            'last_name'  => "Number{$counter}",
-            'email'      => "guest{$counter}@example.com",
+            'last_name' => "Number{$counter}",
+            'email' => "guest{$counter}@example.com",
         ]);
 
         return Booking::create(array_merge([
             'person_id' => $person->id,
-            'checkin'   => $checkin->format('Y-m-d'),
-            'checkout'  => $checkin->copy()->addDays(5)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => $checkin->format('Y-m-d'),
+            'checkout' => $checkin->copy()->addDays(5)->format('Y-m-d'),
+            'adults' => 1,
         ], $overrides));
     }
 
@@ -41,11 +42,11 @@ class SendCheckinRemindersTest extends TestCase
         $leadDays = (int) config('apartment.checkin.reminder_lead_days', 7);
         $targetCheckin = now()->addDays($leadDays);
 
-        $matching   = $this->createBooking($targetCheckin);
-        $completed  = $this->createBooking($targetCheckin, ['checkin_completed_at' => now()]);
-        $canceled   = $this->createBooking($targetCheckin, ['canceled_at' => now()]);
-        $tooEarly   = $this->createBooking($targetCheckin->copy()->addDays(3));
-        $disabled   = $this->createBooking($targetCheckin, ['checkin_reminder_enabled' => false]);
+        $matching = $this->createBooking($targetCheckin);
+        $completed = $this->createBooking($targetCheckin, ['checkin_completed_at' => now()]);
+        $canceled = $this->createBooking($targetCheckin, ['canceled_at' => now()]);
+        $tooEarly = $this->createBooking($targetCheckin->copy()->addDays(3));
+        $disabled = $this->createBooking($targetCheckin, ['checkin_reminder_enabled' => false]);
 
         $this->artisan('checkin:send-reminders')->assertExitCode(0);
 

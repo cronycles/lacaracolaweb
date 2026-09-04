@@ -218,14 +218,14 @@ class CountriesSeeder extends Seeder
             }
 
             $alloggiatiCode = trim($row[0]);
-            $nameIt         = mb_convert_case(trim($row[1]), MB_CASE_TITLE, 'UTF-8');
-            $iso2           = $codeToIso2[$alloggiatiCode] ?? null;
+            $nameIt = mb_convert_case(trim($row[1]), MB_CASE_TITLE, 'UTF-8');
+            $iso2 = $codeToIso2[$alloggiatiCode] ?? null;
 
             $rows[] = [
-                'iso2'            => $iso2,
-                'name_it'         => $nameIt,
+                'iso2' => $iso2,
+                'name_it' => $nameIt,
                 'alloggiati_code' => $alloggiatiCode,
-                'dial_code'       => $iso2 !== null ? (self::DIAL_CODES[$iso2] ?? null) : null,
+                'dial_code' => $iso2 !== null ? (self::DIAL_CODES[$iso2] ?? null) : null,
             ];
         }
 

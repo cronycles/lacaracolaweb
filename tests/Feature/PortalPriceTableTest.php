@@ -7,6 +7,8 @@ namespace Tests\Feature;
 use App\Models\PricingRule;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,8 +21,8 @@ class PortalPriceTableTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
     }
 

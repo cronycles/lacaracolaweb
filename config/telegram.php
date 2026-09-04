@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'checkin_lead_days'  => 1,
+    'checkin_lead_days' => 1,
     'checkout_lead_days' => 1,
 
 ];

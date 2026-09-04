@@ -19,12 +19,12 @@ class PricingRule extends Model
     ];
 
     protected $casts = [
-        'start_month'     => 'integer',
-        'start_day'       => 'integer',
-        'end_month'       => 'integer',
-        'end_day'         => 'integer',
+        'start_month' => 'integer',
+        'start_day' => 'integer',
+        'end_month' => 'integer',
+        'end_day' => 'integer',
         'price_per_night' => 'integer',
-        'year'            => 'integer',
+        'year' => 'integer',
     ];
 
     /** Price in euros (stored as cents) */

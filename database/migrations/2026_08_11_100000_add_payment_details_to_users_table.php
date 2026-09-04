@@ -27,11 +27,11 @@ return new class extends Migration
                     ->where('name', 'host_owner');
             })
             ->update([
-                'tax_code'            => 'CRSMRC60D24D969K',
+                'tax_code' => 'CRSMRC60D24D969K',
                 'payment_beneficiary' => 'Marco Crosetti',
-                'payment_iban'        => 'IT81A0301503200000005220710',
-                'payment_bic'         => 'FEBIITM2',
-                'payment_enabled'    => true,
+                'payment_iban' => 'IT81A0301503200000005220710',
+                'payment_bic' => 'FEBIITM2',
+                'payment_enabled' => true,
             ]);
     }
 

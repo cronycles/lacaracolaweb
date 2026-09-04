@@ -32,7 +32,7 @@ return new class extends Migration
                 ->where('id', $row->id)
                 ->update([
                     'first_name' => $parts[0] !== '' ? $parts[0] : (string) $row->name,
-                    'last_name'  => $parts[1] ?? '',
+                    'last_name' => $parts[1] ?? '',
                 ]);
         }
 

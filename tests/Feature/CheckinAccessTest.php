@@ -20,15 +20,15 @@ class CheckinAccessTest extends TestCase
 
         $person = Person::create([
             'first_name' => 'Anna',
-            'last_name'  => 'Verdi',
-            'email'      => 'anna.verdi@example.com',
+            'last_name' => 'Verdi',
+            'email' => 'anna.verdi@example.com',
         ]);
 
         $booking = Booking::create(array_merge([
             'person_id' => $person->id,
-            'checkin'   => now()->addDays(10)->format('Y-m-d'),
-            'checkout'  => now()->addDays(15)->format('Y-m-d'),
-            'adults'    => 1,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 1,
         ], $overrides));
 
         $booking->generateCheckinToken();

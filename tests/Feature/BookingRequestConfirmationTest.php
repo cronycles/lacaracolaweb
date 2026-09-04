@@ -6,10 +6,13 @@ namespace Tests\Feature;
 
 use App\Mail\BookingRequestDeclinedMail;
 use App\Models\AvailabilityBlock;
+use App\Models\Booking;
 use App\Models\BookingRequest;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -25,8 +28,8 @@ class BookingRequestConfirmationTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
 
         $superAdminRole = Role::where('name', 'super_admin')->first();
@@ -36,19 +39,19 @@ class BookingRequestConfirmationTest extends TestCase
     private function makeRequest(array $overrides = []): BookingRequest
     {
         return BookingRequest::create(array_merge([
-            'first_name'        => 'Mario',
-            'last_name'         => 'Rossi',
-            'email'             => 'mario.rossi@example.com',
-            'phone'             => '+39 333 1234567',
-            'checkin'           => now()->addDays(10)->format('Y-m-d'),
-            'checkout'          => now()->addDays(15)->format('Y-m-d'),
-            'adults'            => 2,
-            'children'          => 0,
-            'babies'            => 1,
-            'pets'              => 1,
-            'message'           => 'Vorremmo portare anche il cane, è possibile?',
+            'first_name' => 'Mario',
+            'last_name' => 'Rossi',
+            'email' => 'mario.rossi@example.com',
+            'phone' => '+39 333 1234567',
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 2,
+            'children' => 0,
+            'babies' => 1,
+            'pets' => 1,
+            'message' => 'Vorremmo portare anche il cane, è possibile?',
             'terms_accepted_at' => now(),
-            'locale'            => 'it',
+            'locale' => 'it',
         ], $overrides));
     }
 
@@ -61,12 +64,12 @@ class BookingRequestConfirmationTest extends TestCase
 
         // Simulate an already-confirmed request (linked booking).
         $person = Person::create(['first_name' => 'Confirmed', 'last_name' => 'Guest']);
-        \App\Models\Booking::create([
-            'person_id'          => $person->id,
+        Booking::create([
+            'person_id' => $person->id,
             'booking_request_id' => $confirmed->id,
-            'checkin'            => $confirmed->checkin,
-            'checkout'           => $confirmed->checkout,
-            'adults'             => $confirmed->adults,
+            'checkin' => $confirmed->checkin,
+            'checkout' => $confirmed->checkout,
+            'adults' => $confirmed->adults,
         ]);
 
         $response = $this->actingAs($this->admin)->get(route('admin.booking-requests.index'));
@@ -83,7 +86,7 @@ class BookingRequestConfirmationTest extends TestCase
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
         $booking->delete(); // soft delete, e.g. owner cleans up a test/wrong booking
 
         $response = $this->actingAs($this->admin)->get(route('admin.booking-requests.index'));
@@ -98,7 +101,7 @@ class BookingRequestConfirmationTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertNotNull($booking);
         $response->assertRedirect(route('admin.bookings.edit', $booking));
@@ -123,24 +126,24 @@ class BookingRequestConfirmationTest extends TestCase
     public function test_confirming_applies_the_same_tax_declaration_defaults_as_creating_a_booking_directly(): void
     {
         config(['finance.tax_declaration_defaults' => [
-            'income'   => true,
+            'income' => true,
             'cleaning' => false,
-            'linen'    => false,
-            'parking'  => false,
+            'linen' => false,
+            'parking' => false,
         ]]);
 
         $request = $this->makeRequest();
         AvailabilityBlock::create([
-            'start_date'         => $request->checkin,
-            'end_date'           => $request->checkout,
-            'reason'             => 'pending',
+            'start_date' => $request->checkin,
+            'end_date' => $request->checkout,
+            'reason' => 'pending',
             'booking_request_id' => $request->id,
         ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertTrue($booking->income_tax);
         $this->assertFalse($booking->cleaning_tax);
@@ -152,15 +155,15 @@ class BookingRequestConfirmationTest extends TestCase
     {
         $existing = Person::create([
             'first_name' => 'Mario',
-            'last_name'  => 'Rossi',
-            'email'      => 'mario.rossi@example.com',
+            'last_name' => 'Rossi',
+            'email' => 'mario.rossi@example.com',
         ]);
 
         $request = $this->makeRequest();
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertSame($existing->id, $booking->person_id);
         $this->assertSame(1, Person::count());
@@ -170,8 +173,8 @@ class BookingRequestConfirmationTest extends TestCase
     {
         $existing = Person::create([
             'first_name' => 'Mario',
-            'last_name'  => 'Rossi',
-            'email'      => 'mario.rossi@example.com',
+            'last_name' => 'Rossi',
+            'email' => 'mario.rossi@example.com',
             // no phone yet
         ]);
 
@@ -189,7 +192,7 @@ class BookingRequestConfirmationTest extends TestCase
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertSame('Mario', $booking->person->first_name);
         $this->assertSame('Rossi', $booking->person->last_name);
@@ -198,16 +201,16 @@ class BookingRequestConfirmationTest extends TestCase
     public function test_confirming_prefills_financial_fields_from_the_requests_price_estimate(): void
     {
         $request = $this->makeRequest([
-            'estimated_stay_amount'     => 500.00,
+            'estimated_stay_amount' => 500.00,
             'estimated_cleaning_amount' => 100.00,
-            'estimated_linen_amount'    => 50.00,
-            'estimated_parking_amount'  => 50.00,
-            'estimated_total_amount'    => 700.00,
+            'estimated_linen_amount' => 50.00,
+            'estimated_parking_amount' => 50.00,
+            'estimated_total_amount' => 700.00,
         ]);
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
 
-        $booking = \App\Models\Booking::where('booking_request_id', $request->id)->first();
+        $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertSame('500.00', $booking->income_amount);
         $this->assertSame('100.00', $booking->cleaning_amount);
@@ -253,9 +256,9 @@ class BookingRequestConfirmationTest extends TestCase
 
         $request = $this->makeRequest();
         AvailabilityBlock::create([
-            'start_date'         => $request->checkin,
-            'end_date'           => $request->checkout,
-            'reason'             => 'pending',
+            'start_date' => $request->checkin,
+            'end_date' => $request->checkout,
+            'reason' => 'pending',
             'booking_request_id' => $request->id,
         ]);
 

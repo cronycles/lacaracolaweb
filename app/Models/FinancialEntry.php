@@ -19,8 +19,8 @@ class FinancialEntry extends Model
     ];
 
     protected $casts = [
-        'amount'          => 'decimal:2',
-        'entry_date'      => 'date',
+        'amount' => 'decimal:2',
+        'entry_date' => 'date',
         'tax_declaration' => 'boolean',
     ];
 

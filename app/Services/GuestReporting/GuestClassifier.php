@@ -15,7 +15,7 @@ class GuestClassifier
      * Return the AlloggiatiWeb type for each included row, preserving its index.
      * The first included row is always the head of the group, or a single guest.
      *
-     * @param array<int, int|string> $includedIndexes
+     * @param  array<int, int|string>  $includedIndexes
      * @return array<int, string>
      */
     public static function typesForIncludedIndexes(array $includedIndexes): array
@@ -31,9 +31,9 @@ class GuestClassifier
     }
 
     /**
-     * @param int $index       Zero-based position of the guest within the booking's guest
-     *                          list (0 = primary guest / capogruppo).
-     * @param int $totalGuests Total number of guests being reported for the booking.
+     * @param  int  $index  Zero-based position of the guest within the booking's guest
+     *                      list (0 = primary guest / capogruppo).
+     * @param  int  $totalGuests  Total number of guests being reported for the booking.
      * @return string One of '16' (ospite singolo), '18' (capo gruppo), '20' (membro gruppo).
      */
     public static function defaultTipoFor(int $index, int $totalGuests): string

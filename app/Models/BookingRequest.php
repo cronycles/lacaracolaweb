@@ -37,21 +37,21 @@ class BookingRequest extends Model
     ];
 
     protected $casts = [
-        'checkin'                   => 'date',
-        'checkout'                  => 'date',
-        'adults'                    => 'integer',
-        'children'                  => 'integer',
-        'babies'                    => 'integer',
-        'pets'                      => 'integer',
-        'parking_requested'         => 'boolean',
-        'newsletter'                => 'boolean',
-        'terms_accepted_at'         => 'datetime',
-        'declined_at'               => 'datetime',
-        'estimated_stay_amount'     => 'decimal:2',
+        'checkin' => 'date',
+        'checkout' => 'date',
+        'adults' => 'integer',
+        'children' => 'integer',
+        'babies' => 'integer',
+        'pets' => 'integer',
+        'parking_requested' => 'boolean',
+        'newsletter' => 'boolean',
+        'terms_accepted_at' => 'datetime',
+        'declined_at' => 'datetime',
+        'estimated_stay_amount' => 'decimal:2',
         'estimated_cleaning_amount' => 'decimal:2',
-        'estimated_linen_amount'    => 'decimal:2',
-        'estimated_parking_amount'  => 'decimal:2',
-        'estimated_total_amount'    => 'decimal:2',
+        'estimated_linen_amount' => 'decimal:2',
+        'estimated_parking_amount' => 'decimal:2',
+        'estimated_total_amount' => 'decimal:2',
     ];
 
     public function booking(): HasOne

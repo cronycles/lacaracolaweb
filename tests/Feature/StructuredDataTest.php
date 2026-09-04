@@ -12,7 +12,7 @@ class StructuredDataTest extends TestCase
     public function test_localized_home_exposes_valid_vacation_rental_json_ld(): void
     {
         foreach (['it', 'en', 'fr', 'de'] as $locale) {
-            $response = $this->get('/' . $locale);
+            $response = $this->get('/'.$locale);
 
             $response->assertOk();
             preg_match('/<script type="application\/ld\+json">(.*?)<\/script>/s', $response->getContent(), $matches);
@@ -26,7 +26,7 @@ class StructuredDataTest extends TestCase
             $this->assertSame(80, $schema['containsPlace']['floorSize']['value']);
             $this->assertCount(3, $schema['containsPlace']['bed']);
             $this->assertGreaterThanOrEqual(8, count($schema['image']));
-            $this->assertStringContainsString('/' . $locale, $schema['url']);
+            $this->assertStringContainsString('/'.$locale, $schema['url']);
         }
     }
 }

@@ -27,14 +27,14 @@ interface GuestReportingDriverInterface
      * Validate guest records against the service without submitting them.
      * Returns per-row validation details so errors can be shown before final send.
      *
-     * @param GuestRecord[] $guests
+     * @param  GuestRecord[]  $guests
      */
     public function testDraft(array $guests): SubmissionResult;
 
     /**
      * Submit guest records to the reporting authority.
      *
-     * @param GuestRecord[] $guests
+     * @param  GuestRecord[]  $guests
      */
     public function sendGuests(array $guests): SubmissionResult;
 }

@@ -16,7 +16,7 @@ class InterhomePdfBookingParser
      */
     public function parseFile(string $pdfPath): array
     {
-        $parser = new Parser();
+        $parser = new Parser;
         $text = $parser->parseFile($pdfPath)->getText();
 
         return $this->parseText($text);
@@ -46,19 +46,21 @@ class InterhomePdfBookingParser
 
         $index = $start;
         while ($index < count($lines)) {
-            if (!$this->isDateLine($lines[$index]) || !isset($lines[$index + 1]) || !$this->isDateLine($lines[$index + 1])) {
+            if (! $this->isDateLine($lines[$index]) || ! isset($lines[$index + 1]) || ! $this->isDateLine($lines[$index + 1])) {
                 $index++;
+
                 continue;
             }
 
             $row = $this->parseBookingFromLines($lines, $index);
             if ($row === null) {
                 $index++;
+
                 continue;
             }
 
-            if (!empty($row['warning'])) {
-                $warnings[] = 'Riga check-in ' . $row['checkin'] . ': ' . $row['warning'];
+            if (! empty($row['warning'])) {
+                $warnings[] = 'Riga check-in '.$row['checkin'].': '.$row['warning'];
             }
 
             unset($row['warning']);
@@ -93,7 +95,7 @@ class InterhomePdfBookingParser
 
         $index += 2;
 
-        if (!isset($lines[$index])) {
+        if (! isset($lines[$index])) {
             return null;
         }
 
@@ -137,9 +139,9 @@ class InterhomePdfBookingParser
 
             if (
                 isset($lines[$index + 1])
-                && !$this->isValidEmail($email)
-                && !str_contains($lines[$index + 1], ' ')
-                && !$this->isDateLine($lines[$index + 1])
+                && ! $this->isValidEmail($email)
+                && ! str_contains($lines[$index + 1], ' ')
+                && ! $this->isDateLine($lines[$index + 1])
             ) {
                 $email .= $lines[$index + 1];
                 $index++;
@@ -173,31 +175,30 @@ class InterhomePdfBookingParser
 
         $shouldSkip = false;
         $skipReason = null;
-        if (!$hasContact || !$hasGuestNumbers) {
+        if (! $hasContact || ! $hasGuestNumbers) {
             $shouldSkip = true;
             $reasons = [];
-            if (!$hasContact) {
+            if (! $hasContact) {
                 $reasons[] = 'contatto assente';
             }
-            if (!$hasGuestNumbers) {
+            if (! $hasGuestNumbers) {
                 $reasons[] = 'colonne Adulto/Bambino/Bebe/Pet senza numeri';
             }
-            $skipReason = 'Prenotazione saltata: ' . implode(' e ', $reasons) . '.';
+            $skipReason = 'Prenotazione saltata: '.implode(' e ', $reasons).'.';
         }
 
         if ($firstName === '') {
             $firstName = 'Interhome';
             $lastName = $externalRef;
-            $warning = trim(($warning ? $warning . ' ' : '') . 'Nome ospite non disponibile: usato fallback.');
+            $warning = trim(($warning ? $warning.' ' : '').'Nome ospite non disponibile: usato fallback.');
         }
 
         if ($adults === null) {
             $adults = 2;
             $children = $children ?? 0;
             $babies = $babies ?? 0;
-            $warning = trim(($warning ? $warning . ' ' : '') . 'Numero ospiti non trovato: usato default 2 adulti.');
+            $warning = trim(($warning ? $warning.' ' : '').'Numero ospiti non trovato: usato default 2 adulti.');
         }
-
 
         $index--;
 
@@ -239,7 +240,7 @@ class InterhomePdfBookingParser
 
     private function parseDate(string $line): ?string
     {
-        if (!preg_match('/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/', trim($line), $match)) {
+        if (! preg_match('/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/', trim($line), $match)) {
             return null;
         }
 
@@ -252,7 +253,7 @@ class InterhomePdfBookingParser
     }
 
     /**
-    * @return array{0:string,1:array{adults:int,children:int,babies:int,pets:int}|null}
+     * @return array{0:string,1:array{adults:int,children:int,babies:int,pets:int}|null}
      */
     private function extractReferenceAndInlineGuests(string $line): array
     {
@@ -318,7 +319,7 @@ class InterhomePdfBookingParser
      */
     private function extractCountryGuests(string $line): ?array
     {
-        if (!preg_match('/^([A-Z]{2})\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/', trim($line), $match)) {
+        if (! preg_match('/^([A-Z]{2})\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/', trim($line), $match)) {
             return null;
         }
 

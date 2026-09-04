@@ -26,8 +26,8 @@ class NewsletterController extends Controller
         if ($search = $request->input('q')) {
             $query->where(function ($q) use ($search): void {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 

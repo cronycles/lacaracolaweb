@@ -129,9 +129,9 @@ return [
 
         'telegram' => [
             'driver' => 'daily',
-            'path'   => storage_path('logs/telegram.log'),
-            'level'  => 'debug',
-            'days'   => 30,
+            'path' => storage_path('logs/telegram.log'),
+            'level' => 'debug',
+            'days' => 30,
             'replace_placeholders' => true,
         ],
 

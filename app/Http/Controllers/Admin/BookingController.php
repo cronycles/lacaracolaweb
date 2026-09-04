@@ -15,8 +15,8 @@ use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Person;
 use App\Models\User;
-use App\Services\TelegramService;
 use App\Services\TelegramBookingMessageBuilder;
+use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -264,7 +264,7 @@ class BookingController extends Controller
     }
 
     /**
-    * Mark the payment as received and send the corresponding guest email.
+     * Mark the payment as received and send the corresponding guest email.
      */
     public function sendPaymentReceivedEmail(Booking $prenotazioni): RedirectResponse
     {
@@ -290,8 +290,7 @@ class BookingController extends Controller
         Booking $prenotazioni,
         TelegramService $telegram,
         TelegramBookingMessageBuilder $messages,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         if ($telegram->countRecipients() === 0) {
             return response()->json(['sent' => false, 'reason' => 'no_recipients']);
         }

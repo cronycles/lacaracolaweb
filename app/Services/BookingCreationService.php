@@ -36,28 +36,28 @@ class BookingCreationService
     {
         $person = $this->findOrCreatePerson([
             'first_name' => $data['first_name'],
-            'last_name'  => $data['last_name'],
-            'email'      => $data['email'] ?? null,
-            'phone'      => $data['phone'] ?? null,
+            'last_name' => $data['last_name'],
+            'email' => $data['email'] ?? null,
+            'phone' => $data['phone'] ?? null,
         ]);
 
         $booking = Booking::create([
-            'person_id'    => $person->id,
-            'checkin'      => $data['checkin'],
-            'checkout'     => $data['checkout'],
-            'adults'       => $data['adults'],
-            'children'     => $data['children'] ?? 0,
-            'babies'       => $data['babies'] ?? 0,
-            'pets'         => $data['pets'] ?? 0,
-            'source'       => $data['source'],
+            'person_id' => $person->id,
+            'checkin' => $data['checkin'],
+            'checkout' => $data['checkout'],
+            'adults' => $data['adults'],
+            'children' => $data['children'] ?? 0,
+            'babies' => $data['babies'] ?? 0,
+            'pets' => $data['pets'] ?? 0,
+            'source' => $data['source'],
             'external_ref' => $data['external_ref'] ?? null,
-            'notes'        => $data['notes'] ?? null,
+            'notes' => $data['notes'] ?? null,
         ]);
 
         AvailabilityBlock::create([
             'start_date' => $data['checkin'],
-            'end_date'   => $data['checkout'],
-            'reason'     => 'booked',
+            'end_date' => $data['checkout'],
+            'reason' => 'booked',
             'booking_id' => $booking->id,
         ]);
 
@@ -73,18 +73,18 @@ class BookingCreationService
      * Shared by the Interhome PDF import flow (`createFromParsed`) and the
      * admin booking-request confirmation flow, so both stay in sync.
      *
-     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     * @param  array{first_name: string, last_name: string, email: string|null, phone: string|null}  $data
      */
     public function findOrCreatePerson(array $data): Person
     {
         $person = $this->matchExistingPerson($data);
 
-        if (!$person) {
+        if (! $person) {
             $person = Person::create([
                 'first_name' => $data['first_name'],
-                'last_name'  => $data['last_name'],
-                'email'      => $data['email'] ?? null,
-                'phone'      => $data['phone'] ?? null,
+                'last_name' => $data['last_name'],
+                'email' => $data['email'] ?? null,
+                'phone' => $data['phone'] ?? null,
             ]);
         } else {
             // Matching includes soft-deleted people (the email/phone unique
@@ -95,10 +95,10 @@ class BookingCreationService
             }
 
             // Enrich existing guest when import brings missing contacts.
-            if (empty($person->email) && !empty($data['email'])) {
+            if (empty($person->email) && ! empty($data['email'])) {
                 $person->email = $data['email'];
             }
-            if (empty($person->phone) && !empty($data['phone'])) {
+            if (empty($person->phone) && ! empty($data['phone'])) {
                 $person->phone = $data['phone'];
             }
             $person->save();
@@ -114,7 +114,7 @@ class BookingCreationService
      * without creating, saving, or enriching anything. Returns `null` when
      * no existing `Person` matches (meaning a new one would be created).
      *
-     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     * @param  array{first_name: string, last_name: string, email: string|null, phone: string|null}  $data
      */
     public function previewMatch(array $data): ?Person
     {
@@ -125,7 +125,7 @@ class BookingCreationService
      * Look up an existing guest by email, then phone, then exact first+last
      * name. Returns `null` if none match.
      *
-     * @param array{first_name: string, last_name: string, email: string|null, phone: string|null} $data
+     * @param  array{first_name: string, last_name: string, email: string|null, phone: string|null}  $data
      */
     private function matchExistingPerson(array $data): ?Person
     {
@@ -133,14 +133,14 @@ class BookingCreationService
         // DB constraints that aren't relaxed by soft-deletes, so a trashed
         // Person still blocks (and should be reused/restored for) the same
         // email/phone rather than causing a duplicate-entry SQL error.
-        if (!empty($data['email'])) {
+        if (! empty($data['email'])) {
             $person = Person::withTrashed()->where('email', $data['email'])->first();
             if ($person) {
                 return $person;
             }
         }
 
-        if (!empty($data['phone'])) {
+        if (! empty($data['phone'])) {
             $person = Person::withTrashed()->where('phone', $data['phone'])->first();
             if ($person) {
                 return $person;

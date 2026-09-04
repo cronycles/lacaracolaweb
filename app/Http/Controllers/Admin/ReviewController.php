@@ -36,12 +36,12 @@ class ReviewController extends Controller
         $disliked = collect(self::LOCALES)->mapWithKeys(fn ($l) => [$l => '']);
 
         return view('admin.reviews.form', [
-            'review'       => $review,
-            'booking'      => $booking,
+            'review' => $review,
+            'booking' => $booking,
             'translations' => $translations,
-            'liked'        => $liked,
-            'disliked'     => $disliked,
-            'locales'      => self::LOCALES,
+            'liked' => $liked,
+            'disliked' => $disliked,
+            'locales' => self::LOCALES,
         ]);
     }
 
@@ -51,31 +51,31 @@ class ReviewController extends Controller
     public function store(Request $request, Booking $booking): RedirectResponse
     {
         $data = $request->validate([
-            'author_name'      => ['required', 'string', 'max:255'],
-            'source'           => ['nullable', 'string', 'max:255'],
-            'rating'           => ['required', 'integer', 'min:1', 'max:10'],
-            'is_active'        => ['boolean'],
-            'private_comment'  => ['nullable', 'string', 'max:2000'],
-            'translations.it'  => ['required', 'string', 'min:10'],
-            'translations.en'  => ['nullable', 'string', 'min:10'],
-            'translations.fr'  => ['nullable', 'string', 'min:10'],
-            'translations.de'  => ['nullable', 'string', 'min:10'],
-            'liked.it'         => ['nullable', 'string', 'max:2000'],
-            'liked.en'         => ['nullable', 'string', 'max:2000'],
-            'liked.fr'         => ['nullable', 'string', 'max:2000'],
-            'liked.de'         => ['nullable', 'string', 'max:2000'],
-            'disliked.it'      => ['nullable', 'string', 'max:2000'],
-            'disliked.en'      => ['nullable', 'string', 'max:2000'],
-            'disliked.fr'      => ['nullable', 'string', 'max:2000'],
-            'disliked.de'      => ['nullable', 'string', 'max:2000'],
+            'author_name' => ['required', 'string', 'max:255'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'rating' => ['required', 'integer', 'min:1', 'max:10'],
+            'is_active' => ['boolean'],
+            'private_comment' => ['nullable', 'string', 'max:2000'],
+            'translations.it' => ['required', 'string', 'min:10'],
+            'translations.en' => ['nullable', 'string', 'min:10'],
+            'translations.fr' => ['nullable', 'string', 'min:10'],
+            'translations.de' => ['nullable', 'string', 'min:10'],
+            'liked.it' => ['nullable', 'string', 'max:2000'],
+            'liked.en' => ['nullable', 'string', 'max:2000'],
+            'liked.fr' => ['nullable', 'string', 'max:2000'],
+            'liked.de' => ['nullable', 'string', 'max:2000'],
+            'disliked.it' => ['nullable', 'string', 'max:2000'],
+            'disliked.en' => ['nullable', 'string', 'max:2000'],
+            'disliked.fr' => ['nullable', 'string', 'max:2000'],
+            'disliked.de' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $review = Review::create([
-            'booking_id'  => $booking->id,
+            'booking_id' => $booking->id,
             'author_name' => $data['author_name'],
-            'source'      => $data['source'] ?? null,
-            'rating'      => $data['rating'],
-            'is_active'   => $request->boolean('is_active', true),
+            'source' => $data['source'] ?? null,
+            'rating' => $data['rating'],
+            'is_active' => $request->boolean('is_active', true),
             'private_comment' => trim($data['private_comment'] ?? '') ?: null,
         ]);
 
@@ -115,12 +115,12 @@ class ReviewController extends Controller
         );
 
         return view('admin.reviews.form', [
-            'review'       => $review,
-            'booking'      => $review->booking,
+            'review' => $review,
+            'booking' => $review->booking,
             'translations' => $translations,
-            'liked'        => $liked,
-            'disliked'     => $disliked,
-            'locales'      => self::LOCALES,
+            'liked' => $liked,
+            'disliked' => $disliked,
+            'locales' => self::LOCALES,
         ]);
     }
 
@@ -130,30 +130,30 @@ class ReviewController extends Controller
     public function update(Request $request, Review $review): RedirectResponse
     {
         $data = $request->validate([
-            'author_name'      => ['required', 'string', 'max:255'],
-            'source'           => ['nullable', 'string', 'max:255'],
-            'rating'           => ['required', 'integer', 'min:1', 'max:10'],
-            'is_active'        => ['boolean'],
-            'private_comment'  => ['nullable', 'string', 'max:2000'],
-            'translations.it'  => ['required', 'string', 'min:10'],
-            'translations.en'  => ['nullable', 'string', 'min:10'],
-            'translations.fr'  => ['nullable', 'string', 'min:10'],
-            'translations.de'  => ['nullable', 'string', 'min:10'],
-            'liked.it'         => ['nullable', 'string', 'max:2000'],
-            'liked.en'         => ['nullable', 'string', 'max:2000'],
-            'liked.fr'         => ['nullable', 'string', 'max:2000'],
-            'liked.de'         => ['nullable', 'string', 'max:2000'],
-            'disliked.it'      => ['nullable', 'string', 'max:2000'],
-            'disliked.en'      => ['nullable', 'string', 'max:2000'],
-            'disliked.fr'      => ['nullable', 'string', 'max:2000'],
-            'disliked.de'      => ['nullable', 'string', 'max:2000'],
+            'author_name' => ['required', 'string', 'max:255'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'rating' => ['required', 'integer', 'min:1', 'max:10'],
+            'is_active' => ['boolean'],
+            'private_comment' => ['nullable', 'string', 'max:2000'],
+            'translations.it' => ['required', 'string', 'min:10'],
+            'translations.en' => ['nullable', 'string', 'min:10'],
+            'translations.fr' => ['nullable', 'string', 'min:10'],
+            'translations.de' => ['nullable', 'string', 'min:10'],
+            'liked.it' => ['nullable', 'string', 'max:2000'],
+            'liked.en' => ['nullable', 'string', 'max:2000'],
+            'liked.fr' => ['nullable', 'string', 'max:2000'],
+            'liked.de' => ['nullable', 'string', 'max:2000'],
+            'disliked.it' => ['nullable', 'string', 'max:2000'],
+            'disliked.en' => ['nullable', 'string', 'max:2000'],
+            'disliked.fr' => ['nullable', 'string', 'max:2000'],
+            'disliked.de' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $review->update([
             'author_name' => $data['author_name'],
-            'source'      => $data['source'] ?? null,
-            'rating'      => $data['rating'],
-            'is_active'   => $request->boolean('is_active', true),
+            'source' => $data['source'] ?? null,
+            'rating' => $data['rating'],
+            'is_active' => $request->boolean('is_active', true),
             'private_comment' => trim($data['private_comment'] ?? '') ?: null,
         ]);
 

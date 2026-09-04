@@ -13,7 +13,7 @@ class Review extends Model
     protected $fillable = ['booking_id', 'author_name', 'source', 'rating', 'is_active', 'original_locale', 'private_comment'];
 
     protected $casts = [
-        'rating'    => 'integer',
+        'rating' => 'integer',
         'is_active' => 'boolean',
     ];
 

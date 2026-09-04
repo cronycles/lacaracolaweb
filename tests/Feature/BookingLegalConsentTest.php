@@ -20,18 +20,18 @@ class BookingLegalConsentTest extends TestCase
     private function validPayload(): array
     {
         return [
-            'checkin'    => now()->addDays(10)->format('Y-m-d'),
-            'checkout'   => now()->addDays(15)->format('Y-m-d'),
-            'adults'     => 2,
-            'children'   => 0,
-            'babies'     => 1,
-            'pets'       => 1,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 2,
+            'children' => 0,
+            'babies' => 1,
+            'pets' => 1,
             'first_name' => 'Mario',
-            'last_name'  => 'Rossi',
-            'email'      => 'mario.rossi@example.com',
-            'phone'      => '333 1234567',
+            'last_name' => 'Rossi',
+            'email' => 'mario.rossi@example.com',
+            'phone' => '333 1234567',
             'phone_prefix' => '+39',
-            'message'    => 'Test message',
+            'message' => 'Test message',
         ];
     }
 
@@ -176,10 +176,10 @@ class BookingLegalConsentTest extends TestCase
 
         // Recurring rule covering the whole year: 100€/night.
         PricingRule::create([
-            'start_month'     => 1,
-            'start_day'       => 1,
-            'end_month'       => 12,
-            'end_day'         => 31,
+            'start_month' => 1,
+            'start_day' => 1,
+            'end_month' => 12,
+            'end_day' => 31,
             'price_per_night' => 10000,
         ]);
 
@@ -207,15 +207,15 @@ class BookingLegalConsentTest extends TestCase
         Mail::fake();
 
         PricingRule::create([
-            'start_month'     => 1,
-            'start_day'       => 1,
-            'end_month'       => 12,
-            'end_day'         => 31,
+            'start_month' => 1,
+            'start_day' => 1,
+            'end_month' => 12,
+            'end_day' => 31,
             'price_per_night' => 10000,
         ]);
 
         $payload = $this->validPayload() + [
-            'accepted_terms'    => '1',
+            'accepted_terms' => '1',
             'parking_requested' => '1',
         ];
 

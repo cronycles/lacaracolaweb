@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+
 class Booking extends Model
 {
     use SoftDeletes;
@@ -59,13 +61,13 @@ class Booking extends Model
     ];
 
     protected $casts = [
-        'checkin'          => 'date',
-        'checkout'         => 'date',
-        'adults'           => 'integer',
-        'children'         => 'integer',
-        'babies'           => 'integer',
-        'pets'             => 'integer',
-        'canceled_at'      => 'datetime',
+        'checkin' => 'date',
+        'checkout' => 'date',
+        'adults' => 'integer',
+        'children' => 'integer',
+        'babies' => 'integer',
+        'pets' => 'integer',
+        'canceled_at' => 'datetime',
         'confirmation_sent_at' => 'datetime',
         'payment_received_sent_at' => 'datetime',
         'checkin_token_expires_at' => 'datetime',
@@ -75,21 +77,21 @@ class Booking extends Model
         'review_token_expires_at' => 'datetime',
         'review_request_sent_at' => 'datetime',
         'telegram_notified_at' => 'datetime',
-        'income_amount'    => 'decimal:2',
-        'income_paid'      => 'boolean',
-        'income_paid_at'   => 'date',
-        'cleaning_amount'  => 'decimal:2',
-        'cleaning_paid'    => 'boolean',
-        'linen_amount'     => 'decimal:2',
-        'linen_paid'       => 'boolean',
-        'parking_amount'   => 'decimal:2',
-        'parking_paid'     => 'boolean',
-        'parking_paid_at'  => 'date',
+        'income_amount' => 'decimal:2',
+        'income_paid' => 'boolean',
+        'income_paid_at' => 'date',
+        'cleaning_amount' => 'decimal:2',
+        'cleaning_paid' => 'boolean',
+        'linen_amount' => 'decimal:2',
+        'linen_paid' => 'boolean',
+        'parking_amount' => 'decimal:2',
+        'parking_paid' => 'boolean',
+        'parking_paid_at' => 'date',
         'services_paid_at' => 'date',
-        'income_tax'       => 'boolean',
-        'cleaning_tax'     => 'boolean',
-        'linen_tax'        => 'boolean',
-        'parking_tax'      => 'boolean',
+        'income_tax' => 'boolean',
+        'cleaning_tax' => 'boolean',
+        'linen_tax' => 'boolean',
+        'parking_tax' => 'boolean',
     ];
 
     /**
@@ -105,16 +107,16 @@ class Booking extends Model
     {
         static::creating(function (Booking $booking) {
             $defaults = config('finance.tax_declaration_defaults', [
-                'income'   => true,
+                'income' => true,
                 'cleaning' => true,
-                'linen'    => true,
-                'parking'  => false,
+                'linen' => true,
+                'parking' => false,
             ]);
 
-            $booking->income_tax   ??= $defaults['income'];
+            $booking->income_tax ??= $defaults['income'];
             $booking->cleaning_tax ??= $defaults['cleaning'];
-            $booking->linen_tax    ??= $defaults['linen'];
-            $booking->parking_tax  ??= $defaults['parking'];
+            $booking->linen_tax ??= $defaults['linen'];
+            $booking->parking_tax ??= $defaults['parking'];
         });
 
         static::created(function (Booking $booking): void {
@@ -171,9 +173,9 @@ class Booking extends Model
     /**
      * All guests for Alloggiati purposes: primary person + additional guests.
      *
-     * @return \Illuminate\Support\Collection<int, \App\Models\Person>
+     * @return Collection<int, Person>
      */
-    public function allGuests(): \Illuminate\Support\Collection
+    public function allGuests(): Collection
     {
         return collect([$this->person])
             ->merge($this->additionalGuests)
@@ -236,6 +238,7 @@ class Booking extends Model
         if ($this->parking_paid && $this->parking_amount !== null) {
             $total += (float) $this->parking_amount;
         }
+
         return $total;
     }
 
@@ -249,6 +252,7 @@ class Booking extends Model
         if ($this->linen_paid && $this->linen_amount !== null) {
             $total += (float) $this->linen_amount;
         }
+
         return $total;
     }
 
@@ -275,7 +279,7 @@ class Booking extends Model
         } while (self::where('checkin_token', $token)->exists());
 
         $this->forceFill([
-            'checkin_token'            => $token,
+            'checkin_token' => $token,
             'checkin_token_expires_at' => $this->checkout->copy()->endOfDay(),
         ])->save();
 
@@ -289,7 +293,7 @@ class Booking extends Model
         } while (self::where('review_token', $token)->exists());
 
         $this->forceFill([
-            'review_token'            => $token,
+            'review_token' => $token,
             'review_token_expires_at' => $this->checkout->copy()->addDays((int) config('apartment.review.token_expiry_days', 20))->endOfDay(),
         ])->save();
 

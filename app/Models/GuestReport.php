@@ -23,8 +23,8 @@ class GuestReport extends Model
 
     protected $casts = [
         'guests_payload' => 'array',
-        'soap_response'  => 'array',
-        'submitted_at'   => 'datetime',
+        'soap_response' => 'array',
+        'submitted_at' => 'datetime',
     ];
 
     public function booking(): BelongsTo

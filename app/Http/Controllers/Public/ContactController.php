@@ -27,8 +27,8 @@ class ContactController extends Controller
         }
 
         $data = $request->validate([
-            'name'    => ['required', 'string', 'max:100'],
-            'email'   => ['required', 'email', 'max:150'],
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150'],
             'subject' => ['nullable', 'string', 'max:150'],
             'message' => ['required', 'string', 'min:10', 'max:2000'],
         ]);
@@ -38,7 +38,7 @@ class ContactController extends Controller
         } catch (\Throwable $e) {
             Log::error('ContactMail failed to send', [
                 'error' => $e->getMessage(),
-                'name'  => $data['name'],
+                'name' => $data['name'],
                 'email' => $data['email'],
             ]);
 

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,8 @@ return new class extends Migration
 
         DB::table('pricing_rules')->orderBy('id')->chunkById(100, function ($rules): void {
             foreach ($rules as $rule) {
-                $start = \Carbon\Carbon::parse($rule->start_date);
-                $end = \Carbon\Carbon::parse($rule->end_date);
+                $start = Carbon::parse($rule->start_date);
+                $end = Carbon::parse($rule->end_date);
 
                 DB::table('pricing_rules')
                     ->where('id', $rule->id)

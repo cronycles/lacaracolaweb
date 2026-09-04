@@ -18,8 +18,8 @@ class TaxDeclarationController extends Controller
         // ── Determine the year to display ────────────────────────────────────
 
         $availableYears = $this->availableYears();
-        $defaultYear    = $availableYears[0] ?? now()->year;
-        $year           = (int) $request->input('year', $defaultYear);
+        $defaultYear = $availableYears[0] ?? now()->year;
+        $year = (int) $request->input('year', $defaultYear);
 
         // ── Year totals (only flagged + paid items) ───────────────────────────
 
@@ -67,7 +67,7 @@ class TaxDeclarationController extends Controller
             ->sum('amount');
 
         $totals = [
-            'income'   => (float) $incomeFromBookings + (float) $parkingFromBookings + (float) $cleaningFromBookings + (float) $linenFromBookings + (float) $extraIncome,
+            'income' => (float) $incomeFromBookings + (float) $parkingFromBookings + (float) $cleaningFromBookings + (float) $linenFromBookings + (float) $extraIncome,
             'expenses' => (float) $cleaningFromBookings + (float) $linenFromBookings + (float) $extraExpenses,
         ];
 
@@ -83,18 +83,18 @@ class TaxDeclarationController extends Controller
 
         foreach ($entries as $entry) {
             $movements->push([
-                'date'           => $entry->entry_date,
-                'type'           => $entry->type,
+                'date' => $entry->entry_date,
+                'type' => $entry->type,
                 'category_label' => config('finance.categories')[$entry->category] ?? $entry->category,
-                'description'    => $entry->description,
-                'amount'         => (float) $entry->amount,
-                'included'       => true, // financial entries are always "paid" once created
-                'source'         => 'entry',
-                'entry'          => $entry,
-                'booking_id'     => null,
-                'model_type'     => 'entry',
-                'model_id'       => $entry->id,
-                'attachments'    => $entry->attachments,
+                'description' => $entry->description,
+                'amount' => (float) $entry->amount,
+                'included' => true, // financial entries are always "paid" once created
+                'source' => 'entry',
+                'entry' => $entry,
+                'booking_id' => null,
+                'model_type' => 'entry',
+                'model_id' => $entry->id,
+                'attachments' => $entry->attachments,
             ]);
         }
 
@@ -108,21 +108,21 @@ class TaxDeclarationController extends Controller
 
         foreach ($bookingIncomeRows as $booking) {
             $date = $booking->income_paid_at ?? $booking->checkout;
-            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Incasso prenotazione',
-                'description'    => $desc,
-                'amount'         => (float) $booking->income_amount,
-                'included'       => (bool) $booking->income_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->income_amount,
+                'included' => (bool) $booking->income_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
@@ -136,21 +136,21 @@ class TaxDeclarationController extends Controller
 
         foreach ($bookingParkingRows as $booking) {
             $date = $booking->parking_paid_at ?? $booking->checkout;
-            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Posto auto',
-                'description'    => $desc,
-                'amount'         => (float) $booking->parking_amount,
-                'included'       => (bool) $booking->parking_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->parking_amount,
+                'included' => (bool) $booking->parking_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
@@ -164,37 +164,37 @@ class TaxDeclarationController extends Controller
 
         foreach ($bookingCleaningRows as $booking) {
             $date = $booking->services_paid_at ?? $booking->checkout;
-            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
             // Income: cleaning fee collected from guest (pass-through)
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Pulizie (incasso)',
-                'description'    => $desc,
-                'amount'         => (float) $booking->cleaning_amount,
-                'included'       => (bool) $booking->cleaning_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->cleaning_amount,
+                'included' => (bool) $booking->cleaning_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
             // Expense: cleaning fee paid to cleaner (pass-through)
             $movements->push([
-                'date'           => $date,
-                'type'           => 'expense',
+                'date' => $date,
+                'type' => 'expense',
                 'category_label' => 'Pulizie',
-                'description'    => $desc,
-                'amount'         => (float) $booking->cleaning_amount,
-                'included'       => (bool) $booking->cleaning_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->cleaning_amount,
+                'included' => (bool) $booking->cleaning_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
@@ -208,37 +208,37 @@ class TaxDeclarationController extends Controller
 
         foreach ($bookingLinenRows as $booking) {
             $date = $booking->services_paid_at ?? $booking->checkout;
-            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
             // Income: linen fee collected from guest (pass-through)
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Biancheria (incasso)',
-                'description'    => $desc,
-                'amount'         => (float) $booking->linen_amount,
-                'included'       => (bool) $booking->linen_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->linen_amount,
+                'included' => (bool) $booking->linen_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
             // Expense: linen fee paid to provider (pass-through)
             $movements->push([
-                'date'           => $date,
-                'type'           => 'expense',
+                'date' => $date,
+                'type' => 'expense',
                 'category_label' => 'Biancheria',
-                'description'    => $desc,
-                'amount'         => (float) $booking->linen_amount,
-                'included'       => (bool) $booking->linen_paid,
-                'source'         => 'booking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->linen_amount,
+                'included' => (bool) $booking->linen_paid,
+                'source' => 'booking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
@@ -256,18 +256,18 @@ class TaxDeclarationController extends Controller
         $bookingYears = Booking::whereNull('canceled_at')
             ->where(function ($q) {
                 $q->where('income_tax', true)
-                  ->orWhere('cleaning_tax', true)
-                  ->orWhere('linen_tax', true)
-                  ->orWhere('parking_tax', true);
+                    ->orWhere('cleaning_tax', true)
+                    ->orWhere('linen_tax', true)
+                    ->orWhere('parking_tax', true);
             })
-            ->selectRaw(sql_year_expr('checkin') . ' as y')
+            ->selectRaw(sql_year_expr('checkin').' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
             ->toArray();
 
         $entryYears = FinancialEntry::where('tax_declaration', true)
-            ->selectRaw(sql_year_expr('entry_date') . ' as y')
+            ->selectRaw(sql_year_expr('entry_date').' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')

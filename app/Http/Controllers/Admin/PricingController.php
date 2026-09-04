@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class PricingController extends Controller
@@ -51,7 +52,7 @@ class PricingController extends Controller
 
     public function create(): View
     {
-        return view('admin.pricing.form', ['rule' => new PricingRule()]);
+        return view('admin.pricing.form', ['rule' => new PricingRule]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -105,7 +106,7 @@ class PricingController extends Controller
         }
 
         PricingRule::query()->update([
-            'price_per_night' => DB::raw('price_per_night + (' . $deltaCents . ')'),
+            'price_per_night' => DB::raw('price_per_night + ('.$deltaCents.')'),
         ]);
 
         $verb = $deltaCents > 0 ? 'aumentati' : 'ridotti';
@@ -117,9 +118,9 @@ class PricingController extends Controller
     public function simulate(Request $request, PricingQuoteService $pricingQuoteService, OtaPortalPricingService $otaPortalPricingService): JsonResponse
     {
         $data = $request->validate([
-            'checkin'  => ['required', 'date'],
+            'checkin' => ['required', 'date'],
             'checkout' => ['required', 'date', 'after:checkin'],
-            'guests'   => ['nullable', 'integer', 'min:1', 'max:12'],
+            'guests' => ['nullable', 'integer', 'min:1', 'max:12'],
             'parking_requested' => ['nullable', 'boolean'],
         ]);
 
@@ -187,16 +188,16 @@ class PricingController extends Controller
     private function validated(Request $request): array
     {
         $data = $request->validate([
-            'start_month'     => ['required', 'integer', 'min:1', 'max:12'],
-            'start_day'       => ['required', 'integer', 'min:1', 'max:31'],
-            'end_month'       => ['required', 'integer', 'min:1', 'max:12'],
-            'end_day'         => ['required', 'integer', 'min:1', 'max:31'],
+            'start_month' => ['required', 'integer', 'min:1', 'max:12'],
+            'start_day' => ['required', 'integer', 'min:1', 'max:31'],
+            'end_month' => ['required', 'integer', 'min:1', 'max:12'],
+            'end_day' => ['required', 'integer', 'min:1', 'max:31'],
             'price_per_night' => ['required', 'integer', 'min:1', 'max:99999'],
-            'note'            => ['nullable', 'string', 'max:1000'],
-            'year'            => ['nullable', 'integer', 'min:2020', 'max:2100'],
+            'note' => ['nullable', 'string', 'max:1000'],
+            'year' => ['nullable', 'integer', 'min:2020', 'max:2100'],
         ]);
 
-        $errors = new MessageBag();
+        $errors = new MessageBag;
         if (! checkdate((int) $data['start_month'], (int) $data['start_day'], 2000)) {
             $errors->add('start_day', 'Data di inizio non valida.');
         }
@@ -206,7 +207,7 @@ class PricingController extends Controller
         }
 
         if ($errors->isNotEmpty()) {
-            throw \Illuminate\Validation\ValidationException::withMessages($errors->toArray());
+            throw ValidationException::withMessages($errors->toArray());
         }
 
         // Store cents (input is euros)

@@ -27,7 +27,7 @@ class MunicipalitiesSeeder extends Seeder
             }
 
             $dataFineVal = trim($row[3] ?? '');
-            $expiresAt   = null;
+            $expiresAt = null;
 
             if ($dataFineVal !== '') {
                 $dt = DateTime::createFromFormat('d/m/Y H:i:s', $dataFineVal)
@@ -38,9 +38,9 @@ class MunicipalitiesSeeder extends Seeder
             }
 
             $rows[] = [
-                'code'       => trim($row[0]),
-                'name'       => trim($row[1]),
-                'province'   => trim($row[2]),
+                'code' => trim($row[0]),
+                'name' => trim($row[1]),
+                'province' => trim($row[2]),
                 'expires_at' => $expiresAt,
             ];
 
@@ -51,7 +51,7 @@ class MunicipalitiesSeeder extends Seeder
             }
         }
 
-        if (!empty($rows)) {
+        if (! empty($rows)) {
             Municipality::insert($rows);
         }
 

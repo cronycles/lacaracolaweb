@@ -20,9 +20,9 @@ class FinancialAttachmentController extends Controller
     private function resolveModel(string $type, int $id): FinancialEntry|Booking
     {
         return match ($type) {
-            'entry'   => FinancialEntry::findOrFail($id),
+            'entry' => FinancialEntry::findOrFail($id),
             'booking' => Booking::findOrFail($id),
-            default   => abort(404),
+            default => abort(404),
         };
     }
 
@@ -39,18 +39,18 @@ class FinancialAttachmentController extends Controller
 
         $model = $this->resolveModel($type, $id);
 
-        $file     = $request->file('attachment');
-        $ext      = $file->getClientOriginalExtension();
-        $folder   = 'finance-attachments/' . $type . 's/' . $id;
-        $filename = Str::uuid() . ($ext ? '.' . $ext : '');
+        $file = $request->file('attachment');
+        $ext = $file->getClientOriginalExtension();
+        $folder = 'finance-attachments/'.$type.'s/'.$id;
+        $filename = Str::uuid().($ext ? '.'.$ext : '');
 
-        Storage::disk('local')->put($folder . '/' . $filename, file_get_contents($file->getRealPath()));
+        Storage::disk('local')->put($folder.'/'.$filename, file_get_contents($file->getRealPath()));
 
         $model->attachments()->create([
             'original_name' => $file->getClientOriginalName(),
-            'stored_path'   => $folder . '/' . $filename,
-            'mime_type'     => $file->getMimeType(),
-            'size'          => $file->getSize(),
+            'stored_path' => $folder.'/'.$filename,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
         ]);
 
         return redirect()->back()->with('success', 'Allegato aggiunto.');

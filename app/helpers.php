@@ -1,13 +1,16 @@
 <?php
 
-if (!function_exists('route_locale')) {
+use App\Support\RouteHelper;
+use Illuminate\Support\Facades\DB;
+
+if (! function_exists('route_locale')) {
     function route_locale(string $name, array $params = [], ?string $locale = null): string
     {
-        return \App\Support\RouteHelper::locale($name, $params, $locale);
+        return RouteHelper::locale($name, $params, $locale);
     }
 }
 
-if (!function_exists('sql_year_expr')) {
+if (! function_exists('sql_year_expr')) {
     /**
      * Cross-driver SQL expression extracting the year from a date/datetime
      * column or expression. MySQL/Postgres support `YEAR(...)` directly;
@@ -16,7 +19,7 @@ if (!function_exists('sql_year_expr')) {
      */
     function sql_year_expr(string $column): string
     {
-        return \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite'
+        return DB::connection()->getDriverName() === 'sqlite'
             ? "CAST(strftime('%Y', {$column}) AS INTEGER)"
             : "YEAR({$column})";
     }

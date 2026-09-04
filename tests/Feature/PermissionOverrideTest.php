@@ -7,6 +7,8 @@ namespace Tests\Feature;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,15 +21,15 @@ class PermissionOverrideTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
     }
 
     public function test_host_keeper_with_manage_bookings_override_can_access_create_booking(): void
     {
-        $hostKeeperRole  = Role::where('name', 'host_keeper')->first();
-        $hostKeeper      = User::factory()->create(['role_id' => $hostKeeperRole->id]);
+        $hostKeeperRole = Role::where('name', 'host_keeper')->first();
+        $hostKeeper = User::factory()->create(['role_id' => $hostKeeperRole->id]);
         $manageBookingsPerm = Permission::where('name', 'manage_bookings')->first();
 
         // Grant per-user override
@@ -42,7 +44,7 @@ class PermissionOverrideTest extends TestCase
     public function test_manage_users_override_is_non_delegable(): void
     {
         $hostKeeperRole = Role::where('name', 'host_keeper')->first();
-        $hostKeeper     = User::factory()->create(['role_id' => $hostKeeperRole->id]);
+        $hostKeeper = User::factory()->create(['role_id' => $hostKeeperRole->id]);
         $manageUsersPerm = Permission::where('name', 'manage_users')->first();
 
         // Even if somehow attached, hasPermission should return false

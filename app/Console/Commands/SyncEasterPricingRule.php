@@ -44,13 +44,13 @@ class SyncEasterPricingRule extends Command
             : $this->resolveDefaultPrice($existing);
 
         $attributes = [
-            'start_month'     => (int) $start->format('n'),
-            'start_day'       => (int) $start->format('j'),
-            'end_month'       => (int) $end->format('n'),
-            'end_day'         => (int) $end->format('j'),
+            'start_month' => (int) $start->format('n'),
+            'start_day' => (int) $start->format('j'),
+            'end_month' => (int) $end->format('n'),
+            'end_day' => (int) $end->format('j'),
             'price_per_night' => $priceEur * 100,
-            'note'            => "Pasqua {$year} (Domenica {$easter->format('d/m')}) - generata automaticamente",
-            'year'            => $year,
+            'note' => "Pasqua {$year} (Domenica {$easter->format('d/m')}) - generata automaticamente",
+            'year' => $year,
         ];
 
         if ($existing) {

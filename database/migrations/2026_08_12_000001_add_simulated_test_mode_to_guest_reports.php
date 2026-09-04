@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         if (DB::connection()->getDriverName() === 'mysql') {
-            DB::statement("ALTER TABLE guest_reports MODIFY mode VARCHAR(20) NOT NULL");
+            DB::statement('ALTER TABLE guest_reports MODIFY mode VARCHAR(20) NOT NULL');
 
             return;
         }

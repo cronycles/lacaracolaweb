@@ -11,11 +11,12 @@ use App\Models\Booking;
 use App\Models\Country;
 use App\Models\GuestReport;
 use App\Models\GuestType;
-use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Models\Person;
+use App\Services\GuestReporting\Data\ItalianMunicipalities;
 use App\Services\GuestReporting\GuestRecord;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class GuestReportingController extends Controller
@@ -47,11 +48,11 @@ class GuestReportingController extends Controller
             ->get();
 
         return view('admin.guest-reporting.show', [
-            'booking'          => $prenotazioni,
-            'lastReport'       => $lastReport,
-            'comuniNames'      => ItalianMunicipalities::allValidNames(),
-            'countries'        => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
-            'guestTypes'       => GuestType::orderBy('code')->get(),
+            'booking' => $prenotazioni,
+            'lastReport' => $lastReport,
+            'comuniNames' => ItalianMunicipalities::allValidNames(),
+            'countries' => Country::whereNotNull('iso2')->orderBy('name_it')->pluck('name_it', 'iso2')->toArray(),
+            'guestTypes' => GuestType::orderBy('code')->get(),
             'selectablePeople' => $selectablePeople,
         ]);
     }
@@ -60,6 +61,7 @@ class GuestReportingController extends Controller
     public function saveAndTest(Request $request, Booking $prenotazioni): RedirectResponse
     {
         $guests = $this->validateAndPersistGuests($request, $prenotazioni);
+
         return $this->runTest($guests, $prenotazioni, 'test');
     }
 
@@ -82,15 +84,15 @@ class GuestReportingController extends Controller
         $result = $this->driver->testDraft($guests);
 
         GuestReport::create([
-            'booking_id'     => $booking->id,
-            'driver'         => config('guest-reporting.default'),
-            'mode'           => $mode,
-            'status'         => $result->success ? 'success' : 'error',
-            'guests_count'   => count($guests),
+            'booking_id' => $booking->id,
+            'driver' => config('guest-reporting.default'),
+            'mode' => $mode,
+            'status' => $result->success ? 'success' : 'error',
+            'guests_count' => count($guests),
             'guests_payload' => array_map(fn (GuestRecord $g) => (array) $g, $guests),
-            'soap_response'  => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
-            'error_message'  => $result->message,
-            'submitted_at'   => now(),
+            'soap_response' => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
+            'error_message' => $result->message,
+            'submitted_at' => now(),
         ]);
 
         return redirect()
@@ -106,15 +108,15 @@ class GuestReportingController extends Controller
         $result = $this->driver->sendGuests($guests);
 
         GuestReport::create([
-            'booking_id'     => $prenotazioni->id,
-            'driver'         => config('guest-reporting.default'),
-            'mode'           => 'send',
-            'status'         => $result->success ? 'success' : 'error',
-            'guests_count'   => count($guests),
+            'booking_id' => $prenotazioni->id,
+            'driver' => config('guest-reporting.default'),
+            'mode' => 'send',
+            'status' => $result->success ? 'success' : 'error',
+            'guests_count' => count($guests),
             'guests_payload' => array_map(fn (GuestRecord $g) => (array) $g, $guests),
-            'soap_response'  => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
-            'error_message'  => $result->message,
-            'submitted_at'   => now(),
+            'soap_response' => $result->rawResponse ? json_decode($result->rawResponse, true) : null,
+            'error_message' => $result->message,
+            'submitted_at' => now(),
         ]);
 
         return redirect()
@@ -152,7 +154,7 @@ class GuestReportingController extends Controller
         }
 
         if (empty($guestRecords)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'guests' => ['Seleziona almeno un ospite da includere nell\'invio.'],
             ]);
         }
@@ -164,7 +166,7 @@ class GuestReportingController extends Controller
     public function destroyReports(Request $request, Booking $prenotazioni): RedirectResponse
     {
         $data = $request->validate([
-            'report_ids'   => ['required', 'array', 'min:1'],
+            'report_ids' => ['required', 'array', 'min:1'],
             'report_ids.*' => ['required', 'integer'],
         ]);
 

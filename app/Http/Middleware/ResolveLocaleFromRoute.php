@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Session;
 class ResolveLocaleFromRoute
 {
     private const SUPPORTED = ['it', 'en', 'fr', 'de'];
-    private const FALLBACK   = 'it';
+
+    private const FALLBACK = 'it';
+
     private const SESSION_KEY = 'locale';
 
     public function handle(Request $request, Closure $next): mixed
@@ -31,7 +33,7 @@ class ResolveLocaleFromRoute
             $locale = $this->validate($session);
         } else {
             $accepted = $request->getLanguages();
-            if (!empty($accepted)) {
+            if (! empty($accepted)) {
                 $primary = strtolower(substr($accepted[0], 0, 2));
                 $locale = in_array($primary, self::SUPPORTED, true) ? $primary : self::FALLBACK;
             } else {

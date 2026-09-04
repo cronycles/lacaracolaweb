@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Middleware\RequirePermission;
+use App\Http\Middleware\ResolveLocaleFromRoute;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,14 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             // Load admin routes separately (auth-protected)
-            \Illuminate\Support\Facades\Route::middleware('web')
+            Route::middleware('web')
                 ->group(base_path('routes/admin.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Apply locale detection (from route prefix or session/header) to all web requests
         $middleware->web(append: [
-            \App\Http\Middleware\ResolveLocaleFromRoute::class,
+            ResolveLocaleFromRoute::class,
         ]);
 
         // Unauthenticated users on admin routes => redirect to admin login
@@ -27,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Permission-based authorization for admin route groups
         $middleware->alias([
-            'permission' => \App\Http\Middleware\RequirePermission::class,
+            'permission' => RequirePermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -49,7 +49,7 @@ class GuestReportingManager implements GuestReportingDriverInterface
     {
         return match ($driverKey) {
             'polizia_stato' => new PoliziaStatoAlloggiatiDriver($config),
-            default         => throw new InvalidArgumentException("Unknown guest-reporting driver: [{$driverKey}]"),
+            default => throw new InvalidArgumentException("Unknown guest-reporting driver: [{$driverKey}]"),
         };
     }
 }

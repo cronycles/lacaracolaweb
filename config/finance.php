@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 return [
     'categories' => [
-        'pulizie'        => 'Pulizie / Biancheria',
-        'utenze'         => 'Utenze (acqua, luce, gas, internet, hosting)',
-        'manutenzione'   => 'Manutenzione / Arredamento / Assistenza',
-        'amministrazione'  => 'Amministrazione',
-        'assicurazione'  => 'Assicurazione',
-        'tasse'          => 'Tasse',
-        'ingresso'       => 'Ingresso Puntuale',
-        'altro'          => 'Altro',
+        'pulizie' => 'Pulizie / Biancheria',
+        'utenze' => 'Utenze (acqua, luce, gas, internet, hosting)',
+        'manutenzione' => 'Manutenzione / Arredamento / Assistenza',
+        'amministrazione' => 'Amministrazione',
+        'assicurazione' => 'Assicurazione',
+        'tasse' => 'Tasse',
+        'ingresso' => 'Ingresso Puntuale',
+        'altro' => 'Altro',
     ],
 
     /*
@@ -31,9 +31,9 @@ return [
      * Override any value here to change the default for all future bookings.
      */
     'tax_declaration_defaults' => [
-        'income'   => true,
+        'income' => true,
         'cleaning' => false,
-        'linen'    => false,
-        'parking'  => false,
+        'linen' => false,
+        'parking' => false,
     ],
 ];

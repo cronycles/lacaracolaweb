@@ -24,7 +24,7 @@ class ContactMail extends Mailable
     public function envelope(): Envelope
     {
         $subject = ! empty($this->data['subject'])
-            ? 'Contatto: ' . $this->data['subject'] . ' — La Caracola'
+            ? 'Contatto: '.$this->data['subject'].' — La Caracola'
             : 'Nuovo messaggio di contatto — La Caracola';
 
         return new Envelope(

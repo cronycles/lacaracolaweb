@@ -8,6 +8,8 @@ use App\Models\Booking;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,8 +24,8 @@ class HostKeeperViewTest extends TestCase
         parent::setUp();
 
         $this->seed([
-            \Database\Seeders\PermissionSeeder::class,
-            \Database\Seeders\RoleSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
 
         $hostKeeperRole = Role::where('name', 'host_keeper')->first();
@@ -43,13 +45,13 @@ class HostKeeperViewTest extends TestCase
     {
         $person = Person::create([
             'first_name' => 'Anna',
-            'last_name'  => 'Verdi',
+            'last_name' => 'Verdi',
         ]);
         $booking = Booking::create([
-            'person_id'     => $person->id,
-            'checkin'       => now()->addDays(10)->format('Y-m-d'),
-            'checkout'      => now()->addDays(15)->format('Y-m-d'),
-            'adults'        => 1,
+            'person_id' => $person->id,
+            'checkin' => now()->addDays(10)->format('Y-m-d'),
+            'checkout' => now()->addDays(15)->format('Y-m-d'),
+            'adults' => 1,
             'income_amount' => 1500.00,
         ]);
 

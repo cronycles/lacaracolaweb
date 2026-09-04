@@ -13,11 +13,11 @@ namespace App\Services\GuestReporting;
 readonly class SubmissionResult
 {
     /**
-     * @param bool         $success      True if the external service accepted all records
-     * @param string       $message      Human-readable summary (shown directly in admin UI, Italian)
-     * @param array        $rowDetails   Per-row details from the service response.
-     *                                   Each item: ['row' => int, 'esito' => string, 'descrizione' => string]
-     * @param string|null  $rawResponse  JSON-encoded raw response for audit storage; null on transport error
+     * @param  bool  $success  True if the external service accepted all records
+     * @param  string  $message  Human-readable summary (shown directly in admin UI, Italian)
+     * @param  array  $rowDetails  Per-row details from the service response.
+     *                             Each item: ['row' => int, 'esito' => string, 'descrizione' => string]
+     * @param  string|null  $rawResponse  JSON-encoded raw response for audit storage; null on transport error
      */
     public function __construct(
         public bool $success,

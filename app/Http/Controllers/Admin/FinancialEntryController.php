@@ -9,7 +9,6 @@ use App\Models\Booking;
 use App\Models\FinancialEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -61,16 +60,16 @@ class FinancialEntryController extends Controller
             ->sum('amount');
 
         $totals = [
-            'income'           => $bookingIncome + $bookingParking + $bookingCleaning + $bookingLinen + $extraIncome,
-            'expenses'         => $bookingExpenses + $extraExpenses,
-            'booking_income'   => $bookingIncome,
-            'booking_parking'  => $bookingParking,
+            'income' => $bookingIncome + $bookingParking + $bookingCleaning + $bookingLinen + $extraIncome,
+            'expenses' => $bookingExpenses + $extraExpenses,
+            'booking_income' => $bookingIncome,
+            'booking_parking' => $bookingParking,
             'booking_expenses' => $bookingExpenses,
-            'extra_income'     => $extraIncome,
-            'extra_expenses'   => $extraExpenses,
-            'cleaning_paid'    => $bookingCleaning,
-            'linen_paid'       => $bookingLinen,
-            'utilities'        => $utilitiesExpenses,
+            'extra_income' => $extraIncome,
+            'extra_expenses' => $extraExpenses,
+            'cleaning_paid' => $bookingCleaning,
+            'linen_paid' => $bookingLinen,
+            'utilities' => $utilitiesExpenses,
         ];
 
         $totals['balance'] = $totals['income'] - $totals['expenses'];
@@ -92,7 +91,7 @@ class FinancialEntryController extends Controller
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;
 
-        $globalExtraIncome   = FinancialEntry::where('type', 'income')->sum('amount');
+        $globalExtraIncome = FinancialEntry::where('type', 'income')->sum('amount');
         $globalExtraExpenses = FinancialEntry::where('type', 'expense')->sum('amount');
 
         // Cleaning and linen are pass-through: collected from guest (+income) and paid to cleaner (-expense).
@@ -103,25 +102,25 @@ class FinancialEntryController extends Controller
         // ── Balance at start of selected year (all previous years combined) ──
 
         $prevBookingIncome = Booking::whereNull('canceled_at')
-            ->whereRaw(sql_year_expr('COALESCE(income_paid_at, checkout)') . ' < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(income_paid_at, checkout)').' < ?', [$year])
             ->where('income_paid', true)
             ->whereNotNull('income_amount')
             ->sum('income_amount');
 
         $prevBookingParking = Booking::whereNull('canceled_at')
-            ->whereRaw(sql_year_expr('COALESCE(parking_paid_at, checkout)') . ' < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(parking_paid_at, checkout)').' < ?', [$year])
             ->where('parking_paid', true)
             ->whereNotNull('parking_amount')
             ->sum('parking_amount');
 
         $prevBookingExpenses = Booking::whereNull('canceled_at')
-            ->whereRaw(sql_year_expr('COALESCE(services_paid_at, checkout)') . ' < ?', [$year])
+            ->whereRaw(sql_year_expr('COALESCE(services_paid_at, checkout)').' < ?', [$year])
             ->selectRaw('COALESCE(SUM(CASE WHEN cleaning_paid = 1 THEN cleaning_amount ELSE 0 END), 0) +
                          COALESCE(SUM(CASE WHEN linen_paid = 1 THEN linen_amount ELSE 0 END), 0) as total')
             ->value('total') ?? 0;
 
-        $prevExtraIncome   = FinancialEntry::where('type', 'income')->whereRaw(sql_year_expr('entry_date') . ' < ?', [$year])->sum('amount');
-        $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw(sql_year_expr('entry_date') . ' < ?', [$year])->sum('amount');
+        $prevExtraIncome = FinancialEntry::where('type', 'income')->whereRaw(sql_year_expr('entry_date').' < ?', [$year])->sum('amount');
+        $prevExtraExpenses = FinancialEntry::where('type', 'expense')->whereRaw(sql_year_expr('entry_date').' < ?', [$year])->sum('amount');
 
         // prevBookingExpenses = cleaning+linen paid before $year — also counts as income (pass-through).
         $previousBalance = (float) ($prevBookingIncome + $prevBookingParking + $prevBookingExpenses + $prevExtraIncome) - ($prevBookingExpenses + $prevExtraExpenses);
@@ -163,7 +162,7 @@ class FinancialEntryController extends Controller
 
             // $bExp (cleaning+linen paid) is also income this month (pass-through collected from guest).
             $monthlyData[$m] = [
-                'income'   => $bInc + $bPark + $bExp + $eInc,
+                'income' => $bInc + $bPark + $bExp + $eInc,
                 'expenses' => $bExp + $eExp,
             ];
         }
@@ -175,17 +174,17 @@ class FinancialEntryController extends Controller
         // 1. Extra financial entries
         foreach (FinancialEntry::whereYear('entry_date', $year)->with('attachments')->get() as $entry) {
             $movements->push([
-                'date'           => $entry->entry_date,
-                'type'           => $entry->type,
+                'date' => $entry->entry_date,
+                'type' => $entry->type,
                 'category_label' => config('finance.categories')[$entry->category] ?? $entry->category,
-                'description'    => $entry->description,
-                'amount'         => (float) $entry->amount,
-                'source'         => 'entry',
-                'entry'          => $entry,
-                'booking_id'     => null,
-                'model_type'     => 'entry',
-                'model_id'       => $entry->id,
-                'attachments'    => $entry->attachments,
+                'description' => $entry->description,
+                'amount' => (float) $entry->amount,
+                'source' => 'entry',
+                'entry' => $entry,
+                'booking_id' => null,
+                'model_type' => 'entry',
+                'model_id' => $entry->id,
+                'attachments' => $entry->attachments,
             ]);
         }
 
@@ -199,20 +198,20 @@ class FinancialEntryController extends Controller
 
         foreach ($bookingIncomeRows as $booking) {
             $date = $booking->income_paid_at ?? $booking->checkout;
-            $desc = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $desc = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Prenotazione',
-                'description'    => $desc,
-                'amount'         => (float) $booking->income_amount,
-                'source'         => 'booking_income',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $desc,
+                'amount' => (float) $booking->income_amount,
+                'source' => 'booking_income',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
@@ -238,89 +237,89 @@ class FinancialEntryController extends Controller
             ->get();
 
         foreach ($bookingParkingRows as $booking) {
-            $date       = $booking->parking_paid_at ?? $booking->checkout;
-            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $date = $booking->parking_paid_at ?? $booking->checkout;
+            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
 
             $movements->push([
-                'date'           => $date,
-                'type'           => 'income',
+                'date' => $date,
+                'type' => 'income',
                 'category_label' => 'Posto auto',
-                'description'    => $bookingRef,
-                'amount'         => (float) $booking->parking_amount,
-                'source'         => 'booking_parking',
-                'entry'          => null,
-                'booking_id'     => $booking->id,
-                'model_type'     => 'booking',
-                'model_id'       => $booking->id,
-                'attachments'    => $booking->attachments,
+                'description' => $bookingRef,
+                'amount' => (float) $booking->parking_amount,
+                'source' => 'booking_parking',
+                'entry' => null,
+                'booking_id' => $booking->id,
+                'model_type' => 'booking',
+                'model_id' => $booking->id,
+                'attachments' => $booking->attachments,
             ]);
         }
 
         foreach ($bookingServiceRows as $booking) {
-            $date       = $booking->services_paid_at ?? $booking->checkout;
-            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #' . $booking->id)
-                . ' (' . $booking->checkin->format('d/m') . '–' . $booking->checkout->format('d/m/Y') . ')';
+            $date = $booking->services_paid_at ?? $booking->checkout;
+            $bookingRef = ($booking->person?->full_name ?? 'Prenotazione #'.$booking->id)
+                .' ('.$booking->checkin->format('d/m').'–'.$booking->checkout->format('d/m/Y').')';
 
             if ($booking->cleaning_paid && $booking->cleaning_amount !== null) {
                 // Income: cleaning fee collected from guest (pass-through)
                 $movements->push([
-                    'date'           => $date,
-                    'type'           => 'income',
+                    'date' => $date,
+                    'type' => 'income',
                     'category_label' => 'Pulizie (incasso)',
-                    'description'    => $bookingRef,
-                    'amount'         => (float) $booking->cleaning_amount,
-                    'source'         => 'booking_cleaning',
-                    'entry'          => null,
-                    'booking_id'     => $booking->id,
-                    'model_type'     => 'booking',
-                    'model_id'       => $booking->id,
-                    'attachments'    => $booking->attachments,
+                    'description' => $bookingRef,
+                    'amount' => (float) $booking->cleaning_amount,
+                    'source' => 'booking_cleaning',
+                    'entry' => null,
+                    'booking_id' => $booking->id,
+                    'model_type' => 'booking',
+                    'model_id' => $booking->id,
+                    'attachments' => $booking->attachments,
                 ]);
                 // Expense: cleaning fee paid to cleaner (pass-through)
                 $movements->push([
-                    'date'           => $date,
-                    'type'           => 'expense',
+                    'date' => $date,
+                    'type' => 'expense',
                     'category_label' => 'Pulizie',
-                    'description'    => $bookingRef,
-                    'amount'         => (float) $booking->cleaning_amount,
-                    'source'         => 'booking_cleaning',
-                    'entry'          => null,
-                    'booking_id'     => $booking->id,
-                    'model_type'     => 'booking',
-                    'model_id'       => $booking->id,
-                    'attachments'    => $booking->attachments,
+                    'description' => $bookingRef,
+                    'amount' => (float) $booking->cleaning_amount,
+                    'source' => 'booking_cleaning',
+                    'entry' => null,
+                    'booking_id' => $booking->id,
+                    'model_type' => 'booking',
+                    'model_id' => $booking->id,
+                    'attachments' => $booking->attachments,
                 ]);
             }
 
             if ($booking->linen_paid && $booking->linen_amount !== null) {
                 // Income: linen fee collected from guest (pass-through)
                 $movements->push([
-                    'date'           => $date,
-                    'type'           => 'income',
+                    'date' => $date,
+                    'type' => 'income',
                     'category_label' => 'Biancheria (incasso)',
-                    'description'    => $bookingRef,
-                    'amount'         => (float) $booking->linen_amount,
-                    'source'         => 'booking_linen',
-                    'entry'          => null,
-                    'booking_id'     => $booking->id,
-                    'model_type'     => 'booking',
-                    'model_id'       => $booking->id,
-                    'attachments'    => $booking->attachments,
+                    'description' => $bookingRef,
+                    'amount' => (float) $booking->linen_amount,
+                    'source' => 'booking_linen',
+                    'entry' => null,
+                    'booking_id' => $booking->id,
+                    'model_type' => 'booking',
+                    'model_id' => $booking->id,
+                    'attachments' => $booking->attachments,
                 ]);
                 // Expense: linen fee paid to provider (pass-through)
                 $movements->push([
-                    'date'           => $date,
-                    'type'           => 'expense',
+                    'date' => $date,
+                    'type' => 'expense',
                     'category_label' => 'Biancheria',
-                    'description'    => $bookingRef,
-                    'amount'         => (float) $booking->linen_amount,
-                    'source'         => 'booking_linen',
-                    'entry'          => null,
-                    'booking_id'     => $booking->id,
-                    'model_type'     => 'booking',
-                    'model_id'       => $booking->id,
-                    'attachments'    => $booking->attachments,
+                    'description' => $bookingRef,
+                    'amount' => (float) $booking->linen_amount,
+                    'source' => 'booking_linen',
+                    'entry' => null,
+                    'booking_id' => $booking->id,
+                    'model_type' => 'booking',
+                    'model_id' => $booking->id,
+                    'attachments' => $booking->attachments,
                 ]);
             }
         }
@@ -376,7 +375,7 @@ class FinancialEntryController extends Controller
 
     public function create(): View
     {
-        return view('admin.finance.form', ['entry' => new FinancialEntry()]);
+        return view('admin.finance.form', ['entry' => new FinancialEntry]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -412,11 +411,11 @@ class FinancialEntryController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'type'            => ['required', 'in:income,expense'],
-            'category'        => ['required', 'string', Rule::in(array_keys(config('finance.categories')))],
-            'description'     => ['nullable', 'string', 'max:1000'],
-            'amount'          => ['required', 'numeric', 'min:0.01', 'max:99999.99'],
-            'entry_date'      => ['required', 'date'],
+            'type' => ['required', 'in:income,expense'],
+            'category' => ['required', 'string', Rule::in(array_keys(config('finance.categories')))],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:99999.99'],
+            'entry_date' => ['required', 'date'],
             'tax_declaration' => ['nullable', 'boolean'],
         ]);
     }
@@ -424,13 +423,13 @@ class FinancialEntryController extends Controller
     /** Returns years that have bookings or financial entries, plus the current year */
     private function availableYears(): array
     {
-        $bookingYears = Booking::selectRaw(sql_year_expr('checkin') . ' as y')
+        $bookingYears = Booking::selectRaw(sql_year_expr('checkin').' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
             ->toArray();
 
-        $entryYears = FinancialEntry::selectRaw(sql_year_expr('entry_date') . ' as y')
+        $entryYears = FinancialEntry::selectRaw(sql_year_expr('entry_date').' as y')
             ->groupBy('y')
             ->orderByDesc('y')
             ->pluck('y')
