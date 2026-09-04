@@ -24,10 +24,14 @@ recovers it for any other per-guest cost.
 
 ## What Changes
 
-- **Strip the cleaning fee out of the blended nightly rate entirely.** It is
-  no longer amortised into any per-night figure; the owner types the existing
-  100 € `pricing_cleaning_fee` value directly into each portal's own
-  "cleaning fee" field, exactly as today, with no computation involved.
+- **Strip the cleaning fee amount out of the blended nightly rate entirely.**
+  The 100 € `pricing_cleaning_fee` value is never added to any per-night
+  figure; the owner types it directly into each portal's own "cleaning fee"
+  field, exactly as today, with no computation involved. Its tax gross-up
+  (only the tax, not the fee itself) is still recovered by the per-night
+  add-on below, alongside the linen recovery — otherwise a 2-guest,
+  minimum-stay portal booking would net noticeably less than direct (see
+  design.md Decision 1).
 - **Lower the nightly-rate reference guest count from bed capacity (6) to a
   fixed 2 guests** (no longer a `Setting` — hardcoded, since the previous
   editable reference-guests knob is superseded by the extra-guest surcharge

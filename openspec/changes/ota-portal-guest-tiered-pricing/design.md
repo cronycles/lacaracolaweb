@@ -32,9 +32,9 @@ surcharge — this is fine, `PricingQuoteService` is unchanged).
 **Goals:**
 
 - Produce a portal nightly rate close to the direct site's own
-  `price_per_night` (only the 2-guest linen recovery + portal commission
-  separates them), instead of a rate inflated for the apartment's full 6-guest
-  capacity.
+  `price_per_night` (only the 2-guest linen recovery, the cleaning fee's tax
+  gross-up, and portal commission separate them), instead of a rate inflated
+  for the apartment's full 6-guest capacity.
 - Recover the incremental linen cost of guests 3+ through a flat per-portal
   surcharge, mirroring exactly how the portals let the owner price that cost.
 - Keep all 3 portals configured with the _same_ extra-guest surcharge amount
@@ -64,19 +64,39 @@ surcharge — this is fine, `PricingQuoteService` is unchanged).
 
 ## Decisions
 
-### 1. Cleaning fee is fully scorporated — not part of any nightly-rate formula
+### 1. Cleaning fee amount is fully scorporated — its tax gross-up is not
 
-Unlike the previous design (which grossed cleaning into the amortised rate),
-cleaning is now **only** a reference value shown in the legend
+Unlike the previous design (which grossed the whole cleaning fee into the
+amortised rate), the cleaning fee **amount** is never algebraically blended
+into a per-night figure — it is only a reference value shown in the legend
 (`admin/prezzi-portali`) and in the simulator (as a flat line in the
-guest-facing total) — never algebraically blended into a per-night figure.
-The owner types the existing `pricing_cleaning_fee` value (100 €, unchanged
-default) directly into each portal's own cleaning-fee field. No tax gross-up
-is applied to this figure for the portal legend/simulator display — the
-owner's instruction was explicit: "100 € a prenotazione", a flat pass-through,
-not a computed value. (`PricingQuoteService`'s direct-price cleaning-fee tax
-gross-up, controlled by `pricing_tax_gross_up_items`, is unrelated and
-unchanged.)
+guest-facing total). The owner types the existing `pricing_cleaning_fee`
+value (100 €, unchanged default) directly into each portal's own
+cleaning-fee field, exactly as instructed: "100 € a prenotazione", a flat
+pass-through, not a computed value.
+
+However, the direct site's tax gross-up (`pricing_tax_rate` ×
+`pricing_tax_gross_up_items`) normally taxes cleaning **and** linen together
+(default: both selected). If the portal formula only recovered the linen
+share of that tax (as an earlier revision of this design did), a 2-guest,
+minimum-stay portal booking would net the owner noticeably less than the
+equivalent direct booking — not just the commission cut on the flat cleaning
+fee (≈15.50 € at today's rates), but _also_ the entire tax gross-up on the
+cleaning fee itself (≈21 €, since that portion is completely absent from a
+formula that never references the cleaning fee at all) — a combined ≈36.50 €
+shortfall discovered during verification (Phase 9), well beyond the
+≈15–16 € originally estimated.
+
+To close that gap while still keeping the owner's literal instruction (100 €
+flat, no computation, into the portal's cleaning-fee field), the per-night
+add-on (Decision 4) recovers the cleaning fee's **tax gross-up** alongside
+the linen recovery — i.e. `taxGrossUpCents($cleaningFeeCents, $referenceLinenCents)`
+instead of `taxGrossUpCents(0, $referenceLinenCents)`. The cleaning fee
+amount itself still never appears added anywhere in the nightly-rate formula
+and is still not grossed up for commission — only its _tax_ is recovered.
+This narrows the accepted, documented shortfall back down to just the
+commission cut on the flat 100 € (≈15.50 €, see Risks), which is what the
+owner actually agreed to keep.
 
 ### 2. Reference guest count: fixed at 2, no longer a `Setting`
 
@@ -107,14 +127,15 @@ referenceGuests   = 2                                                  // fixed 
 referenceNights    = (int) Setting::get('pricing_min_nights', config('apartment.booking.min_nights', 3))
 linenFeeCents      = (int) Setting::get('pricing_linen_fee_per_person', config('apartment.booking.linen_fee_per_person', 25)) * 100
 referenceLinenCents = linenFeeCents * referenceGuests                    // 25€ × 2 = 50€ → 5000 cents
-linenTaxGrossUpCents = taxGrossUpCents(cleaningCents: 0, linenCents: referenceLinenCents)
-                                                                          // shared ResolvesTaxGrossUp trait; 0 cleaning
-                                                                          // cents passed in since cleaning never
-                                                                          // participates in this formula (Decision 1);
-                                                                          // still respects the `linen` toggle in
-                                                                          // pricing_tax_gross_up_items
-recoverableCents   = referenceLinenCents + linenTaxGrossUpCents          // 50€ + 21% = 60.50€ → 6050 cents (default settings)
-perNightAddOnCents = round(recoverableCents / referenceNights)          // 6050 / 3 = 2017 cents (≈20.17€/night)
+cleaningFeeCents   = (int) Setting::get('pricing_cleaning_fee', config('apartment.booking.cleaning_fee', 100)) * 100
+taxGrossUpCents    = taxGrossUpCents(cleaningCents: cleaningFeeCents, linenCents: referenceLinenCents)
+                                                                          // shared ResolvesTaxGrossUp trait; the
+                                                                          // cleaning fee AMOUNT is never added anywhere
+                                                                          // below — only its tax gross-up is recovered
+                                                                          // here (Decision 1); still respects the
+                                                                          // cleaning/linen toggles in pricing_tax_gross_up_items
+recoverableCents   = referenceLinenCents + taxGrossUpCents               // 50€ linen + 21% tax on (100€ + 50€) = 81.50€ → 8150 cents (default settings)
+perNightAddOnCents = round(recoverableCents / referenceNights)          // 8150 / 3 = 2717 cents (≈27.17€/night)
 
 // Per portal (airbnb/booking/hometogo):
 commissionRate       = (float) Setting::get("pricing_commission_{portal}", <default>)
@@ -130,14 +151,10 @@ total_, not a nightly rate) have nothing to act on. This also means the
 service (see Decision 8 for where it _is_ still used).
 
 Worked example at today's defaults (100 €/night rule, Airbnb 15.5%):
-`(10000 + 2017) / 0.845 = 14221` cents → rounds to **142 €/night** (vs the
-previous design's ≈243 €/night for the same input — a realistic, market-close
-figure).
-
-Note: the owner's own manual calculation used 60.50 ÷ 3 = 20.16 €; the exact
-value is 20.1666…, which this implementation rounds to 20.17 € (nearest
-cent, consistent with rounding elsewhere in the codebase) — a 1-cent
-difference, immaterial to the final whole-euro nightly rate.
+`(10000 + 2717) / 0.845 = 15044` cents → rounds to **150 €/night** (vs the
+previous design's ≈243 €/night for the same input — still a realistic,
+market-close figure, and close to the direct site's own 100 € since the
+add-on plus commission markup is the only difference).
 
 ### 5. Extra-guest-per-night surcharge: one flat, manually-editable `Setting`, not derived per portal
 
@@ -286,7 +303,11 @@ same "Fiscalità e prezzi" card:
   of it — and of the alternative (grossing up the cleaning fee too, at the
   cost of it no longer being the same flat 100 € on every portal) — the next
   time they revisit these numbers, without having to re-derive it from
-  scratch or re-read this design doc.
+  scratch or re-read this design doc. (Phase 9 verification initially found a
+  ≈36.50 € shortfall — the commission cut _plus_ a missed tax gross-up on the
+  cleaning fee — before Decision 1 was extended to also recover that tax
+  portion, narrowing it down to the ≈15–16 € commission-only figure quoted
+  above.)
 - **[Risk] Widening `pricing_min_nights`'s blast radius.** Making minimum
   stay length `Setting`-editable (previously a deploy-only `config` value)
   means an admin could change it from `admin/impostazioni` and immediately

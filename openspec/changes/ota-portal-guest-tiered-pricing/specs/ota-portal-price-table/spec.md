@@ -3,10 +3,11 @@
 ### Requirement: Blended nightly rate calculation
 
 For each `PricingRule`, the system SHALL compute a suggested nightly rate per
-portal that folds only the linen cost for a fixed 2-guest reference (plus its
-tax gross-up) into the direct nightly rate, then divides by the portal's
-commission — without exposing the cleaning fee anywhere in this calculation,
-and without treating the reference guest count as configurable.
+portal that folds the linen cost for a fixed 2-guest reference and the
+cleaning fee's tax gross-up (but never the cleaning fee amount itself) into
+the direct nightly rate, then divides by the portal's commission — without
+exposing the cleaning fee amount anywhere in this calculation, and without
+treating the reference guest count as configurable.
 
 #### Scenario: Reference guest count is fixed at 2, not configurable
 
@@ -24,20 +25,25 @@ and without treating the reference guest count as configurable.
   that governs the site's real minimum bookable stay, not a separate
   portal-only reference value
 
-#### Scenario: Cleaning fee is excluded from the nightly rate
+#### Scenario: Cleaning fee amount is excluded from the nightly rate, but its tax gross-up is recovered
 
 - **WHEN** computing the suggested nightly rate for any portal
-- **THEN** the cleaning fee (`pricing_cleaning_fee`) does not contribute to
-  the computed figure in any way — it is only ever shown as a separate,
+- **THEN** the cleaning fee amount (`pricing_cleaning_fee`) itself does not
+  contribute to the computed figure — it is only ever shown as a separate,
   flat reference value for the owner to type into each portal's own
-  cleaning-fee field
+  cleaning-fee field — but the tax gross-up on that amount is still recovered
+  alongside the linen recovery, so a 2-guest, minimum-stay portal booking
+  does not net noticeably less than the equivalent direct booking
 
-#### Scenario: Linen cost for the reference guests is tax-grossed-up
+#### Scenario: Linen cost and the cleaning fee's tax are grossed-up together
 
-- **WHEN** computing the recoverable linen amount for the 2-guest reference
-- **THEN** the system applies the same `pricing_tax_rate` and the `linen`
-  entry of `pricing_tax_gross_up_items` used by `PricingQuoteService`, so
-  disabling linen gross-up site-wide also removes it from this calculation
+- **WHEN** computing the recoverable amount for the 2-guest reference
+- **THEN** the system applies the same `pricing_tax_rate` and the
+  `cleaning`/`linen` entries of `pricing_tax_gross_up_items` used by
+  `PricingQuoteService` to the reference linen cost and the cleaning fee
+  amount together, so disabling either toggle site-wide also affects this
+  calculation, while the cleaning fee amount itself still never appears
+  added to the nightly rate
 
 #### Scenario: Portal commission applied per portal
 

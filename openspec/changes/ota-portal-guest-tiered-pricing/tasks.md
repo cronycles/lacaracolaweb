@@ -129,10 +129,10 @@
 
 ## 9. Verification
 
-- [ ] 9.1 Run the full test suite and confirm all tests pass.
-- [ ] 9.2 Manually check `admin/prezzi-portali` shows a nightly rate close to
+- [x] 9.1 Run the full test suite and confirm all tests pass.
+- [x] 9.2 Manually check `admin/prezzi-portali` shows a nightly rate close to
       the direct `price_per_night` (not inflated by bed-capacity amortisation)
       for at least one real pricing period, and that the legend renders correctly.
-- [ ] 9.3 Manually check the `admin/prezzi` simulator for a 2-guest/3-night
+- [x] 9.3 Manually check the `admin/prezzi` simulator for a 2-guest/3-night
       stay, a 6-guest/3-night stay, and a 2-guest/10-night stay, confirming the
       guest total, owner net, and margin indicator look sensible in each case.

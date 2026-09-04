@@ -37,14 +37,15 @@ class OtaPortalPricingService
 
     /**
      * Base nightly rate for a portal listing: the direct nightly rate plus the 2-guest reference
-     * linen recovery (tax-grossed-up, amortised over the minimum stay), divided by the portal's
-     * commission. Excludes the cleaning fee entirely (see design.md Decision 1).
+     * linen recovery and the cleaning fee's tax gross-up (both amortised over the minimum stay),
+     * divided by the portal's commission. The cleaning fee itself is never added to this rate — see
+     * design.md Decision 1.
      */
     public function baseNightlyRateCents(int $pricePerNightCents, string $portal): int
     {
         $commissionRate = $this->commissionRate($portal);
         $rateCents = $commissionRate < 1.0
-            ? ($pricePerNightCents + $this->perNightLinenAddOnCents()) / (1 - $commissionRate)
+            ? ($pricePerNightCents + $this->perNightAddOnCents()) / (1 - $commissionRate)
             : 0.0;
 
         // Rounded to the nearest whole euro (not €5) so equal-commission portals land equal.
@@ -80,7 +81,7 @@ class OtaPortalPricingService
     {
         $commissionRate = $this->commissionRate($portal);
 
-        $baseStayBeforeCents = $stayGrossCents + $this->perNightLinenAddOnCents() * $nights;
+        $baseStayBeforeCents = $stayGrossCents + $this->perNightAddOnCents() * $nights;
         $baseStayGrossedCents = $commissionRate < 1.0 ? $baseStayBeforeCents / (1 - $commissionRate) : 0.0;
 
         $lengthDiscountRate = $this->lengthDiscountRateForNights($nights);
@@ -98,14 +99,19 @@ class OtaPortalPricingService
         ];
     }
 
-    /** 2-guest reference linen cost, tax-grossed-up, amortised over the minimum-stay setting. */
-    private function perNightLinenAddOnCents(): int
+    /**
+     * 2-guest reference linen cost plus the cleaning fee's tax gross-up (cleaning fee itself
+     * excluded — only its tax), amortised over the minimum-stay setting. Recovering the cleaning
+     * fee's tax here (while leaving the cleaning fee amount itself flat/un-grossed for commission)
+     * narrows the portal-vs-direct margin gap to just the commission cut on that flat amount.
+     */
+    private function perNightAddOnCents(): int
     {
         $referenceNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
         $linenFeeCents = ((int) Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25))) * 100;
         $referenceLinenCents = $linenFeeCents * self::REFERENCE_GUESTS;
-        $linenTaxGrossUpCents = $this->taxGrossUpCents(0, $referenceLinenCents);
-        $recoverableCents = $referenceLinenCents + $linenTaxGrossUpCents;
+        $taxGrossUpCents = $this->taxGrossUpCents($this->cleaningFeeCents(), $referenceLinenCents);
+        $recoverableCents = $referenceLinenCents + $taxGrossUpCents;
 
         return $referenceNights > 0 ? (int) round($recoverableCents / $referenceNights) : $recoverableCents;
     }
