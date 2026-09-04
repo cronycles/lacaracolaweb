@@ -69,6 +69,11 @@
                     <div id="pricing-sim-portal-hometogo" style="font-size:.85rem;color:#374151">—</div>
                 </div>
             </div>
+            <p id="pricing-sim-portals-caption" style="margin-top:.4rem;font-size:.7rem;color:#9ca3af;display:none">
+                Totale ospite (tariffa base + supplemento ospiti extra + pulizie) · netto stimato per te dopo commissione ·
+                ✅/⚠️ confronto col totale diretto (indicativo — vedi nota pulizie nella
+                <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">legenda prezzi portali</a>).
+            </p>
         </div>
 
         <p id="pricing-sim-error" style="margin-top:.75rem;font-size:.85rem;color:#991b1b;display:none"></p>

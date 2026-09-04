@@ -86,11 +86,11 @@
 
 ## 6. Admin UI: simulator portal cards
 
-- [ ] 6.1 Update `resources/ts/components/pricing-simulator.ts`: rename/extend
+- [x] 6.1 Update `resources/ts/components/pricing-simulator.ts`: rename/extend
       the `PortalSuggestion` interface to
       `{ guest_total_cents, owner_net_cents, base_nightly_rate_cents, commission_rate, margin_safe }`;
       render guest total, owner net, and a ✅/⚠️ indicator per portal card.
-- [ ] 6.2 Rebuild frontend assets (`npm run build`) so
+- [x] 6.2 Rebuild frontend assets (`npm run build`) so
       `public/build/assets/*` reflect the updated TS.
 
 ## 7. Tests
