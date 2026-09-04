@@ -16,14 +16,16 @@
 
         <ul style="font-size:.85rem;color:#374151;line-height:1.7;margin:0 0 1rem 1.1rem;padding:0">
             <li>
-                <strong>Tariffa base (colonne della tabella):</strong> già comprensiva di biancheria per 2 ospiti
-                e maggiorazione fiscale, al netto della commissione del portale — nessun'altra voce da aggiungere
-                per la tariffa notte.
+                <strong>Tariffa base (colonne della tabella):</strong> tariffa notte diretta + biancheria per 2
+                ospiti + maggiorazione fiscale (21% su biancheria <em>e</em> sulle pulizie, anche se l'importo
+                delle pulizie non compare qui — vedi sotto), il tutto diviso per (1 − commissione del portale) —
+                nessun'altra voce da aggiungere per la tariffa notte.
             </li>
             <li>
                 <strong>Pulizie fisse:</strong> {{ number_format($cleaningFeeCents / 100, 0, ',', '.') }} € a
                 prenotazione, da inserire così com'è nel campo "costo pulizie" di ogni portale — nessun calcolo,
-                nessuna maggiorazione.
+                nessuna maggiorazione. Solo la <em>maggiorazione fiscale</em> su questo importo è già recuperata
+                dentro la tariffa base sopra; l'importo pieno delle pulizie no (vedi nota sotto).
             </li>
             <li>
                 <strong>Supplemento ospite extra:</strong> {{ number_format($extraGuestFeeCents / 100, 0, ',', '.') }} €
@@ -40,7 +42,9 @@
             <li>
                 <strong>Nota sulle pulizie:</strong> essendo un importo fisso non maggiorato per la commissione del
                 portale, ogni portale trattiene circa pulizie × commissione (≈15–16 € con le commissioni attuali)
-                invece di girarlo interamente all'host — scelta accettata consapevolmente, rivedibile in futuro.
+                invece di girarlo interamente all'host — scelta accettata consapevolmente, rivedibile in futuro. La
+                maggiorazione fiscale sulle pulizie invece <em>è già</em> recuperata nella tariffa base, quindi lo
+                scostamento residuo è solo questa quota di commissione, non anche l'IVA.
             </li>
         </ul>
 
