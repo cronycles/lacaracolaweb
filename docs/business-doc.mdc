@@ -19,6 +19,10 @@ alwaysApply: true
   contact, transparent costs, secure booking) only shows in internal form mode
   — it is hidden when the external-link mode is active, since those claims
   don't apply to a redirect to a third-party booking platform.
+- The homepage pain-point reassurance section (private paid parking, free
+  WiFi, proximity to beach/station, ceiling fans/mosquito nets for heat
+  comfort — no A/C mentioned anywhere, the apartment doesn't have it) is
+  always shown, regardless of booking mode.
 
 ### Availability form (form mode)
 - The calendar shows occupied days and makes them non-selectable.

@@ -19,10 +19,10 @@
 
 ## 3. Phase 3 — Pain-point sections (parking, WiFi, distances)
 
-- [ ] 3.1 Add `pain_points` array to `config/apartment.php`, reusing real distance data already present in `apartment.useful_places`.
-- [ ] 3.2 Add pain-point translation keys to `lang/{it,en,fr,de}/app.php` for parking (paid, no fixed price stated), WiFi availability, and precise proximity to beach/station.
-- [ ] 3.3 Add a heat/comfort reassurance referencing ceiling fans and/or mosquito nets (no AC mention) to the relevant pain-point copy.
-- [ ] 3.4 Render the pain-point sections in `resources/views/public/home.blade.php`.
+- [x] 3.1 Add `pain_points` array to `config/apartment.php`, reusing real distance data already present in `apartment.useful_places`.
+- [x] 3.2 Add pain-point translation keys to `lang/{it,en,fr,de}/app.php` for parking (paid, no fixed price stated), WiFi availability, and precise proximity to beach/station.
+- [x] 3.3 Add a heat/comfort reassurance referencing ceiling fans and/or mosquito nets (no AC mention) to the relevant pain-point copy.
+- [x] 3.4 Render the pain-point sections in `resources/views/public/home.blade.php`.
 
 ## 4. Phase 4 — Guide pages
 
@@ -43,4 +43,4 @@
 ## 6. Documentation
 
 - [x] 6.1 Update `docs/business-doc.mdc` and `docs/specific-tech-frontend-doc.mdc` for Phases 1–2 (hero copy pattern, trust-badges conditional visibility, feature-highlights heading, `.home-features` grid convention).
-- [ ] 6.2 Update the same docs for Phases 3–5 (pain-point sections, guide pages, sitemap/schema enrichment) once implemented.
+- [ ] 6.2 Update the same docs for Phases 4–5 (guide pages, sitemap/schema enrichment) once implemented. Phase 3 (pain-point sections) docs already updated.

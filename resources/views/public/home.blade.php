@@ -92,6 +92,22 @@
     </div>
 </section>
 
+{{-- Pain-point reassurance: parking, WiFi, distances, heat comfort — always shown regardless of booking mode --}}
+<section class="section home-pain-points" aria-label="{{ __('app.pain_points_title') }}">
+    <div class="container">
+        <h2 class="section-title" style="text-align:center">{{ __('app.pain_points_title') }}</h2>
+        <div class="home-features">
+            @foreach(config('apartment.pain_points') as $painPoint)
+            <div class="home-features__item">
+                <div class="home-features__item-icon" aria-hidden="true">{{ $painPoint['icon'] }}</div>
+                <h3 class="home-features__item-title">{{ __('app.' . $painPoint['title_key']) }}</h3>
+                <p class="home-features__item-text">{{ __('app.' . $painPoint['text_key']) }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
 {{-- SEO text block — localised for all 4 languages --}}
 <section class="seo-section" aria-label="{{ __('app.seo_home_h2') }}">
     <div class="container seo-section__content">

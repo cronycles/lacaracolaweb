@@ -1,6 +1,7 @@
 /** Home page specific styles */
 .home-highlights,
-.home-trust-badges {
+.home-trust-badges,
+.home-pain-points {
     padding-block: var(--space-8);
 
     @media (min-width: 768px) {

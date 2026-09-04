@@ -231,6 +231,14 @@ return [
         ['icon' => '🔒', 'key' => 'trust_badge_secure_booking'],
     ],
 
+    // --- Homepage pain-point reassurance (parking, WiFi, distances, heat comfort) — icon + title/text lang keys ---
+    'pain_points' => [
+        ['icon' => '🅿️', 'title_key' => 'pain_point_parking_title', 'text_key' => 'pain_point_parking_text'],
+        ['icon' => '📶', 'title_key' => 'pain_point_wifi_title', 'text_key' => 'pain_point_wifi_text'],
+        ['icon' => '📍', 'title_key' => 'pain_point_distances_title', 'text_key' => 'pain_point_distances_text'],
+        ['icon' => '🦟', 'title_key' => 'pain_point_comfort_title', 'text_key' => 'pain_point_comfort_text'],
+    ],
+
     // --- House rules (icon + lang keys for title and body text) ---
     'rules' => [
         ['icon' => '🏠', 'title_key' => 'app.rules_respect_title',     'text_key' => 'app.rules_respect_text'],

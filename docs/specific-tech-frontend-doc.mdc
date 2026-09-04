@@ -52,7 +52,8 @@ hreflang output and `sitemap.xml`.
 Andora, Ligurien" for DE, "Italian Riviera" for EN — rendered with `{!! !!}`
 because it contains a `<br>` after the comma for a cleaner desktop line
 break), a conditional trust-badges section, the booking section, the apartment
-feature-highlights section, and the localized SEO text block.
+feature-highlights section, the pain-point reassurance section, and the
+localized SEO text block.
 
 The trust-badges section (`config('apartment.trust_badges')`, same
 `['icon' => ..., 'key' => ...]` shape as `apartment.features`) only renders
@@ -61,16 +62,23 @@ when the internal direct-booking form is active — it is wrapped in
 exact condition used to pick the booking UI further down the page. Its
 "transparent costs" badge intentionally does not claim "no fees" since private
 parking is paid. The feature-highlights section (heading `app.home_features_title`)
-always renders regardless of booking mode. Both reuse the same `.home-features`
-CSS grid in `resources/css/pages/home.css` (2 columns from the smallest
-viewport, 4 columns from 1024px) — do not add a third near-identical grid
-without a heading, as two headless/identical grids stacked back-to-back read
-as one undifferentiated list.
+and the pain-point section (heading `app.pain_points_title`) always render
+regardless of booking mode. All three reuse the same `.home-features` CSS grid
+in `resources/css/pages/home.css` (2 columns from the smallest viewport, 4
+columns from 1024px) — do not add a near-identical grid without a heading, as
+two headless/identical grids stacked back-to-back read as one undifferentiated
+list.
+
+The pain-point section (`config('apartment.pain_points')`, `['icon' => ...,
+'title_key' => ..., 'text_key' => ...]` shape like `apartment.rules`) addresses
+the main direct-booking objections: paid private parking (no exact fee stated
+in copy, shown later in the booking quote), free WiFi, real proximity to the
+beach/train station, and heat comfort via ceiling fans/mosquito nets — never
+mentioning air conditioning, since the apartment doesn't have it.
 
 This is part of a multi-phase SEO/copy initiative tracked in
 `openspec/changes/seo-international-optimization/` (see its `tasks.md` for
-remaining phases: pain-point sections, guide pages, sitemap/schema
-enrichment).
+remaining phases: guide pages, sitemap/schema enrichment).
 
 ## Vacation rental structured data
 

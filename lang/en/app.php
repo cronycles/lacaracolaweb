@@ -33,6 +33,17 @@ return [
     'trust_badge_transparent_costs' => 'Transparent Costs, No Surprises',
     'trust_badge_secure_booking' => 'Secure Booking',
 
+    // --- Homepage pain-point reassurance ---
+    'pain_points_title' => 'Everything You Need to Know',
+    'pain_point_parking_title' => 'Private Parking',
+    'pain_point_parking_text' => 'Available on request (paid). No hunting for a street parking spot.',
+    'pain_point_wifi_title' => 'Free WiFi',
+    'pain_point_wifi_text' => 'Included throughout the apartment, so you stay connected.',
+    'pain_point_distances_title' => 'Everything Close By',
+    'pain_point_distances_text' => 'Beach just steps away, train station about a 25-minute walk.',
+    'pain_point_comfort_title' => 'Cool All Summer',
+    'pain_point_comfort_text' => 'Ceiling fans and mosquito nets in every room, for cool, bite-free nights.',
+
     'home_features_title' => 'What the Apartment Offers',
 
     'booking_title' => 'Book',

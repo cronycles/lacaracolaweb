@@ -36,6 +36,17 @@ return [
     'trust_badge_transparent_costs' => 'Costi Trasparenti, Nessuna Sorpresa',
     'trust_badge_secure_booking' => 'Prenotazione Sicura',
 
+    // --- Homepage pain-point reassurance ---
+    'pain_points_title' => 'Tutto Ciò che Devi Sapere',
+    'pain_point_parking_title' => 'Parcheggio Privato',
+    'pain_point_parking_text' => 'Disponibile su richiesta (a pagamento). Niente ricerca di un posto auto in strada.',
+    'pain_point_wifi_title' => 'Wi-Fi Gratuito',
+    'pain_point_wifi_text' => 'Incluso in tutto l\'appartamento, per restare sempre connesso.',
+    'pain_point_distances_title' => 'Tutto a Due Passi',
+    'pain_point_distances_text' => 'Spiaggia a pochi passi, stazione ferroviaria a circa 25 minuti a piedi.',
+    'pain_point_comfort_title' => 'Fresco Anche d\'Estate',
+    'pain_point_comfort_text' => 'Ventilatori a soffitto e zanzariere in ogni stanza, per notti fresche e senza insetti.',
+
     'home_features_title' => 'Cosa Offre l\'Appartamento',
 
     // --- Booking ---

@@ -33,6 +33,17 @@ return [
     'trust_badge_transparent_costs' => 'Transparente Kosten, keine Überraschungen',
     'trust_badge_secure_booking' => 'Sichere Buchung',
 
+    // --- Homepage pain-point reassurance ---
+    'pain_points_title' => 'Alles, Was Sie Wissen Müssen',
+    'pain_point_parking_title' => 'Privater Parkplatz',
+    'pain_point_parking_text' => 'Auf Anfrage verfügbar (kostenpflichtig). Keine Parkplatzsuche auf der Straße.',
+    'pain_point_wifi_title' => 'Kostenloses WLAN',
+    'pain_point_wifi_text' => 'In der gesamten Wohnung inklusive, damit Sie immer verbunden sind.',
+    'pain_point_distances_title' => 'Alles in der Nähe',
+    'pain_point_distances_text' => 'Strand nur wenige Schritte entfernt, Bahnhof ca. 25 Gehminuten.',
+    'pain_point_comfort_title' => 'Kühl auch im Sommer',
+    'pain_point_comfort_text' => 'Deckenventilatoren und Moskitonetze in jedem Zimmer für kühle, stichfreie Nächte.',
+
     'home_features_title' => 'Was die Wohnung bietet',
 
     'booking_title' => 'Buchen',
