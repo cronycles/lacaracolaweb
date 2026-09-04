@@ -33,10 +33,15 @@
         <p style="font-size:.85rem;color:#374151;margin-bottom:1.25rem;line-height:1.6">
             Lo sconto mensile (28+ notti) sostituisce, non si somma, allo sconto settimanale (7+
             notti). L'eventuale scarto di arrotondamento ai 5€ viene assorbito dalla tariffa
-            notte. Il prezzo suggerito per Airbnb, Booking.com e HomeToGo (mostrato nel
-            <a href="{{ route('admin.pricing.index') }}" style="color:var(--admin-accent)">simulatore prezzi</a>)
-            si ottiene dividendo il prezzo diretto per <code>(1 − sconto soggiorno) × (1 − commissione portale)</code>,
-            assumendo lo stesso sconto soggiorno configurato anche sul portale.
+            notte. Il prezzo per Airbnb, Booking.com e HomeToGo segue una formula diversa (non
+            questa): la tariffa base per portale recupera solo la biancheria per 2 ospiti più la
+            maggiorazione fiscale (anche sulle pulizie), divisa per <code>(1 − commissione del
+            portale)</code>; le pulizie fisse e il supplemento ospiti extra (dal 3° ospite in poi)
+            si aggiungono a parte, uguali su tutti e 3 i portali — vedi la legenda in
+            <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">Prezzi portali</a>
+            per il dettaglio completo, e il
+            <a href="{{ route('admin.pricing.index') }}" style="color:var(--admin-accent)">simulatore prezzi</a>
+            per vedere il totale reale e il netto stimato su un soggiorno specifico.
         </p>
 
         <h2 style="font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:#1f2937">Costi Fissi (calcolati una volta per prenotazione)</h2>
