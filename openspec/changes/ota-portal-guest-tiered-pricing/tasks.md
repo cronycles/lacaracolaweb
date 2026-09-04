@@ -30,18 +30,18 @@
 
 ## 3. Direct-site pricing: config → Setting migration
 
-- [ ] 3.1 `PricingQuoteService::calculate()`: read `cleaning_fee`,
+- [x] 3.1 `PricingQuoteService::calculate()`: read `cleaning_fee`,
       `linen_fee_per_person`, `min_nights` via `Setting::get('pricing_X', config(...))`
       instead of `config()` directly. `max_nights` stays `config`-only.
-- [ ] 3.2 `Admin\PricingController::simulate()` and
+- [x] 3.2 `Admin\PricingController::simulate()` and
       `Public\BookingController` (availability + quote actions): same
       `min_nights` resolution change.
-- [ ] 3.3 `resources/views/components/booking-form.blade.php`,
+- [x] 3.3 `resources/views/components/booking-form.blade.php`,
       `resources/views/admin/pricing/index.blade.php` (simulator date picker),
       `resources/views/admin/stay-discounts/index.blade.php`: read `min_nights`
       (and, on the stay-discounts formula-explainer page, `cleaning_fee`/
       `linen_fee_per_person`) via the same `Setting`-backed resolution.
-- [ ] 3.4 `resources/views/admin/bookings/form.blade.php`: cleaning/linen
+- [x] 3.4 `resources/views/admin/bookings/form.blade.php`: cleaning/linen
       placeholder values switch to the `Setting`-backed values (still only a
       placeholder/default; per-booking override behavior unchanged).
 

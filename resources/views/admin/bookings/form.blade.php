@@ -3,6 +3,10 @@
 @section('title', $booking->exists ? 'Modifica prenotazione' : 'Nuova prenotazione')
 
 @section('content')
+    @php
+        $cleaningFeeDefault = (int) \App\Models\Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100));
+        $linenFeeDefault = (int) \App\Models\Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25));
+    @endphp
     <div style="max-width:680px">
         <div style="display:flex;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap">
             <a href="{{ route('admin.bookings.index') }}" class="btn btn--outline btn--sm">← Torna alle prenotazioni</a>
@@ -165,8 +169,8 @@
                         <label class="form-label" for="cleaning_amount">Pulizie (€)</label>
                         <input type="number" id="cleaning_amount" name="cleaning_amount" class="form-input"
                                value="{{ old('cleaning_amount', $booking->cleaning_amount) }}"
-                               min="0" max="99999.99" step="0.01" placeholder="{{ config('apartment.booking.cleaning_fee') }}">
-                        <span class="form-hint">Default: {{ config('apartment.booking.cleaning_fee') }}€</span>
+                               min="0" max="99999.99" step="0.01" placeholder="{{ $cleaningFeeDefault }}">
+                        <span class="form-hint">Default: {{ $cleaningFeeDefault }}€</span>
                         @error('cleaning_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
@@ -174,8 +178,8 @@
                         <input type="number" id="linen_amount" name="linen_amount" class="form-input"
                                value="{{ old('linen_amount', $booking->linen_amount) }}"
                                min="0" max="99999.99" step="0.01"
-                               placeholder="{{ config('apartment.booking.linen_fee_per_person') }}">
-                        <span class="form-hint">Default: {{ config('apartment.booking.linen_fee_per_person') }}€/ospite</span>
+                               placeholder="{{ $linenFeeDefault }}">
+                        <span class="form-hint">Default: {{ $linenFeeDefault }}€/ospite</span>
                         @error('linen_amount') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-group">
@@ -313,8 +317,8 @@
 @push('scripts')
 <script>
 (function () {
-    const DEFAULT_CLEANING = {{ config('apartment.booking.cleaning_fee') }};
-    const DEFAULT_LINEN_PER_PERSON = {{ config('apartment.booking.linen_fee_per_person') }};
+    const DEFAULT_CLEANING = {{ $cleaningFeeDefault }};
+    const DEFAULT_LINEN_PER_PERSON = {{ $linenFeeDefault }};
     const DEFAULT_PARKING_PER_DAY = {{ config('apartment.booking.parking_fee_per_day') }};
 
     const adults   = document.getElementById('adults');

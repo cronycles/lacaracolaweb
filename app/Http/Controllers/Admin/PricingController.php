@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
+use App\Models\Setting;
 use App\Services\OtaPortalNightlyRateService;
 use App\Services\OtaPortalPricingService;
 use App\Services\PricingQuoteService;
@@ -118,7 +119,7 @@ class PricingController extends Controller
         $checkin = new \DateTimeImmutable($data['checkin']);
         $checkout = new \DateTimeImmutable($data['checkout']);
         $nights = (int) $checkin->diff($checkout)->days;
-        $minNights = (int) config('apartment.booking.min_nights', 3);
+        $minNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
         $maxNights = (int) config('apartment.booking.max_nights', 28);
         $guests = max(1, (int) ($data['guests'] ?? 2));
 

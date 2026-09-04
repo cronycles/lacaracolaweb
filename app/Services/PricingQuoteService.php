@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\PricingRule;
+use App\Models\Setting;
 use App\Services\Concerns\ResolvesLengthDiscountRate;
 use App\Services\Concerns\ResolvesTaxGrossUp;
 use Carbon\Carbon;
@@ -31,7 +32,7 @@ class PricingQuoteService
         $hidePriceFromDate = $this->resolveHidePriceFromDate();
         $nights = (int) $checkinDate->diffInDays($checkoutDate);
 
-        $minNights = (int) config('apartment.booking.min_nights', 3);
+        $minNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
         $maxNights = (int) config('apartment.booking.max_nights', 28);
 
         if ($nights <= 0 || $nights < $minNights || $nights > $maxNights) {
@@ -62,8 +63,8 @@ class PricingQuoteService
         }
 
         // Fixed costs (calculated once per booking, independent of nights)
-        $cleaningCents = ((int) config('apartment.booking.cleaning_fee', 0)) * 100;
-        $linenCentsPerPerson = ((int) config('apartment.booking.linen_fee_per_person', 0)) * 100;
+        $cleaningCents = ((int) Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 0))) * 100;
+        $linenCentsPerPerson = ((int) Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 0))) * 100;
         $linenCents = $linenCentsPerPerson * max(1, $guests);
         $parkingCents = $parkingRequested
             ? ((int) config('apartment.booking.parking_fee_per_day', 0)) * 100 * $nights

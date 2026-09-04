@@ -3,16 +3,17 @@
 @section('title', 'Regole di prezzo')
 
 @section('content')
+    @php($minNights = (int) \App\Models\Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3)))
     <div class="a-card" style="max-width:900px">
         <div class="a-card__title">Simulazione prezzo (privata)</div>
 
         <form id="pricing-sim-form"
               data-simulate-url="{{ route('admin.pricing.simulate') }}"
               data-locale="it-IT"
-              data-min-nights="{{ config('apartment.booking.min_nights', 3) }}">
+              data-min-nights="{{ $minNights }}">
             <div class="date-picker" id="pricing-sim-date-picker"
                  data-locale="it"
-                 data-min-nights="{{ config('apartment.booking.min_nights', 3) }}">
+                 data-min-nights="{{ $minNights }}">
                 <div class="date-picker__triggers">
                     <div class="date-picker__field">
                         <span class="date-picker__label">Check-in *</span>

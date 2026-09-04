@@ -9,6 +9,7 @@ use App\Mail\BookingRequestMail;
 use App\Mail\BookingRequestPendingMail;
 use App\Models\AvailabilityBlock;
 use App\Models\BookingRequest;
+use App\Models\Setting;
 use App\Services\AvailabilityService;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +38,7 @@ class BookingController extends Controller
         $checkin = new \DateTimeImmutable($data['checkin']);
         $checkout = new \DateTimeImmutable($data['checkout']);
         $nights = (int) $checkin->diff($checkout)->days;
-        $minNights = (int) config('apartment.booking.min_nights', 3);
+        $minNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
         $maxNights = (int) config('apartment.booking.max_nights', 28);
         $guests = max(1, (int) ($data['guests'] ?? 1));
 
@@ -148,7 +149,7 @@ class BookingController extends Controller
         $checkin = new \DateTimeImmutable($data['checkin']);
         $checkout = new \DateTimeImmutable($data['checkout']);
         $nights = (int) $checkin->diff($checkout)->days;
-        $minNights = (int) config('apartment.booking.min_nights', 3);
+        $minNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
 
         if ($nights < $minNights) {
             $error = __('app.error_min_nights', ['nights' => $minNights]);

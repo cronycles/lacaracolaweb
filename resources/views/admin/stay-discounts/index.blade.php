@@ -52,11 +52,11 @@
                 <tr>
                     <td>Pulizie / Check-in / Check-out</td>
                     <td>Fisso</td>
-                    <td>{{ number_format(config('apartment.booking.cleaning_fee', 0), 2, ',', '.') }} €</td>
+                    <td>{{ number_format((int) \App\Models\Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 0)), 2, ',', '.') }} €</td>
                 </tr>
                 <tr>
                     <td>Biancheria</td>
-                    <td>{{ number_format(config('apartment.booking.linen_fee_per_person', 0), 2, ',', '.') }} € × ospiti</td>
+                    <td>{{ number_format((int) \App\Models\Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 0)), 2, ',', '.') }} € × ospiti</td>
                     <td>Dinamico</td>
                 </tr>
             </tbody>
@@ -70,7 +70,7 @@
             <tbody>
                 <tr>
                     <td>Notti minime</td>
-                    <td>{{ config('apartment.booking.min_nights', 3) }} notti</td>
+                    <td>{{ (int) \App\Models\Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3)) }} notti</td>
                 </tr>
                 <tr>
                     <td>Notti massime</td>
@@ -95,8 +95,8 @@
             <tbody>
                 @php
                     $nightRate = 105;
-                    $fixed = config('apartment.booking.cleaning_fee', 100)
-                           + config('apartment.booking.linen_fee_per_person', 25) * 2;
+                    $fixed = ((int) \App\Models\Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100)))
+                           + ((int) \App\Models\Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25))) * 2;
                     $taxRate = (float) \App\Models\Setting::get('pricing_tax_rate', '0.21');
                     $weeklyRate = (float) \App\Models\Setting::get('pricing_weekly_discount_percent', '0.10');
                     $monthlyRate = (float) \App\Models\Setting::get('pricing_monthly_discount_percent', '0.20');

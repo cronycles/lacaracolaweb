@@ -9,18 +9,19 @@
     <p>{{ __('app.booking_thanks_text') }}</p>
 </div>
 
+@php($minNights = (int) \App\Models\Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3)))
 <form id="booking-form"
       method="POST"
       action="{{ route_locale('booking.request') }}"
       class="booking-form"
     data-quote-url="{{ route_locale('booking.quote') }}"
     data-locale="{{ app()->getLocale() }}"
-      data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
+      data-min-nights="{{ $minNights }}"
         data-min-booking-lead-days="{{ config('apartment.booking.min_booking_lead_days', 0) }}"
     data-max-beds="{{ config('apartment.specs.beds', 6) }}"
             data-error-lead-time="{{ __('app.error_checkin_lead_time', ['days' => config('apartment.booking.min_booking_lead_days', 0)]) }}"
       data-error-order="{{ __('app.error_checkout_order') }}"
-      data-error-min-nights="{{ __('app.error_min_nights', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
+      data-error-min-nights="{{ __('app.error_min_nights', ['nights' => $minNights]) }}"
     data-error-max-guests="{{ __('app.error_max_guests', ['guests' => config('apartment.specs.beds', 6)]) }}"
       data-error-server="{{ __('app.error_server') }}"
       data-label-loading="{{ __('app.booking_loading') }}"
@@ -39,10 +40,10 @@
     {{-- Date range picker --}}
     <div class="date-picker" id="date-range-picker"
          data-locale="{{ app()->getLocale() }}"
-         data-min-nights="{{ config('apartment.booking.min_nights', 3) }}"
+         data-min-nights="{{ $minNights }}"
          data-min-booking-lead-days="{{ config('apartment.booking.min_booking_lead_days', 0) }}"
          data-hint-checkin="{{ __('app.booking_dp_hint_checkin') }}"
-         data-hint-checkout="{{ __('app.booking_dp_hint_checkout', ['nights' => config('apartment.booking.min_nights', 3)]) }}"
+         data-hint-checkout="{{ __('app.booking_dp_hint_checkout', ['nights' => $minNights]) }}"
             data-label-clear="{{ __('app.booking_dp_clear') }}"
             data-legend-available="{{ __('app.booking_dp_legend_available') }}"
             data-legend-selected="{{ __('app.booking_dp_legend_selected') }}"
