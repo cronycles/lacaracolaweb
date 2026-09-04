@@ -39,9 +39,9 @@ return [
     'pain_point_wifi_title' => 'Wi-Fi Gratuit',
     'pain_point_wifi_text' => 'Inclus dans tout l\'appartement, pour rester connecté.',
     'pain_point_distances_title' => 'Tout à Proximité',
-    'pain_point_distances_text' => 'Plage à deux pas, gare à environ 25 minutes à pied.',
+    'pain_point_distances_text' => 'Plage à deux pas, restaurants, glaciers et supermarchés juste au coin de la rue.',
     'pain_point_comfort_title' => 'Frais Même en Été',
-    'pain_point_comfort_text' => 'Ventilateurs de plafond et moustiquaires dans chaque pièce, pour des nuits fraîches et sans piqûres.',
+    'pain_point_comfort_text' => 'Ventilateurs et moustiquaires dans chaque pièce, pour des nuits fraîches et sans piqûres.',
     'home_features_title' => "Ce que Propose l'Appartement",
 
     'booking_title' => 'Réserver',

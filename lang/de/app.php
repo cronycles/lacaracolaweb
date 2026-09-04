@@ -40,9 +40,9 @@ return [
     'pain_point_wifi_title' => 'Kostenloses WLAN',
     'pain_point_wifi_text' => 'In der gesamten Wohnung inklusive, damit Sie immer verbunden sind.',
     'pain_point_distances_title' => 'Alles in der Nähe',
-    'pain_point_distances_text' => 'Strand nur wenige Schritte entfernt, Bahnhof ca. 25 Gehminuten.',
+    'pain_point_distances_text' => 'Strand nur wenige Schritte entfernt, Restaurants, Eisdielen und Supermärkte gleich um die Ecke.',
     'pain_point_comfort_title' => 'Kühl auch im Sommer',
-    'pain_point_comfort_text' => 'Deckenventilatoren und Moskitonetze in jedem Zimmer für kühle, stichfreie Nächte.',
+    'pain_point_comfort_text' => 'Ventilatoren und Moskitonetze in jedem Zimmer für kühle, stichfreie Nächte.',
 
     'home_features_title' => 'Was die Wohnung bietet',
 

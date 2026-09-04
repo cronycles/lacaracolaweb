@@ -40,9 +40,9 @@ return [
     'pain_point_wifi_title' => 'Free WiFi',
     'pain_point_wifi_text' => 'Included throughout the apartment, so you stay connected.',
     'pain_point_distances_title' => 'Everything Close By',
-    'pain_point_distances_text' => 'Beach just steps away, train station about a 25-minute walk.',
+    'pain_point_distances_text' => 'Beach just steps away, with restaurants, gelato shops and supermarkets right around the corner.',
     'pain_point_comfort_title' => 'Cool All Summer',
-    'pain_point_comfort_text' => 'Ceiling fans and mosquito nets in every room, for cool, bite-free nights.',
+    'pain_point_comfort_text' => 'Fans and mosquito nets in every room, for cool, bite-free nights.',
 
     'home_features_title' => 'What the Apartment Offers',
 
