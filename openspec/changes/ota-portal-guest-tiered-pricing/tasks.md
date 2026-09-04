@@ -95,7 +95,7 @@
 
 ## 7. Tests
 
-- [ ] 7.1 Replace `tests/Unit/OtaPortalNightlyRateServiceTest.php` and
+- [x] 7.1 Replace `tests/Unit/OtaPortalNightlyRateServiceTest.php` and
       `tests/Unit/OtaPortalPricingServiceTest.php` with a single
       `tests/Unit/OtaPortalPricingServiceTest.php` covering: the worked example
       from design.md Decision 4 (100 €/night → 3 portal base rates), the
@@ -103,15 +103,15 @@
       combinations, and that changing `pricing_min_nights` above the
       weekly/monthly thresholds correctly applies the length discount inside
       `guestFacingTotal()` only (not `baseNightlyRateCents()`).
-- [ ] 7.2 Update `tests/Unit/PricingQuoteServiceTest.php` (or add cases) to
+- [x] 7.2 Update `tests/Unit/PricingQuoteServiceTest.php` (or add cases) to
       confirm `cleaning_fee`/`linen_fee_per_person`/`min_nights` `Setting`
       overrides are honored, and unset `Setting`s fall back to `config()`
       defaults unchanged from today.
-- [ ] 7.3 Update `tests/Feature/BookingLegalConsentTest.php` (and any other
+- [x] 7.3 Update `tests/Feature/BookingLegalConsentTest.php` (and any other
       test reading `config('apartment.booking.cleaning_fee'/'linen_fee_per_person')`
       directly) if the `Setting`-backed default no longer matches — expected to
       still pass unchanged since fallback defaults are identical.
-- [ ] 7.4 Add/update the `admin/prezzi-portali` and
+- [x] 7.4 Add/update the `admin/prezzi-portali` and
       `SettingsController::updatePricing()` feature tests for the new field set
       (remove assertions on the 2 deleted settings, add assertions for the 4 new
       ones).

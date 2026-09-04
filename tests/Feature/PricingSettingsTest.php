@@ -41,8 +41,10 @@ class PricingSettingsTest extends TestCase
                 'pricing_commission_hometogo' => 16,
                 'pricing_weekly_discount_percent' => 12,
                 'pricing_monthly_discount_percent' => 22,
-                'pricing_portal_reference_nights' => 4,
-                'pricing_portal_reference_guests' => 5,
+                'pricing_cleaning_fee' => 110,
+                'pricing_linen_fee_per_person' => 30,
+                'pricing_min_nights' => 4,
+                'pricing_extra_guest_fee' => 15,
             ])
             ->assertRedirect();
 
@@ -53,8 +55,10 @@ class PricingSettingsTest extends TestCase
         $this->assertSame('0.16', Setting::get('pricing_commission_hometogo'));
         $this->assertSame('0.12', Setting::get('pricing_weekly_discount_percent'));
         $this->assertSame('0.22', Setting::get('pricing_monthly_discount_percent'));
-        $this->assertSame('4', Setting::get('pricing_portal_reference_nights'));
-        $this->assertSame('5', Setting::get('pricing_portal_reference_guests'));
+        $this->assertSame('110', Setting::get('pricing_cleaning_fee'));
+        $this->assertSame('30', Setting::get('pricing_linen_fee_per_person'));
+        $this->assertSame('4', Setting::get('pricing_min_nights'));
+        $this->assertSame('15', Setting::get('pricing_extra_guest_fee'));
     }
 
     public function test_updating_pricing_settings_rejects_out_of_range_values(): void
@@ -67,15 +71,17 @@ class PricingSettingsTest extends TestCase
                 'pricing_commission_hometogo' => 16,
                 'pricing_weekly_discount_percent' => 12,
                 'pricing_monthly_discount_percent' => 22,
-                'pricing_portal_reference_nights' => 3,
-                'pricing_portal_reference_guests' => 6,
+                'pricing_cleaning_fee' => 100,
+                'pricing_linen_fee_per_person' => 25,
+                'pricing_min_nights' => 3,
+                'pricing_extra_guest_fee' => 12,
             ])
             ->assertSessionHasErrors(['pricing_tax_rate']);
 
         $this->assertNull(Setting::get('pricing_tax_rate'));
     }
 
-    public function test_updating_pricing_settings_rejects_non_positive_reference_values(): void
+    public function test_updating_pricing_settings_rejects_non_positive_values(): void
     {
         $this->actingAs($this->admin)
             ->put(route('admin.settings.pricing.update'), [
@@ -85,13 +91,15 @@ class PricingSettingsTest extends TestCase
                 'pricing_commission_hometogo' => 16,
                 'pricing_weekly_discount_percent' => 12,
                 'pricing_monthly_discount_percent' => 22,
-                'pricing_portal_reference_nights' => 0,
-                'pricing_portal_reference_guests' => -1,
+                'pricing_cleaning_fee' => -1,
+                'pricing_linen_fee_per_person' => -1,
+                'pricing_min_nights' => 0,
+                'pricing_extra_guest_fee' => -1,
             ])
-            ->assertSessionHasErrors(['pricing_portal_reference_nights', 'pricing_portal_reference_guests']);
+            ->assertSessionHasErrors(['pricing_cleaning_fee', 'pricing_linen_fee_per_person', 'pricing_min_nights', 'pricing_extra_guest_fee']);
 
-        $this->assertNull(Setting::get('pricing_portal_reference_nights'));
-        $this->assertNull(Setting::get('pricing_portal_reference_guests'));
+        $this->assertNull(Setting::get('pricing_cleaning_fee'));
+        $this->assertNull(Setting::get('pricing_min_nights'));
     }
 
     public function test_simulate_response_includes_tax_gross_up_discount_and_portal_fields(): void
@@ -121,7 +129,11 @@ class PricingSettingsTest extends TestCase
             'stay_gross_cents',
             'stay_discount_cents',
             'length_discount_rate',
-            'portals' => ['airbnb', 'booking', 'hometogo'],
+            'portals' => [
+                'airbnb' => ['guest_total_cents', 'owner_net_cents', 'commission_rate', 'margin_safe'],
+                'booking' => ['guest_total_cents', 'owner_net_cents', 'commission_rate', 'margin_safe'],
+                'hometogo' => ['guest_total_cents', 'owner_net_cents', 'commission_rate', 'margin_safe'],
+            ],
         ]);
 
         $this->assertGreaterThan(0, $response->json('tax_gross_up_cents'));

@@ -139,4 +139,47 @@ class PricingQuoteServiceTest extends TestCase
         $this->assertSame($shortStay['cleaning_cents'], $longStay['cleaning_cents']);
         $this->assertSame($shortStay['linen_cents'], $longStay['linen_cents']);
     }
+
+    public function test_cleaning_fee_setting_override_is_honored(): void
+    {
+        Setting::set('pricing_cleaning_fee', '120');
+        $this->makeRule(10000);
+
+        $quote = $this->calculate(nights: 5);
+
+        $this->assertSame(12000, $quote['cleaning_cents']);
+        $this->assertSame(3570, $quote['tax_gross_up_cents']);
+        $this->assertSame(70500, $quote['total_cents']);
+    }
+
+    public function test_linen_fee_per_person_setting_override_is_honored(): void
+    {
+        Setting::set('pricing_linen_fee_per_person', '30');
+        $this->makeRule(10000);
+
+        $quote = $this->calculate(nights: 5);
+
+        $this->assertSame(6000, $quote['linen_cents']);
+        $this->assertSame(3360, $quote['tax_gross_up_cents']);
+        $this->assertSame(69500, $quote['total_cents']);
+    }
+
+    public function test_cleaning_and_linen_defaults_fall_back_to_config_when_settings_unset(): void
+    {
+        $this->makeRule(10000);
+
+        $quote = $this->calculate(nights: 5);
+
+        $this->assertSame(((int) config('apartment.booking.cleaning_fee', 0)) * 100, $quote['cleaning_cents']);
+        $this->assertSame(((int) config('apartment.booking.linen_fee_per_person', 0)) * 100 * 2, $quote['linen_cents']);
+    }
+
+    public function test_min_nights_setting_override_changes_the_minimum_bookable_stay(): void
+    {
+        Setting::set('pricing_min_nights', '5');
+        $this->makeRule(10000);
+
+        $this->assertFalse($this->calculate(nights: 4)['available']);
+        $this->assertTrue($this->calculate(nights: 5)['available']);
+    }
 }
