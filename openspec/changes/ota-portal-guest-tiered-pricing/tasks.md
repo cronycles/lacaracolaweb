@@ -118,13 +118,13 @@
 
 ## 8. Docs
 
-- [ ] 8.1 Update `docs/specific-tech-backend-doc.mdc`: rewrite the
+- [x] 8.1 Update `docs/specific-tech-backend-doc.mdc`: rewrite the
       `OtaPortalPricingService`/`OtaPortalNightlyRateService` note into one
       paragraph for the unified service; update the "`settings` DB only for" /
       "Do not use `settings` for" lists (move `cleaning_fee`, `linen_fee_per_person`,
       `min_nights` from the "do not" list to the "settings DB" list; remove the 2
       deleted keys).
-- [ ] 8.2 Update `docs/business-doc.mdc`'s `admin/prezzi-portali` /
+- [x] 8.2 Update `docs/business-doc.mdc`'s `admin/prezzi-portali` /
       `admin/prezzi` description to match the new formula and the legend.
 
 ## 9. Verification
