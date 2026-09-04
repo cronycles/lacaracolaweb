@@ -47,8 +47,8 @@
 
 ## 4. Unified `OtaPortalPricingService`
 
-- [ ] 4.1 Delete `app/Services/OtaPortalNightlyRateService.php`.
-- [ ] 4.2 Rewrite `app/Services/OtaPortalPricingService.php`:
+- [x] 4.1 Delete `app/Services/OtaPortalNightlyRateService.php`.
+- [x] 4.2 Rewrite `app/Services/OtaPortalPricingService.php`:
     - `baseNightlyRateCents(int $pricePerNightCents, string $portal): int` —
       2-guest reference linen recovery + tax gross-up, amortised over
       `pricing_min_nights`, divided by `(1 - commission)`, rounded to the
@@ -63,10 +63,10 @@
     - Remove the 2-argument `resolveReferenceNights()`/`resolveReferenceGuests()`
       methods; keep `ResolvesLengthDiscountRate` (now used only by
       `guestFacingTotal()`) and `ResolvesTaxGrossUp`.
-- [ ] 4.3 Update `Admin\PricingController::portalPrices()` to call
+- [x] 4.3 Update `Admin\PricingController::portalPrices()` to call
       `baseNightlyRateCents()` per rule × portal (replacing
       `OtaPortalNightlyRateService::ratesFor()`).
-- [ ] 4.4 Update `Admin\PricingController::simulate()` to call
+- [x] 4.4 Update `Admin\PricingController::simulate()` to call
       `guestFacingTotal()` per portal (replacing `OtaPortalPricingService::suggest()`),
       passing `$quote['total_cents']` as the direct total for the margin check.
 

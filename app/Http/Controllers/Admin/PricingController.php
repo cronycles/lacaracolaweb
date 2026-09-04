@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PricingRule;
 use App\Models\Setting;
-use App\Services\OtaPortalNightlyRateService;
 use App\Services\OtaPortalPricingService;
 use App\Services\PricingQuoteService;
 use Illuminate\Http\JsonResponse;
@@ -29,17 +28,25 @@ class PricingController extends Controller
     }
 
     /** Read-only table of suggested blended nightly rates per portal, one row per pricing rule. */
-    public function portalPrices(OtaPortalNightlyRateService $otaPortalNightlyRateService): View
+    public function portalPrices(OtaPortalPricingService $otaPortalPricingService): View
     {
         $rules = PricingRule::orderBy('start_month')
             ->orderBy('start_day')
             ->get();
 
         $portalRates = $rules->mapWithKeys(fn (PricingRule $rule): array => [
-            $rule->id => $otaPortalNightlyRateService->ratesFor($rule),
+            $rule->id => collect(OtaPortalPricingService::portals())->mapWithKeys(fn (string $portal): array => [
+                $portal => [
+                    'nightly_rate_cents' => $otaPortalPricingService->baseNightlyRateCents((int) $rule->price_per_night, $portal),
+                    'commission_rate' => $otaPortalPricingService->commissionRate($portal),
+                ],
+            ])->all(),
         ]);
 
-        return view('admin.pricing.portal-prices', compact('rules', 'portalRates'));
+        return view('admin.pricing.portal-prices', compact('rules', 'portalRates') + [
+            'cleaningFeeCents' => $otaPortalPricingService->cleaningFeeCents(),
+            'extraGuestFeeCents' => $otaPortalPricingService->extraGuestFeeCents(),
+        ]);
     }
 
     public function create(): View
@@ -162,7 +169,17 @@ class PricingController extends Controller
             'parking_cents' => $quote['parking_cents'],
             'total_cents' => $quote['total_cents'],
             'avg_per_night_cents' => $quote['avg_per_night_cents'],
-            'portals' => $otaPortalPricingService->suggest($quote['total_cents'], $quote['nights']),
+            'portals' => collect(OtaPortalPricingService::portals())->mapWithKeys(
+                fn (string $portal): array => [
+                    $portal => $otaPortalPricingService->guestFacingTotal(
+                        $quote['stay_gross_cents'],
+                        $quote['nights'],
+                        $quote['guests'],
+                        $portal,
+                        $quote['total_cents'],
+                    ),
+                ]
+            ),
         ]);
     }
 
