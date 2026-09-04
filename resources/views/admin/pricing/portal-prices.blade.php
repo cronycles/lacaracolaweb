@@ -12,13 +12,45 @@
     </div>
 
     <div class="a-card" style="max-width:900px">
-        <p style="font-size:.85rem;color:#374151;margin-bottom:1rem;line-height:1.6">
-            Tariffa notte suggerita da impostare sul calendario di ciascun portale per lo stesso periodo,
-            già comprensiva di pulizie, biancheria e maggiorazione fiscale (nessuna voce separata da esporre
-            sul portale). Calcolata su un soggiorno e un numero di ospiti di riferimento, configurabili in
+        <div class="a-card__title">Legenda: cosa impostare su ogni portale</div>
+
+        <ul style="font-size:.85rem;color:#374151;line-height:1.7;margin:0 0 1rem 1.1rem;padding:0">
+            <li>
+                <strong>Tariffa base (colonne della tabella):</strong> già comprensiva di biancheria per 2 ospiti
+                e maggiorazione fiscale, al netto della commissione del portale — nessun'altra voce da aggiungere
+                per la tariffa notte.
+            </li>
+            <li>
+                <strong>Pulizie fisse:</strong> {{ number_format($cleaningFeeCents / 100, 0, ',', '.') }} € a
+                prenotazione, da inserire così com'è nel campo "costo pulizie" di ogni portale — nessun calcolo,
+                nessuna maggiorazione.
+            </li>
+            <li>
+                <strong>Supplemento ospite extra:</strong> {{ number_format($extraGuestFeeCents / 100, 0, ',', '.') }} €
+                a notte, per persona, dal 3° ospite in poi — stesso valore identico su Airbnb, Booking.com e HomeToGo.
+            </li>
+            <li>
+                <strong>Airbnb / Booking.com:</strong> non offrono un campo biancheria per ospite — non serve, è già
+                inclusa nella tariffa base.
+            </li>
+            <li>
+                <strong>HomeToGo:</strong> offre un campo biancheria per ospite, lasciato volutamente non impostato
+                per mantenere i 3 portali configurati allo stesso modo.
+            </li>
+            <li>
+                <strong>Nota sulle pulizie:</strong> essendo un importo fisso non maggiorato per la commissione del
+                portale, ogni portale trattiene circa pulizie × commissione (≈15–16 € con le commissioni attuali)
+                invece di girarlo interamente all'host — scelta accettata consapevolmente, rivedibile in futuro.
+            </li>
+        </ul>
+
+        <p style="font-size:.78rem;color:#6b7f89;margin:0">
+            Tutti questi valori sono modificabili in
             <a href="{{ route('admin.settings') }}" style="color:var(--admin-accent)">Impostazioni → Fiscalità e prezzi</a>.
         </p>
+    </div>
 
+    <div class="a-card" style="max-width:900px;margin-top:1.5rem">
         <table class="a-table">
             <thead>
                 <tr>

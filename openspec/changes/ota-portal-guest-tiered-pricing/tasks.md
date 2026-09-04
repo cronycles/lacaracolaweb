@@ -72,12 +72,12 @@
 
 ## 5. Admin UI: portal price table legend
 
-- [ ] 5.1 Add a legend block to
+- [x] 5.1 Add a legend block to
       `resources/views/admin/pricing/portal-prices.blade.php` above the table:
       fixed cleaning fee, extra-guest surcharge + "dal 3° ospite" rule, per-portal
       notes (Airbnb/Booking.com: no per-guest linen field; HomeToGo: has one,
       deliberately unused), link to `admin/impostazioni`.
-- [ ] 5.2 In the same legend block, add a note documenting the accepted
+- [x] 5.2 In the same legend block, add a note documenting the accepted
       cleaning-fee commission trade-off (design.md Risks): the 100 €
       cleaning fee is typed in flat/un-grossed, so each portal keeps
       roughly `cleaning_fee × commission_rate` (≈15–16 € at today's rates)
