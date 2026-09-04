@@ -720,9 +720,46 @@ body {
     background: #bbf7d0;
 }
 
-/* Pagination – keep Laravel default pagination links legible */
-.pagination-wrap { margin-top: 1rem; font-size: .85rem; }
-.pagination-wrap nav { display: flex; gap: .4rem; flex-wrap: wrap; }
+/* Pagination */
+.pagination-wrap { margin-top: 1rem; }
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    flex-wrap: wrap;
+    font-size: .8rem;
+}
+.pagination__info { color: #6b7f89; }
+.pagination__info strong { color: #374151; font-weight: 600; }
+.pagination__list {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    list-style: none;
+    flex-wrap: wrap;
+}
+.pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 .5rem;
+    border: 1px solid var(--admin-border);
+    border-radius: .375rem;
+    color: #374151;
+    font-size: .8rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    background: #fff;
+    transition: background .15s, border-color .15s;
+}
+a.pagination__link:hover { background: #f1f5f9; border-color: #c7d2d8; }
+.pagination__link--current { background: #30596C; border-color: #30596C; color: #fff; }
+.pagination__link--disabled { color: #c2ccd1; cursor: not-allowed; }
+.pagination__link--dots { border-color: transparent; background: transparent; }
 
 /* Calendar grid */
 .cal-legend {
