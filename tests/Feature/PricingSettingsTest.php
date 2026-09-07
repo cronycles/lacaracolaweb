@@ -47,6 +47,7 @@ class PricingSettingsTest extends TestCase
                 'pricing_linen_fee_per_person' => 30,
                 'pricing_min_nights' => 4,
                 'pricing_extra_guest_fee' => 15,
+                'pricing_portal_extra_margin_percent' => 8,
             ])
             ->assertRedirect();
 
@@ -61,6 +62,7 @@ class PricingSettingsTest extends TestCase
         $this->assertSame('30', Setting::get('pricing_linen_fee_per_person'));
         $this->assertSame('4', Setting::get('pricing_min_nights'));
         $this->assertSame('15', Setting::get('pricing_extra_guest_fee'));
+        $this->assertSame('0.08', Setting::get('pricing_portal_extra_margin_percent'));
     }
 
     public function test_updating_pricing_settings_rejects_out_of_range_values(): void
@@ -77,6 +79,7 @@ class PricingSettingsTest extends TestCase
                 'pricing_linen_fee_per_person' => 25,
                 'pricing_min_nights' => 3,
                 'pricing_extra_guest_fee' => 12,
+                'pricing_portal_extra_margin_percent' => 5,
             ])
             ->assertSessionHasErrors(['pricing_tax_rate']);
 
@@ -97,6 +100,7 @@ class PricingSettingsTest extends TestCase
                 'pricing_linen_fee_per_person' => -1,
                 'pricing_min_nights' => 0,
                 'pricing_extra_guest_fee' => -1,
+                'pricing_portal_extra_margin_percent' => 5,
             ])
             ->assertSessionHasErrors(['pricing_cleaning_fee', 'pricing_linen_fee_per_person', 'pricing_min_nights', 'pricing_extra_guest_fee']);
 

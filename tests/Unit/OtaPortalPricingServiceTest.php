@@ -15,7 +15,26 @@ class OtaPortalPricingServiceTest extends TestCase
 
     public function test_base_nightly_rate_worked_example_at_default_settings(): void
     {
-        // 100€/night, fixed 2-guest reference, default pricing_min_nights (3, from config).
+        // 100€/night, fixed 2-guest reference, default pricing_min_nights (3, from config),
+        // default 5% pricing_portal_extra_margin_percent.
+        $service = app(OtaPortalPricingService::class);
+
+        $this->assertSame(15800, $service->baseNightlyRateCents(10000, 'airbnb'));
+        $this->assertSame(16000, $service->baseNightlyRateCents(10000, 'booking'));
+        $this->assertSame(15800, $service->baseNightlyRateCents(10000, 'hometogo'));
+    }
+
+    public function test_base_nightly_rate_extra_margin_is_editable(): void
+    {
+        Setting::set('pricing_portal_extra_margin_percent', '0.10');
+
+        $this->assertSame(16600, app(OtaPortalPricingService::class)->baseNightlyRateCents(10000, 'airbnb'));
+    }
+
+    public function test_base_nightly_rate_matches_pre_margin_formula_when_margin_is_zero(): void
+    {
+        Setting::set('pricing_portal_extra_margin_percent', '0');
+
         $service = app(OtaPortalPricingService::class);
 
         $this->assertSame(15000, $service->baseNightlyRateCents(10000, 'airbnb'));
@@ -40,7 +59,7 @@ class OtaPortalPricingServiceTest extends TestCase
         // nights) — baseNightlyRateCents() never applies a weekly/monthly discount factor (see
         // design.md Decision 4); that only happens inside guestFacingTotal(), based on the real
         // stay length.
-        $this->assertSame(13200, app(OtaPortalPricingService::class)->baseNightlyRateCents(10000, 'airbnb'));
+        $this->assertSame(13900, app(OtaPortalPricingService::class)->baseNightlyRateCents(10000, 'airbnb'));
     }
 
     public function test_extra_guest_fee_default_and_is_editable(): void
@@ -71,10 +90,42 @@ class OtaPortalPricingServiceTest extends TestCase
             directTotalCents: 46601,
         );
 
-        $this->assertSame(55149, $result['guest_total_cents']);
-        $this->assertSame(46601, $result['owner_net_cents']);
+        $this->assertSame(57407, $result['guest_total_cents']);
+        $this->assertSame(48509, $result['owner_net_cents']);
         $this->assertSame(0.155, $result['commission_rate']);
         $this->assertTrue($result['margin_safe']);
+    }
+
+    public function test_guest_facing_total_extra_margin_is_editable(): void
+    {
+        Setting::set('pricing_portal_extra_margin_percent', '0.10');
+
+        $result = app(OtaPortalPricingService::class)->guestFacingTotal(
+            stayGrossCents: 30000,
+            nights: 3,
+            guests: 2,
+            portal: 'airbnb',
+            directTotalCents: 0,
+        );
+
+        $this->assertSame(59664, $result['guest_total_cents']);
+        $this->assertSame(50416, $result['owner_net_cents']);
+    }
+
+    public function test_guest_facing_total_matches_pre_margin_formula_when_margin_is_zero(): void
+    {
+        Setting::set('pricing_portal_extra_margin_percent', '0');
+
+        $result = app(OtaPortalPricingService::class)->guestFacingTotal(
+            stayGrossCents: 30000,
+            nights: 3,
+            guests: 2,
+            portal: 'airbnb',
+            directTotalCents: 46601,
+        );
+
+        $this->assertSame(55149, $result['guest_total_cents']);
+        $this->assertSame(46601, $result['owner_net_cents']);
     }
 
     public function test_guest_facing_total_applies_the_weekly_discount_for_a_10_night_stay(): void
@@ -87,8 +138,8 @@ class OtaPortalPricingServiceTest extends TestCase
             directTotalCents: 0,
         );
 
-        $this->assertSame(145447, $result['guest_total_cents']);
-        $this->assertSame(122903, $result['owner_net_cents']);
+        $this->assertSame(152220, $result['guest_total_cents']);
+        $this->assertSame(128626, $result['owner_net_cents']);
     }
 
     public function test_guest_facing_total_adds_the_extra_guest_surcharge_beyond_2_guests(): void
@@ -101,7 +152,7 @@ class OtaPortalPricingServiceTest extends TestCase
             directTotalCents: 0,
         );
 
-        $this->assertSame(62349, $result['guest_total_cents']);
+        $this->assertSame(64607, $result['guest_total_cents']);
     }
 
     public function test_guest_facing_total_margin_safe_is_false_when_owner_net_falls_short_of_direct(): void
@@ -111,7 +162,7 @@ class OtaPortalPricingServiceTest extends TestCase
             nights: 3,
             guests: 2,
             portal: 'airbnb',
-            directTotalCents: 46602, // 1 cent above the computed owner net (46601)
+            directTotalCents: 48510, // 1 cent above the computed owner net (48509)
         );
 
         $this->assertFalse($result['margin_safe']);

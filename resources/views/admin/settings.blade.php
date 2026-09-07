@@ -219,6 +219,21 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="pricing_portal_extra_margin_percent">Margine extra prezzi portali (%)</label>
+                    <input type="number" id="pricing_portal_extra_margin_percent" name="pricing_portal_extra_margin_percent" class="form-input" style="max-width:160px"
+                           min="0" max="100" step="0.01"
+                           value="{{ old('pricing_portal_extra_margin_percent', $pricingSettings['portal_extra_margin_percent'] * 100) }}">
+                    @error('pricing_portal_extra_margin_percent')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Maggiorazione commerciale (non fiscale) applicata sopra il calcolo a commissione, per allargare
+                        il distacco tra prezzo portali e prezzo diretto anche a 1-2 ospiti. Non modifica le pulizie
+                        né il supplemento ospite extra, che restano gli importi flat da copiare tali e quali sui portali.
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn--primary">Salva fiscalità e prezzi</button>
             </form>
         </div>

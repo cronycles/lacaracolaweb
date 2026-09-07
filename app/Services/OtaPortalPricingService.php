@@ -38,14 +38,14 @@ class OtaPortalPricingService
     /**
      * Base nightly rate for a portal listing: the direct nightly rate plus the 2-guest reference
      * linen recovery and the cleaning fee's tax gross-up (both amortised over the minimum stay),
-     * divided by the portal's commission. The cleaning fee itself is never added to this rate — see
-     * design.md Decision 1.
+     * divided by the portal's commission and inflated by the extra-margin setting. The cleaning fee
+     * itself is never added to this rate — see design.md Decision 1.
      */
     public function baseNightlyRateCents(int $pricePerNightCents, string $portal): int
     {
         $commissionRate = $this->commissionRate($portal);
         $rateCents = $commissionRate < 1.0
-            ? ($pricePerNightCents + $this->perNightAddOnCents()) / (1 - $commissionRate)
+            ? ($pricePerNightCents + $this->perNightAddOnCents()) / (1 - $commissionRate) * (1 + $this->extraMarginRate())
             : 0.0;
 
         // Rounded to the nearest whole euro (not €5) so equal-commission portals land equal.
@@ -69,6 +69,12 @@ class OtaPortalPricingService
         return (float) Setting::get("pricing_commission_{$portal}", self::DEFAULT_COMMISSION_RATES[$portal]);
     }
 
+    /** Commercial markup (not a fiscal figure) layered on top of the commission-grossed subtotal only. */
+    private function extraMarginRate(): float
+    {
+        return (float) Setting::get('pricing_portal_extra_margin_percent', '0.05');
+    }
+
     /**
      * Real guest-facing total a portal would charge for a simulated stay (base nightly rate,
      * discounted the same as the direct site, plus the extra-guest surcharge and the flat
@@ -82,7 +88,7 @@ class OtaPortalPricingService
         $commissionRate = $this->commissionRate($portal);
 
         $baseStayBeforeCents = $stayGrossCents + $this->perNightAddOnCents() * $nights;
-        $baseStayGrossedCents = $commissionRate < 1.0 ? $baseStayBeforeCents / (1 - $commissionRate) : 0.0;
+        $baseStayGrossedCents = $commissionRate < 1.0 ? $baseStayBeforeCents / (1 - $commissionRate) * (1 + $this->extraMarginRate()) : 0.0;
 
         $lengthDiscountRate = $this->lengthDiscountRateForNights($nights);
         $baseStayDiscountedCents = (int) round($baseStayGrossedCents * (1 - $lengthDiscountRate));
