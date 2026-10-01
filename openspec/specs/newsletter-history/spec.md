@@ -1,7 +1,7 @@
 # newsletter-history Specification
 
 ## Purpose
-TBD - created by archiving change newsletter-campaigns. Update Purpose after archive.
+Preview and historical visibility into sent newsletter campaigns and templates.
 ## Requirements
 ### Requirement: Administrator can preview the exact newsletter output
 An authorized newsletter administrator SHALL be able to preview both an editable template and a frozen campaign snapshot, and both previews SHALL render the same Mailable content view and shared layout used for delivery.

@@ -1,7 +1,7 @@
 # newsletter-recipient-selection Specification
 
 ## Purpose
-TBD - created by archiving change newsletter-campaigns. Update Purpose after archive.
+Admin selection and filtering of newsletter recipients, including manual addresses.
 ## Requirements
 ### Requirement: Subscriber selection shows all newsletter subscribers
 The admin recipient selector SHALL show every newsletter-subscribed person matching the current filters, including people without an email address, and SHALL visibly mark people without a usable email as unavailable and non-selectable.

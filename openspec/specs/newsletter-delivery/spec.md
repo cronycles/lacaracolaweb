@@ -1,7 +1,7 @@
 # newsletter-delivery Specification
 
 ## Purpose
-TBD - created by archiving change newsletter-campaigns. Update Purpose after archive.
+Per-recipient queued newsletter email delivery, suppression, and retry handling.
 ## Requirements
 ### Requirement: Campaign sends one email per recipient
 The system SHALL create one delivery per unique recipient and SHALL send each newsletter email with exactly one campaign recipient in `To`; recipients SHALL NOT be exposed to one another through `To` or `Cc`.
