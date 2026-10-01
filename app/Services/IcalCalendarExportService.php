@@ -8,7 +8,6 @@ use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\BookingRequest;
 use Carbon\CarbonInterface;
-use DateTimeZone;
 use Sabre\VObject\Component\VCalendar;
 
 class IcalCalendarExportService
@@ -41,8 +40,9 @@ class IcalCalendarExportService
         $event = $calendar->add('VEVENT');
         $event->UID = sprintf('%s-%d@%s', $type, $id, $this->domain());
         $event->DTSTAMP = now('UTC');
-        $event->add('DTSTART', $this->dateTimeAt($startDate, (string) config('apartment.booking.checkin_time', '15:00')));
-        $event->add('DTEND', $this->dateTimeAt($this->exclusiveEndDate($startDate, $endDate), (string) config('apartment.booking.checkout_time', '10:00')));
+        // All-day VALUE=DATE (no hour/timezone) is the format OTAs (Booking.com, Airbnb) expect for availability blocks.
+        $event->add('DTSTART', $startDate->copy()->startOfDay()->toDateTime(), ['VALUE' => 'DATE']);
+        $event->add('DTEND', $this->exclusiveEndDate($startDate, $endDate)->copy()->startOfDay()->toDateTime(), ['VALUE' => 'DATE']);
         $event->add('SUMMARY', 'Blocked');
         $event->add('STATUS', 'CONFIRMED');
         $event->add('TRANSP', 'OPAQUE');
@@ -51,14 +51,6 @@ class IcalCalendarExportService
     private function exclusiveEndDate(CarbonInterface $startDate, CarbonInterface $endDate): CarbonInterface
     {
         return $endDate->greaterThan($startDate) ? $endDate : $startDate->copy()->addDay();
-    }
-
-    private function dateTimeAt(CarbonInterface $date, string $time): CarbonInterface
-    {
-        return $date->copy()
-            ->setTimezone(new DateTimeZone((string) config('apartment.calendar.timezone', 'Europe/Rome')))
-            ->setTimeFromTimeString($time)
-            ->utc();
     }
 
     private function domain(): string

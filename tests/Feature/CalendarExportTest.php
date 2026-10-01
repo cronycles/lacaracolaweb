@@ -31,8 +31,6 @@ class CalendarExportTest extends TestCase
             'app.url' => 'https://lacaracolaandora.com',
             'apartment.calendar.export_token' => 'calendar-secret',
             'apartment.calendar.timezone' => 'Europe/Rome',
-            'apartment.booking.checkin_time' => '15:00',
-            'apartment.booking.checkout_time' => '10:00',
         ]);
 
         $activeBooking = $this->createBooking('2026-09-10', '2026-09-14', 'Alice Private', 'alice@example.test');
@@ -79,10 +77,10 @@ class CalendarExportTest extends TestCase
         $this->assertSame('-//La Caracola//External Calendar//EN', (string) $calendar->PRODID);
         $this->assertSame('GREGORIAN', (string) $calendar->CALSCALE);
         $this->assertCount(5, $events);
-        $this->assertSame('20260910T130000Z', (string) $events[0]->DTSTART);
-        $this->assertSame('20260914T080000Z', (string) $events[0]->DTEND);
-        $this->assertSame('20260928T130000Z', (string) $events[3]->DTSTART);
-        $this->assertSame('20260929T080000Z', (string) $events[3]->DTEND);
+        $this->assertSame('20260910', (string) $events[0]->DTSTART);
+        $this->assertSame('20260914', (string) $events[0]->DTEND);
+        $this->assertSame('20260928', (string) $events[3]->DTSTART);
+        $this->assertSame('20260929', (string) $events[3]->DTEND);
 
         foreach ($events as $event) {
             $this->assertSame('Blocked', (string) $event->SUMMARY);
