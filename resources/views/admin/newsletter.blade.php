@@ -26,6 +26,7 @@
                                 <form method="POST" action="{{ route('admin.newsletter.templates.test', $template) }}" title="Destinatario: {{ config('newsletter.test_recipient') }}">@csrf<button class="btn btn--outline btn--sm" type="submit">Invio di prova a {{ config('newsletter.test_recipient') }}</button></form>
                                 <form method="POST" action="{{ route('admin.newsletter.templates.archive', $template) }}">@csrf<button class="btn btn--danger btn--sm" type="submit">Archivia</button></form>
                             @endif
+                            <form method="POST" action="{{ route('admin.newsletter.templates.destroy', $template) }}" onsubmit="return confirm('Eliminare definitivamente questo template?');">@csrf @method('DELETE')<button class="btn btn--danger btn--sm" type="submit">Elimina</button></form>
                         </td>
                     </tr>
                 @endforeach

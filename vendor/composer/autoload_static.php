@@ -88,6 +88,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
             'Symfony\\Component\\Mailer\\' => 25,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
+            'Symfony\\Component\\HtmlSanitizer\\' => 32,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\ErrorHandler\\' => 31,
@@ -300,6 +301,10 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'Symfony\\Component\\HttpFoundation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
+        ),
+        'Symfony\\Component\\HtmlSanitizer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/html-sanitizer',
         ),
         'Symfony\\Component\\Finder\\' =>
         array (
@@ -571,6 +576,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\PushGoogleCalendar' => __DIR__ . '/../..' . '/app/Console/Commands/PushGoogleCalendar.php',
         'App\\Console\\Commands\\SendCheckinReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendCheckinReminders.php',
         'App\\Console\\Commands\\SendTelegramBookingReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendTelegramBookingReminders.php',
         'App\\Console\\Commands\\SyncEasterPricingRule' => __DIR__ . '/../..' . '/app/Console/Commands/SyncEasterPricingRule.php',
@@ -661,6 +667,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Services\\ExternalCalendarFeedClient' => __DIR__ . '/../..' . '/app/Services/ExternalCalendarFeedClient.php',
         'App\\Services\\ExternalCalendarIcalParser' => __DIR__ . '/../..' . '/app/Services/ExternalCalendarIcalParser.php',
         'App\\Services\\ExternalCalendarSyncService' => __DIR__ . '/../..' . '/app/Services/ExternalCalendarSyncService.php',
+        'App\\Services\\GoogleCalendarPushService' => __DIR__ . '/../..' . '/app/Services/GoogleCalendarPushService.php',
         'App\\Services\\GuestReporting\\Data\\ItalianMunicipalities' => __DIR__ . '/../..' . '/app/Services/GuestReporting/Data/ItalianMunicipalities.php',
         'App\\Services\\GuestReporting\\GuestClassifier' => __DIR__ . '/../..' . '/app/Services/GuestReporting/GuestClassifier.php',
         'App\\Services\\GuestReporting\\GuestRecord' => __DIR__ . '/../..' . '/app/Services/GuestReporting/GuestRecord.php',
@@ -43467,6 +43474,25 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'Symfony\\Component\\Finder\\Iterator\\SortableIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/SortableIterator.php',
         'Symfony\\Component\\Finder\\Iterator\\VcsIgnoredFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/VcsIgnoredFilterIterator.php',
         'Symfony\\Component\\Finder\\SplFileInfo' => __DIR__ . '/..' . '/symfony/finder/SplFileInfo.php',
+        'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer' => __DIR__ . '/..' . '/symfony/html-sanitizer/HtmlSanitizer.php',
+        'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizerAction' => __DIR__ . '/..' . '/symfony/html-sanitizer/HtmlSanitizerAction.php',
+        'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizerConfig' => __DIR__ . '/..' . '/symfony/html-sanitizer/HtmlSanitizerConfig.php',
+        'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizerInterface' => __DIR__ . '/..' . '/symfony/html-sanitizer/HtmlSanitizerInterface.php',
+        'Symfony\\Component\\HtmlSanitizer\\Parser\\NativeParser' => __DIR__ . '/..' . '/symfony/html-sanitizer/Parser/NativeParser.php',
+        'Symfony\\Component\\HtmlSanitizer\\Parser\\ParserInterface' => __DIR__ . '/..' . '/symfony/html-sanitizer/Parser/ParserInterface.php',
+        'Symfony\\Component\\HtmlSanitizer\\Reference\\W3CReference' => __DIR__ . '/..' . '/symfony/html-sanitizer/Reference/W3CReference.php',
+        'Symfony\\Component\\HtmlSanitizer\\TextSanitizer\\StringSanitizer' => __DIR__ . '/..' . '/symfony/html-sanitizer/TextSanitizer/StringSanitizer.php',
+        'Symfony\\Component\\HtmlSanitizer\\TextSanitizer\\UrlSanitizer' => __DIR__ . '/..' . '/symfony/html-sanitizer/TextSanitizer/UrlSanitizer.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\AttributeSanitizer\\AttributeSanitizerInterface' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/AttributeSanitizer/AttributeSanitizerInterface.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\AttributeSanitizer\\MetaRefreshAttributeSanitizer' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/AttributeSanitizer/MetaRefreshAttributeSanitizer.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\AttributeSanitizer\\UrlAttributeSanitizer' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/AttributeSanitizer/UrlAttributeSanitizer.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\DomVisitor' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/DomVisitor.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Model\\Cursor' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Model/Cursor.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Node\\BlockedNode' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Node/BlockedNode.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Node\\DocumentNode' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Node/DocumentNode.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Node\\Node' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Node/Node.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Node\\NodeInterface' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Node/NodeInterface.php',
+        'Symfony\\Component\\HtmlSanitizer\\Visitor\\Node\\TextNode' => __DIR__ . '/..' . '/symfony/html-sanitizer/Visitor/Node/TextNode.php',
         'Symfony\\Component\\HttpFoundation\\AcceptHeader' => __DIR__ . '/..' . '/symfony/http-foundation/AcceptHeader.php',
         'Symfony\\Component\\HttpFoundation\\AcceptHeaderItem' => __DIR__ . '/..' . '/symfony/http-foundation/AcceptHeaderItem.php',
         'Symfony\\Component\\HttpFoundation\\BinaryFileResponse' => __DIR__ . '/..' . '/symfony/http-foundation/BinaryFileResponse.php',

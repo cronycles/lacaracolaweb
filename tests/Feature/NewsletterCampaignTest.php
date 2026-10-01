@@ -40,8 +40,8 @@ class NewsletterCampaignTest extends TestCase
         $response = $this->actingAs($this->admin)->post('/admin/newsletter/templates', [
             'title' => 'Estate 2026',
             'subject' => 'Novita',
-            'content_it' => json_encode([['type' => 'heading', 'level' => 1, 'text' => 'Ciao']]),
-            'content_en' => json_encode([['type' => 'paragraph', 'text' => 'Hello']]),
+            'content_it' => '<h1>Ciao</h1>',
+            'content_en' => '<p>Hello</p>',
         ]);
 
         $template = NewsletterTemplate::firstOrFail();
@@ -55,14 +55,35 @@ class NewsletterCampaignTest extends TestCase
             ->assertSee('/en');
     }
 
+    public function test_alignment_width_and_cta_classes_survive_save_and_render(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/newsletter/templates', [
+            'title' => 'Formattato',
+            'subject' => 'Formattato',
+            'content_it' => '<p class="ql-align-center">Centrato</p><a href="https://example.test" class="btn">Prenota</a>',
+            'content_en' => '',
+        ]);
+        $response->assertRedirect('/admin/newsletter');
+
+        $template = NewsletterTemplate::firstOrFail();
+        $this->assertStringContainsString('ql-align-center', $template->content_it);
+        $this->assertStringContainsString('class="btn"', $template->content_it);
+
+        $this->actingAs($this->admin)
+            ->get('/admin/newsletter/templates/'.$template->id.'/anteprima')
+            ->assertOk()
+            ->assertSee('ql-align-center', false)
+            ->assertSee('class="btn"', false);
+    }
+
     public function test_stale_get_confirmation_url_redirects_to_newsletter(): void
     {
         $template = NewsletterTemplate::create([
             'created_by' => $this->admin->id,
             'title' => 'Test',
             'subject' => 'Test subject',
-            'content_it' => [],
-            'content_en' => [],
+            'content_it' => '',
+            'content_en' => '',
         ]);
 
         $this->actingAs($this->admin)
@@ -78,16 +99,17 @@ class NewsletterCampaignTest extends TestCase
         ]);
         $upload->assertOk()->assertJsonStructure(['path', 'url']);
         $path = $upload->json('path');
+        $url = $upload->json('url');
         Storage::disk('public')->assertExists($path);
 
-        $template = $this->actingAs($this->admin)->post('/admin/newsletter/templates', [
+        $this->actingAs($this->admin)->post('/admin/newsletter/templates', [
             'title' => 'Immagine',
             'subject' => 'Immagine',
-            'content_it' => json_encode([['type' => 'image', 'path' => $path, 'alt' => 'Casa']]),
-            'content_en' => '[]',
+            'content_it' => '<img src="'.$url.'" alt="Casa" width="50%">',
+            'content_en' => '',
         ])->assertRedirect('/admin/newsletter');
 
-        $this->assertSame($path, NewsletterTemplate::firstOrFail()->content_it[0]['path']);
+        $this->assertStringContainsString($path, NewsletterTemplate::firstOrFail()->content_it);
     }
 
     public function test_send_creates_one_delivery_per_unique_eligible_recipient(): void
@@ -97,8 +119,8 @@ class NewsletterCampaignTest extends TestCase
             'created_by' => $this->admin->id,
             'title' => 'Test',
             'subject' => 'Test subject',
-            'content_it' => [],
-            'content_en' => [],
+            'content_it' => '',
+            'content_en' => '',
         ]);
         $person = Person::create(['first_name' => 'Anna', 'last_name' => 'Verdi', 'email' => 'Anna@example.com', 'newsletter_subscribed' => true]);
         Person::create(['first_name' => 'No', 'last_name' => 'Email', 'newsletter_subscribed' => true]);
@@ -127,8 +149,8 @@ class NewsletterCampaignTest extends TestCase
             'created_by' => $this->admin->id,
             'title' => 'Test',
             'subject' => 'Test subject',
-            'content_it' => [],
-            'content_en' => [],
+            'content_it' => '',
+            'content_en' => '',
         ]);
 
         $this->actingAs($this->admin)->post('/admin/newsletter/templates/'.$template->id.'/test')->assertRedirect();
@@ -143,8 +165,8 @@ class NewsletterCampaignTest extends TestCase
         $campaign = NewsletterCampaign::create([
             'title' => 'Test',
             'subject' => 'Oggetto condiviso',
-            'content_it' => [['type' => 'paragraph', 'text' => 'Contenuto italiano']],
-            'content_en' => [['type' => 'paragraph', 'text' => 'English content']],
+            'content_it' => '<p>Contenuto italiano</p>',
+            'content_en' => '<p>English content</p>',
         ]);
 
         $html = (new NewsletterMail($campaign, 'reader@example.com'))->render();
@@ -188,7 +210,7 @@ class NewsletterCampaignTest extends TestCase
     {
         Mail::fake();
         $campaign = NewsletterCampaign::create([
-            'title' => 'Test', 'subject' => 'Test', 'content_it' => [], 'content_en' => [], 'status' => 'completed_with_errors', 'total_recipients' => 1,
+            'title' => 'Test', 'subject' => 'Test', 'content_it' => '', 'content_en' => '', 'status' => 'completed_with_errors', 'total_recipients' => 1,
         ]);
         $delivery = NewsletterDelivery::create([
             'newsletter_campaign_id' => $campaign->id, 'email' => 'manual@example.com', 'status' => 'failed', 'error' => 'temporary',
@@ -200,5 +222,31 @@ class NewsletterCampaignTest extends TestCase
         $this->assertSame('failed', $delivery->fresh()->status);
         $this->assertStringContainsString('disiscritto', $delivery->fresh()->error);
         Mail::assertNothingSent();
+    }
+
+    public function test_admin_can_delete_an_active_template(): void
+    {
+        $template = NewsletterTemplate::create([
+            'created_by' => $this->admin->id, 'title' => 'Test', 'subject' => 'Test subject', 'content_it' => '', 'content_en' => '',
+        ]);
+
+        $this->actingAs($this->admin)->delete('/admin/newsletter/templates/'.$template->id)->assertRedirect('/admin/newsletter');
+
+        $this->assertDatabaseMissing('newsletter_templates', ['id' => $template->id]);
+    }
+
+    public function test_admin_can_delete_an_archived_template_without_affecting_its_sent_campaign(): void
+    {
+        $template = NewsletterTemplate::create([
+            'created_by' => $this->admin->id, 'title' => 'Test', 'subject' => 'Test subject', 'content_it' => '', 'content_en' => '', 'archived_at' => now(),
+        ]);
+        $campaign = NewsletterCampaign::create([
+            'newsletter_template_id' => $template->id, 'title' => 'Test', 'subject' => 'Test subject', 'content_it' => '', 'content_en' => '',
+        ]);
+
+        $this->actingAs($this->admin)->delete('/admin/newsletter/templates/'.$template->id)->assertRedirect('/admin/newsletter');
+
+        $this->assertDatabaseMissing('newsletter_templates', ['id' => $template->id]);
+        $this->assertDatabaseHas('newsletter_campaigns', ['id' => $campaign->id, 'newsletter_template_id' => null]);
     }
 }

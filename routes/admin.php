@@ -176,6 +176,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/newsletter/templates/{newsletterTemplate}/modifica', [NewsletterController::class, 'edit'])->name('newsletter.templates.edit');
         Route::put('/newsletter/templates/{newsletterTemplate}', [NewsletterController::class, 'update'])->name('newsletter.templates.update');
         Route::post('/newsletter/templates/{newsletterTemplate}/archivia', [NewsletterController::class, 'archive'])->name('newsletter.templates.archive');
+        Route::delete('/newsletter/templates/{newsletterTemplate}', [NewsletterController::class, 'destroy'])->name('newsletter.templates.destroy');
         Route::get('/newsletter/templates/{newsletterTemplate}/anteprima', [NewsletterController::class, 'preview'])->name('newsletter.templates.preview');
         Route::post('/newsletter/templates/{newsletterTemplate}/test', [NewsletterController::class, 'testSend'])->name('newsletter.templates.test');
         Route::get('/newsletter/templates/{newsletterTemplate}/send/confirm', [NewsletterController::class, 'confirmSend'])->name('newsletter.templates.send.confirm.get');

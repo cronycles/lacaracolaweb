@@ -12,7 +12,7 @@ use App\Models\NewsletterDelivery;
 use App\Models\NewsletterSuppression;
 use App\Models\NewsletterTemplate;
 use App\Models\Person;
-use App\Services\Newsletter\NewsletterBlockDocument;
+use App\Services\Newsletter\NewsletterContentSanitizer;
 use App\Services\Newsletter\NewsletterRecipientResolver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
@@ -27,7 +27,7 @@ use Throwable;
 class NewsletterController extends Controller
 {
     public function __construct(
-        private readonly NewsletterBlockDocument $blocks,
+        private readonly NewsletterContentSanitizer $sanitizer,
         private readonly NewsletterRecipientResolver $recipients,
     ) {}
 
@@ -58,7 +58,7 @@ class NewsletterController extends Controller
 
     public function create(): View
     {
-        return view('admin.newsletter-form', ['template' => new NewsletterTemplate(['content_it' => [], 'content_en' => []])]);
+        return view('admin.newsletter-form', ['template' => new NewsletterTemplate(['content_it' => '', 'content_en' => ''])]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -82,6 +82,12 @@ class NewsletterController extends Controller
     {
         $newsletterTemplate->update(['archived_at' => now()]);
         return redirect()->back()->with('success', 'Template archiviato.');
+    }
+
+    public function destroy(NewsletterTemplate $newsletterTemplate): RedirectResponse
+    {
+        $newsletterTemplate->delete();
+        return redirect()->route('admin.newsletter')->with('success', 'Template eliminato.');
     }
 
     public function preview(NewsletterTemplate $newsletterTemplate): Response
@@ -257,17 +263,15 @@ class NewsletterController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:150'],
             'subject' => ['required', 'string', 'max:255'],
-            'content_it' => ['nullable', 'json'],
-            'content_en' => ['nullable', 'json'],
+            'content_it' => ['nullable', 'string'],
+            'content_en' => ['nullable', 'string'],
         ]);
-        $contentIt = $this->blocks->validate(json_decode($validated['content_it'] ?? '[]', true));
-        $contentEn = $this->blocks->validate(json_decode($validated['content_en'] ?? '[]', true));
         $template->fill([
             'created_by' => $template->created_by ?? $request->user()->id,
             'title' => $validated['title'],
             'subject' => $validated['subject'],
-            'content_it' => $contentIt,
-            'content_en' => $contentEn,
+            'content_it' => $this->sanitizer->sanitize($validated['content_it'] ?? ''),
+            'content_en' => $this->sanitizer->sanitize($validated['content_en'] ?? ''),
             'archived_at' => null,
         ])->save();
         return $template;

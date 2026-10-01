@@ -3,13 +3,13 @@
 @section('title', $campaign->subject)
 
 @section('content')
-    @include('emails.partials.newsletter-blocks', ['blocks' => $campaign->content_it])
+    {!! $campaign->content_it !!}
 
     <div style="border-top:1px solid #dde3e6;margin:28px 0 22px;padding-top:12px;text-align:center;color:#6b7f89;font-size:12px;text-transform:uppercase;letter-spacing:.08em">
         English version
     </div>
 
-    @include('emails.partials.newsletter-blocks', ['blocks' => $campaign->content_en])
+    {!! $campaign->content_en !!}
 
     <div class="callout" style="text-align:center;margin-top:28px">
         <strong>Visita il sito e prenota il tuo soggiorno</strong><br>

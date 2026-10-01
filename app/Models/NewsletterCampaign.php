@@ -18,7 +18,7 @@ class NewsletterCampaign extends Model
     protected function casts(): array
     {
         return [
-            'content_it' => 'array', 'content_en' => 'array',
+            'content_it' => 'string', 'content_en' => 'string',
             'started_at' => 'datetime', 'completed_at' => 'datetime',
             'total_recipients' => 'integer', 'sent_count' => 'integer', 'failed_count' => 'integer',
         ];

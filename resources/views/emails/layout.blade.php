@@ -24,6 +24,9 @@
         .footer { margin-top: 32px; font-size: 12px; color: #888; border-top: 1px solid #dde3e6; padding-top: 16px; }
         .badge { display: inline-block; background: #30596C; color: #fff; border-radius: 4px; padding: 2px 10px; font-size: 13px; }
         .btn { display: inline-block; background: #30596C; color: #ffffff !important; text-decoration: none; padding: 10px 22px; border-radius: 4px; margin-top: 12px; font-weight: bold; }
+        .ql-align-left { text-align: left; }
+        .ql-align-center { text-align: center; }
+        .ql-align-right { text-align: right; }
     </style>
 </head>
 <body>

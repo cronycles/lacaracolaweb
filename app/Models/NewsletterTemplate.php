@@ -14,7 +14,7 @@ class NewsletterTemplate extends Model
 
     protected function casts(): array
     {
-        return ['content_it' => 'array', 'content_en' => 'array', 'archived_at' => 'datetime'];
+        return ['content_it' => 'string', 'content_en' => 'string', 'archived_at' => 'datetime'];
     }
 
     public function creator(): BelongsTo

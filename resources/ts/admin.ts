@@ -6,9 +6,9 @@
 import flatpickr from 'flatpickr';
 import { Italian } from 'flatpickr/dist/l10n/it';
 import 'flatpickr/dist/flatpickr.min.css';
+import { initNewsletterEditor } from './components/newsletter-editor';
 import { initPhonePrefixSelects } from './components/phone-prefix-select';
 import { initPeopleReportingFields, initDocumentIssueFields, initCountryComboFields, initDocumentTypeToggle, initGuestReportingClassification } from './people-reporting-fields';
-import { initNewsletterEditor } from './components/newsletter-editor';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialise all native date inputs with Italian locale and dd/mm/yyyy display format.
