@@ -13,6 +13,21 @@ type NewsletterBlock = {
 
 export function initNewsletterEditor(): void {
     document.querySelectorAll<HTMLElement>('[data-newsletter-editor]').forEach((editor) => {
+        const form = editor.closest('form');
+        let pendingUploads = 0;
+        const saveButtons = Array.from(form?.querySelectorAll<HTMLButtonElement>('button[type="submit"]') ?? []);
+        const saveButtonLabels = saveButtons.map((button) => button.textContent ?? 'Salva template');
+        const updateSaveState = () => {
+            saveButtons.forEach((button, index) => {
+                const busy = pendingUploads > 0;
+                button.disabled = busy;
+                button.setAttribute('aria-busy', pendingUploads > 0 ? 'true' : 'false');
+                button.textContent = busy
+                    ? 'Caricamento immagini...'
+                    : saveButtonLabels[index];
+            });
+        };
+
         ['it', 'en'].forEach((locale) => {
             const input = editor.querySelector<HTMLInputElement>(`[data-newsletter-json="${locale}"]`);
             const container = editor.querySelector<HTMLElement>(`[data-newsletter-blocks="${locale}"]`);
@@ -50,15 +65,29 @@ export function initNewsletterEditor(): void {
                         alt.oninput = () => { block.alt = alt.value; sync(); };
                         file.onchange = async () => {
                             const selected = file.files?.[0]; if (!selected || !uploadUrl) return;
+                            block.path = undefined;
+                            sync();
+                            pendingUploads += 1;
+                            updateSaveState();
+                            status.textContent = locale === 'it' ? 'Caricamento immagine...' : 'Uploading image...';
+                            status.setAttribute('aria-live', 'polite');
                             const formData = new FormData(); formData.append('image', selected);
                             try {
                                 const response = await fetch(uploadUrl, { method: 'POST', body: formData, credentials: 'same-origin', headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '', Accept: 'application/json' } });
-                                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                                if (!response.ok) {
+                                    if (response.status === 405) throw new Error('405_UPLOAD_ROUTE');
+                                    throw new Error(`HTTP ${response.status}`);
+                                }
                                 const payload = await response.json() as { path: string };
                                 if (!payload.path) throw new Error('Missing image path');
                                 block.path = payload.path; status.textContent = locale === 'it' ? 'Immagine caricata.' : 'Image uploaded.'; sync();
-                            } catch {
-                                status.textContent = locale === 'it' ? 'Upload non riuscito.' : 'Upload failed.';
+                            } catch (error) {
+                                status.textContent = error instanceof Error && error.message === '405_UPLOAD_ROUTE'
+                                    ? (locale === 'it' ? 'Upload bloccato (405): pubblica le nuove route e svuota la cache Laravel.' : 'Upload blocked (405): deploy the new routes and clear the Laravel cache.')
+                                    : (locale === 'it' ? 'Upload non riuscito.' : 'Upload failed.');
+                            } finally {
+                                pendingUploads -= 1;
+                                updateSaveState();
                             }
                         };
                         const status = document.createElement('span');
