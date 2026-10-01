@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\PushGoogleCalendar;
 use App\Console\Commands\SendCheckinReminders;
 use App\Console\Commands\SendTelegramBookingReminders;
 use App\Console\Commands\SyncEasterPricingRule;
@@ -25,3 +26,5 @@ Schedule::command(SendCheckinReminders::class)->dailyAt('09:00');
 Schedule::command(SyncEasterPricingRule::class)->yearlyOn(11, 1, '03:00');
 
 Schedule::command(SyncExternalCalendars::class)->everyFifteenMinutes();
+
+Schedule::command(PushGoogleCalendar::class)->everyFifteenMinutes();

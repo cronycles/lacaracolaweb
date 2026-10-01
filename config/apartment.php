@@ -126,6 +126,14 @@ return [
         ],
     ],
 
+    // --- Outbound push to a Google Calendar (its iCal feed is then fed into OTA calendar sync) ---
+    'google_calendar_push' => [
+        'enabled' => (bool) env('GOOGLE_CALENDAR_PUSH_ENABLED', false),
+        'calendar_id' => env('GOOGLE_CALENDAR_ID', ''),
+        // Path to the service account JSON key (not committed to the repo).
+        'credentials_path' => env('GOOGLE_CALENDAR_CREDENTIALS_PATH', storage_path('app/google-calendar-credentials.json')),
+    ],
+
     // --- House rules: parameter values (used in rule text templates) ---
     'rules_values' => [
         // Heating operating hours (in season).
