@@ -171,7 +171,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
   - the technical test uses today's date and three nights without sending, so guest-data errors can be diagnosed before the booking date;
   - both tests persist guest profile changes and are distinguished in the submission history.
 - People/guest management and stay history consultation.
-- Newsletter subscribers listing (sending not implemented).
+- Newsletter subscribers listing and campaign management: reusable bilingual block templates, preview/test-send, filtered recipient selection, manual addresses, per-recipient queued delivery history, signed unsubscribe, and admin reactivation. Campaigns use one shared subject and do not BCC the full recipient list.
 - Manual Interhome PDF import with booking/block creation.
 - Admin settings persisted in DB: only `booking_mode` and `booking_external_url`.
 - Admin password change available in private area.

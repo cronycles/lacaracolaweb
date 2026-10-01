@@ -17,6 +17,15 @@ Related backend details: [Specific Tech Backend Doc](./specific-tech-backend-doc
 - Bundling/build with Vite.
 - Frontend work is mobile-first: every new or changed workflow must remain usable on narrow screens, with responsive controls that do not overflow or become ambiguous.
 
+## Newsletter editor
+
+The admin newsletter editor is a Blade form enhanced by
+`resources/ts/components/newsletter-editor.ts`. It stores only the supported
+structured blocks for Italian and English content, uploads images through the
+protected admin endpoint, and keeps campaign preview on the same renderer used
+by the email. Recipient selection remains server-authoritative; the manual
+address textarea accepts newline, comma, or semicolon separated values.
+
 ## Google Analytics 4
 
 Google tags are loaded from the shared Blade layout

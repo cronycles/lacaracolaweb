@@ -12,10 +12,17 @@ Data model for La Caracola (single-property rental management).
 - Pricing: `pricing_rules` + `stay_discount_rules`
 - Runtime DB settings: only `booking_mode`, `booking_external_url`
 - Config source of truth: `config/apartment.php`
+- Newsletter: `newsletter_templates` + immutable `newsletter_campaigns` snapshots + per-recipient `newsletter_deliveries` + `newsletter_suppressions`
 
 ---
 
 ## Entities
+
+### Newsletter campaigns
+
+`newsletter_templates` stores reusable bilingual structured-block documents. A send creates an immutable `newsletter_campaigns` snapshot, then one `newsletter_deliveries` row per normalized recipient. Delivery statuses are tracked independently so retries never recreate successful rows. `newsletter_suppressions` stores signed unsubscribe addresses and can be reactivated by an administrator with `manage_newsletter`.
+
+Newsletter blocks are validated server-side; arbitrary HTML is not accepted. Images are uploaded through the protected admin endpoint and rendered with absolute URLs for email clients.
 
 ### 1. **users**
 

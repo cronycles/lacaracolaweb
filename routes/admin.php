@@ -171,6 +171,19 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::middleware('permission:manage_newsletter')->group(function () {
         Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
+        Route::get('/newsletter/templates/crea', [NewsletterController::class, 'create'])->name('newsletter.templates.create');
+        Route::post('/newsletter/templates', [NewsletterController::class, 'store'])->name('newsletter.templates.store');
+        Route::get('/newsletter/templates/{newsletterTemplate}/modifica', [NewsletterController::class, 'edit'])->name('newsletter.templates.edit');
+        Route::put('/newsletter/templates/{newsletterTemplate}', [NewsletterController::class, 'update'])->name('newsletter.templates.update');
+        Route::post('/newsletter/templates/{newsletterTemplate}/archivia', [NewsletterController::class, 'archive'])->name('newsletter.templates.archive');
+        Route::get('/newsletter/templates/{newsletterTemplate}/anteprima', [NewsletterController::class, 'preview'])->name('newsletter.templates.preview');
+        Route::post('/newsletter/templates/{newsletterTemplate}/test', [NewsletterController::class, 'testSend'])->name('newsletter.templates.test');
+        Route::post('/newsletter/templates/{newsletterTemplate}/send', [NewsletterController::class, 'send'])->name('newsletter.templates.send');
+        Route::post('/newsletter/images', [NewsletterController::class, 'uploadImage'])->name('newsletter.images.store');
+        Route::get('/newsletter/campaigns/{newsletterCampaign}', [NewsletterController::class, 'campaign'])->name('newsletter.campaigns.show');
+        Route::get('/newsletter/campaigns/{newsletterCampaign}/anteprima', [NewsletterController::class, 'campaignPreview'])->name('newsletter.campaigns.preview');
+        Route::post('/newsletter/campaigns/{newsletterCampaign}/retry', [NewsletterController::class, 'retry'])->name('newsletter.campaigns.retry');
+        Route::post('/newsletter/suppressions/reactivate', [NewsletterController::class, 'reactivate'])->name('newsletter.suppressions.reactivate');
         Route::patch('/newsletter/{person}/toggle', [NewsletterController::class, 'toggle'])->name('newsletter.toggle');
     });
 

@@ -62,6 +62,13 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - There is no separate public save endpoint: confirmation is the only operation
   that submits the guest form.
 
+## Newsletter campaigns
+- `/admin/newsletter` and its child routes require `manage_newsletter`.
+- Templates contain validated bilingual structured blocks. Campaigns snapshot the template and subject at send time.
+- Recipient resolution excludes missing or invalid addresses and active suppressions, normalizes and deduplicates case-insensitively, and keeps one delivery row per address.
+- `SendNewsletterDelivery` sends one `NewsletterMail` per delivery, records success/failure, and retries failed jobs without resending successful rows.
+- Public unsubscribe URLs are signed. Stored people are opted out idempotently; manual addresses remain in `newsletter_suppressions` until an administrator reactivates them.
+
 ## Critical operational endpoints
 - Public quote endpoint: `POST /{locale}/{availability-slug}/quote`
   - valid input: `checkin`, `checkout`

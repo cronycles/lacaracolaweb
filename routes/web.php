@@ -15,10 +15,14 @@ use App\Http\Controllers\Public\ReviewsController;
 use App\Http\Controllers\Public\RulesController;
 use App\Http\Controllers\Public\TermsController;
 use App\Http\Controllers\Public\UsefulPlacesController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])
+    ->middleware('signed')
+    ->name('newsletter.unsubscribe');
 
 // --- Admin auth (no middleware guard — these are the login/logout endpoints) ---
 Route::get('/admin/login', [LoginController::class, 'showLogin'])->name('admin.login');
