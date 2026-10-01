@@ -20,7 +20,7 @@ Ridurre il totale visibile all'ospite e il rischio di abbandono dovuto a costi d
 
 La durata media stimata delle prenotazioni è circa 7 notti e una voce pulizie di 50€ è considerata accettabile, mentre 100€ è già percepita come elevata.
 
-## Soluzione proposta
+## Soluzione implementata
 
 La proposta è una soluzione intermedia:
 
@@ -64,10 +64,11 @@ Non bisogna quindi impostarlo semplicemente a 7: si cambierebbe anche il minimo 
 
 ## Decisione da prendere prima dell'implementazione
 
-La proposta da validare è:
+Le impostazioni implementate sono:
 
 - pulizie portali: **50€**;
 - durata di ammortamento OTA: **7 notti**;
 - sconti portali: inizialmente uguali al sito;
 - accettazione consapevole del possibile margine negativo sui soggiorni esattamente di 3 notti;
-- nuova impostazione separata per non modificare il minimo soggiorno del sito.
+- nuova impostazione separata per non modificare il minimo soggiorno del sito (`pricing_portal_amortization_nights`);
+- impostazione separata per la pulizia OTA (`pricing_portal_cleaning_fee`), senza modificare la pulizia del sito diretto.

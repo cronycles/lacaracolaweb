@@ -28,6 +28,8 @@ class SettingsController extends Controller
         'pricing_commission_hometogo' => '0.155',
         'pricing_weekly_discount_percent' => '0.10',
         'pricing_monthly_discount_percent' => '0.20',
+        'pricing_portal_cleaning_fee' => '50',
+        'pricing_portal_amortization_nights' => '7',
         // Fixed literal (not config-sourced), per ota-portal-guest-tiered-pricing/design.md, Decision 5.
         'pricing_extra_guest_fee' => '12',
         // Commercial markup, not a fiscal figure — per ota-portal-extra-margin/design.md, Decision 1.
@@ -83,6 +85,8 @@ class SettingsController extends Controller
             'pricing_cleaning_fee' => ['required', 'integer', 'min:0', 'max:99999'],
             'pricing_linen_fee_per_person' => ['required', 'integer', 'min:0', 'max:99999'],
             'pricing_min_nights' => ['required', 'integer', 'min:1', 'max:'.max(1, ((int) config('apartment.booking.max_nights', 28)) - 1)],
+            'pricing_portal_cleaning_fee' => ['required', 'integer', 'min:0', 'max:99999'],
+            'pricing_portal_amortization_nights' => ['required', 'integer', 'min:1', 'max:99999'],
             'pricing_extra_guest_fee' => ['required', 'integer', 'min:0', 'max:99999'],
             'pricing_portal_extra_margin_percent' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
@@ -97,13 +101,15 @@ class SettingsController extends Controller
         Setting::set('pricing_cleaning_fee', (string) $data['pricing_cleaning_fee']);
         Setting::set('pricing_linen_fee_per_person', (string) $data['pricing_linen_fee_per_person']);
         Setting::set('pricing_min_nights', (string) $data['pricing_min_nights']);
+        Setting::set('pricing_portal_cleaning_fee', (string) $data['pricing_portal_cleaning_fee']);
+        Setting::set('pricing_portal_amortization_nights', (string) $data['pricing_portal_amortization_nights']);
         Setting::set('pricing_extra_guest_fee', (string) $data['pricing_extra_guest_fee']);
         Setting::set('pricing_portal_extra_margin_percent', (string) ($data['pricing_portal_extra_margin_percent'] / 100));
 
         return back()->with('success', 'Impostazioni di fiscalità e prezzi salvate.');
     }
 
-    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float, cleaning_fee: int, linen_fee_per_person: int, min_nights: int, extra_guest_fee: int, portal_extra_margin_percent: float} */
+    /** @return array{tax_rate: float, tax_gross_up_items: list<string>, commission_airbnb: float, commission_booking: float, commission_hometogo: float, weekly_discount_percent: float, monthly_discount_percent: float, cleaning_fee: int, linen_fee_per_person: int, min_nights: int, portal_cleaning_fee: int, portal_amortization_nights: int, extra_guest_fee: int, portal_extra_margin_percent: float} */
     private function pricingSettings(): array
     {
         $items = json_decode((string) Setting::get('pricing_tax_gross_up_items', self::PRICING_SETTING_DEFAULTS['pricing_tax_gross_up_items']), true);
@@ -120,6 +126,8 @@ class SettingsController extends Controller
             'cleaning_fee' => (int) Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100)),
             'linen_fee_per_person' => (int) Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25)),
             'min_nights' => (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3)),
+            'portal_cleaning_fee' => (int) Setting::get('pricing_portal_cleaning_fee', self::PRICING_SETTING_DEFAULTS['pricing_portal_cleaning_fee']),
+            'portal_amortization_nights' => (int) Setting::get('pricing_portal_amortization_nights', self::PRICING_SETTING_DEFAULTS['pricing_portal_amortization_nights']),
             'extra_guest_fee' => (int) Setting::get('pricing_extra_guest_fee', self::PRICING_SETTING_DEFAULTS['pricing_extra_guest_fee']),
             'portal_extra_margin_percent' => (float) Setting::get('pricing_portal_extra_margin_percent', self::PRICING_SETTING_DEFAULTS['pricing_portal_extra_margin_percent']),
         ];

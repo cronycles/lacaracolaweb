@@ -46,6 +46,8 @@ class PricingSettingsTest extends TestCase
                 'pricing_cleaning_fee' => 110,
                 'pricing_linen_fee_per_person' => 30,
                 'pricing_min_nights' => 4,
+                'pricing_portal_cleaning_fee' => 50,
+                'pricing_portal_amortization_nights' => 7,
                 'pricing_extra_guest_fee' => 15,
                 'pricing_portal_extra_margin_percent' => 8,
             ])
@@ -61,6 +63,8 @@ class PricingSettingsTest extends TestCase
         $this->assertSame('110', Setting::get('pricing_cleaning_fee'));
         $this->assertSame('30', Setting::get('pricing_linen_fee_per_person'));
         $this->assertSame('4', Setting::get('pricing_min_nights'));
+        $this->assertSame('50', Setting::get('pricing_portal_cleaning_fee'));
+        $this->assertSame('7', Setting::get('pricing_portal_amortization_nights'));
         $this->assertSame('15', Setting::get('pricing_extra_guest_fee'));
         $this->assertSame('0.08', Setting::get('pricing_portal_extra_margin_percent'));
     }
@@ -78,6 +82,8 @@ class PricingSettingsTest extends TestCase
                 'pricing_cleaning_fee' => 100,
                 'pricing_linen_fee_per_person' => 25,
                 'pricing_min_nights' => 3,
+                'pricing_portal_cleaning_fee' => 50,
+                'pricing_portal_amortization_nights' => 7,
                 'pricing_extra_guest_fee' => 12,
                 'pricing_portal_extra_margin_percent' => 5,
             ])
@@ -99,10 +105,12 @@ class PricingSettingsTest extends TestCase
                 'pricing_cleaning_fee' => -1,
                 'pricing_linen_fee_per_person' => -1,
                 'pricing_min_nights' => 0,
+                'pricing_portal_cleaning_fee' => -1,
+                'pricing_portal_amortization_nights' => 0,
                 'pricing_extra_guest_fee' => -1,
                 'pricing_portal_extra_margin_percent' => 5,
             ])
-            ->assertSessionHasErrors(['pricing_cleaning_fee', 'pricing_linen_fee_per_person', 'pricing_min_nights', 'pricing_extra_guest_fee']);
+            ->assertSessionHasErrors(['pricing_cleaning_fee', 'pricing_linen_fee_per_person', 'pricing_min_nights', 'pricing_portal_cleaning_fee', 'pricing_portal_amortization_nights', 'pricing_extra_guest_fee']);
 
         $this->assertNull(Setting::get('pricing_cleaning_fee'));
         $this->assertNull(Setting::get('pricing_min_nights'));

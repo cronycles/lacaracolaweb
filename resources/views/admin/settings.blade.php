@@ -186,8 +186,7 @@
                         </div>
                     </div>
                     <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
-                        Usati sia nel prezzo del sito diretto, sia nel calcolo della
-                        <a href="{{ route('admin.pricing.portal-prices') }}" style="color:var(--admin-accent)">tabella prezzi portali</a>.
+                        Usati nel prezzo del sito diretto. Per i portali usa le impostazioni OTA qui sotto.
                     </div>
                 </div>
 
@@ -202,6 +201,33 @@
                     <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
                         Attenzione: cambia anche la durata minima prenotabile sul sito diretto (form di prenotazione),
                         non solo il calcolo della tabella prezzi portali.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Impostazioni prezzi portali</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                        <div>
+                            <label class="form-label" for="pricing_portal_cleaning_fee" style="font-size:.8rem">Pulizie portali (€/soggiorno)</label>
+                            <input type="number" id="pricing_portal_cleaning_fee" name="pricing_portal_cleaning_fee" class="form-input"
+                                   min="0" step="1"
+                                   value="{{ old('pricing_portal_cleaning_fee', $pricingSettings['portal_cleaning_fee']) }}">
+                            @error('pricing_portal_cleaning_fee')
+                                <div class="form-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="form-label" for="pricing_portal_amortization_nights" style="font-size:.8rem">Ammortamento costi (notti)</label>
+                            <input type="number" id="pricing_portal_amortization_nights" name="pricing_portal_amortization_nights" class="form-input"
+                                   min="1" step="1"
+                                   value="{{ old('pricing_portal_amortization_nights', $pricingSettings['portal_amortization_nights']) }}">
+                            @error('pricing_portal_amortization_nights')
+                                <div class="form-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div style="font-size:.78rem;color:#6b7f89;margin-top:.35rem">
+                        Valori usati solo per i prezzi OTA. Non modificano il prezzo diretto né il soggiorno minimo del sito.
                     </div>
                 </div>
 

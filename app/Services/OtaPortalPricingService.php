@@ -36,10 +36,8 @@ class OtaPortalPricingService
     }
 
     /**
-     * Base nightly rate for a portal listing: the direct nightly rate plus the 2-guest reference
-     * linen recovery and the cleaning fee's tax gross-up (both amortised over the minimum stay),
-     * divided by the portal's commission and inflated by the extra-margin setting. The cleaning fee
-     * itself is never added to this rate — see design.md Decision 1.
+    * Base nightly rate for a portal listing: the direct nightly rate plus unrecovered fixed costs
+    * for a typical 2-guest stay, amortised over the OTA reference duration.
      */
     public function baseNightlyRateCents(int $pricePerNightCents, string $portal): int
     {
@@ -61,7 +59,7 @@ class OtaPortalPricingService
     /** Flat cleaning fee — display/legend reference only, never blended into the nightly rate. */
     public function cleaningFeeCents(): int
     {
-        return ((int) Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100))) * 100;
+        return ((int) Setting::get('pricing_portal_cleaning_fee', '50')) * 100;
     }
 
     public function commissionRate(string $portal): float
@@ -106,18 +104,18 @@ class OtaPortalPricingService
     }
 
     /**
-     * 2-guest reference linen cost plus the cleaning fee's tax gross-up (cleaning fee itself
-     * excluded — only its tax), amortised over the minimum-stay setting. Recovering the cleaning
-     * fee's tax here (while leaving the cleaning fee amount itself flat/un-grossed for commission)
-     * narrows the portal-vs-direct margin gap to just the commission cut on that flat amount.
+      * Recover the direct cleaning amount not represented by the portal cleaning fee, 2-guest linen,
+      * and the selected tax gross-up, amortised over the OTA reference duration.
      */
     private function perNightAddOnCents(): int
     {
-        $referenceNights = (int) Setting::get('pricing_min_nights', (string) config('apartment.booking.min_nights', 3));
+          $referenceNights = (int) Setting::get('pricing_portal_amortization_nights', '7');
+          $directCleaningFeeCents = ((int) Setting::get('pricing_cleaning_fee', (string) config('apartment.booking.cleaning_fee', 100))) * 100;
         $linenFeeCents = ((int) Setting::get('pricing_linen_fee_per_person', (string) config('apartment.booking.linen_fee_per_person', 25))) * 100;
         $referenceLinenCents = $linenFeeCents * self::REFERENCE_GUESTS;
-        $taxGrossUpCents = $this->taxGrossUpCents($this->cleaningFeeCents(), $referenceLinenCents);
-        $recoverableCents = $referenceLinenCents + $taxGrossUpCents;
+          $taxGrossUpCents = $this->taxGrossUpCents($directCleaningFeeCents, $referenceLinenCents);
+          $cleaningShortfallCents = max(0, $directCleaningFeeCents - $this->cleaningFeeCents());
+          $recoverableCents = $cleaningShortfallCents + $referenceLinenCents + $taxGrossUpCents;
 
         return $referenceNights > 0 ? (int) round($recoverableCents / $referenceNights) : $recoverableCents;
     }
