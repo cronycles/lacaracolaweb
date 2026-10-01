@@ -60,7 +60,7 @@ class CalendarExportTest extends TestCase
             'reason' => 'booked',
         ]);
 
-        $response = $this->get('/api/calendar/export?t=calendar-secret');
+        $response = $this->get('/api/calendar/export.ics?t=calendar-secret');
 
         $response->assertOk()
             ->assertHeader('Content-Type', 'text/calendar; charset=UTF-8')
