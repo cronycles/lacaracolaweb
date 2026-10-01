@@ -22,6 +22,7 @@ class CalendarExportController extends Controller
         return response($calendarExportService->generate(), 200, [
             'Content-Type' => 'text/calendar; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename=calendar.ics',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
         ]);
     }
 }

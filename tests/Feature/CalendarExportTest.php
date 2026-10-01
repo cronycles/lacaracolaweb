@@ -66,6 +66,9 @@ class CalendarExportTest extends TestCase
         $response->assertOk()
             ->assertHeader('Content-Type', 'text/calendar; charset=UTF-8')
             ->assertHeader('Content-Disposition', 'attachment; filename=calendar.ics');
+        $this->assertStringContainsString('no-cache', (string) $response->headers->get('Cache-Control'));
+        $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
+        $this->assertStringContainsString('must-revalidate', (string) $response->headers->get('Cache-Control'));
 
         $this->get('/api/calendar/calendar-secret/export.ics')->assertOk();
 
