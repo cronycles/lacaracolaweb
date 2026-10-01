@@ -36,6 +36,7 @@
                     <tr>
                         <th>Nome</th>
                         <th>Email</th>
+                        <th>Telefono</th>
                         <th>Soggiorni</th>
                         <th>Iscritto dal</th>
                         <th></th>
@@ -51,6 +52,7 @@
                                 </a>
                             </td>
                             <td>{{ $person->email ?? '—' }}</td>
+                            <td>{{ $person->phone_display ?? '—' }}</td>
                             <td>{{ $person->bookings_count }}</td>
                             <td>
                                 {{ $person->newsletter_subscribed_at?->format('d/m/Y') ?? '—' }}
