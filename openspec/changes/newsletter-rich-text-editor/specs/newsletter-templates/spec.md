@@ -15,7 +15,7 @@ The system SHALL allow an authorized newsletter administrator to create, edit, s
 - **WHEN** an authorized administrator deletes a template, archived or not
 - **THEN** the system permanently removes the template while leaving any existing campaign snapshots that reference it untouched
 
-### Requirement: Editor permits only supported email-safe content
+### Requirement: Editor permits only supported email-safe blocks
 The editor SHALL provide a continuous rich-text writing area per locale (Italian and English) in which an administrator can select a range of text and apply bold, italic, underline, heading levels, bulleted or numbered lists, a horizontal separator, plain text links, and a distinct call-to-action button. The system SHALL reject unsupported HTML tags, attributes, inline styles, and arbitrary classes when saving.
 
 #### Scenario: Save supported rich-text content
