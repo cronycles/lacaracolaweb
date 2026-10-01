@@ -1,4 +1,3 @@
-import type { EmbedBlot } from 'parchment';
 import Quill from 'quill';
 import type { BlockEmbed } from 'quill/blots/block';
 import type Toolbar from 'quill/modules/toolbar';
@@ -14,7 +13,10 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 function registerCustomFormats(): void {
     if (Quill.imports['formats/ctaButton']) return;
 
-    const Embed = Quill.import('blots/embed') as typeof EmbedBlot;
+    // Plain Parchment EmbedBlot (same base as Quill's own Image format) — NOT
+    // Quill's 'blots/embed', which wraps content in zero-width-space guard nodes
+    // meant for embeds with internally-editable text and would swallow our label.
+    const { EmbedBlot: Embed } = Quill.import('parchment');
     class CtaButtonBlot extends Embed {
         static blotName = 'ctaButton';
         static tagName = 'a';
@@ -43,6 +45,22 @@ function registerCustomFormats(): void {
 
 function csrfToken(): string {
     return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
+}
+
+// Quill's toolbar CSS forces a fixed 28px icon-button width and groups buttons
+// into separate ".ql-formats" spans (15px gap between groups, no gap within one).
+function createToolbarGroup(): HTMLSpanElement {
+    const group = document.createElement('span');
+    group.className = 'ql-formats';
+    return group;
+}
+
+function createLabelButton(label: string): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.style.cssText = 'width:auto;padding:3px 8px;margin-right:4px;font-size:12px;white-space:nowrap';
+    return button;
 }
 
 // A click on an image can leave the cursor either right on it or right after it;
@@ -150,12 +168,9 @@ export function initNewsletterEditor(): void {
                 file.click();
             });
 
-            const extras = document.createElement('span');
-            extras.className = 'ql-formats';
+            const actionsGroup = createToolbarGroup();
 
-            const ctaButton = document.createElement('button');
-            ctaButton.type = 'button';
-            ctaButton.textContent = locale === 'it' ? 'Bottone CTA' : 'CTA button';
+            const ctaButton = createLabelButton(locale === 'it' ? 'Bottone CTA' : 'CTA button');
             ctaButton.onclick = (): void => {
                 const label = window.prompt(locale === 'it' ? 'Testo del bottone' : 'Button text');
                 if (!label) return;
@@ -165,22 +180,20 @@ export function initNewsletterEditor(): void {
                 quill.insertEmbed(range.index, 'ctaButton', { label, url }, 'user');
                 quill.setSelection(range.index + 1, 0, 'user');
             };
-            extras.append(ctaButton);
+            actionsGroup.append(ctaButton);
 
-            const separatorButton = document.createElement('button');
-            separatorButton.type = 'button';
-            separatorButton.textContent = locale === 'it' ? 'Separatore' : 'Separator';
+            const separatorButton = createLabelButton(locale === 'it' ? 'Separatore' : 'Separator');
             separatorButton.onclick = (): void => {
                 const range = quill.getSelection(true);
                 quill.insertEmbed(range.index, 'divider', true, 'user');
                 quill.setSelection(range.index + 1, 0, 'user');
             };
-            extras.append(separatorButton);
+            actionsGroup.append(separatorButton);
+            toolbar.container?.append(actionsGroup);
 
+            const sizeGroup = createToolbarGroup();
             WIDTH_PRESETS.forEach((preset) => {
-                const sizeButton = document.createElement('button');
-                sizeButton.type = 'button';
-                sizeButton.textContent = preset;
+                const sizeButton = createLabelButton(preset);
                 sizeButton.title = locale === 'it' ? 'Ridimensiona immagine selezionata' : 'Resize selected image';
                 sizeButton.onclick = (): void => {
                     const range = quill.getSelection();
@@ -192,10 +205,9 @@ export function initNewsletterEditor(): void {
                     }
                     quill.formatText(imageIndex, 1, 'width', preset, 'user');
                 };
-                extras.append(sizeButton);
+                sizeGroup.append(sizeButton);
             });
-
-            toolbar.container?.append(extras);
+            toolbar.container?.append(sizeGroup);
 
             quill.on('text-change', () => {
                 input.value = quill.root.innerHTML;
