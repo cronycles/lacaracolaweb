@@ -267,6 +267,18 @@
         <div style="margin-top:1.5rem">
             <h2 style="font-size:1.1rem;margin:0 0 .75rem">Calendari esterni</h2>
 
+            <div class="a-card" style="margin-bottom:1rem">
+                <div class="a-card__title">Feed del sito da copiare nei portali</div>
+                <p style="font-size:.875rem;color:#6b7f89;margin:.5rem 0 1rem">
+                    Inserisci questo URL nei calendari iCal di Airbnb, Booking.com, HomeToGo o Google Calendar per comunicare le indisponibilita del sito.
+                </p>
+                <div style="display:flex;gap:.5rem;align-items:stretch">
+                    <input id="calendar-export-url" type="text" class="form-input" value="{{ $calendarExportUrl }}" readonly style="flex:1;min-width:0">
+                    <button type="button" class="btn btn--outline" onclick="copyCalendarExportUrl(this)">Copia</button>
+                </div>
+                <div id="calendar-export-copy-status" style="font-size:.78rem;color:#287a4d;margin-top:.4rem" role="status" aria-live="polite"></div>
+            </div>
+
             @foreach($calendarProviders as $provider)
                 @php($providerName = config("apartment.calendar.providers.{$provider->key}", $provider->key))
                 <div class="a-card" style="margin-bottom:1rem">
@@ -321,6 +333,20 @@
             document.getElementById('external-url-group').style.display = isExternal ? '' : 'none';
             document.getElementById('lbl-form').style.borderColor     = isExternal ? '#dde3e8' : '#30596C';
             document.getElementById('lbl-external').style.borderColor = isExternal ? '#30596C' : '#dde3e8';
+        }
+
+        function copyCalendarExportUrl(button) {
+            const input = document.getElementById('calendar-export-url');
+            const status = document.getElementById('calendar-export-copy-status');
+
+            navigator.clipboard.writeText(input.value).then(() => {
+                status.textContent = 'URL copiato.';
+                button.textContent = 'Copiato';
+                setTimeout(() => { button.textContent = 'Copia'; }, 1500);
+            }).catch(() => {
+                input.select();
+                status.textContent = 'Seleziona e copia l\'URL manualmente.';
+            });
         }
     </script>
 @endsection

@@ -45,6 +45,7 @@ class SettingsController extends Controller
             'bookingMode' => Setting::get('booking_mode', 'form'),
             'bookingExternalUrl' => Setting::get('booking_external_url', ''),
             'calendarProviders' => $this->calendarProviders(),
+            'calendarExportUrl' => route('calendar.export', ['t' => config('apartment.calendar.export_token')]),
             'pricingSettings' => $this->pricingSettings(),
         ]);
     }

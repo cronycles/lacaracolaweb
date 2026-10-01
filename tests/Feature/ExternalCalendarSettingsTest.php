@@ -32,6 +32,8 @@ class ExternalCalendarSettingsTest extends TestCase
 
     public function test_owner_can_view_fixed_provider_panels_and_persist_configuration(): void
     {
+        config(['apartment.calendar.export_token' => 'calendar-secret']);
+
         $this->actingAs($this->hostOwner)
             ->get('/admin/impostazioni')
             ->assertOk()
@@ -39,6 +41,8 @@ class ExternalCalendarSettingsTest extends TestCase
             ->assertSee('Booking.com')
             ->assertSee('HomeToGo')
             ->assertSee('Google Calendar')
+            ->assertSee('/api/calendar/export?t=calendar-secret')
+            ->assertSee('Feed del sito da copiare nei portali')
             ->assertSee('Mai sincronizzato');
 
         $provider = ExternalCalendarProvider::query()->where('key', 'airbnb')->firstOrFail();
