@@ -92,7 +92,13 @@ class NewsletterController extends Controller
 
     public function testSend(NewsletterTemplate $newsletterTemplate): RedirectResponse
     {
-        Mail::to(config('apartment.email'))->send(new NewsletterMail($this->campaignFromTemplate($newsletterTemplate), config('apartment.email')));
+        try {
+            Mail::to(config('apartment.email'))->send(new NewsletterMail($this->campaignFromTemplate($newsletterTemplate), config('apartment.email')));
+        } catch (Throwable $exception) {
+            report($exception);
+            return redirect()->back()->withErrors(['test_send' => 'Invio di prova non riuscito: '.$exception->getMessage()]);
+        }
+
         return redirect()->back()->with('success', 'Email di prova inviata.');
     }
 
@@ -145,6 +151,33 @@ class NewsletterController extends Controller
         return redirect()->route('admin.newsletter')->with('success', "Campagna avviata per {$campaign->total_recipients} destinatari.");
     }
 
+    public function confirmSend(Request $request, NewsletterTemplate $newsletterTemplate): View|RedirectResponse
+    {
+        abort_if($newsletterTemplate->archived_at !== null, 404);
+        $request->validate([
+            'person_ids' => ['nullable', 'array'],
+            'person_ids.*' => ['integer'],
+            'select_all' => ['nullable', 'boolean'],
+            'manual_emails' => ['nullable', 'string'],
+        ]);
+
+        $people = $request->boolean('select_all')
+            ? $this->subscriberQuery($request)->get()
+            : Person::query()->where('newsletter_subscribed', true)->whereIn('id', $request->input('person_ids', []))->get();
+        $manualEmails = preg_split('/[\s,;]+/', (string) $request->input('manual_emails', ''), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $recipientRows = $this->recipients->resolve($people, $manualEmails);
+        if ($recipientRows->isEmpty()) {
+            return redirect()->back()->withErrors(['recipients' => 'Seleziona almeno un destinatario valido.'])->withInput();
+        }
+
+        return view('admin.newsletter-confirm', [
+            'template' => $newsletterTemplate,
+            'recipients' => $recipientRows,
+            'manualEmails' => $manualEmails,
+            'requestData' => $request->only(['person_ids', 'select_all', 'q', 'filter']),
+        ]);
+    }
+
     public function campaign(NewsletterCampaign $newsletterCampaign): View
     {
         return view('admin.newsletter-campaign', ['campaign' => $newsletterCampaign->load('deliveries.person')]);
@@ -159,6 +192,12 @@ class NewsletterController extends Controller
     {
         $deliveries = $newsletterCampaign->deliveries()->where('status', 'failed')->get();
         foreach ($deliveries as $delivery) {
+            $suppressed = NewsletterSuppression::query()->where('email', $delivery->email)->exists()
+                || ($delivery->person && (! $delivery->person->newsletter_subscribed || $delivery->person->newsletter_opted_out));
+            if ($suppressed) {
+                $delivery->update(['status' => 'failed', 'error' => 'Destinatario disiscritto; riattivarlo prima del reinvio.']);
+                continue;
+            }
             $delivery->update(['status' => 'pending', 'error' => null]);
             SendNewsletterDelivery::dispatch($delivery->id);
         }

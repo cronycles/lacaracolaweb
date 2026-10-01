@@ -58,7 +58,7 @@
 
         @php($activeTemplate = $templates->firstWhere('archived_at', null))
         @if($activeTemplate)
-            <form method="POST" action="{{ route('admin.newsletter.templates.send', $activeTemplate) }}">
+            <form method="POST" action="{{ route('admin.newsletter.templates.send.confirm', $activeTemplate) }}">
                 @csrf
                 <p style="font-size:.875rem;color:#6b7f89">Template attivo: <strong>{{ $activeTemplate->title }}</strong>. Per cambiare contenuto, usa “Modifica / invia” sopra.</p>
                 <input type="hidden" name="q" value="{{ request('q') }}"><input type="hidden" name="filter" value="{{ request('filter') }}">
@@ -78,7 +78,8 @@
                 <label class="form-label" for="manual_emails">Indirizzi manuali (uno per riga)</label>
                 <textarea class="form-input" id="manual_emails" name="manual_emails" rows="3" placeholder="nome@example.com"></textarea>
                 @error('recipients')<p class="form-error">{{ $message }}</p>@enderror
-                <button type="submit" class="btn btn--primary" style="margin-top:.75rem">Invia newsletter ai selezionati</button>
+                @error('test_send')<p class="form-error">{{ $message }}</p>@enderror
+                <button type="submit" class="btn btn--primary" style="margin-top:.75rem">Rivedi e conferma invio</button>
             </form>
         @else
             <p style="color:#6b7f89">Crea prima un template attivo per poter inviare una newsletter.</p>
