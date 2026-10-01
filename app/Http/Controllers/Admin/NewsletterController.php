@@ -92,14 +92,15 @@ class NewsletterController extends Controller
 
     public function testSend(NewsletterTemplate $newsletterTemplate): RedirectResponse
     {
+        $recipient = config('newsletter.test_recipient');
         try {
-            Mail::to(config('apartment.email'))->send(new NewsletterMail($this->campaignFromTemplate($newsletterTemplate), config('apartment.email')));
+            Mail::to($recipient)->send(new NewsletterMail($this->campaignFromTemplate($newsletterTemplate), $recipient));
         } catch (Throwable $exception) {
             report($exception);
             return redirect()->back()->withErrors(['test_send' => 'Invio di prova non riuscito: '.$exception->getMessage()]);
         }
 
-        return redirect()->back()->with('success', 'Email di prova inviata.');
+        return redirect()->back()->with('success', "Email di prova inviata a {$recipient}.");
     }
 
     public function uploadImage(Request $request): \Illuminate\Http\JsonResponse

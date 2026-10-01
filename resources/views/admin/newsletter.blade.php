@@ -23,7 +23,7 @@
                             @if(!$template->archived_at)
                                 <a class="btn btn--outline btn--sm" target="_blank" rel="noopener" href="{{ route('admin.newsletter.templates.preview', $template) }}">Anteprima</a>
                                 <a class="btn btn--outline btn--sm" href="{{ route('admin.newsletter.templates.edit', $template) }}">Modifica / invia</a>
-                                <form method="POST" action="{{ route('admin.newsletter.templates.test', $template) }}">@csrf<button class="btn btn--outline btn--sm" type="submit">Invio di prova</button></form>
+                                <form method="POST" action="{{ route('admin.newsletter.templates.test', $template) }}" title="Destinatario: {{ config('newsletter.test_recipient') }}">@csrf<button class="btn btn--outline btn--sm" type="submit">Invio di prova a {{ config('newsletter.test_recipient') }}</button></form>
                                 <form method="POST" action="{{ route('admin.newsletter.templates.archive', $template) }}">@csrf<button class="btn btn--danger btn--sm" type="submit">Archivia</button></form>
                             @endif
                         </td>

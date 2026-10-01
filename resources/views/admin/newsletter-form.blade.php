@@ -11,7 +11,7 @@
                 <div><label class="form-label" for="title">Nome interno</label><input class="form-input" id="title" name="title" required value="{{ old('title', $template->title) }}"></div>
                 <div><label class="form-label" for="subject">Oggetto email</label><input class="form-input" id="subject" name="subject" required value="{{ old('subject', $template->subject) }}"></div>
             </div>
-            <p style="color:#6b7f89;font-size:.875rem;margin:1rem 0">Editor limitato: testo, titoli, corsivo, grassetto, sottolineato, elenchi e separatori. La parte CTA e disiscrizione viene aggiunta automaticamente.</p>
+            <p style="color:#6b7f89;font-size:.875rem;margin:1rem 0">Editor limitato: testo, titoli, corsivo, grassetto, sottolineato, elenchi, immagini e separatori. La parte CTA e disiscrizione viene aggiunta automaticamente.</p>
             <div data-newsletter-editor data-upload-url="{{ route('admin.newsletter.images.store') }}">
                 <section><h2>Italiano</h2><div data-newsletter-blocks="it"></div><button type="button" class="btn btn--outline btn--sm" data-add-block="it">+ Aggiungi blocco</button></section>
                 <section style="margin-top:1.5rem"><h2>English</h2><div data-newsletter-blocks="en"></div><button type="button" class="btn btn--outline btn--sm" data-add-block="en">+ Add block</button></section>

@@ -15,7 +15,9 @@ use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -66,6 +68,26 @@ class NewsletterCampaignTest extends TestCase
         $this->actingAs($this->admin)
             ->get('/admin/newsletter/templates/'.$template->id.'/send/confirm')
             ->assertRedirect('/admin/newsletter');
+    }
+
+    public function test_uploaded_image_is_saved_in_the_template_document(): void
+    {
+        Storage::fake('public');
+        $upload = $this->actingAs($this->admin)->postJson('/admin/newsletter/images', [
+            'image' => UploadedFile::fake()->image('newsletter.jpg'),
+        ]);
+        $upload->assertOk()->assertJsonStructure(['path', 'url']);
+        $path = $upload->json('path');
+        Storage::disk('public')->assertExists($path);
+
+        $template = $this->actingAs($this->admin)->post('/admin/newsletter/templates', [
+            'title' => 'Immagine',
+            'subject' => 'Immagine',
+            'content_it' => json_encode([['type' => 'image', 'path' => $path, 'alt' => 'Casa']]),
+            'content_en' => '[]',
+        ])->assertRedirect('/admin/newsletter');
+
+        $this->assertSame($path, NewsletterTemplate::firstOrFail()->content_it[0]['path']);
     }
 
     public function test_send_creates_one_delivery_per_unique_eligible_recipient(): void

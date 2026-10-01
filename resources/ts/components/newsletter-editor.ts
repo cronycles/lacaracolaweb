@@ -51,13 +51,15 @@ export function initNewsletterEditor(): void {
                         file.onchange = async () => {
                             const selected = file.files?.[0]; if (!selected || !uploadUrl) return;
                             const formData = new FormData(); formData.append('image', selected);
-                            const response = await fetch(uploadUrl, { method: 'POST', body: formData, headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '', Accept: 'application/json' } });
-                            if (!response.ok) {
+                            try {
+                                const response = await fetch(uploadUrl, { method: 'POST', body: formData, credentials: 'same-origin', headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '', Accept: 'application/json' } });
+                                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                                const payload = await response.json() as { path: string };
+                                if (!payload.path) throw new Error('Missing image path');
+                                block.path = payload.path; status.textContent = locale === 'it' ? 'Immagine caricata.' : 'Image uploaded.'; sync();
+                            } catch {
                                 status.textContent = locale === 'it' ? 'Upload non riuscito.' : 'Upload failed.';
-                                return;
                             }
-                            const payload = await response.json() as { path: string };
-                            block.path = payload.path; status.textContent = locale === 'it' ? 'Immagine caricata.' : 'Image uploaded.'; sync();
                         };
                         const status = document.createElement('span');
                         status.style.cssText = 'color:#6b7f89;font-size:.8rem';
