@@ -233,7 +233,7 @@ php artisan schedule:run --verbose
 
 ### External iCalendar setup and operations
 
-1. Set `CALENDAR_EXPORT_TOKEN` in the production `.env` to a high-entropy secret and run `php artisan config:clear` after deployment. The public export URL is `https://lacaracolaandora.com/api/calendar/export.ics?t=TOKEN`; it intentionally contains generic blocked dates only. Do not publish the URL or token. The old `/api/calendar/export` path remains available for compatibility.
+1. Set `CALENDAR_EXPORT_TOKEN` in the production `.env` to a high-entropy secret and run `php artisan config:clear` after deployment. The public export URL is `https://lacaracolaandora.com/api/calendar/TOKEN/export.ics`; it intentionally contains generic blocked dates only. Do not publish the URL or token. The old `/api/calendar/export.ics?t=TOKEN` and `/api/calendar/export?t=TOKEN` paths remain available for compatibility.
 2. In Admin -> Impostazioni, paste the iCalendar URL for each desired provider and enable it. Use `Sincronizza` to verify the first import; the scheduled `calendar:sync-external` command then runs every 15 minutes through the existing every-minute cron.
 3. Investigate a Settings error before trusting new availability. The latest valid external events intentionally remain active after HTTP or parse failures to avoid double bookings. A provider's valid empty calendar is a successful synchronization and clears its retained events.
 4. For server diagnostics, run `php artisan calendar:sync-external --provider=airbnb` or `php artisan calendar:sync-external`; provider errors are printed to the console and stored as the latest provider error.

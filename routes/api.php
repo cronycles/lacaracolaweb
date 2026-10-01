@@ -6,4 +6,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/calendar/export.ics', CalendarExportController::class)->name('calendar.export');
 Route::get('/calendar/export', CalendarExportController::class)->name('calendar.export.legacy');
+Route::get('/calendar/{token}/export.ics', CalendarExportController::class)->name('calendar.export.tokenized');
 Route::post('/telegram/webhook/{secret}', [TelegramWebhookController::class, 'handle']);

@@ -22,6 +22,7 @@ class CalendarExportTest extends TestCase
 
         $this->get('/api/calendar/export')->assertForbidden();
         $this->get('/api/calendar/export?t=wrong-token')->assertForbidden();
+        $this->get('/api/calendar/wrong-token/export.ics')->assertForbidden();
     }
 
     public function test_export_contains_only_current_local_unavailable_periods_without_personal_data(): void
@@ -65,6 +66,8 @@ class CalendarExportTest extends TestCase
         $response->assertOk()
             ->assertHeader('Content-Type', 'text/calendar; charset=UTF-8')
             ->assertHeader('Content-Disposition', 'attachment; filename=calendar.ics');
+
+        $this->get('/api/calendar/calendar-secret/export.ics')->assertOk();
 
         $calendar = Reader::read($response->getContent());
         $events = $calendar->select('VEVENT');

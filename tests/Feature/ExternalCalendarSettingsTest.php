@@ -41,7 +41,7 @@ class ExternalCalendarSettingsTest extends TestCase
             ->assertSee('Booking.com')
             ->assertSee('HomeToGo')
             ->assertSee('Google Calendar')
-            ->assertSee('/api/calendar/export.ics?t=calendar-secret')
+            ->assertSee('/api/calendar/calendar-secret/export.ics')
             ->assertSee('Feed del sito da copiare nei portali')
             ->assertSee('Mai sincronizzato');
 

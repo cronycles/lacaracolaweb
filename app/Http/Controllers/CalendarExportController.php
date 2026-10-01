@@ -13,7 +13,7 @@ class CalendarExportController extends Controller
     public function __invoke(Request $request, IcalCalendarExportService $calendarExportService): Response
     {
         $expectedToken = (string) config('apartment.calendar.export_token');
-        $providedToken = (string) $request->query('t', '');
+        $providedToken = (string) ($request->route('token') ?? $request->query('t', ''));
 
         if ($expectedToken === '' || ! hash_equals($expectedToken, $providedToken)) {
             return response('', 403);
