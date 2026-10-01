@@ -238,6 +238,12 @@ php artisan schedule:run --verbose
 2. In Admin -> Impostazioni, paste the iCalendar URL for each desired provider and enable it. Use `Sincronizza` to verify the first import; the scheduled `calendar:sync-external` command then runs every 15 minutes through the existing every-minute cron.
 3. Investigate a Settings error before trusting new availability. The latest valid external events intentionally remain active after HTTP or parse failures to avoid double bookings. A provider's valid empty calendar is a successful synchronization and clears its retained events.
 4. For server diagnostics, run `php artisan calendar:sync-external --provider=airbnb` or `php artisan calendar:sync-external`; provider errors are printed to the console and stored as the latest provider error.
+5. Booking.com rejects our self-hosted export URL (step 1) with a generic `BAD_REQUEST` even when the feed is valid RFC5545 — it does not accept iCal URLs on a private/unrecognized domain. Workaround: `GoogleCalendarPushService` / `calendar:push-google` (scheduled every 15 min, same cron as above, no extra cron entry needed) pushes the same blocked periods into a Google Calendar via the Calendar API (service account auth), reconciled idempotently by `iCalUID` and tagged with a private extended property so it never touches unrelated events on that calendar. Setup:
+   - Google Cloud Console: enable the Calendar API, create a Service Account, download its JSON key.
+   - Upload the JSON key to `storage/app/private/google-calendar-credentials.json` on the server (non-web-accessible, already git-ignored).
+   - Create/choose a Google Calendar, share it with the service account's email with "Make changes to events" permission, and set in production `.env`: `GOOGLE_CALENDAR_PUSH_ENABLED=true`, `GOOGLE_CALENDAR_ID=<calendar id>` (optionally `GOOGLE_CALENDAR_CREDENTIALS_PATH` to override the default path), then `php artisan config:clear`.
+   - Paste that Google Calendar's "secret address in iCal format" (not our own export URL) into Booking.com/Airbnb/HomeToGo's calendar-sync field.
+   - `google/apiclient` lives under `vendor/`, which is git-tracked in this repo (deploy = file copy, no `composer install` on the server) — always commit `vendor/` changes together with `composer.json`/`composer.lock`.
 
 ## SSL and HTTPS
 
