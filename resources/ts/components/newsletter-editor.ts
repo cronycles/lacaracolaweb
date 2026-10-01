@@ -65,6 +65,17 @@ export function initNewsletterEditor(): void {
                         alt.oninput = () => { block.alt = alt.value; sync(); };
                         file.onchange = async () => {
                             const selected = file.files?.[0]; if (!selected || !uploadUrl) return;
+                            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+                            if (!allowedTypes.includes(selected.type)) {
+                                status.textContent = locale === 'it' ? 'Formato non supportato: usa JPG, PNG, WebP, GIF o BMP.' : 'Unsupported format: use JPG, PNG, WebP, GIF, or BMP.';
+                                file.value = '';
+                                return;
+                            }
+                            if (selected.size > 10 * 1024 * 1024) {
+                                status.textContent = locale === 'it' ? 'File troppo grande: massimo 10 MB.' : 'File too large: maximum 10 MB.';
+                                file.value = '';
+                                return;
+                            }
                             block.path = undefined;
                             sync();
                             pendingUploads += 1;
@@ -76,15 +87,23 @@ export function initNewsletterEditor(): void {
                                 const response = await fetch(uploadUrl, { method: 'POST', body: formData, credentials: 'same-origin', headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '', Accept: 'application/json' } });
                                 if (!response.ok) {
                                     if (response.status === 405) throw new Error('405_UPLOAD_ROUTE');
+                                    if (response.status === 422) {
+                                        const payload = await response.json().catch(() => null) as { errors?: { image?: string[] } } | null;
+                                        throw new Error(payload?.errors?.image?.[0] ?? '422_UPLOAD_VALIDATION');
+                                    }
                                     throw new Error(`HTTP ${response.status}`);
                                 }
                                 const payload = await response.json() as { path: string };
                                 if (!payload.path) throw new Error('Missing image path');
                                 block.path = payload.path; status.textContent = locale === 'it' ? 'Immagine caricata.' : 'Image uploaded.'; sync();
                             } catch (error) {
-                                status.textContent = error instanceof Error && error.message === '405_UPLOAD_ROUTE'
-                                    ? (locale === 'it' ? 'Upload bloccato (405): pubblica le nuove route e svuota la cache Laravel.' : 'Upload blocked (405): deploy the new routes and clear the Laravel cache.')
-                                    : (locale === 'it' ? 'Upload non riuscito.' : 'Upload failed.');
+                                if (error instanceof Error && error.message === '405_UPLOAD_ROUTE') {
+                                    status.textContent = locale === 'it' ? 'Upload bloccato (405): pubblica le nuove route e svuota la cache Laravel.' : 'Upload blocked (405): deploy the new routes and clear the Laravel cache.';
+                                } else if (error instanceof Error && error.message !== '422_UPLOAD_VALIDATION') {
+                                    status.textContent = `Upload non riuscito: ${error.message}`;
+                                } else {
+                                    status.textContent = locale === 'it' ? 'Upload rifiutato: verifica formato e dimensione del file.' : 'Upload rejected: check the file format and size.';
+                                }
                             } finally {
                                 pendingUploads -= 1;
                                 updateSaveState();
