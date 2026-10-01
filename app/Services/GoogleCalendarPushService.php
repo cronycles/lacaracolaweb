@@ -123,14 +123,22 @@ class GoogleCalendarPushService
 
     private function buildGoogleEvent(string $uid, CarbonInterface $start, CarbonInterface $end): GoogleEvent
     {
+        $startDate = new EventDateTime;
+        $startDate->setDate($start->toDateString());
+        $endDate = new EventDateTime;
+        $endDate->setDate($end->toDateString());
+
         $event = new GoogleEvent;
         $event->setICalUID($uid);
-        $event->setStart((new EventDateTime)->setDate($start->toDateString()));
-        $event->setEnd((new EventDateTime)->setDate($end->toDateString()));
+        $event->setStart($startDate);
+        $event->setEnd($endDate);
         $event->setSummary('Blocked');
         $event->setStatus('confirmed');
         $event->setTransparency('opaque');
-        $event->setExtendedProperties((new EventExtendedProperties)->setPrivate([self::MANAGED_PROPERTY => self::MANAGED_VALUE]));
+
+        $extendedProperties = new EventExtendedProperties;
+        $extendedProperties->setPrivate([self::MANAGED_PROPERTY => self::MANAGED_VALUE]);
+        $event->setExtendedProperties($extendedProperties);
 
         return $event;
     }
