@@ -16,7 +16,9 @@ class IcalCalendarExportService
     public function generate(): string
     {
         $calendar = new VCalendar;
+        $calendar->PRODID = '-//La Caracola//External Calendar//EN';
         $calendar->VERSION = '2.0';
+        $calendar->CALSCALE = 'GREGORIAN';
 
         Booking::query()
             ->whereNull('canceled_at')

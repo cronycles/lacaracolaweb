@@ -70,6 +70,8 @@ class CalendarExportTest extends TestCase
         $events = $calendar->select('VEVENT');
 
         $this->assertSame('2.0', (string) $calendar->VERSION);
+        $this->assertSame('-//La Caracola//External Calendar//EN', (string) $calendar->PRODID);
+        $this->assertSame('GREGORIAN', (string) $calendar->CALSCALE);
         $this->assertCount(5, $events);
         $this->assertSame('20260910T130000Z', (string) $events[0]->DTSTART);
         $this->assertSame('20260914T080000Z', (string) $events[0]->DTEND);
