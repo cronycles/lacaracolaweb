@@ -130,8 +130,8 @@ return [
     'google_calendar_push' => [
         'enabled' => (bool) env('GOOGLE_CALENDAR_PUSH_ENABLED', false),
         'calendar_id' => env('GOOGLE_CALENDAR_ID', ''),
-        // Path to the service account JSON key (not committed to the repo).
-        'credentials_path' => env('GOOGLE_CALENDAR_CREDENTIALS_PATH', storage_path('app/google-calendar-credentials.json')),
+        // Path to the service account JSON key (private, non-web-accessible disk; not committed to the repo).
+        'credentials_path' => env('GOOGLE_CALENDAR_CREDENTIALS_PATH', storage_path('app/private/google-calendar-credentials.json')),
     ],
 
     // --- House rules: parameter values (used in rule text templates) ---
