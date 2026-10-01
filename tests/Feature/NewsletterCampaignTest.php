@@ -53,6 +53,21 @@ class NewsletterCampaignTest extends TestCase
             ->assertSee('/en');
     }
 
+    public function test_stale_get_confirmation_url_redirects_to_newsletter(): void
+    {
+        $template = NewsletterTemplate::create([
+            'created_by' => $this->admin->id,
+            'title' => 'Test',
+            'subject' => 'Test subject',
+            'content_it' => [],
+            'content_en' => [],
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get('/admin/newsletter/templates/'.$template->id.'/send/confirm')
+            ->assertRedirect('/admin/newsletter');
+    }
+
     public function test_send_creates_one_delivery_per_unique_eligible_recipient(): void
     {
         Mail::fake();

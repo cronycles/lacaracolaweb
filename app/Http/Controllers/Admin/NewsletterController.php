@@ -154,6 +154,12 @@ class NewsletterController extends Controller
     public function confirmSend(Request $request, NewsletterTemplate $newsletterTemplate): View|RedirectResponse
     {
         abort_if($newsletterTemplate->archived_at !== null, 404);
+        if ($request->isMethod('GET')) {
+            return redirect()->route('admin.newsletter')->withErrors([
+                'recipients' => 'La conferma di invio è scaduta. Seleziona di nuovo i destinatari.',
+            ]);
+        }
+
         $request->validate([
             'person_ids' => ['nullable', 'array'],
             'person_ids.*' => ['integer'],
