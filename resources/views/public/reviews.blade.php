@@ -2,6 +2,10 @@
 
 @section('title', __('app.reviews_title') . ' — ' . config('apartment.name'))
 
+@push('schema')
+    @include('components.schema-vacation-rental', ['apartment' => config('apartment'), 'reviews' => $reviews])
+@endpush
+
 @section('content')
 
 <section class="section">

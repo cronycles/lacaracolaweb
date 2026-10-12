@@ -85,9 +85,8 @@ in copy, shown later in the booking quote), free WiFi, real proximity to the
 beach/train station, and heat comfort via ceiling fans/mosquito nets — never
 mentioning air conditioning, since the apartment doesn't have it.
 
-This is part of a multi-phase SEO/copy initiative tracked in
-`openspec/changes/seo-international-optimization/` (see its `tasks.md` for
-remaining phases: guide pages, sitemap/schema enrichment).
+The localized sitemap includes modification dates and crawl priorities; details
+are documented in `docs/specific-tech-backend-doc.mdc`.
 
 ## Vacation rental structured data
 
@@ -96,7 +95,11 @@ The localized public home emits one `application/ld+json` block from
 the `schema` stack in `resources/views/public/home.blade.php`. It describes the
 property as a Schema.org `VacationRental` with an `Accommodation`, address,
 coordinates, images, occupancy, bedrooms, bathrooms, rooms, floor size, exact
-bed types, amenities, and configured check-in/check-out times.
+bed types, amenities, and configured check-in/check-out times. The public
+reviews page uses the same component and adds `AggregateRating` and individual
+`Review` entries only for active, booking-linked reviews shown on that page. If
+there are no public reviews, it emits no rating or review entries. Private
+comments are never included.
 
 The component must remain data-driven. Stable property facts come from
 `config/apartment.php` (`schema`, `address`, `specs`, `amenities`, `images`, and

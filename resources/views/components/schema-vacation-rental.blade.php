@@ -85,6 +85,41 @@
         'checkinTime' => $apartment['booking']['checkin_time'] . ':00',
         'checkoutTime' => $apartment['booking']['checkout_time'] . ':00',
     ];
+
+    $publicReviews = collect($reviews ?? []);
+    if ($publicReviews->isNotEmpty()) {
+        $schema['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => round($publicReviews->avg('rating'), 1),
+            'reviewCount' => $publicReviews->count(),
+            'bestRating' => 10,
+            'worstRating' => 1,
+        ];
+
+        $schemaReviews = $publicReviews
+            ->filter(fn ($review): bool => trim($review->author_name) !== ''
+                && trim($review->textForLocale(app()->getLocale())) !== '')
+            ->map(fn ($review): array => [
+                '@type' => 'Review',
+                'author' => [
+                    '@type' => 'Person',
+                    'name' => $review->author_name,
+                ],
+                'reviewRating' => [
+                    '@type' => 'Rating',
+                    'ratingValue' => $review->rating,
+                    'bestRating' => 10,
+                    'worstRating' => 1,
+                ],
+                'reviewBody' => trim($review->textForLocale(app()->getLocale())),
+            ])
+            ->values()
+            ->all();
+
+        if ($schemaReviews !== []) {
+            $schema['review'] = $schemaReviews;
+        }
+    }
 @endphp
 
 <script type="application/ld+json">@json($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)</script>

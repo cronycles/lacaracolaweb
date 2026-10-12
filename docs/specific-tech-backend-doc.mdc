@@ -22,7 +22,8 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Admin login is separate (`/admin/login`), logout is `/logout`.
 
 ### SEO discovery endpoints
-- `GET /sitemap.xml` is generated dynamically from the registered localized `GET` routes.
+- `GET /sitemap.xml` is generated dynamically from the registered localized `GET` routes and includes `lastmod` and `priority` for every listed URL. `lastmod` uses the latest source-file modification time among the page view, shared layout, locale translations, apartment config, and sitemap controller; homepage priority is `1.0`, apartment is `0.9`, and other pages are `0.7`.
+- The localized public reviews page renders the `VacationRental` JSON-LD with aggregate and individual review data from the same active, booking-linked reviews shown on that page. No rating schema is emitted when there are no public reviews; private comments and inactive reviews are never included.
 - The bare root `/` permanently redirects to the Italian canonical homepage `/it`.
   Routes with dynamic parameters, non-public methods, and booking thank-you pages are excluded.
 - New public localized `GET` pages are included automatically when their route is registered in

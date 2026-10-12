@@ -24,23 +24,13 @@
 - [x] 3.3 Add a heat/comfort reassurance referencing ceiling fans and/or mosquito nets (no AC mention) to the relevant pain-point copy.
 - [x] 3.4 Render the pain-point sections in `resources/views/public/home.blade.php`.
 
-## 4. Phase 4 — Guide pages
-
-- [ ] 4.1 Add a `guide` slug entry per locale in `config/routes.php` (e.g. `guide` for EN, `ratgeber` for DE).
-- [ ] 4.2 Register `{locale}.guide.*` routes in `routes/web.php` following the existing locale-prefixed group pattern.
-- [ ] 4.3 Create `App\Http\Controllers\Public\GuideController` (or equivalent) and Blade views under `resources/views/public/guide/`.
-- [ ] 4.4 Write the "how to reach Andora from Nice airport" article (EN, plus DE if in scope) with a link back to home/apartment.
-- [ ] 4.5 Write the "best sandy beaches on the Italian Riviera" article (EN) with a link back to home/apartment.
-- [ ] 4.6 Write the "Ausflüge Blumenriviera" article (DE) with a link back to home/apartment.
-- [ ] 4.7 Verify new guide routes appear automatically in `/sitemap.xml` and in hreflang alternates where a translated counterpart exists.
-
 ## 5. Phase 5 — Technical enrichment
 
-- [ ] 5.1 Add `<lastmod>` and `<priority>` to `App\Http\Controllers\SitemapController`, prioritizing homepage/apartment over secondary pages.
-- [ ] 5.2 Investigate whether `App\Models\Review`/`ReviewsController` expose real, publicly displayed ratings.
-- [ ] 5.3 If real review data exists, add `AggregateRating`/`Review` to `components/schema-vacation-rental.blade.php`; otherwise leave as a documented open item.
+- [x] 5.1 Add `<lastmod>` and `<priority>` to `App\Http\Controllers\SitemapController`, prioritizing homepage/apartment over secondary pages.
+- [x] 5.2 Investigate whether `App\Models\Review`/`ReviewsController` expose real, publicly displayed ratings.
+- [x] 5.3 If real review data exists, add `AggregateRating`/`Review` to `components/schema-vacation-rental.blade.php`; otherwise leave as a documented open item.
 
 ## 6. Documentation
 
 - [x] 6.1 Update `docs/business-doc.mdc` and `docs/specific-tech-frontend-doc.mdc` for Phases 1–2 (hero copy pattern, trust-badges conditional visibility, feature-highlights heading, `.home-features` grid convention).
-- [ ] 6.2 Update the same docs for Phases 4–5 (guide pages, sitemap/schema enrichment) once implemented. Phase 3 (pain-point sections) docs already updated.
+- [x] 6.2 Update the impacted backend and frontend docs for sitemap metadata and public review schema behavior.
