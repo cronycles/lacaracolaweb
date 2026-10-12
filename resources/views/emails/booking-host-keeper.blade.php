@@ -107,7 +107,7 @@
 
     <div class="payment-section">
         <div class="payment-title">Dati per la ricevuta di incasso</div>
-        <p><strong>Committente:</strong> {{ $ownerName }}@if($paymentOwner?->tax_code) — C.F. {{ $paymentOwner->tax_code }}@endif</p>
+        <p><strong>Committente:</strong> {{ $ownerName }}@if($paymentOwner?->tax_code) — C.F. {{ $paymentOwner->tax_code }}@endif @if($ownerAddress)— {{ $ownerAddress }}@endif</p>
         <table>
             <tr>
                 <th>Compenso per servizio occasionale di check-in, check-out e pulizia immobile per il soggiorno dal {{ $booking->checkin->format('d/m/Y') }} al {{ $booking->checkout->format('d/m/Y') }}</th>
