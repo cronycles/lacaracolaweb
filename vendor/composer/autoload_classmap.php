@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Commands\\PushGoogleCalendar' => $baseDir . '/app/Console/Commands/PushGoogleCalendar.php',
+    'App\\Console\\Commands\\ReportMissingBookingPaymentDates' => $baseDir . '/app/Console/Commands/ReportMissingBookingPaymentDates.php',
     'App\\Console\\Commands\\SendCheckinReminders' => $baseDir . '/app/Console/Commands/SendCheckinReminders.php',
     'App\\Console\\Commands\\SendTelegramBookingReminders' => $baseDir . '/app/Console/Commands/SendTelegramBookingReminders.php',
     'App\\Console\\Commands\\SyncEasterPricingRule' => $baseDir . '/app/Console/Commands/SyncEasterPricingRule.php',
@@ -92,6 +93,7 @@ return array(
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Services\\AvailabilityService' => $baseDir . '/app/Services/AvailabilityService.php',
     'App\\Services\\BookingCreationService' => $baseDir . '/app/Services/BookingCreationService.php',
+    'App\\Services\\BookingMovements' => $baseDir . '/app/Services/BookingMovements.php',
     'App\\Services\\Concerns\\ResolvesLengthDiscountRate' => $baseDir . '/app/Services/Concerns/ResolvesLengthDiscountRate.php',
     'App\\Services\\Concerns\\ResolvesTaxGrossUp' => $baseDir . '/app/Services/Concerns/ResolvesTaxGrossUp.php',
     'App\\Services\\ExternalCalendarFeedClient' => $baseDir . '/app/Services/ExternalCalendarFeedClient.php',
@@ -43713,6 +43715,7 @@ return array(
     'Termwind\\ValueObjects\\Node' => $vendorDir . '/nunomaduro/termwind/src/ValueObjects/Node.php',
     'Termwind\\ValueObjects\\Style' => $vendorDir . '/nunomaduro/termwind/src/ValueObjects/Style.php',
     'Termwind\\ValueObjects\\Styles' => $vendorDir . '/nunomaduro/termwind/src/ValueObjects/Styles.php',
+    'Tests\\Feature\\BookingAccountingTest' => $baseDir . '/tests/Feature/BookingAccountingTest.php',
     'Tests\\Feature\\BookingConfirmationEmailTest' => $baseDir . '/tests/Feature/BookingConfirmationEmailTest.php',
     'Tests\\Feature\\BookingCreationServiceTest' => $baseDir . '/tests/Feature/BookingCreationServiceTest.php',
     'Tests\\Feature\\BookingLegalConsentTest' => $baseDir . '/tests/Feature/BookingLegalConsentTest.php',

@@ -577,6 +577,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
 
     public static $classMap = array (
         'App\\Console\\Commands\\PushGoogleCalendar' => __DIR__ . '/../..' . '/app/Console/Commands/PushGoogleCalendar.php',
+        'App\\Console\\Commands\\ReportMissingBookingPaymentDates' => __DIR__ . '/../..' . '/app/Console/Commands/ReportMissingBookingPaymentDates.php',
         'App\\Console\\Commands\\SendCheckinReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendCheckinReminders.php',
         'App\\Console\\Commands\\SendTelegramBookingReminders' => __DIR__ . '/../..' . '/app/Console/Commands/SendTelegramBookingReminders.php',
         'App\\Console\\Commands\\SyncEasterPricingRule' => __DIR__ . '/../..' . '/app/Console/Commands/SyncEasterPricingRule.php',
@@ -662,6 +663,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Services\\AvailabilityService' => __DIR__ . '/../..' . '/app/Services/AvailabilityService.php',
         'App\\Services\\BookingCreationService' => __DIR__ . '/../..' . '/app/Services/BookingCreationService.php',
+        'App\\Services\\BookingMovements' => __DIR__ . '/../..' . '/app/Services/BookingMovements.php',
         'App\\Services\\Concerns\\ResolvesLengthDiscountRate' => __DIR__ . '/../..' . '/app/Services/Concerns/ResolvesLengthDiscountRate.php',
         'App\\Services\\Concerns\\ResolvesTaxGrossUp' => __DIR__ . '/../..' . '/app/Services/Concerns/ResolvesTaxGrossUp.php',
         'App\\Services\\ExternalCalendarFeedClient' => __DIR__ . '/../..' . '/app/Services/ExternalCalendarFeedClient.php',
@@ -44283,6 +44285,7 @@ class ComposerStaticInitcd2215d6476b9bdc299565d8872e56e0
         'Termwind\\ValueObjects\\Node' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Node.php',
         'Termwind\\ValueObjects\\Style' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Style.php',
         'Termwind\\ValueObjects\\Styles' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Styles.php',
+        'Tests\\Feature\\BookingAccountingTest' => __DIR__ . '/../..' . '/tests/Feature/BookingAccountingTest.php',
         'Tests\\Feature\\BookingConfirmationEmailTest' => __DIR__ . '/../..' . '/tests/Feature/BookingConfirmationEmailTest.php',
         'Tests\\Feature\\BookingCreationServiceTest' => __DIR__ . '/../..' . '/tests/Feature/BookingCreationServiceTest.php',
         'Tests\\Feature\\BookingLegalConsentTest' => __DIR__ . '/../..' . '/tests/Feature/BookingLegalConsentTest.php',
