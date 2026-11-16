@@ -4,53 +4,49 @@
 TBD - created by archiving change dichiarazione-redditi. Update Purpose after archive.
 ## Requirements
 ### Requirement: Tax declaration page displays year tabs
-The system SHALL render a tab for each year that has at least one flagged+paid item (booking or financial entry), matching the styling of the Contabilità year tabs. The current year SHALL be active by default if it has data; otherwise the most recent year with data SHALL be selected.
+The system SHALL render a tab for each year that has at least one flagged, paid and dated booking movement or flagged financial entry, matching the styling of the Contabilità year tabs. The current year SHALL be active by default if it has data; otherwise the most recent year with data SHALL be selected.
 
 #### Scenario: Multiple years with data
 - **WHEN** the admin navigates to `/admin/dichiarazione-redditi`
-- **THEN** the page shows one tab per year that has flagged+paid items, ordered descending
+- **THEN** the page shows one tab per year with eligible movements, ordered descending
 
 #### Scenario: No data exists
-- **WHEN** no flagged+paid items exist for any year
+- **WHEN** no eligible items exist for any year
 - **THEN** the current calendar year tab is shown and the table is empty
 
 ---
 
 ### Requirement: Tax declaration page shows income and expense totals
-The system SHALL display two summary boxes at the top of the year view:
-- **Totale entrate** (green, with + sign): sum of all flagged+paid income items for the year
-- **Totale uscite** (red, with − sign): sum of all flagged+paid expense items for the year
+The system SHALL display annual "Totale entrate" and "Totale uscite" summary boxes. Booking movements SHALL contribute only when their own payment check and date are present and their respective tax flag is enabled. Booking income uses the full booking amount; cleaning and linen are expenses only; parking is separate income only when not included. Flagged financial entries retain their existing behavior.
 
-Only items where the paid flag is true SHALL contribute to the totals.
+#### Scenario: Included services and parking
+- **WHEN** a tax-flagged received booking amount includes cleaning, linen and parking
+- **THEN** the booking amount is counted once as income, with no separate service or parking income
 
-#### Scenario: Year with both incomes and expenses
-- **WHEN** the admin selects a year with flagged+paid booking incomes and flagged+paid financial entry expenses
-- **THEN** the green box shows the correct sum of all income items and the red box shows the correct sum of all expense items
+#### Scenario: Tax-flagged service expense
+- **WHEN** cleaning is tax-flagged and marked paid with a date
+- **THEN** its amount is counted as an expense on that date, regardless of its inclusion flag
 
-#### Scenario: Flagged but unpaid item
-- **WHEN** a booking has `income_tax = true` but `income_paid = false`
-- **THEN** that booking's income amount is NOT included in the totals
+#### Scenario: Missing date or unchecked payment
+- **WHEN** a booking item lacks its payment date or has its payment status unchecked
+- **THEN** it does not contribute to either total
+
+#### Scenario: Included service and unflagged booking income
+- **WHEN** a service is included but the booking income tax flag is off
+- **THEN** no separate income for that service is counted
 
 ---
 
 ### Requirement: Tax declaration page shows a detailed table
-The system SHALL render a table with one row per flagged item (whether paid or not), columns:
-- Data (effective paid-at date or checkout/entry_date)
-- Tipo (Ingresso / Uscita badge)
-- Categoria / Descrizione
-- Importo (colored, with +/−)
-- Stato (Incluso / Da pagare)
-- Link to source (booking detail or entry edit)
+The system SHALL render a table with one row per eligible dated and paid booking movement or flagged financial entry, including date, type, category, description, amount, status, attachments and link to source. Booking movements without their own paid check, date or tax flag SHALL NOT appear. Service income rows and included parking income rows SHALL NOT appear.
 
-Unpaid flagged items SHALL appear in the table with "Da pagare" status but SHALL NOT be counted in the totals.
+#### Scenario: Eligible booking income row
+- **WHEN** booking income is tax-flagged, received and dated
+- **THEN** one income row appears on that receipt date with the booking amount and "Incluso" status
 
-#### Scenario: Flagged paid booking income row
-- **WHEN** a booking has `income_tax = true` and `income_paid = true`
-- **THEN** a row appears for that booking with type "Ingresso", the income amount in green, and status "Incluso"
-
-#### Scenario: Flagged unpaid booking cleaning row
-- **WHEN** a booking has `cleaning_tax = true` and `cleaning_paid = false`
-- **THEN** a row appears for that booking with type "Uscita", the cleaning amount, and status "Da pagare"
+#### Scenario: Unpaid or undated booking cleaning
+- **WHEN** cleaning is tax-flagged but unpaid or undated
+- **THEN** no cleaning movement row appears
 
 #### Scenario: Flagged financial entry
 - **WHEN** a `financial_entry` has `tax_declaration = true`
