@@ -246,6 +246,8 @@ return [
     'booking_confirmed_mail_house_total' => 'Prix total de la maison',
     'booking_confirmed_mail_parking' => 'Parking privé',
     'booking_confirmed_mail_parking_payment' => 'A payer sur place a l\'arrivee',
+    'booking_parking_included' => 'Déjà inclus dans le prix total',
+    'booking_parking_paid' => 'Déjà payé',
     'booking_confirmed_mail_payment_title' => 'Comment finaliser votre réservation',
     'booking_confirmed_mail_payment_intro' => "Pour officialiser la réservation, merci d'effectuer le paiement par virement bancaire dans les :hours heures suivant cet e-mail :",
     'booking_confirmed_mail_beneficiary' => 'Bénéficiaire',

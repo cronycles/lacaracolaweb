@@ -117,6 +117,9 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertNull($booking->cleaning_amount);
         $this->assertNull($booking->linen_amount);
         $this->assertNull($booking->parking_amount);
+        $this->assertFalse($booking->income_includes_cleaning);
+        $this->assertFalse($booking->income_includes_linen);
+        $this->assertFalse($booking->income_includes_parking);
         $this->assertNotNull($booking->availabilityBlock);
         $this->assertSame('booked', $booking->availabilityBlock->reason);
         $this->assertSame($booking->id, $booking->availabilityBlock->booking_id);
@@ -205,14 +208,14 @@ class BookingRequestConfirmationTest extends TestCase
             'estimated_cleaning_amount' => 100.00,
             'estimated_linen_amount' => 50.00,
             'estimated_parking_amount' => 50.00,
-            'estimated_total_amount' => 700.00,
+            'estimated_total_amount' => 650.00,
         ]);
 
         $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
 
         $booking = Booking::where('booking_request_id', $request->id)->first();
 
-        $this->assertSame('500.00', $booking->income_amount);
+        $this->assertSame('650.00', $booking->income_amount);
         $this->assertSame('100.00', $booking->cleaning_amount);
         $this->assertSame('50.00', $booking->linen_amount);
         $this->assertSame('50.00', $booking->parking_amount);

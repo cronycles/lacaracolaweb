@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -355,7 +356,14 @@ class BookingController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        if ($request->boolean('income_includes_parking')) {
+            $request->merge([
+                'parking_paid' => $request->boolean('income_paid'),
+                'parking_paid_at' => $request->input('income_paid_at'),
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
             'person_id' => ['required', 'exists:people,id'],
             'checkin' => ['required', 'date'],
             'checkout' => ['required', 'date', 'after:checkin'],
@@ -370,6 +378,9 @@ class BookingController extends Controller
             'income_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'income_paid' => ['nullable', 'boolean'],
             'income_paid_at' => ['nullable', 'date'],
+            'income_includes_cleaning' => ['nullable', 'boolean'],
+            'income_includes_linen' => ['nullable', 'boolean'],
+            'income_includes_parking' => ['nullable', 'boolean'],
             'cleaning_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'cleaning_paid' => ['nullable', 'boolean'],
             'linen_amount' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
@@ -383,6 +394,35 @@ class BookingController extends Controller
             'linen_tax' => ['nullable', 'boolean'],
             'parking_tax' => ['nullable', 'boolean'],
         ]);
+
+        $validator->after(function ($validator) use ($request): void {
+            foreach ([
+                'income_paid' => 'income_paid_at',
+                'cleaning_paid' => 'services_paid_at',
+                'linen_paid' => 'services_paid_at',
+                'parking_paid' => 'parking_paid_at',
+            ] as $status => $date) {
+                if ($request->boolean($status) && ! $request->filled($date)) {
+                    $validator->errors()->add($date, 'Inserisci la data del pagamento.');
+                }
+            }
+
+            $included = 0;
+            foreach (['cleaning', 'linen', 'parking'] as $service) {
+                $amount = $request->input($service.'_amount');
+                if ($request->boolean('income_includes_'.$service) && is_numeric($amount)) {
+                    $included += (int) round((float) $amount * 100);
+                }
+            }
+            $income = $request->input('income_amount');
+            if ($included > 0 && ! is_numeric($income)) {
+                $validator->errors()->add('income_amount', "Inserisci l'importo della prenotazione.");
+            } elseif (is_numeric($income) && $included > (int) round((float) $income * 100)) {
+                $validator->errors()->add('income_amount', "Gli importi inclusi superano l'importo della prenotazione.");
+            }
+        });
+
+        return $validator->validate();
     }
 
     private function validatedBlock(Request $request): array

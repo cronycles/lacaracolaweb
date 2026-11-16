@@ -240,10 +240,12 @@ Do **not** override Laravel's `can()` method. Use `hasPermission()` and `isSuper
 - Named route: `admin.tax-declaration.index`.
 
 ## Query logic
-- Booking income: flagged with `income_tax = true`, paid (`income_paid = true`), date from `COALESCE(income_paid_at, checkout)`.
-- Booking parking: flagged with `parking_tax = true`, paid (`parking_paid = true`), date from `COALESCE(parking_paid_at, checkout)`.
-- Booking cleaning/linen: flagged with `cleaning_tax`/`linen_tax = true`, paid, date from `COALESCE(services_paid_at, checkout)`.
+- `BookingMovements` supplies the same checked-and-dated booking movements to accounting, dashboard and tax declaration. There is no checkout date fallback.
+- Booking amount is income; separately received parking is income only when not included. Cleaning and linen are expenses only, using their shared payment date.
+- Tax declaration additionally requires the corresponding tax flag for each movement; included services and parking never create separate income.
 - `financial_entries`: flagged with `tax_declaration = true`, any type; `entry_date` used for year assignment.
+- Booking saves synchronize included parking status and date with the booking receipt. Form validation requires dates for checked statuses and prevents included amounts exceeding the booking amount.
+- `php artisan bookings:missing-payment-dates` reports booking IDs and missing date types without changing data. Run it before an authorized production migration and report the results.
 
 # Financial Attachments
 

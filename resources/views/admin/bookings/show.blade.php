@@ -350,7 +350,7 @@
                 <tbody>
                     @if(auth()->user()->hasPermission('view_accounting'))
                     <tr>
-                        <th style="width:160px">Incasso ricevuto</th>
+                        <th style="width:160px">Importo prenotazione</th>
                         <td>
                             @if ($booking->income_amount !== null)
                                 <span class="badge badge--{{ $booking->income_paid ? 'paid' : 'unpaid' }}"
@@ -415,31 +415,18 @@
                         </td>
                     </tr>
                     @if(auth()->user()->hasPermission('view_accounting'))
-                    @if ($booking->total_expenses !== null)
                         <tr>
-                            <th>Pulizie / Biancheria</th>
+                            <th>Ingresso netto prenotazione</th>
                             <td>
-                                <span style="font-size:.85rem;color:#6b7f89" title="Importo raccolto dall'ospite e pagato al fornitore (passaggio). Non incide sul saldo netto.">
-                                    € {{ number_format($booking->total_expenses, 2, ',', '.') }} (pass-through)
-                                </span>
-                            </td>
-                        </tr>
-                    @endif
-                    @if ($booking->income_amount !== null)
-                        <tr>
-                            <th>Saldo netto</th>
-                            <td>
-                                @php $net = (float)$booking->income_amount + (float)($booking->parking_amount ?? 0); @endphp
-                                @if ($net >= 0)
-                                    <strong style="color:#2e7d32">
+                                @if ($booking->indicative_net === null)
+                                    <span>Non calcolabile</span>
                                 @else
-                                    <strong style="color:#c62828">
+                                    <strong style="color:{{ $booking->indicative_net >= 0 ? '#2e7d32' : '#c62828' }}">
+                                        € {{ number_format($booking->indicative_net, 2, ',', '.') }}
+                                    </strong>
                                 @endif
-                                    € {{ number_format($net, 2, ',', '.') }}
-                                </strong>
                             </td>
                         </tr>
-                    @endif
                     @endif
                 </tbody>
             </table>
@@ -460,7 +447,7 @@
                     <p style="font-size:.8rem;color:#6b7f89;margin-bottom:.75rem">
                         Le voci marcate compariranno nella
                         <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C">dichiarazione dei redditi</a>
-                        se il relativo pagamento è già incassato/pagato.
+                        se il relativo pagamento è già incassato/pagato e ha una data.
                         Per modificare i flag usa
                         @if(auth()->user()->hasPermission('manage_bookings'))
                             <a href="{{ route('admin.bookings.edit', $booking) }}" style="color:#30596C">Modifica prenotazione</a>.
@@ -476,7 +463,7 @@
                                 @else
                                     <span style="color:#9e9e9e;font-size:1rem">✗</span>
                                 @endif
-                                Incasso Ricevuto
+                                Ingresso ricevuto
                                 <span style="font-size:.75rem;color:#6b7f89">(€&nbsp;{{ number_format((float)$booking->income_amount, 2, ',', '.') }})</span>
                             </span>
                         @endif

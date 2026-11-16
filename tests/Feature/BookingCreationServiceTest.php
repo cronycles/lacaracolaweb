@@ -46,6 +46,9 @@ class BookingCreationServiceTest extends TestCase
         $this->assertSame($existing->id, $booking->person_id);
         $this->assertSame(1, Person::count());
         $this->assertNotNull($booking->availabilityBlock);
+        $this->assertFalse($booking->fresh()->income_includes_cleaning);
+        $this->assertFalse($booking->fresh()->income_includes_linen);
+        $this->assertFalse($booking->fresh()->income_includes_parking);
     }
 
     public function test_create_from_parsed_creates_new_person_when_no_match(): void

@@ -248,6 +248,8 @@ return [
     'booking_confirmed_mail_house_total' => 'Total house price',
     'booking_confirmed_mail_parking' => 'Private parking',
     'booking_confirmed_mail_parking_payment' => 'Payable locally on arrival',
+    'booking_parking_included' => 'Already included in the total price',
+    'booking_parking_paid' => 'Already paid',
     'booking_confirmed_mail_payment_title' => 'How to complete your booking',
     'booking_confirmed_mail_payment_intro' => 'To make the booking official, please make the payment by bank transfer within :hours hours of this email:',
     'booking_confirmed_mail_beneficiary' => 'Beneficiary',

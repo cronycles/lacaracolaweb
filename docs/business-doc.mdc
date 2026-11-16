@@ -88,10 +88,9 @@ alwaysApply: true
   block into the booking block; decline or permanent deletion releases the dates.
 - Confirming a request automatically finds the matching guest profile (by
   email, then phone, then exact full name) or creates a new one, then creates
-  the `Booking` with the request's dates/guests, linked back to the original
-  request. Pricing and services (cleaning/linen/parking) are intentionally left
-  empty — the owner fills them in on the booking page right after confirming,
-  exactly as when creating a booking manually today.
+  the   `Booking` with the request's dates/guests, linked back to the original
+  request. The quoted house total and service amounts, when available, are
+  prefilled for the owner to verify; inclusion checks remain off.
 - Declining a request removes it from the queue without creating a booking
   (e.g. the owner handled it directly by phone/WhatsApp, or turned it down) —
   the original request record is kept, not deleted. The guest automatically
@@ -167,6 +166,9 @@ repeats the stay contact, house address with map links, cancellation deadline, a
     - canceled bookings remain in history but do not block availability,
     - restore is allowed only without conflicts,
     - physical deletion also removes linked availability block.
+    - the booking amount may include cleaning, linen and/or parking; new bookings default to no inclusions. An included parking receipt follows the booking receipt's status and date.
+    - accounting records booking and separate parking income, and cleaning and linen expenses, only when their payment check and date are present. Cleaning and linen never create separate income. The booking's indicative net is the booking amount plus separate parking minus cleaning and linen, regardless of payment status.
+    - booking emails use the booking amount as the house total and identify parking as included, already paid, or payable locally; public quotes are unaffected.
 - Guest reporting to Alloggiati Web:
   - the normal draft test validates with the booking's real dates without sending;
   - the technical test uses today's date and three nights without sending, so guest-data errors can be diagnosed before the booking date;
@@ -178,7 +180,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
 - Admin password change available in private area.
 - Tax declaration page (`/admin/dichiarazione-redditi`):
     - Accessible with `view_accounting` permission.
-    - Displays only booking/entry items flagged for the declaration and their paid status.
+    - Displays booking movements only when their tax flag, payment check and date are present, plus flagged financial entries.
     - Year tabs filter by year (same logic as Contabilità page).
     - Totale entrate and Totale uscite boxes show only flagged **and paid** items (cash-basis).
     - Per-booking flags (income, cleaning, linen, parking) configured via `finance.php` defaults; overridable per-booking in the booking detail page.

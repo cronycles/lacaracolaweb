@@ -58,7 +58,7 @@
             <tr>
                 <th>{{ __('app.booking_confirmed_mail_parking') }}</th>
                 <td>€ {{ number_format((float) $booking->parking_amount, 2, ',', '.') }}<br>
-                    <small>{{ __('app.booking_confirmed_mail_parking_payment') }}</small></td>
+                    <small>{{ __($booking->income_includes_parking ? 'app.booking_parking_included' : ($booking->parking_paid && $booking->parking_paid_at ? 'app.booking_parking_paid' : 'app.booking_confirmed_mail_parking_payment')) }}</small></td>
             </tr>
             @endif
         </table>

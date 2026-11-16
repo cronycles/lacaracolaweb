@@ -59,6 +59,7 @@ class HostKeeperViewTest extends TestCase
             ->get("/admin/prenotazioni/{$booking->id}")
             ->assertStatus(200)
             ->assertDontSee('Incasso ricevuto')
+            ->assertDontSee('Ingresso netto prenotazione')
             ->assertDontSee('1.500,00');
     }
 }

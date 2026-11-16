@@ -908,6 +908,18 @@ a.pagination__link:hover { background: #f1f5f9; border-color: #c7d2d8; }
     padding: .3rem .5rem;
 }
 
+@media (max-width: 500px) {
+    .payment-table__header,
+    .payment-table__row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 145px);
+    }
+
+    .payment-table__date .form-input {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
 /* Checkbox base style */
 .form-checkbox {
     width: 1rem;

@@ -248,6 +248,8 @@ return [
     'booking_confirmed_mail_house_total' => 'Gesamtpreis der Unterkunft',
     'booking_confirmed_mail_parking' => 'Privater Parkplatz',
     'booking_confirmed_mail_parking_payment' => 'Vor Ort bei der Ankunft zu bezahlen',
+    'booking_parking_included' => 'Bereits im Gesamtpreis enthalten',
+    'booking_parking_paid' => 'Bereits bezahlt',
     'booking_confirmed_mail_payment_title' => 'So schließen Sie Ihre Buchung ab',
     'booking_confirmed_mail_payment_intro' => 'Um die Buchung offiziell zu machen, bitten wir Sie, die Zahlung per Bankuüberweisung innerhalb von :hours Stunden nach dieser E-Mail vorzunehmen:',
     'booking_confirmed_mail_beneficiary' => 'Empfänger',

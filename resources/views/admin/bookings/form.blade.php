@@ -159,7 +159,7 @@
 
                 <div class="form-row form-row--2col">
                     <div class="form-group">
-                        <label class="form-label" for="income_amount">Incasso ricevuto (€)</label>
+                        <label class="form-label" for="income_amount">Importo prenotazione (€)</label>
                         <input type="number" id="income_amount" name="income_amount" class="form-input"
                                value="{{ old('income_amount', $booking->income_amount) }}"
                                min="0" max="99999.99" step="0.01" placeholder="es. 850.00">
@@ -199,6 +199,17 @@
                     </p>
                 @endif
 
+                @if(auth()->user()->hasPermission('view_accounting'))
+                    <div class="form-group">
+                        <span class="form-label">Ingresso netto prenotazione</span>
+                        <strong id="indicative_net" aria-live="polite">
+                            {{ $booking->indicative_net === null ? 'Non calcolabile' : '€ '.number_format($booking->indicative_net, 2, ',', '.') }}
+                        </strong>
+                    </div>
+                @endif
+
+                <div id="included_warning" class="form-error" role="status" hidden></div>
+
                 {{-- Payment status --}}
                 <div class="payment-table">
                     <div class="payment-table__header">
@@ -208,12 +219,22 @@
 
                     {{-- Incasso --}}
                     <div class="payment-table__row">
-                        <label class="payment-table__check">
-                            <input type="hidden" name="income_paid" value="0">
-                            <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
-                                   @checked(old('income_paid', $booking->income_paid ?? false))>
-                            <span>Incasso ricevuto</span>
-                        </label>
+                        <div class="payment-table__multi-check">
+                            <label class="payment-table__check">
+                                <input type="hidden" name="income_paid" value="0">
+                                <input type="checkbox" id="income_paid" name="income_paid" value="1" class="form-checkbox"
+                                       @checked(old('income_paid', $booking->income_paid ?? false))>
+                                <span>Ingresso ricevuto</span>
+                            </label>
+                            @foreach (['cleaning' => 'pulizie', 'linen' => 'biancheria', 'parking' => 'posto auto'] as $service => $label)
+                                <label class="payment-table__check">
+                                    <input type="hidden" name="income_includes_{{ $service }}" value="0">
+                                    <input type="checkbox" id="income_includes_{{ $service }}" name="income_includes_{{ $service }}" value="1" class="form-checkbox"
+                                           @checked(old('income_includes_'.$service, $booking->{'income_includes_'.$service} ?? false))>
+                                    <span>Include {{ $label }}</span>
+                                </label>
+                            @endforeach
+                        </div>
                         <div class="payment-table__date">
                             <input type="date" id="income_paid_at" name="income_paid_at" class="form-input"
                                    value="{{ old('income_paid_at', $booking->income_paid_at?->format('Y-m-d')) }}">
@@ -272,7 +293,7 @@
                         <p class="form-hint" style="margin-bottom:.6rem">
                             Le voci selezionate compariranno nella
                             <a href="{{ route('admin.tax-declaration.index') }}" style="color:#30596C" target="_blank">dichiarazione dei redditi</a>
-                            se il relativo pagamento risulta già incassato/pagato.
+                            se il relativo pagamento risulta già incassato/pagato e ha una data.
                         </p>
                         <div style="display:flex;flex-wrap:wrap;gap:.4rem 1.5rem">
                             <label class="payment-table__check">
@@ -326,6 +347,7 @@
     const linen    = document.getElementById('linen_amount');
     const cleaning = document.getElementById('cleaning_amount');
     const parking  = document.getElementById('parking_amount');
+    const income   = document.getElementById('income_amount');
     const checkin  = document.getElementById('checkin');
     const checkout = document.getElementById('checkout');
 
@@ -367,39 +389,49 @@
     // Run once on load to set correct placeholder
     suggestDefaults();
 
-    // Pre-fill payment dates with checkout date when checkout changes
     const incomePaidAt    = document.getElementById('income_paid_at');
-    const servicesPaidAt  = document.getElementById('services_paid_at');
+    const incomePaid = document.getElementById('income_paid');
+    const parkingPaid = document.getElementById('parking_paid');
+    const parkingPaidAt = document.getElementById('parking_paid_at');
+    const includesCleaning = document.getElementById('income_includes_cleaning');
+    const includesLinen = document.getElementById('income_includes_linen');
+    const includesParking = document.getElementById('income_includes_parking');
+    const indicativeNet = document.getElementById('indicative_net');
+    const includedWarning = document.getElementById('included_warning');
 
-    function syncPaymentDates() {
-        const val = checkout?.value;
-        if (!val) return;
-        if (incomePaidAt && !incomePaidAt.dataset.userEdited) {
-            incomePaidAt.value = val;
+    function updateFinancialState() {
+        if (includesParking.checked) {
+            parkingPaid.checked = incomePaid.checked;
+            parkingPaidAt.value = incomePaidAt.value;
         }
-        if (servicesPaidAt && !servicesPaidAt.dataset.userEdited) {
-            servicesPaidAt.value = val;
+        parkingPaid.disabled = includesParking.checked;
+        parkingPaidAt.readOnly = includesParking.checked;
+
+        const includedCents = [[includesCleaning, cleaning], [includesLinen, linen], [includesParking, parking]]
+            .reduce((sum, [check, amount]) => sum + (check.checked ? Math.round(Number(amount.value) * 100) : 0), 0);
+        const invalidIncluded = includedCents > 0 && (income.value === '' || includedCents > Math.round(Number(income.value) * 100));
+        includedWarning.hidden = !invalidIncluded;
+        includedWarning.textContent = invalidIncluded
+            ? (income.value === '' ? "Inserisci l'importo della prenotazione." : "Gli importi inclusi superano l'importo della prenotazione.")
+            : '';
+
+        if (!indicativeNet) return;
+        if (income.value === '') {
+            indicativeNet.textContent = 'Non calcolabile';
+            return;
         }
+        const net = Number(income.value) + (includesParking.checked ? 0 : Number(parking.value))
+            - Number(cleaning.value) - Number(linen.value);
+        indicativeNet.textContent = '€ ' + net.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Mark as user-edited when the user manually changes the date
-    incomePaidAt?.addEventListener('change', () => { incomePaidAt.dataset.userEdited = '1'; });
-    servicesPaidAt?.addEventListener('change', () => { servicesPaidAt.dataset.userEdited = '1'; });
-
-    checkout?.addEventListener('change', () => {
-        syncPaymentDates();
-        suggestDefaults();
+    [income, cleaning, linen, parking, includesCleaning, includesLinen, includesParking, incomePaid, incomePaidAt].forEach((input) => {
+        input.addEventListener('input', updateFinancialState);
+        input.addEventListener('change', updateFinancialState);
     });
 
-    // On load: if date fields are empty (new booking), pre-fill from checkout
-    if (checkout?.value) {
-        if (incomePaidAt && !incomePaidAt.value) {
-            incomePaidAt.value = checkout.value;
-        }
-        if (servicesPaidAt && !servicesPaidAt.value) {
-            servicesPaidAt.value = checkout.value;
-        }
-    }
+    checkout?.addEventListener('change', suggestDefaults);
+    updateFinancialState();
 })();
 </script>
 @endpush

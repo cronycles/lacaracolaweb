@@ -55,7 +55,7 @@ class BookingRequestController extends Controller
                 'notes' => $bookingRequest->message,
                 // Pre-fill the financial fields with the price quoted to the guest
                 // on the public form, so the owner just has to verify/adjust it.
-                'income_amount' => $bookingRequest->estimated_stay_amount,
+                'income_amount' => $bookingRequest->estimated_total_amount,
                 'cleaning_amount' => $bookingRequest->estimated_cleaning_amount,
                 'linen_amount' => $bookingRequest->estimated_linen_amount,
                 'parking_amount' => $bookingRequest->estimated_parking_amount,

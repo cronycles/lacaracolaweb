@@ -116,17 +116,20 @@ Individual stay/reservation records linked to a primary guest.
 | `source`       | VARCHAR(30)      | Booking source: direct, airbnb, booking, interhome |
 | `external_ref` | VARCHAR(60)      | Platform reference ID (nullable)                   |
 | `notes`        | TEXT             | Internal notes (nullable)                          |
-| `income_amount`| DECIMAL(8,2)     | Incasso ricevuto dalla prenotazione (nullable)     |
+| `income_amount`| DECIMAL(8,2)     | Booking amount, whether received or still due (nullable) |
 | `income_paid`  | BOOLEAN          | Incasso marcato come pagato (default: false)       |
-| `income_paid_at` | DATE           | Data di imputazione contabile dell'incasso (nullable, default: checkout) |
+| `income_paid_at` | DATE           | Actual booking receipt date (nullable; no checkout fallback) |
+| `income_includes_cleaning` | BOOLEAN | Cleaning is included in the booking amount (default false) |
+| `income_includes_linen` | BOOLEAN | Linen is included in the booking amount (default false) |
+| `income_includes_parking` | BOOLEAN | Parking is included in the booking amount (default false) |
 | `cleaning_amount` | DECIMAL(8,2)  | Costo pulizie associato alla prenotazione (nullable) |
 | `cleaning_paid` | BOOLEAN         | Pulizie marcate come pagate (default: false)       |
 | `linen_amount` | DECIMAL(8,2)     | Costo biancheria associato alla prenotazione (nullable) |
 | `linen_paid`   | BOOLEAN          | Biancheria marcata come pagata (default: false)    |
 | `parking_amount` | DECIMAL(8,2)   | Costo posto auto (ingresso) associato alla prenotazione (nullable, default 10€/notte) |
 | `parking_paid` | BOOLEAN          | Posto auto marcato come incassato (default: false) |
-| `parking_paid_at` | DATE          | Data di imputazione contabile del parcheggio (nullable, default: checkout) |
-| `services_paid_at` | DATE         | Data di imputazione contabile di pulizie+biancheria (nullable, default: checkout) |
+| `parking_paid_at` | DATE          | Actual parking receipt date (nullable; follows booking receipt when included) |
+| `services_paid_at` | DATE         | Shared cleaning and linen payment date (nullable; no checkout fallback) |
 | `income_tax`   | BOOLEAN          | Incasso incluso nella dichiarazione dei redditi (default from config: true) |
 | `cleaning_tax` | BOOLEAN          | Pulizie incluse nella dichiarazione dei redditi (default from config: true) |
 | `linen_tax`    | BOOLEAN          | Biancheria inclusa nella dichiarazione dei redditi (default from config: true) |
@@ -150,6 +153,7 @@ Individual stay/reservation records linked to a primary guest.
 
 **Notes:**
 
+- The inclusion migration initializes existing cleaning and linen flags from their paid statuses and leaves parking excluded; it does not change payment dates or amounts.
 - Soft deletes enabled for historical tracking
 - `canceled_at` marks a booking as "canceled" without hard deletion (reversible)
 - When `canceled_at IS NULL`, the booking is active; dates are blocked by its associated `availability_block`

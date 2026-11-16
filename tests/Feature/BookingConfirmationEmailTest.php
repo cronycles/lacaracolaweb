@@ -185,7 +185,8 @@ class BookingConfirmationEmailTest extends TestCase
         $html = (new BookingPaymentReceivedMail($booking))->render();
 
         $this->assertStringContainsString('Pagamento ricevuto correttamente', $html);
-        $this->assertStringContainsString('570,00', $html);
+        $this->assertStringContainsString('500,00', $html);
+        $this->assertStringNotContainsString('570,00', $html);
         $this->assertStringContainsString('30,00', $html);
         $this->assertStringContainsString('Compila il check-in online', $html);
         $this->assertStringContainsString('keeper@example.com', $html);
@@ -269,7 +270,8 @@ class BookingConfirmationEmailTest extends TestCase
 
         $html = (new BookingConfirmedMail($booking))->render();
 
-        $this->assertStringContainsString('570,00', $html);
+        $this->assertStringContainsString('500,00', $html);
+        $this->assertStringNotContainsString('570,00', $html);
         $this->assertStringContainsString('30,00', $html);
         // Adults count (2), children (1), babies (1) and pets (2) all appear as table cell values.
         $this->assertMatchesRegularExpression('/<td>\s*2\s*<\/td>/', $html);

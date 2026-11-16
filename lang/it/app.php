@@ -215,6 +215,8 @@ return [
     'booking_confirmed_mail_house_total' => 'Prezzo totale casa',
     'booking_confirmed_mail_parking' => 'Parcheggio privato',
     'booking_confirmed_mail_parking_payment' => 'Da pagare in loco al momento dell\'arrivo',
+    'booking_parking_included' => 'Già incluso nel prezzo totale',
+    'booking_parking_paid' => 'Già pagato',
     'booking_confirmed_mail_payment_title' => 'COMPLETARE PRENOTAZIONE',
     'booking_confirmed_mail_payment_intro' => 'Per rendere ufficiale la prenotazione, ti chiediamo di effettuare il pagamento tramite bonifico bancario entro :hours ore da questa email:',
     'booking_confirmed_mail_beneficiary' => 'Beneficiario',

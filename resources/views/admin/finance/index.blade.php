@@ -150,7 +150,7 @@
                 </div>
                 <div class="stat-card__label">Ingressi {{ $year }}</div>
                 <div style="font-size:.75rem;color:#6b7f89;margin-top:.25rem">
-                    prenotazioni: € {{ number_format($totals['booking_income'], 2, ',', '.') }}
+                    prenotazioni: € {{ number_format($totals['booking_income'] + $totals['booking_parking'], 2, ',', '.') }}
                     @if ($totals['extra_income'] > 0)
                         &nbsp;+ extra: € {{ number_format($totals['extra_income'], 2, ',', '.') }}
                     @endif

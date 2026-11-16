@@ -46,6 +46,9 @@ class Booking extends Model
         'income_amount',
         'income_paid',
         'income_paid_at',
+        'income_includes_cleaning',
+        'income_includes_linen',
+        'income_includes_parking',
         'cleaning_amount',
         'cleaning_paid',
         'linen_amount',
@@ -80,6 +83,9 @@ class Booking extends Model
         'income_amount' => 'decimal:2',
         'income_paid' => 'boolean',
         'income_paid_at' => 'date',
+        'income_includes_cleaning' => 'boolean',
+        'income_includes_linen' => 'boolean',
+        'income_includes_parking' => 'boolean',
         'cleaning_amount' => 'decimal:2',
         'cleaning_paid' => 'boolean',
         'linen_amount' => 'decimal:2',
@@ -105,6 +111,13 @@ class Booking extends Model
      */
     protected static function booted(): void
     {
+        static::saving(function (Booking $booking): void {
+            if ($booking->income_includes_parking) {
+                $booking->parking_paid = (bool) $booking->income_paid;
+                $booking->parking_paid_at = $booking->income_paid_at;
+            }
+        });
+
         static::creating(function (Booking $booking) {
             $defaults = config('finance.tax_declaration_defaults', [
                 'income' => true,
@@ -204,38 +217,42 @@ class Booking extends Model
         return (float) ($this->cleaning_amount ?? 0) + (float) ($this->linen_amount ?? 0);
     }
 
-    /** Total house price (stay + cleaning + linen), null if none of those amounts are known yet */
+    /** The booking amount is also the house price shown to guests. */
     public function getHousePriceAttribute(): ?float
     {
-        if ($this->income_amount === null && $this->cleaning_amount === null && $this->linen_amount === null) {
-            return null;
-        }
-
-        return (float) ($this->income_amount ?? 0)
-            + (float) ($this->cleaning_amount ?? 0)
-            + (float) ($this->linen_amount ?? 0);
+        return $this->income_amount === null ? null : (float) $this->income_amount;
     }
 
-    /** Total price for the booking (house price + parking), null if none of the amounts are known yet */
+    public function getIndicativeNetAttribute(): ?float
+    {
+        if ($this->income_amount === null) {
+            return null;
+        }
+
+        return (float) $this->income_amount
+            + ($this->income_includes_parking ? 0 : (float) ($this->parking_amount ?? 0))
+            - (float) ($this->cleaning_amount ?? 0)
+            - (float) ($this->linen_amount ?? 0);
+    }
+
+    /** Total booking amount plus separately charged parking. */
     public function getTotalPriceAttribute(): ?float
     {
-        if ($this->income_amount === null && $this->cleaning_amount === null && $this->linen_amount === null && $this->parking_amount === null) {
+        if ($this->income_amount === null) {
             return null;
         }
 
         return (float) ($this->income_amount ?? 0)
-            + (float) ($this->cleaning_amount ?? 0)
-            + (float) ($this->linen_amount ?? 0)
-            + (float) ($this->parking_amount ?? 0);
+            + ($this->income_includes_parking ? 0 : (float) ($this->parking_amount ?? 0));
     }
 
     /** Paid income from this booking (only if marked as paid, includes parking) */
     public function getPaidIncomeAttribute(): float
     {
-        $total = $this->income_paid && $this->income_amount !== null
+        $total = $this->income_paid && $this->income_paid_at && $this->income_amount !== null
             ? (float) $this->income_amount
             : 0;
-        if ($this->parking_paid && $this->parking_amount !== null) {
+        if (! $this->income_includes_parking && $this->parking_paid && $this->parking_paid_at && $this->parking_amount !== null) {
             $total += (float) $this->parking_amount;
         }
 
@@ -246,10 +263,10 @@ class Booking extends Model
     public function getPaidExpensesAttribute(): float
     {
         $total = 0;
-        if ($this->cleaning_paid && $this->cleaning_amount !== null) {
+        if ($this->cleaning_paid && $this->services_paid_at && $this->cleaning_amount !== null) {
             $total += (float) $this->cleaning_amount;
         }
-        if ($this->linen_paid && $this->linen_amount !== null) {
+        if ($this->linen_paid && $this->services_paid_at && $this->linen_amount !== null) {
             $total += (float) $this->linen_amount;
         }
 
