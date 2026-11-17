@@ -59,6 +59,11 @@ class BookingRequestController extends Controller
                 'cleaning_amount' => $bookingRequest->estimated_cleaning_amount,
                 'linen_amount' => $bookingRequest->estimated_linen_amount,
                 'parking_amount' => $bookingRequest->estimated_parking_amount,
+                'income_includes_cleaning' => true,
+                'income_includes_linen' => true,
+                'income_tax' => true,
+                'cleaning_tax' => true,
+                'linen_tax' => true,
             ]);
 
             $block = AvailabilityBlock::where('booking_request_id', $bookingRequest->id)->first();

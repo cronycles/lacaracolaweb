@@ -1,3 +1,20 @@
+## MODIFIED Requirements
+
+### Requirement: Confirm action creates a linked booking with empty financials
+The system SHALL let an authorized user confirm a pending `BookingRequest`, creating a `Booking` linked to it via `booking_request_id`, with `checkin`, `checkout`, `adults`, `children`, and `locale` copied from the request and `source` set to `direct`. When available, the request's estimated house total, cleaning, linen, and parking amounts SHALL be copied into the booking; missing estimates SHALL remain empty for manual completion.
+
+#### Scenario: Confirming creates a linked booking
+- **WHEN** an authorized user confirms a pending request
+- **THEN** a `Booking` is created with `booking_request_id` pointing to that request, matching dates/guests/locale, and financial amounts copied from the request estimates when available
+
+#### Scenario: Confirming creates the matching availability block
+- **WHEN** an authorized user confirms a pending request
+- **THEN** an `AvailabilityBlock` covering the booking's dates is created, consistent with manually-created bookings
+
+#### Scenario: Unauthorized user cannot confirm
+- **WHEN** a user without `manage_bookings` permission attempts to confirm a request
+- **THEN** the system denies the action
+
 ## ADDED Requirements
 
 ### Requirement: Website request conversion applies request-specific booking flags

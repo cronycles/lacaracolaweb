@@ -272,8 +272,8 @@ Polymorphic file attachments for financial movements. Documents (invoices, recei
 - Only flagged+paid items count toward totals (cash-basis). Flagged+unpaid items appear in the table with "Da pagare" status.
 
 ## Config defaults
-`config/finance.php` key `tax_declaration_defaults`: `income`, `cleaning`, `linen` default `true`; `parking` defaults `false`.
-Applied centrally in `Booking::booted()` (a `static::creating()` listener that fills any of the 4 flags left `null` with the config default) — see "The 3 places that create a `Booking`" above. This guarantees the admin form, request confirmation, and PDF import all get the same defaults, since the `bookings` table columns themselves default to `false`. Also applied via migration (one-off) for existing rows.
+`config/finance.php` key `tax_declaration_defaults`: `income` defaults to `true`; `cleaning`, `linen`, and `parking` default to `false`.
+Applied centrally in `Booking::booted()` (a `static::creating()` listener that fills any of the 4 flags left `null` with the config default) — see "The 3 places that create a `Booking`" above. Request confirmation explicitly sets income, cleaning, and linen tax flags to `true`, while its parking tax flag and other booking creation paths use the configured defaults. The original tax-flag migration also applied configured defaults to existing rows.
 
 ---
 
@@ -411,9 +411,11 @@ prenotazioni reali con un click, riusando i dati già presenti nella richiesta.
   tramite `booking_request_id`: la home lo espone come non disponibile con semantica
   check-in incluso / check-out escluso. `confirm()` converte lo stesso blocco in `booked`
   collegandolo alla nuova `Booking`; `decline()` e `destroy()` eliminano il blocco pending.
-- Tutti i campi economici (`income_amount`, `cleaning_amount`, `linen_amount`, `parking_amount`)
-  restano `NULL` sulla booking creata da `confirm()` — comportamento voluto, non un difetto:
-  il proprietario li compila a mano dopo, come già avviene per le prenotazioni create manualmente.
+- `confirm()` prefills the booking amount and cleaning, linen, and parking amounts from
+  the request estimate when available; missing estimates remain `NULL`. It sets cleaning
+  and linen inclusion and income, cleaning, and linen tax flags to `true`. Parking
+  inclusion remains `false`, and its tax flag uses the configured default. These flags
+  do not mark payments as received or paid and remain editable in the booking form.
 - `confirm()` reindirizza a `admin.bookings.edit` (non `.show`) perché il passo successivo tipico
   è completare subito i dati economici.
 - Matching ospite: **stesso identico algoritmo** già in produzione per l'import PDF Interhome

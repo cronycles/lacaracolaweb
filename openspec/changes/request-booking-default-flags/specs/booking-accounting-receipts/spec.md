@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Booking amount and inclusion flags
-The booking form SHALL label `income_amount` "Importo prenotazione (€)" and its receipt status "Ingresso ricevuto". It SHALL provide independent flags for included cleaning, linen and parking. For newly created bookings, all inclusion flags SHALL default to false except that a booking created by converting a website availability request SHALL default cleaning and linen inclusion to true. Parking inclusion SHALL remain false for every creation path. The flags SHALL remain editable.
+The booking form SHALL label `income_amount` "Importo prenotazione (€)" and its receipt status "Ingresso ricevuto". It SHALL provide independent flags for included cleaning, linen and parking. For newly created bookings, all inclusion flags SHALL default to false except that a booking created by converting a website availability request SHALL default cleaning and linen inclusion to true. Parking inclusion SHALL default to false for every creation path. The flags SHALL remain editable.
 
 #### Scenario: New booking through another creation path
 - **WHEN** a booking is created through the admin form or an import

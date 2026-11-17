@@ -90,7 +90,10 @@ alwaysApply: true
   email, then phone, then exact full name) or creates a new one, then creates
   the   `Booking` with the request's dates/guests, linked back to the original
   request. The quoted house total and service amounts, when available, are
-  prefilled for the owner to verify; inclusion checks remain off.
+  prefilled for the owner to verify. Cleaning and linen inclusion checks and
+  income, cleaning, and linen tax flags are selected by default; parking
+  inclusion remains off and its tax flag uses the configured default. These
+  flags remain editable and do not mark any payment as received or paid.
 - Declining a request removes it from the queue without creating a booking
   (e.g. the owner handled it directly by phone/WhatsApp, or turned it down) —
   the original request record is kept, not deleted. The guest automatically
@@ -166,7 +169,7 @@ repeats the stay contact, house address with map links, cancellation deadline, a
     - canceled bookings remain in history but do not block availability,
     - restore is allowed only without conflicts,
     - physical deletion also removes linked availability block.
-    - the booking amount may include cleaning, linen and/or parking; new bookings default to no inclusions. An included parking receipt follows the booking receipt's status and date.
+    - the booking amount may include cleaning, linen and/or parking; new bookings default to no inclusions except website-request conversions, which include cleaning and linen by default. An included parking receipt follows the booking receipt's status and date.
     - accounting records booking and separate parking income, and cleaning and linen expenses, only when their payment check and date are present. Cleaning and linen never create separate income. The booking's indicative net is the booking amount plus separate parking minus cleaning and linen, regardless of payment status.
     - booking emails use the booking amount as the house total and identify parking as included, already paid, or payable locally; public quotes are unaffected.
 - Guest reporting to Alloggiati Web:

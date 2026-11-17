@@ -21,6 +21,12 @@ class BookingCreationServiceTest extends TestCase
 
     public function test_create_from_parsed_matches_existing_person_by_email(): void
     {
+        config(['finance.tax_declaration_defaults' => [
+            'income' => false,
+            'cleaning' => false,
+            'linen' => false,
+            'parking' => true,
+        ]]);
         $existing = Person::create([
             'first_name' => 'Anna',
             'last_name' => 'Verdi',
@@ -49,6 +55,10 @@ class BookingCreationServiceTest extends TestCase
         $this->assertFalse($booking->fresh()->income_includes_cleaning);
         $this->assertFalse($booking->fresh()->income_includes_linen);
         $this->assertFalse($booking->fresh()->income_includes_parking);
+        $this->assertFalse($booking->income_tax);
+        $this->assertFalse($booking->cleaning_tax);
+        $this->assertFalse($booking->linen_tax);
+        $this->assertTrue($booking->parking_tax);
     }
 
     public function test_create_from_parsed_creates_new_person_when_no_match(): void

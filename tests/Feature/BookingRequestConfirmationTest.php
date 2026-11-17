@@ -117,22 +117,27 @@ class BookingRequestConfirmationTest extends TestCase
         $this->assertNull($booking->cleaning_amount);
         $this->assertNull($booking->linen_amount);
         $this->assertNull($booking->parking_amount);
-        $this->assertFalse($booking->income_includes_cleaning);
-        $this->assertFalse($booking->income_includes_linen);
+        $this->assertTrue($booking->income_includes_cleaning);
+        $this->assertTrue($booking->income_includes_linen);
         $this->assertFalse($booking->income_includes_parking);
+        $this->assertFalse($booking->income_paid);
+        $this->assertFalse($booking->cleaning_paid);
+        $this->assertFalse($booking->linen_paid);
+        $this->assertNull($booking->income_paid_at);
+        $this->assertNull($booking->services_paid_at);
         $this->assertNotNull($booking->availabilityBlock);
         $this->assertSame('booked', $booking->availabilityBlock->reason);
         $this->assertSame($booking->id, $booking->availabilityBlock->booking_id);
         $this->assertNull($booking->availabilityBlock->booking_request_id);
     }
 
-    public function test_confirming_applies_the_same_tax_declaration_defaults_as_creating_a_booking_directly(): void
+    public function test_confirming_uses_request_tax_defaults_and_preserves_configured_parking_default(): void
     {
         config(['finance.tax_declaration_defaults' => [
-            'income' => true,
+            'income' => false,
             'cleaning' => false,
             'linen' => false,
-            'parking' => false,
+            'parking' => true,
         ]]);
 
         $request = $this->makeRequest();
@@ -149,9 +154,91 @@ class BookingRequestConfirmationTest extends TestCase
         $booking = Booking::where('booking_request_id', $request->id)->first();
 
         $this->assertTrue($booking->income_tax);
-        $this->assertFalse($booking->cleaning_tax);
-        $this->assertFalse($booking->linen_tax);
-        $this->assertFalse($booking->parking_tax);
+        $this->assertTrue($booking->cleaning_tax);
+        $this->assertTrue($booking->linen_tax);
+        $this->assertTrue($booking->parking_tax);
+    }
+
+    public function test_converted_booking_flags_are_checked_in_the_edit_form_and_can_be_changed(): void
+    {
+        $request = $this->makeRequest([
+            'estimated_total_amount' => 650,
+            'estimated_cleaning_amount' => 100,
+            'estimated_linen_amount' => 50,
+        ]);
+        $this->actingAs($this->admin)->post(route('admin.booking-requests.confirm', $request));
+        $booking = Booking::where('booking_request_id', $request->id)->firstOrFail();
+
+        $response = $this->get(route('admin.bookings.edit', $booking))->assertOk();
+        foreach (['income_includes_cleaning', 'income_includes_linen', 'income_tax', 'cleaning_tax', 'linen_tax'] as $field) {
+            $this->assertMatchesRegularExpression('/<input\b[^>]*\bid="'.$field.'"[^>]*\bchecked\b[^>]*>/s', $response->getContent());
+        }
+        $this->assertDoesNotMatchRegularExpression('/<input\b[^>]*\bid="income_includes_parking"[^>]*\bchecked\b[^>]*>/s', $response->getContent());
+
+        $this->put(route('admin.bookings.update', $booking), [
+            'person_id' => $booking->person_id,
+            'checkin' => $booking->checkin->toDateString(),
+            'checkout' => $booking->checkout->toDateString(),
+            'adults' => $booking->adults,
+            'source' => 'direct',
+            'checkin_reminder_enabled' => 1,
+            'income_amount' => 650,
+            'cleaning_amount' => 100,
+            'linen_amount' => 50,
+            'income_includes_cleaning' => 0,
+            'income_includes_linen' => 0,
+            'income_tax' => 0,
+            'cleaning_tax' => 0,
+            'linen_tax' => 0,
+        ])->assertSessionHasNoErrors()->assertRedirect(route('admin.bookings.index'));
+
+        $booking->refresh();
+        foreach (['income_includes_cleaning', 'income_includes_linen', 'income_tax', 'cleaning_tax', 'linen_tax'] as $field) {
+            $this->assertFalse($booking->{$field});
+        }
+        $response = $this->get(route('admin.bookings.edit', $booking))->assertOk();
+        foreach (['income_includes_cleaning', 'income_includes_linen', 'income_tax', 'cleaning_tax', 'linen_tax'] as $field) {
+            $this->assertDoesNotMatchRegularExpression('/<input\b[^>]*\bid="'.$field.'"[^>]*\bchecked\b[^>]*>/s', $response->getContent());
+        }
+    }
+
+    public function test_manual_and_existing_bookings_keep_their_own_defaults(): void
+    {
+        config(['finance.tax_declaration_defaults' => [
+            'income' => false,
+            'cleaning' => false,
+            'linen' => false,
+            'parking' => true,
+        ]]);
+        $person = Person::create(['first_name' => 'Existing', 'last_name' => 'Guest']);
+        $existing = Booking::create([
+            'person_id' => $person->id,
+            'checkin' => now()->addDays(20)->toDateString(),
+            'checkout' => now()->addDays(23)->toDateString(),
+            'adults' => 1,
+            'source' => 'direct',
+        ])->fresh();
+
+        $this->actingAs($this->admin)->post(route('admin.bookings.store'), [
+            'person_id' => $person->id,
+            'checkin' => now()->addDays(30)->toDateString(),
+            'checkout' => now()->addDays(33)->toDateString(),
+            'adults' => 1,
+            'source' => 'direct',
+            'checkin_reminder_enabled' => 1,
+        ])->assertSessionHasNoErrors();
+
+        $request = $this->makeRequest();
+        $this->post(route('admin.booking-requests.confirm', $request))->assertRedirect();
+        $manual = Booking::where('person_id', $person->id)->whereKeyNot($existing->id)->firstOrFail();
+        foreach ([$existing->fresh(), $manual] as $booking) {
+            $this->assertFalse($booking->income_includes_cleaning);
+            $this->assertFalse($booking->income_includes_linen);
+            $this->assertFalse($booking->income_tax);
+            $this->assertFalse($booking->cleaning_tax);
+            $this->assertFalse($booking->linen_tax);
+            $this->assertTrue($booking->parking_tax);
+        }
     }
 
     public function test_confirming_matches_an_existing_person_by_email_instead_of_duplicating(): void
