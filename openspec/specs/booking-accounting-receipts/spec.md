@@ -5,11 +5,15 @@ Define booking receipt amounts, inclusion flags, accounting movements, validatio
 
 ## Requirements
 ### Requirement: Booking amount and inclusion flags
-The booking form SHALL label `income_amount` "Importo prenotazione (€)" and its receipt status "Ingresso ricevuto". It SHALL provide independent flags for included cleaning, linen and parking. All three flags SHALL default to false for newly created bookings, regardless of creation path.
+The booking form SHALL label `income_amount` "Importo prenotazione (€)" and its receipt status "Ingresso ricevuto". It SHALL provide independent flags for included cleaning, linen and parking. For newly created bookings, all inclusion flags SHALL default to false except that a booking created by converting a website availability request SHALL default cleaning and linen inclusion to true. Parking inclusion SHALL default to false for every creation path. The flags SHALL remain editable.
 
-#### Scenario: New booking
-- **WHEN** a booking is created through the admin form, a request conversion, or an import
-- **THEN** cleaning, linen and parking inclusion flags are all false unless explicitly set
+#### Scenario: New booking through another creation path
+- **WHEN** a booking is created through the admin form or an import
+- **THEN** cleaning, linen and parking inclusion flags are all false unless explicitly set by that creation path
+
+#### Scenario: Website request conversion
+- **WHEN** a pending website availability request is converted into a booking
+- **THEN** cleaning and linen inclusion flags are true and parking inclusion is false
 
 #### Scenario: Amount before receipt
 - **WHEN** the booking amount is entered but the receipt status is unchecked
@@ -17,7 +21,7 @@ The booking form SHALL label `income_amount` "Importo prenotazione (€)" and it
 
 #### Scenario: Booking created from a priced request
 - **WHEN** an availability request with a quoted house total is converted into a booking
-- **THEN** the booking amount is initialized from that house total, not just its stay component, and the inclusion flags remain off
+- **THEN** the booking amount is initialized from that house total, not just its stay component, and cleaning and linen inclusion are selected
 
 ### Requirement: Booking movements represent actual cash flow
 The system SHALL recognize booking income only when the booking receipt is checked and dated. It SHALL never create separate cleaning or linen income, regardless of their inclusion flags. Cleaning and linen SHALL each produce an expense only when their own paid status is checked and the shared service payment date is present. Separate parking SHALL produce income only when parking is not included, and its received status is checked and dated. Included parking SHALL never create a separate receipt.
