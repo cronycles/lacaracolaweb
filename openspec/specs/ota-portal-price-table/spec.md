@@ -37,9 +37,10 @@ and HomeToGo, without requiring any separate data entry from the existing
 For each `PricingRule`, the system SHALL compute a suggested nightly rate per
 portal that folds the linen cost for a fixed 2-guest reference and the
 cleaning fee's tax gross-up (but never the cleaning fee amount itself) into
-the direct nightly rate, then divides by the portal's commission — without
-exposing the cleaning fee amount anywhere in this calculation, and without
-treating the reference guest count as configurable.
+the direct nightly rate, then divides by the portal's commission and applies
+`pricing_portal_extra_margin_percent` to that commission-grossed rate before
+euro rounding — without exposing the cleaning fee amount anywhere in this
+calculation, and without treating the reference guest count as configurable.
 
 #### Scenario: Reference guest count is fixed at 2, not configurable
 
@@ -83,6 +84,13 @@ treating the reference guest count as configurable.
 - **THEN** the system adds the per-night linen recovery amount to the
   `PricingRule`'s `price_per_night` and divides the sum by
   `(1 - commission_rate)` using that portal's `pricing_commission_*` setting
+
+#### Scenario: Extra portal margin is applied before euro rounding
+
+- **WHEN** deriving each portal's suggested nightly rate
+- **THEN** the system applies the configured `pricing_portal_extra_margin_percent`
+  multiplier to the commission-grossed rate before rounding it to the nearest
+  euro
 
 #### Scenario: Final rate rounded to the nearest euro
 
