@@ -126,10 +126,16 @@ class ClusterConfig extends \Google\Collection
   protected $lifecycleConfigDataType = '';
   protected $masterConfigType = InstanceGroupConfig::class;
   protected $masterConfigDataType = '';
+  protected $masterFlexibleConfigType = FlexibleInstanceGroupConfig::class;
+  protected $masterFlexibleConfigDataType = '';
   protected $metastoreConfigType = MetastoreConfig::class;
   protected $metastoreConfigDataType = '';
+  protected $schedulingConfigType = SchedulingConfig::class;
+  protected $schedulingConfigDataType = '';
   protected $secondaryWorkerConfigType = InstanceGroupConfig::class;
   protected $secondaryWorkerConfigDataType = '';
+  protected $secondaryWorkerFlexibleConfigType = FlexibleInstanceGroupConfig::class;
+  protected $secondaryWorkerFlexibleConfigDataType = '';
   protected $securityConfigType = SecurityConfig::class;
   protected $securityConfigDataType = '';
   protected $softwareConfigType = SoftwareConfig::class;
@@ -151,6 +157,8 @@ class ClusterConfig extends \Google\Collection
   public $tempBucket;
   protected $workerConfigType = InstanceGroupConfig::class;
   protected $workerConfigDataType = '';
+  protected $workerFlexibleConfigType = FlexibleInstanceGroupConfig::class;
+  protected $workerFlexibleConfigDataType = '';
 
   /**
    * Optional. Autoscaling config for the policy associated with the cluster.
@@ -429,6 +437,29 @@ class ClusterConfig extends \Google\Collection
     return $this->masterConfig;
   }
   /**
+   * Optional. The High Obtainability (HO) config settings for the cluster's
+   * master instances.In High Obtainability (HO) mode, flexible configs are the
+   * single source of truth for desired cluster configuration across node
+   * groups: * For single-node clusters: master_flexible_config must be
+   * specified, and no worker configs should be set. * For multi-node (standard)
+   * clusters: both master_flexible_config and worker_flexible_config must be
+   * specified. Mixing standard and flexible configs across node groups is not
+   * allowed.Only one of master_config or master_flexible_config can be set.
+   *
+   * @param FlexibleInstanceGroupConfig $masterFlexibleConfig
+   */
+  public function setMasterFlexibleConfig(FlexibleInstanceGroupConfig $masterFlexibleConfig)
+  {
+    $this->masterFlexibleConfig = $masterFlexibleConfig;
+  }
+  /**
+   * @return FlexibleInstanceGroupConfig
+   */
+  public function getMasterFlexibleConfig()
+  {
+    return $this->masterFlexibleConfig;
+  }
+  /**
    * Optional. Metastore configuration.
    *
    * @param MetastoreConfig $metastoreConfig
@@ -443,6 +474,23 @@ class ClusterConfig extends \Google\Collection
   public function getMetastoreConfig()
   {
     return $this->metastoreConfig;
+  }
+  /**
+   * Optional. Config for scheduling the resources to be allocated when
+   * available.
+   *
+   * @param SchedulingConfig $schedulingConfig
+   */
+  public function setSchedulingConfig(SchedulingConfig $schedulingConfig)
+  {
+    $this->schedulingConfig = $schedulingConfig;
+  }
+  /**
+   * @return SchedulingConfig
+   */
+  public function getSchedulingConfig()
+  {
+    return $this->schedulingConfig;
   }
   /**
    * Optional. The Compute Engine config settings for a cluster's secondary
@@ -460,6 +508,30 @@ class ClusterConfig extends \Google\Collection
   public function getSecondaryWorkerConfig()
   {
     return $this->secondaryWorkerConfig;
+  }
+  /**
+   * Optional. The High Obtainability (HO) config settings for a cluster's
+   * secondary worker instances.In High Obtainability (HO) mode, flexible
+   * configs are the single source of truth for desired cluster configuration.
+   * num_instances represents the desired capacity of the secondary worker group
+   * and is mutable via cluster updates and autoscaling.Only one of
+   * secondary_worker_config or secondary_worker_flexible_config can be set.In
+   * High Obtainability (HO) mode, secondary workers are optional. If secondary
+   * workers are used in an HO cluster, they must be configured using
+   * secondary_worker_flexible_config (not secondary_worker_config).
+   *
+   * @param FlexibleInstanceGroupConfig $secondaryWorkerFlexibleConfig
+   */
+  public function setSecondaryWorkerFlexibleConfig(FlexibleInstanceGroupConfig $secondaryWorkerFlexibleConfig)
+  {
+    $this->secondaryWorkerFlexibleConfig = $secondaryWorkerFlexibleConfig;
+  }
+  /**
+   * @return FlexibleInstanceGroupConfig
+   */
+  public function getSecondaryWorkerFlexibleConfig()
+  {
+    return $this->secondaryWorkerFlexibleConfig;
   }
   /**
    * Optional. Security settings for the cluster.
@@ -534,6 +606,31 @@ class ClusterConfig extends \Google\Collection
   public function getWorkerConfig()
   {
     return $this->workerConfig;
+  }
+  /**
+   * Optional. The High Obtainability (HO) config settings for the cluster's
+   * worker instances.In High Obtainability (HO) mode, flexible configs are the
+   * single source of truth for desired cluster configuration. num_instances
+   * represents the desired capacity of the worker group and is mutable via
+   * cluster updates and autoscaling.Only one of worker_config or
+   * worker_flexible_config can be set.In High Obtainability (HO) mode, for
+   * multi-node (standard) clusters, both master_flexible_config and
+   * worker_flexible_config must be specified. Mixing standard and flexible
+   * configs across node groups is not allowed. Single-node clusters do not
+   * specify worker configs.
+   *
+   * @param FlexibleInstanceGroupConfig $workerFlexibleConfig
+   */
+  public function setWorkerFlexibleConfig(FlexibleInstanceGroupConfig $workerFlexibleConfig)
+  {
+    $this->workerFlexibleConfig = $workerFlexibleConfig;
+  }
+  /**
+   * @return FlexibleInstanceGroupConfig
+   */
+  public function getWorkerFlexibleConfig()
+  {
+    return $this->workerFlexibleConfig;
   }
 }
 

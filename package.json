@@ -34,6 +34,6 @@
     "dependencies": {
         "flatpickr": "^4.6.13",
         "leaflet": "^1.9.4",
-        "quill": "^2.0.3"
+        "quill": "2.0.2"
     }
 }

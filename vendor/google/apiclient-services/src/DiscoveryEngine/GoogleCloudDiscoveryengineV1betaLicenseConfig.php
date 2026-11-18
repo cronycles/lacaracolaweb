@@ -42,10 +42,10 @@ class GoogleCloudDiscoveryengineV1betaLicenseConfig extends \Google\Model
    */
   public const STATE_WITHDRAWN = 'WITHDRAWN';
   /**
-   * The license config is terminated earlier than the expiration date and it is
-   * deactivating. The customer will still have access in this state. It will be
-   * converted to EXPIRED after the deactivating period ends (14 days) or when
-   * the end date is reached, whichever comes first.
+   * The license config is in a grace period. Its subscription has ended, either
+   * through early termination or by reaching its end date, but the customer
+   * keeps access for a limited time. It becomes EXPIRED when the grace period
+   * ends.
    */
   public const STATE_DEACTIVATING = 'DEACTIVATING';
   /**
@@ -144,8 +144,7 @@ class GoogleCloudDiscoveryengineV1betaLicenseConfig extends \Google\Model
   public $autoRenew;
   /**
    * Output only. Indication of whether the subscription is terminated earlier
-   * than the expiration date. This is usually terminated by pipeline once the
-   * subscription gets terminated from subsv3.
+   * than the expiration date.
    *
    * @var bool
    */
@@ -230,8 +229,7 @@ class GoogleCloudDiscoveryengineV1betaLicenseConfig extends \Google\Model
   }
   /**
    * Output only. Indication of whether the subscription is terminated earlier
-   * than the expiration date. This is usually terminated by pipeline once the
-   * subscription gets terminated from subsv3.
+   * than the expiration date.
    *
    * @param bool $earlyTerminated
    */

@@ -28,13 +28,13 @@ class ProducerExtensionExtensionSettings extends \Google\Collection
    */
   public $authority;
   /**
-   * Optional. Whether the extension should function in observability mode.
+   * Optional. This field is not supported.
    *
    * @var bool
    */
   public $observabilityMode;
   /**
-   * Required. URI of the PSC attachment.
+   * Required. The URI of the Private Service Connect (PSC) attachment.
    *
    * @var string
    */
@@ -64,7 +64,7 @@ class ProducerExtensionExtensionSettings extends \Google\Collection
     return $this->authority;
   }
   /**
-   * Optional. Whether the extension should function in observability mode.
+   * Optional. This field is not supported.
    *
    * @param bool $observabilityMode
    */
@@ -80,7 +80,7 @@ class ProducerExtensionExtensionSettings extends \Google\Collection
     return $this->observabilityMode;
   }
   /**
-   * Required. URI of the PSC attachment.
+   * Required. The URI of the Private Service Connect (PSC) attachment.
    *
    * @param string $service
    */

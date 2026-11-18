@@ -155,6 +155,8 @@ class Instance extends \Google\Model
   public $acceleratedSecurityPatchEnabled;
   protected $adminSettingsType = AdminSettings::class;
   protected $adminSettingsDataType = '';
+  protected $authTypeType = AuthType::class;
+  protected $authTypeDataType = '';
   /**
    * Optional. Indicates whether catalog integration is disabled for the Looker
    * instance.
@@ -169,7 +171,7 @@ class Instance extends \Google\Model
    */
   public $classType;
   /**
-   * Network name in the consumer project. Format:
+   * Optional. Network name in the consumer project. Format:
    * `projects/{project}/global/networks/{network}`. Note that the consumer
    * network may be in a different GCP project than the consumer project that is
    * hosting the Looker Instance.
@@ -267,13 +269,14 @@ class Instance extends \Google\Model
   protected $periodicExportConfigType = PeriodicExportConfig::class;
   protected $periodicExportConfigDataType = '';
   /**
-   * Platform edition.
+   * Optional. Platform edition. Marked as OPTIONAL for backward compatibility,
+   * though it is required during instance creation.
    *
    * @var string
    */
   public $platformEdition;
   /**
-   * Whether private IP is enabled on the Looker instance.
+   * Optional. Whether private IP is enabled on the Looker instance.
    *
    * @var bool
    */
@@ -289,7 +292,7 @@ class Instance extends \Google\Model
    */
   public $pscEnabled;
   /**
-   * Whether public IP is enabled on the Looker instance.
+   * Optional. Whether public IP is enabled on the Looker instance.
    *
    * @var bool
    */
@@ -301,9 +304,9 @@ class Instance extends \Google\Model
    */
   public $releaseChannel;
   /**
-   * Name of a reserved IP address range within the Instance.consumer_network,
-   * to be used for private services access connection. May or may not be
-   * specified in a create request.
+   * Optional. Name of a reserved IP address range within the
+   * Instance.consumer_network, to be used for private services access
+   * connection. May or may not be specified in a create request.
    *
    * @var string
    */
@@ -365,7 +368,7 @@ class Instance extends \Google\Model
     return $this->acceleratedSecurityPatchEnabled;
   }
   /**
-   * Looker Instance Admin settings.
+   * Optional. Looker Instance Admin settings.
    *
    * @param AdminSettings $adminSettings
    */
@@ -379,6 +382,22 @@ class Instance extends \Google\Model
   public function getAdminSettings()
   {
     return $this->adminSettings;
+  }
+  /**
+   * Optional. Auth type for the Looker instance.
+   *
+   * @param AuthType $authType
+   */
+  public function setAuthType(AuthType $authType)
+  {
+    $this->authType = $authType;
+  }
+  /**
+   * @return AuthType
+   */
+  public function getAuthType()
+  {
+    return $this->authType;
   }
   /**
    * Optional. Indicates whether catalog integration is disabled for the Looker
@@ -416,7 +435,7 @@ class Instance extends \Google\Model
     return $this->classType;
   }
   /**
-   * Network name in the consumer project. Format:
+   * Optional. Network name in the consumer project. Format:
    * `projects/{project}/global/networks/{network}`. Note that the consumer
    * network may be in a different GCP project than the consumer project that is
    * hosting the Looker Instance.
@@ -484,7 +503,7 @@ class Instance extends \Google\Model
     return $this->createTime;
   }
   /**
-   * Custom domain configuration for the instance.
+   * Optional. Custom domain configuration for the instance.
    *
    * @param CustomDomain $customDomain
    */
@@ -500,7 +519,7 @@ class Instance extends \Google\Model
     return $this->customDomain;
   }
   /**
-   * Maintenance denial period for this instance.
+   * Optional. Maintenance denial period for this instance.
    *
    * @param DenyMaintenancePeriod $denyMaintenancePeriod
    */
@@ -532,8 +551,8 @@ class Instance extends \Google\Model
     return $this->egressPublicIp;
   }
   /**
-   * Encryption configuration (CMEK). Only set if CMEK has been enabled on the
-   * instance.
+   * Optional. Encryption configuration (CMEK). Only set if CMEK has been
+   * enabled on the instance.
    *
    * @param EncryptionConfig $encryptionConfig
    */
@@ -694,7 +713,7 @@ class Instance extends \Google\Model
     return $this->lookerVersion;
   }
   /**
-   * Maintenance schedule for this instance.
+   * Output only. Maintenance schedule for this instance.
    *
    * @param MaintenanceSchedule $maintenanceSchedule
    */
@@ -710,7 +729,7 @@ class Instance extends \Google\Model
     return $this->maintenanceSchedule;
   }
   /**
-   * Maintenance window for this instance.
+   * Optional. Maintenance window for this instance.
    *
    * @param MaintenanceWindow $maintenanceWindow
    */
@@ -743,7 +762,7 @@ class Instance extends \Google\Model
     return $this->name;
   }
   /**
-   * Looker instance OAuth login settings.
+   * Optional. Looker instance OAuth login settings.
    *
    * @param OAuthConfig $oauthConfig
    */
@@ -775,7 +794,8 @@ class Instance extends \Google\Model
     return $this->periodicExportConfig;
   }
   /**
-   * Platform edition.
+   * Optional. Platform edition. Marked as OPTIONAL for backward compatibility,
+   * though it is required during instance creation.
    *
    * Accepted values: PLATFORM_EDITION_UNSPECIFIED, LOOKER_CORE_TRIAL,
    * LOOKER_CORE_STANDARD, LOOKER_CORE_STANDARD_ANNUAL,
@@ -798,7 +818,7 @@ class Instance extends \Google\Model
     return $this->platformEdition;
   }
   /**
-   * Whether private IP is enabled on the Looker instance.
+   * Optional. Whether private IP is enabled on the Looker instance.
    *
    * @param bool $privateIpEnabled
    */
@@ -848,7 +868,7 @@ class Instance extends \Google\Model
     return $this->pscEnabled;
   }
   /**
-   * Whether public IP is enabled on the Looker instance.
+   * Optional. Whether public IP is enabled on the Looker instance.
    *
    * @param bool $publicIpEnabled
    */
@@ -882,9 +902,9 @@ class Instance extends \Google\Model
     return $this->releaseChannel;
   }
   /**
-   * Name of a reserved IP address range within the Instance.consumer_network,
-   * to be used for private services access connection. May or may not be
-   * specified in a create request.
+   * Optional. Name of a reserved IP address range within the
+   * Instance.consumer_network, to be used for private services access
+   * connection. May or may not be specified in a create request.
    *
    * @param string $reservedRange
    */

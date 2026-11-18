@@ -40,7 +40,13 @@ class Cta extends \Google\Model
    */
   public const TYPE_NEWSLETTER_SIGNUP = 'NEWSLETTER_SIGNUP';
   /**
-   * Required. The user-visible display name of the CTA.
+   * CTA for reader surveys.
+   */
+  public const TYPE_SURVEY = 'SURVEY';
+  /**
+   * Optional. The user-visible display name of the CTA (up to 40 characters).
+   * Defaults to a server-specified name based on the CTA type when omitted on
+   * creation.
    *
    * @var string
    */
@@ -55,11 +61,13 @@ class Cta extends \Google\Model
   protected $newsletterConfigType = NewsletterConfig::class;
   protected $newsletterConfigDataType = '';
   /**
-   * Output only. The current state of this CTA.
+   * Optional. The current state of this CTA.
    *
    * @var string
    */
   public $state;
+  protected $surveyConfigType = SurveyConfig::class;
+  protected $surveyConfigDataType = '';
   /**
    * Required. The type of this CTA.
    *
@@ -68,7 +76,9 @@ class Cta extends \Google\Model
   public $type;
 
   /**
-   * Required. The user-visible display name of the CTA.
+   * Optional. The user-visible display name of the CTA (up to 40 characters).
+   * Defaults to a server-specified name based on the CTA type when omitted on
+   * creation.
    *
    * @param string $displayName
    */
@@ -118,7 +128,7 @@ class Cta extends \Google\Model
     return $this->newsletterConfig;
   }
   /**
-   * Output only. The current state of this CTA.
+   * Optional. The current state of this CTA.
    *
    * Accepted values: STATE_UNSPECIFIED, DRAFT, ACTIVE
    *
@@ -136,9 +146,26 @@ class Cta extends \Google\Model
     return $this->state;
   }
   /**
+   * Optional. Configuration specific to survey CTAs. Only populated if type is
+   * `SURVEY`.
+   *
+   * @param SurveyConfig $surveyConfig
+   */
+  public function setSurveyConfig(SurveyConfig $surveyConfig)
+  {
+    $this->surveyConfig = $surveyConfig;
+  }
+  /**
+   * @return SurveyConfig
+   */
+  public function getSurveyConfig()
+  {
+    return $this->surveyConfig;
+  }
+  /**
    * Required. The type of this CTA.
    *
-   * Accepted values: TYPE_UNSPECIFIED, NEWSLETTER_SIGNUP
+   * Accepted values: TYPE_UNSPECIFIED, NEWSLETTER_SIGNUP, SURVEY
    *
    * @param self::TYPE_* $type
    */

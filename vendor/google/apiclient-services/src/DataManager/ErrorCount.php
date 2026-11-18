@@ -17,7 +17,7 @@
 
 namespace Google\Service\DataManager;
 
-class ErrorCount extends \Google\Model
+class ErrorCount extends \Google\Collection
 {
   public const REASON_PROCESSING_ERROR_REASON_UNSPECIFIED = 'PROCESSING_ERROR_REASON_UNSPECIFIED';
   public const REASON_PROCESSING_ERROR_REASON_INVALID_CUSTOM_VARIABLE = 'PROCESSING_ERROR_REASON_INVALID_CUSTOM_VARIABLE';
@@ -64,6 +64,12 @@ class ErrorCount extends \Google\Model
   public const REASON_PROCESSING_ERROR_REASON_INVALID_OPERATING_ACCOUNT_FOR_CLICK = 'PROCESSING_ERROR_REASON_INVALID_OPERATING_ACCOUNT_FOR_CLICK';
   public const REASON_PROCESSING_ERROR_REASON_CLICK_NOT_FOUND = 'PROCESSING_ERROR_REASON_CLICK_NOT_FOUND';
   public const REASON_PROCESSING_ERROR_REASON_EXTERNAL_ATTRIBUTION_DATA_MISSING = 'PROCESSING_ERROR_REASON_EXTERNAL_ATTRIBUTION_DATA_MISSING';
+  public const REASON_PROCESSING_ERROR_REASON_DESTINATION_TOO_RECENTLY_CREATED = 'PROCESSING_ERROR_REASON_DESTINATION_TOO_RECENTLY_CREATED';
+  public const REASON_PROCESSING_ERROR_REASON_EXPIRED_CLICK = 'PROCESSING_ERROR_REASON_EXPIRED_CLICK';
+  public const REASON_PROCESSING_ERROR_REASON_TOO_RECENT_CALL = 'PROCESSING_ERROR_REASON_TOO_RECENT_CALL';
+  public const REASON_PROCESSING_ERROR_REASON_EXPIRED_CALL = 'PROCESSING_ERROR_REASON_EXPIRED_CALL';
+  public const REASON_PROCESSING_ERROR_REASON_INVALID_CALL = 'PROCESSING_ERROR_REASON_INVALID_CALL';
+  protected $collection_key = 'recordIndices';
   /**
    * @var string
    */
@@ -72,6 +78,10 @@ class ErrorCount extends \Google\Model
    * @var string
    */
   public $recordCount;
+  /**
+   * @var int[]
+   */
+  public $recordIndices;
 
   /**
    * @param self::REASON_* $reason
@@ -100,6 +110,20 @@ class ErrorCount extends \Google\Model
   public function getRecordCount()
   {
     return $this->recordCount;
+  }
+  /**
+   * @param int[] $recordIndices
+   */
+  public function setRecordIndices($recordIndices)
+  {
+    $this->recordIndices = $recordIndices;
+  }
+  /**
+   * @return int[]
+   */
+  public function getRecordIndices()
+  {
+    return $this->recordIndices;
   }
 }
 

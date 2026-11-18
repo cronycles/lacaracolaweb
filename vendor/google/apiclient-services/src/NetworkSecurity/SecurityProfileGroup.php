@@ -26,29 +26,29 @@ class SecurityProfileGroup extends \Google\Model
    */
   public $createTime;
   /**
-   * Optional. Reference to a SecurityProfile with the CustomIntercept
+   * Optional. Reference to a `SecurityProfile` with the custom intercept
    * configuration.
    *
    * @var string
    */
   public $customInterceptProfile;
   /**
-   * Optional. Reference to a SecurityProfile with the CustomMirroring
+   * Optional. Reference to a `SecurityProfile` with the custom mirroring
    * configuration.
    *
    * @var string
    */
   public $customMirroringProfile;
   /**
-   * Output only. Identifier used by the data-path. Unique within `{container,
+   * Output only. Identifier used by the data path. Unique within `{container,
    * location}`.
    *
    * @var string
    */
   public $dataPathId;
   /**
-   * Optional. An optional description of the profile group. Max length 2048
-   * characters.
+   * Optional. An optional description of the profile group. The maximum length
+   * is 2048 characters.
    *
    * @var string
    */
@@ -62,21 +62,22 @@ class SecurityProfileGroup extends \Google\Model
    */
   public $etag;
   /**
-   * Optional. Labels as key value pairs.
+   * Optional. Labels as key-value pairs.
    *
    * @var string[]
    */
   public $labels;
   /**
-   * Immutable. Identifier. Name of the SecurityProfileGroup resource. It
-   * matches pattern `projects|organizations/locations/{location}/securityProfil
-   * eGroups/{security_profile_group}`.
+   * Immutable. Identifier. Name of the `SecurityProfileGroup` resource. Format:
+   * `organizations/{organization}/locations/{location}/securityProfileGroups/{s
+   * ecurity_profile_group}` or `projects/{project}/locations/{location}/securit
+   * yProfileGroups/{security_profile_group}`.
    *
    * @var string
    */
   public $name;
   /**
-   * Optional. Reference to a SecurityProfile with the ThreatPrevention
+   * Optional. Reference to a `SecurityProfile` with the threat prevention
    * configuration.
    *
    * @var string
@@ -89,12 +90,19 @@ class SecurityProfileGroup extends \Google\Model
    */
   public $updateTime;
   /**
-   * Optional. Reference to a SecurityProfile with the UrlFiltering
+   * Optional. Reference to a `SecurityProfile` with the URL filtering
    * configuration.
    *
    * @var string
    */
   public $urlFilteringProfile;
+  /**
+   * Optional. Reference to a `SecurityProfile` with the Advanced malware
+   * sandbox (WildFire) configuration.
+   *
+   * @var string
+   */
+  public $wildfireAnalysisProfile;
 
   /**
    * Output only. Resource creation timestamp.
@@ -113,7 +121,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->createTime;
   }
   /**
-   * Optional. Reference to a SecurityProfile with the CustomIntercept
+   * Optional. Reference to a `SecurityProfile` with the custom intercept
    * configuration.
    *
    * @param string $customInterceptProfile
@@ -130,7 +138,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->customInterceptProfile;
   }
   /**
-   * Optional. Reference to a SecurityProfile with the CustomMirroring
+   * Optional. Reference to a `SecurityProfile` with the custom mirroring
    * configuration.
    *
    * @param string $customMirroringProfile
@@ -147,7 +155,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->customMirroringProfile;
   }
   /**
-   * Output only. Identifier used by the data-path. Unique within `{container,
+   * Output only. Identifier used by the data path. Unique within `{container,
    * location}`.
    *
    * @param string $dataPathId
@@ -164,8 +172,8 @@ class SecurityProfileGroup extends \Google\Model
     return $this->dataPathId;
   }
   /**
-   * Optional. An optional description of the profile group. Max length 2048
-   * characters.
+   * Optional. An optional description of the profile group. The maximum length
+   * is 2048 characters.
    *
    * @param string $description
    */
@@ -199,7 +207,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->etag;
   }
   /**
-   * Optional. Labels as key value pairs.
+   * Optional. Labels as key-value pairs.
    *
    * @param string[] $labels
    */
@@ -215,9 +223,10 @@ class SecurityProfileGroup extends \Google\Model
     return $this->labels;
   }
   /**
-   * Immutable. Identifier. Name of the SecurityProfileGroup resource. It
-   * matches pattern `projects|organizations/locations/{location}/securityProfil
-   * eGroups/{security_profile_group}`.
+   * Immutable. Identifier. Name of the `SecurityProfileGroup` resource. Format:
+   * `organizations/{organization}/locations/{location}/securityProfileGroups/{s
+   * ecurity_profile_group}` or `projects/{project}/locations/{location}/securit
+   * yProfileGroups/{security_profile_group}`.
    *
    * @param string $name
    */
@@ -233,7 +242,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->name;
   }
   /**
-   * Optional. Reference to a SecurityProfile with the ThreatPrevention
+   * Optional. Reference to a `SecurityProfile` with the threat prevention
    * configuration.
    *
    * @param string $threatPreventionProfile
@@ -266,7 +275,7 @@ class SecurityProfileGroup extends \Google\Model
     return $this->updateTime;
   }
   /**
-   * Optional. Reference to a SecurityProfile with the UrlFiltering
+   * Optional. Reference to a `SecurityProfile` with the URL filtering
    * configuration.
    *
    * @param string $urlFilteringProfile
@@ -281,6 +290,23 @@ class SecurityProfileGroup extends \Google\Model
   public function getUrlFilteringProfile()
   {
     return $this->urlFilteringProfile;
+  }
+  /**
+   * Optional. Reference to a `SecurityProfile` with the Advanced malware
+   * sandbox (WildFire) configuration.
+   *
+   * @param string $wildfireAnalysisProfile
+   */
+  public function setWildfireAnalysisProfile($wildfireAnalysisProfile)
+  {
+    $this->wildfireAnalysisProfile = $wildfireAnalysisProfile;
+  }
+  /**
+   * @return string
+   */
+  public function getWildfireAnalysisProfile()
+  {
+    return $this->wildfireAnalysisProfile;
   }
 }
 

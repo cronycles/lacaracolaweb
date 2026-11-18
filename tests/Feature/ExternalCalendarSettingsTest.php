@@ -41,6 +41,9 @@ class ExternalCalendarSettingsTest extends TestCase
             ->assertSee('Booking.com')
             ->assertSee('HomeToGo')
             ->assertSee('Google Calendar')
+            ->assertSee('Runtime PHP del sito')
+            ->assertSee(PHP_VERSION)
+            ->assertSee(PHP_SAPI)
             ->assertSee('/api/calendar/calendar-secret/export.ics')
             ->assertSee('Feed del sito da copiare nei portali')
             ->assertSee('Mai sincronizzato');

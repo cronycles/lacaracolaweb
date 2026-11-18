@@ -41,6 +41,10 @@ class UnitKind extends \Google\Collection
    * @var string[]
    */
   public $annotations;
+  protected $appParamsType = AppParams::class;
+  protected $appParamsDataType = '';
+  protected $applicationTemplateComponentType = ComponentRef::class;
+  protected $applicationTemplateComponentDataType = '';
   /**
    * Optional. Output only. BoundaryType describes the type of boundary the Unit
    * Kind represents.
@@ -55,13 +59,6 @@ class UnitKind extends \Google\Collection
    */
   public $createTime;
   /**
-   * Optional. Default revisions of flags for this UnitKind. Newly created units
-   * will use the flag default_flag_revisions present at the time of creation.
-   *
-   * @var string[]
-   */
-  public $defaultFlagRevisions;
-  /**
    * Optional. A reference to the Release object to use as default for creating
    * new units of this UnitKind (optional). If not specified, a new unit must
    * explicitly reference which release to use for its creation.
@@ -69,8 +66,17 @@ class UnitKind extends \Google\Collection
    * @var string
    */
   public $defaultRelease;
+  /**
+   * Output only. The timestamp when the resource was marked for deletion
+   * (deletion is an asynchronous operation).
+   *
+   * @var string
+   */
+  public $deleteTime;
   protected $dependenciesType = Dependency::class;
   protected $dependenciesDataType = 'array';
+  protected $durationLimitsType = DurationLimits::class;
+  protected $durationLimitsDataType = '';
   /**
    * Output only. An opaque value that uniquely identifies a version or
    * generation of a resource. It can be used to confirm that the client and
@@ -146,6 +152,40 @@ class UnitKind extends \Google\Collection
     return $this->annotations;
   }
   /**
+   * Optional. AppParams contains the parameters for creating an AppHub
+   * Application.
+   *
+   * @param AppParams $appParams
+   */
+  public function setAppParams(AppParams $appParams)
+  {
+    $this->appParams = $appParams;
+  }
+  /**
+   * @return AppParams
+   */
+  public function getAppParams()
+  {
+    return $this->appParams;
+  }
+  /**
+   * Optional. Reference to component and revision in a composite
+   * ApplicationTemplate.
+   *
+   * @param ComponentRef $applicationTemplateComponent
+   */
+  public function setApplicationTemplateComponent(ComponentRef $applicationTemplateComponent)
+  {
+    $this->applicationTemplateComponent = $applicationTemplateComponent;
+  }
+  /**
+   * @return ComponentRef
+   */
+  public function getApplicationTemplateComponent()
+  {
+    return $this->applicationTemplateComponent;
+  }
+  /**
    * Optional. Output only. BoundaryType describes the type of boundary the Unit
    * Kind represents.
    *
@@ -182,23 +222,6 @@ class UnitKind extends \Google\Collection
     return $this->createTime;
   }
   /**
-   * Optional. Default revisions of flags for this UnitKind. Newly created units
-   * will use the flag default_flag_revisions present at the time of creation.
-   *
-   * @param string[] $defaultFlagRevisions
-   */
-  public function setDefaultFlagRevisions($defaultFlagRevisions)
-  {
-    $this->defaultFlagRevisions = $defaultFlagRevisions;
-  }
-  /**
-   * @return string[]
-   */
-  public function getDefaultFlagRevisions()
-  {
-    return $this->defaultFlagRevisions;
-  }
-  /**
    * Optional. A reference to the Release object to use as default for creating
    * new units of this UnitKind (optional). If not specified, a new unit must
    * explicitly reference which release to use for its creation.
@@ -217,6 +240,23 @@ class UnitKind extends \Google\Collection
     return $this->defaultRelease;
   }
   /**
+   * Output only. The timestamp when the resource was marked for deletion
+   * (deletion is an asynchronous operation).
+   *
+   * @param string $deleteTime
+   */
+  public function setDeleteTime($deleteTime)
+  {
+    $this->deleteTime = $deleteTime;
+  }
+  /**
+   * @return string
+   */
+  public function getDeleteTime()
+  {
+    return $this->deleteTime;
+  }
+  /**
    * Optional. Immutable. List of other unit kinds that this release will depend
    * on. Dependencies will be automatically provisioned if not found. Maximum
    * 10.
@@ -233,6 +273,29 @@ class UnitKind extends \Google\Collection
   public function getDependencies()
   {
     return $this->dependencies;
+  }
+  /**
+   * Optional. Defines the default duration limits for UnitOperations created
+   * from this UnitKind. These settings provide a baseline for execution time
+   * constraints. The limits specified here can be overridden by more specific
+   * settings on an individual UnitOperation resource. See the DurationLimits
+   * message definition for details on the constraints like minimum, maximum,
+   * and system default values for unit_operation_timeout. If not set,
+   * UnitOperations will use the system default duration limits unless
+   * overridden on the UnitOperation.
+   *
+   * @param DurationLimits $durationLimits
+   */
+  public function setDurationLimits(DurationLimits $durationLimits)
+  {
+    $this->durationLimits = $durationLimits;
+  }
+  /**
+   * @return DurationLimits
+   */
+  public function getDurationLimits()
+  {
+    return $this->durationLimits;
   }
   /**
    * Output only. An opaque value that uniquely identifies a version or

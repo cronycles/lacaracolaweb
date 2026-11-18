@@ -12,6 +12,17 @@
             </a>
         </div>
 
+        <div class="a-card" style="margin-bottom:1.5rem">
+            <div class="a-card__title">Runtime PHP del sito</div>
+            <dl style="display:grid;grid-template-columns:auto 1fr;gap:.4rem .75rem;font-size:.875rem;color:#4b6470;margin:.75rem 0 0">
+                <dt>Versione</dt><dd>{{ $phpRuntime['version'] }}</dd>
+                <dt>SAPI</dt><dd>{{ $phpRuntime['sapi'] }}</dd>
+            </dl>
+            <p style="font-size:.78rem;color:#6b7f89;margin:.75rem 0 0">
+                Valori della richiesta web corrente; possono differire dal PHP usato da CLI e cron.
+            </p>
+        </div>
+
         {{-- Booking mode card --}}
         <div class="a-card">
             <div class="a-card__title">Modalità Prenotazione</div>

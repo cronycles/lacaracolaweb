@@ -48,13 +48,13 @@
     "src": "resources/fonts/Montserrat/Montserrat-VariableFont_wght.ttf"
   },
   "resources/js/app.js": {
-    "file": "assets/app-BuG9aa18.js",
+    "file": "assets/app-Bwn9szyo.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
   },
   "resources/ts/admin.ts": {
-    "file": "assets/admin-87KYMMDi.js",
+    "file": "assets/admin-yw1bFFtp.js",
     "name": "admin",
     "src": "resources/ts/admin.ts",
     "isEntry": true,

@@ -20,8 +20,7 @@ namespace Google\Service\Aiplatform;
 class GoogleCloudAiplatformV1AgentTool extends \Google\Model
 {
   /**
-   * Optional. The headers for the MCP server, such as for authentication. Only
-   * applicable when `type` is `mcp_server`.
+   * Optional. Not used; the tool is resolved from `name` via Agent Registry.
    *
    * @var string[]
    */
@@ -37,27 +36,23 @@ class GoogleCloudAiplatformV1AgentTool extends \Google\Model
    */
   public $name;
   /**
-   * Required. The type of the tool. Supported types: * `code_execution` *
-   * `endpoint` * `filesystem` * `google_search` * `mcp_server` * `url_context`
+   * Required. The type of the tool. Supported types: * `audio_generation` *
+   * `endpoint` * `google_search` * `image_generation` * `mcp_server` *
+   * `speech_generation` * `url_context` * `video_generation`
    *
    * @var string
    */
   public $type;
   /**
-   * Optional. Temporary: the tool's runtime reference, consumed by CreateAgent
-   * to create the downstream AI App. Applicable when `type` is `mcp_server` or
-   * `endpoint`. It is duplicated here (the resource name is already in `name`)
-   * only because the Agent service is not yet connected to Agent Registry to
-   * derive it from `name`; the Task Service instead resolves it from Agent
-   * Registry (GetMcpServer / GetEndpoint) at task creation.
+   * Optional. The runtime reference is resolved from `name` via Agent Registry
+   * (`GetMcpServer` / `GetEndpoint`), so this is not required.
    *
    * @var string
    */
   public $url;
 
   /**
-   * Optional. The headers for the MCP server, such as for authentication. Only
-   * applicable when `type` is `mcp_server`.
+   * Optional. Not used; the tool is resolved from `name` via Agent Registry.
    *
    * @param string[] $headers
    */
@@ -93,8 +88,9 @@ class GoogleCloudAiplatformV1AgentTool extends \Google\Model
     return $this->name;
   }
   /**
-   * Required. The type of the tool. Supported types: * `code_execution` *
-   * `endpoint` * `filesystem` * `google_search` * `mcp_server` * `url_context`
+   * Required. The type of the tool. Supported types: * `audio_generation` *
+   * `endpoint` * `google_search` * `image_generation` * `mcp_server` *
+   * `speech_generation` * `url_context` * `video_generation`
    *
    * @param string $type
    */
@@ -110,12 +106,8 @@ class GoogleCloudAiplatformV1AgentTool extends \Google\Model
     return $this->type;
   }
   /**
-   * Optional. Temporary: the tool's runtime reference, consumed by CreateAgent
-   * to create the downstream AI App. Applicable when `type` is `mcp_server` or
-   * `endpoint`. It is duplicated here (the resource name is already in `name`)
-   * only because the Agent service is not yet connected to Agent Registry to
-   * derive it from `name`; the Task Service instead resolves it from Agent
-   * Registry (GetMcpServer / GetEndpoint) at task creation.
+   * Optional. The runtime reference is resolved from `name` via Agent Registry
+   * (`GetMcpServer` / `GetEndpoint`), so this is not required.
    *
    * @param string $url
    */

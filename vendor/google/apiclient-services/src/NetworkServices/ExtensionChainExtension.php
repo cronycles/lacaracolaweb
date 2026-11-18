@@ -179,7 +179,7 @@ class ExtensionChainExtension extends \Google\Collection
   public $responseBodySendMode;
   /**
    * Required. The reference to the service that runs the extension. To
-   * configure a callout extension, `service` must be a fully-qualified
+   * configure a callout extension, `service` must be a fully qualified
    * reference to a [backend service](https://cloud.google.com/compute/docs/refe
    * rence/rest/v1/backendServices) in the format: `https://www.googleapis.com/c
    * ompute/v1/projects/{project}/regions/{region}/backendServices/{backendServi
@@ -190,9 +190,9 @@ class ExtensionChainExtension extends \Google\Collection
    * extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins) in
    * the format: `projects/{project}/locations/{location}/wasmPlugins/{plugin}`
    * or `//networkservices.googleapis.com/projects/{project}/locations/{location
-   * }/wasmPlugins/{wasmPlugin}`. Plugin extensions are currently supported for
-   * the `LbTrafficExtension`, the `LbRouteExtension`, and the `LbEdgeExtension`
-   * resources.
+   * }/wasmPlugins/{wasmPlugin}`. Supports plugin extensions for
+   * `LbTrafficExtension`, `LbRouteExtension`, `LbEdgeExtension`, and
+   * `CdnEdgeExtension` resources.
    *
    * @var string
    */
@@ -205,7 +205,9 @@ class ExtensionChainExtension extends \Google\Collection
    * `LbEdgeExtension` resource, this field is required and must only contain
    * `REQUEST_HEADERS` event. For the `AuthzExtension` resource, this field is
    * optional. `REQUEST_HEADERS` is the only supported event. If unspecified,
-   * `REQUEST_HEADERS` event is assumed as supported.
+   * `REQUEST_HEADERS` event is assumed as supported. For the `CdnEdgeExtension`
+   * resource, this field is optional. Eligible values are `REQUEST_HEADERS` and
+   * `RESPONSE_HEADERS`. If unspecified, both are assumed as supported.
    *
    * @var string[]
    */
@@ -433,7 +435,7 @@ class ExtensionChainExtension extends \Google\Collection
   }
   /**
    * Required. The reference to the service that runs the extension. To
-   * configure a callout extension, `service` must be a fully-qualified
+   * configure a callout extension, `service` must be a fully qualified
    * reference to a [backend service](https://cloud.google.com/compute/docs/refe
    * rence/rest/v1/backendServices) in the format: `https://www.googleapis.com/c
    * ompute/v1/projects/{project}/regions/{region}/backendServices/{backendServi
@@ -444,9 +446,9 @@ class ExtensionChainExtension extends \Google\Collection
    * extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins) in
    * the format: `projects/{project}/locations/{location}/wasmPlugins/{plugin}`
    * or `//networkservices.googleapis.com/projects/{project}/locations/{location
-   * }/wasmPlugins/{wasmPlugin}`. Plugin extensions are currently supported for
-   * the `LbTrafficExtension`, the `LbRouteExtension`, and the `LbEdgeExtension`
-   * resources.
+   * }/wasmPlugins/{wasmPlugin}`. Supports plugin extensions for
+   * `LbTrafficExtension`, `LbRouteExtension`, `LbEdgeExtension`, and
+   * `CdnEdgeExtension` resources.
    *
    * @param string $service
    */
@@ -469,7 +471,9 @@ class ExtensionChainExtension extends \Google\Collection
    * `LbEdgeExtension` resource, this field is required and must only contain
    * `REQUEST_HEADERS` event. For the `AuthzExtension` resource, this field is
    * optional. `REQUEST_HEADERS` is the only supported event. If unspecified,
-   * `REQUEST_HEADERS` event is assumed as supported.
+   * `REQUEST_HEADERS` event is assumed as supported. For the `CdnEdgeExtension`
+   * resource, this field is optional. Eligible values are `REQUEST_HEADERS` and
+   * `RESPONSE_HEADERS`. If unspecified, both are assumed as supported.
    *
    * @param string[] $supportedEvents
    */

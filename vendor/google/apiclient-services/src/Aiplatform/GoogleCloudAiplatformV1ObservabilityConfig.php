@@ -20,6 +20,13 @@ namespace Google\Service\Aiplatform;
 class GoogleCloudAiplatformV1ObservabilityConfig extends \Google\Model
 {
   /**
+   * Optional. Customer bucket (`gs://bucket`) the media of observed turns is
+   * written to; unset means media is not persisted.
+   *
+   * @var string
+   */
+  public $artifactGcsBucket;
+  /**
    * Optional. Enables observability for this agent's sessions: OpenTelemetry
    * span emission covering tool names, model names, token counts, latencies and
    * status. If `false`, the other fields here are ignored.
@@ -31,14 +38,33 @@ class GoogleCloudAiplatformV1ObservabilityConfig extends \Google\Model
    * Optional. Enables sensitive logging. Sensitive logging includes customer
    * core content (prompts, model completions, tool argument payloads and tool
    * responses). If `false`, those are sanitized and only structural attributes
-   * are recorded. No effect unless `observability_enabled` is true. Not yet
-   * enforced: `CreateAgent` and `UpdateAgent` currently reject setting this to
-   * `true`.
+   * are recorded. No effect unless `observability_enabled` is true. Settable
+   * and returned, but NOT YET ENFORCED. Nothing reads it at runtime, so `true`
+   * does not currently cause content to be captured, and `false` is not what
+   * keeps content from being captured. Treat it as a recorded intention that
+   * takes effect when enforcement lands.
    *
    * @var bool
    */
   public $sensitiveLoggingEnabled;
 
+  /**
+   * Optional. Customer bucket (`gs://bucket`) the media of observed turns is
+   * written to; unset means media is not persisted.
+   *
+   * @param string $artifactGcsBucket
+   */
+  public function setArtifactGcsBucket($artifactGcsBucket)
+  {
+    $this->artifactGcsBucket = $artifactGcsBucket;
+  }
+  /**
+   * @return string
+   */
+  public function getArtifactGcsBucket()
+  {
+    return $this->artifactGcsBucket;
+  }
   /**
    * Optional. Enables observability for this agent's sessions: OpenTelemetry
    * span emission covering tool names, model names, token counts, latencies and
@@ -61,9 +87,11 @@ class GoogleCloudAiplatformV1ObservabilityConfig extends \Google\Model
    * Optional. Enables sensitive logging. Sensitive logging includes customer
    * core content (prompts, model completions, tool argument payloads and tool
    * responses). If `false`, those are sanitized and only structural attributes
-   * are recorded. No effect unless `observability_enabled` is true. Not yet
-   * enforced: `CreateAgent` and `UpdateAgent` currently reject setting this to
-   * `true`.
+   * are recorded. No effect unless `observability_enabled` is true. Settable
+   * and returned, but NOT YET ENFORCED. Nothing reads it at runtime, so `true`
+   * does not currently cause content to be captured, and `false` is not what
+   * keeps content from being captured. Treat it as a recorded intention that
+   * takes effect when enforcement lands.
    *
    * @param bool $sensitiveLoggingEnabled
    */

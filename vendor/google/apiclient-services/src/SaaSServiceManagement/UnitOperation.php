@@ -106,6 +106,8 @@ class UnitOperation extends \Google\Collection
   public $deleteTime;
   protected $deprovisionType = Deprovision::class;
   protected $deprovisionDataType = '';
+  protected $durationLimitsType = DurationLimits::class;
+  protected $durationLimitsDataType = '';
   /**
    * Optional. Output only. The engine state for on-going deployment engine
    * operation(s). This field is opaque for external usage.
@@ -128,8 +130,6 @@ class UnitOperation extends \Google\Collection
    * @var string
    */
   public $etag;
-  protected $flagUpdateType = FlagUpdate::class;
-  protected $flagUpdateDataType = '';
   /**
    * Optional. The labels on the resource, which can be used for categorization.
    * similar to Kubernetes resource labels.
@@ -304,6 +304,26 @@ class UnitOperation extends \Google\Collection
     return $this->deprovision;
   }
   /**
+   * Optional. Defines the duration limits for this specific UnitOperation
+   * instance. These settings override any default duration limits set on the
+   * UnitKind. See the DurationLimits message definition for details on the
+   * constraints like minimum, maximum, and system default values for
+   * unit_operation_timeout.
+   *
+   * @param DurationLimits $durationLimits
+   */
+  public function setDurationLimits(DurationLimits $durationLimits)
+  {
+    $this->durationLimits = $durationLimits;
+  }
+  /**
+   * @return DurationLimits
+   */
+  public function getDurationLimits()
+  {
+    return $this->durationLimits;
+  }
+  /**
    * Optional. Output only. The engine state for on-going deployment engine
    * operation(s). This field is opaque for external usage.
    *
@@ -357,22 +377,6 @@ class UnitOperation extends \Google\Collection
   public function getEtag()
   {
     return $this->etag;
-  }
-  /**
-   * Optional. Flag update operation.
-   *
-   * @param FlagUpdate $flagUpdate
-   */
-  public function setFlagUpdate(FlagUpdate $flagUpdate)
-  {
-    $this->flagUpdate = $flagUpdate;
-  }
-  /**
-   * @return FlagUpdate
-   */
-  public function getFlagUpdate()
-  {
-    return $this->flagUpdate;
   }
   /**
    * Optional. The labels on the resource, which can be used for categorization.

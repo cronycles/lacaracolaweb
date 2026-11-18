@@ -135,8 +135,80 @@ class Chromewebstore extends \Google\Service
                   'required' => true,
                 ],
               ],
+            ],'getRatingSummary' => [
+              'path' => 'v2/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'publish' => [
               'path' => 'v2/{+name}:publish',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'queryMetrics' => [
+              'path' => 'v2/{+name}:queryMetrics',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'dimensions' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
+                ],
+                'metrics' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'timeSpec.firstDate.day' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'timeSpec.firstDate.month' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'timeSpec.firstDate.year' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'timeSpec.lastDate.day' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'timeSpec.lastDate.month' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'timeSpec.lastDate.year' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+              ],
+            ],'rollback' => [
+              'path' => 'v2/{+name}:rollback',
               'httpMethod' => 'POST',
               'parameters' => [
                 'name' => [

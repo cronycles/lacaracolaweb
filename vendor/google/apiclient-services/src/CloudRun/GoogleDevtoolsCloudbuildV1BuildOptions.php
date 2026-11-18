@@ -30,7 +30,10 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
    */
   public const DEFAULT_LOGS_BUCKET_BEHAVIOR_REGIONAL_USER_OWNED_BUCKET = 'REGIONAL_USER_OWNED_BUCKET';
   /**
-   * Bucket is located in a Google-owned project and is not regionalized.
+   * Deprecated: Use `REGIONAL_USER_OWNED_BUCKET` instead. Bucket is located in
+   * a Google-owned project and is not regionalized.
+   *
+   * @deprecated
    */
   public const DEFAULT_LOGS_BUCKET_BEHAVIOR_LEGACY_BUCKET = 'LEGACY_BUCKET';
   /**
@@ -115,6 +118,11 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
    * Build must be verified.
    */
   public const REQUESTED_VERIFY_OPTION_VERIFIED = 'VERIFIED';
+  /**
+   * Build verification is best effort. If provenance generation fails, the
+   * build will still succeed.
+   */
+  public const REQUESTED_VERIFY_OPTION_BEST_EFFORT = 'BEST_EFFORT';
   /**
    * Fails the build if error in substitutions checks, like missing a
    * substitution in the template or in the map.
@@ -203,11 +211,26 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
    */
   public $pubsubTopic;
   /**
+   * Optional. Deprecated: Use
+   * PrivatePoolV1Config.WorkerConfig.ranked_machine_series instead. This field
+   * has no effect.
+   *
+   * @deprecated
+   * @var string[]
+   */
+  public $rankedMachineSeries;
+  /**
    * Requested verifiability options.
    *
    * @var string
    */
   public $requestedVerifyOption;
+  /**
+   * Output only. Worker release resolved from the release channel.
+   *
+   * @var string
+   */
+  public $resolvedWorkerRelease;
   /**
    * A list of global environment variables, which are encrypted using a Cloud
    * Key Management Service crypto key. These values must be specified in the
@@ -240,6 +263,13 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
    * @var string
    */
   public $workerPool;
+  /**
+   * Optional. Option to specify which release or release channel
+   * (rapid|regular|stable) to use to run this build.
+   *
+   * @var string
+   */
+  public $workerRelease;
 
   /**
    * Option to include built-in and custom substitutions as env variables for
@@ -446,9 +476,29 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
     return $this->pubsubTopic;
   }
   /**
+   * Optional. Deprecated: Use
+   * PrivatePoolV1Config.WorkerConfig.ranked_machine_series instead. This field
+   * has no effect.
+   *
+   * @deprecated
+   * @param string[] $rankedMachineSeries
+   */
+  public function setRankedMachineSeries($rankedMachineSeries)
+  {
+    $this->rankedMachineSeries = $rankedMachineSeries;
+  }
+  /**
+   * @deprecated
+   * @return string[]
+   */
+  public function getRankedMachineSeries()
+  {
+    return $this->rankedMachineSeries;
+  }
+  /**
    * Requested verifiability options.
    *
-   * Accepted values: NOT_VERIFIED, VERIFIED
+   * Accepted values: NOT_VERIFIED, VERIFIED, BEST_EFFORT
    *
    * @param self::REQUESTED_VERIFY_OPTION_* $requestedVerifyOption
    */
@@ -462,6 +512,22 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
   public function getRequestedVerifyOption()
   {
     return $this->requestedVerifyOption;
+  }
+  /**
+   * Output only. Worker release resolved from the release channel.
+   *
+   * @param string $resolvedWorkerRelease
+   */
+  public function setResolvedWorkerRelease($resolvedWorkerRelease)
+  {
+    $this->resolvedWorkerRelease = $resolvedWorkerRelease;
+  }
+  /**
+   * @return string
+   */
+  public function getResolvedWorkerRelease()
+  {
+    return $this->resolvedWorkerRelease;
   }
   /**
    * A list of global environment variables, which are encrypted using a Cloud
@@ -556,6 +622,23 @@ class GoogleDevtoolsCloudbuildV1BuildOptions extends \Google\Collection
   public function getWorkerPool()
   {
     return $this->workerPool;
+  }
+  /**
+   * Optional. Option to specify which release or release channel
+   * (rapid|regular|stable) to use to run this build.
+   *
+   * @param string $workerRelease
+   */
+  public function setWorkerRelease($workerRelease)
+  {
+    $this->workerRelease = $workerRelease;
+  }
+  /**
+   * @return string
+   */
+  public function getWorkerRelease()
+  {
+    return $this->workerRelease;
   }
 }
 

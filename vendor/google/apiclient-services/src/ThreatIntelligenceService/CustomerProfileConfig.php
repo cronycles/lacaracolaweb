@@ -20,6 +20,8 @@ namespace Google\Service\ThreatIntelligenceService;
 class CustomerProfileConfig extends \Google\Collection
 {
   protected $collection_key = 'webPresences';
+  protected $brandsType = CustomerProfileBrand::class;
+  protected $brandsDataType = 'array';
   protected $citationsType = CustomerProfileCitation::class;
   protected $citationsDataType = 'array';
   protected $contactInfoType = CustomerProfileContactInfo::class;
@@ -50,6 +52,8 @@ class CustomerProfileConfig extends \Google\Collection
   protected $securityConsiderationsDataType = '';
   protected $summaryType = CustomerProfileSummary::class;
   protected $summaryDataType = '';
+  protected $technologiesType = CustomerProfileTechnology::class;
+  protected $technologiesDataType = 'array';
   /**
    * Optional. Technology presence of the organization.
    *
@@ -59,6 +63,22 @@ class CustomerProfileConfig extends \Google\Collection
   protected $webPresencesType = CustomerProfileWebPresence::class;
   protected $webPresencesDataType = 'array';
 
+  /**
+   * Optional. Brands associated with the organization.
+   *
+   * @param CustomerProfileBrand[] $brands
+   */
+  public function setBrands($brands)
+  {
+    $this->brands = $brands;
+  }
+  /**
+   * @return CustomerProfileBrand[]
+   */
+  public function getBrands()
+  {
+    return $this->brands;
+  }
   /**
    * Optional. Citations for the organization profile.
    *
@@ -234,6 +254,22 @@ class CustomerProfileConfig extends \Google\Collection
   public function getSummary()
   {
     return $this->summary;
+  }
+  /**
+   * Optional. Technologies associated with the organization.
+   *
+   * @param CustomerProfileTechnology[] $technologies
+   */
+  public function setTechnologies($technologies)
+  {
+    $this->technologies = $technologies;
+  }
+  /**
+   * @return CustomerProfileTechnology[]
+   */
+  public function getTechnologies()
+  {
+    return $this->technologies;
   }
   /**
    * Optional. Technology presence of the organization.

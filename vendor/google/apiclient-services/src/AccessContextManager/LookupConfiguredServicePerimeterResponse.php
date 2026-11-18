@@ -20,39 +20,39 @@ namespace Google\Service\AccessContextManager;
 class LookupConfiguredServicePerimeterResponse extends \Google\Model
 {
   /**
-   * The resource (e.g. "projects/123", "folders/456") that directly owns/is
-   * restricted by the enforced perimeter.
+   * The resource (for example, `projects/123` or `folders/456`) that directly
+   * owns or is restricted by the enforced perimeter.
    *
    * @var string
    */
   public $restrictedResource;
   /**
-   * The resource (e.g. "projects/123", "folders/456") that directly owns/is
-   * restricted by the dry-run perimeter.
+   * The resource (for example, `projects/123` or `folders/456`) that directly
+   * owns or is restricted by the dry-run perimeter.
    *
    * @var string
    */
   public $restrictedResourceDryRun;
   /**
-   * Fully qualified name of the configured enforced perimeter. Format:
-   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}` This field
-   * is empty if no enforced perimeter applies.
+   * Fully qualified name of the configured enforced perimeter. This field is
+   * empty if no enforced perimeter applies. Format:
+   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}`
    *
    * @var string
    */
   public $servicePerimeter;
   /**
-   * Fully qualified name of the configured dry-run perimeter. Format:
-   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}` This field
-   * is empty if no dry-run perimeter configuration applies.
+   * Fully qualified name of the configured dry-run perimeter. This field is
+   * empty if no dry-run perimeter configuration applies. Format:
+   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}`
    *
    * @var string
    */
   public $servicePerimeterDryRun;
 
   /**
-   * The resource (e.g. "projects/123", "folders/456") that directly owns/is
-   * restricted by the enforced perimeter.
+   * The resource (for example, `projects/123` or `folders/456`) that directly
+   * owns or is restricted by the enforced perimeter.
    *
    * @param string $restrictedResource
    */
@@ -68,8 +68,8 @@ class LookupConfiguredServicePerimeterResponse extends \Google\Model
     return $this->restrictedResource;
   }
   /**
-   * The resource (e.g. "projects/123", "folders/456") that directly owns/is
-   * restricted by the dry-run perimeter.
+   * The resource (for example, `projects/123` or `folders/456`) that directly
+   * owns or is restricted by the dry-run perimeter.
    *
    * @param string $restrictedResourceDryRun
    */
@@ -85,9 +85,9 @@ class LookupConfiguredServicePerimeterResponse extends \Google\Model
     return $this->restrictedResourceDryRun;
   }
   /**
-   * Fully qualified name of the configured enforced perimeter. Format:
-   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}` This field
-   * is empty if no enforced perimeter applies.
+   * Fully qualified name of the configured enforced perimeter. This field is
+   * empty if no enforced perimeter applies. Format:
+   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}`
    *
    * @param string $servicePerimeter
    */
@@ -103,9 +103,9 @@ class LookupConfiguredServicePerimeterResponse extends \Google\Model
     return $this->servicePerimeter;
   }
   /**
-   * Fully qualified name of the configured dry-run perimeter. Format:
-   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}` This field
-   * is empty if no dry-run perimeter configuration applies.
+   * Fully qualified name of the configured dry-run perimeter. This field is
+   * empty if no dry-run perimeter configuration applies. Format:
+   * `accessPolicies/{policy_id}/servicePerimeters/{perimeter_name}`
    *
    * @param string $servicePerimeterDryRun
    */

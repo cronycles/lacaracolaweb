@@ -20,7 +20,7 @@ namespace Google\Service\CloudAsset;
 class GoogleIdentityAccesscontextmanagerV1IngressSource extends \Google\Model
 {
   /**
-   * An AccessLevel resource name that allow resources within the
+   * An AccessLevel resource name that allows resources within the
    * ServicePerimeters to be accessed from the internet. AccessLevels listed
    * must be in the same policy as this ServicePerimeter. Referencing a
    * nonexistent AccessLevel will cause an error. If no AccessLevel names are
@@ -37,8 +37,9 @@ class GoogleIdentityAccesscontextmanagerV1IngressSource extends \Google\Model
   /**
    * A Google Cloud resource that is allowed to ingress the perimeter. Requests
    * from these resources will be allowed to access perimeter data. Currently
-   * only projects and VPCs are allowed. Project format:
-   * `projects/{project_number}` VPC network format:
+   * projects, folders, organizations, and VPCs are allowed. Project format:
+   * `projects/{project_number}` Folder format: `folders/{folder_id}`
+   * Organization format: `organizations/{organization_id}` VPC network format:
    * `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`.
    * The project may be in any Google Cloud organization, not just the
    * organization that the perimeter is defined in. `*` is not allowed, the case
@@ -49,7 +50,7 @@ class GoogleIdentityAccesscontextmanagerV1IngressSource extends \Google\Model
   public $resource;
 
   /**
-   * An AccessLevel resource name that allow resources within the
+   * An AccessLevel resource name that allows resources within the
    * ServicePerimeters to be accessed from the internet. AccessLevels listed
    * must be in the same policy as this ServicePerimeter. Referencing a
    * nonexistent AccessLevel will cause an error. If no AccessLevel names are
@@ -92,8 +93,9 @@ class GoogleIdentityAccesscontextmanagerV1IngressSource extends \Google\Model
   /**
    * A Google Cloud resource that is allowed to ingress the perimeter. Requests
    * from these resources will be allowed to access perimeter data. Currently
-   * only projects and VPCs are allowed. Project format:
-   * `projects/{project_number}` VPC network format:
+   * projects, folders, organizations, and VPCs are allowed. Project format:
+   * `projects/{project_number}` Folder format: `folders/{folder_id}`
+   * Organization format: `organizations/{organization_id}` VPC network format:
    * `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`.
    * The project may be in any Google Cloud organization, not just the
    * organization that the perimeter is defined in. `*` is not allowed, the case

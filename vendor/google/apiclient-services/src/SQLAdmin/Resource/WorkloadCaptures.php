@@ -18,11 +18,11 @@
 namespace Google\Service\SQLAdmin\Resource;
 
 use Google\Service\SQLAdmin\Operation;
-use Google\Service\SQLAdmin\SqlWorkloadCapturesStartReplayRequest;
-use Google\Service\SQLAdmin\SqlWorkloadCapturesStartRequest;
-use Google\Service\SQLAdmin\SqlWorkloadCapturesStopReplayRequest;
-use Google\Service\SQLAdmin\SqlWorkloadCapturesStopRequest;
 use Google\Service\SQLAdmin\WorkloadCapturesListResponse;
+use Google\Service\SQLAdmin\WorkloadCapturesStartReplayRequest;
+use Google\Service\SQLAdmin\WorkloadCapturesStartRequest;
+use Google\Service\SQLAdmin\WorkloadCapturesStopReplayRequest;
+use Google\Service\SQLAdmin\WorkloadCapturesStopRequest;
 
 /**
  * The "workloadCaptures" collection of methods.
@@ -63,12 +63,12 @@ class WorkloadCaptures extends \Google\Service\Resource
    * instance.
    * @param string $instance Required. Cloud SQL instance ID. This does not
    * include the project ID.
-   * @param SqlWorkloadCapturesStartRequest $postBody
+   * @param WorkloadCapturesStartRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    * @throws \Google\Service\Exception
    */
-  public function start($project, $instance, SqlWorkloadCapturesStartRequest $postBody, $optParams = [])
+  public function start($project, $instance, WorkloadCapturesStartRequest $postBody, $optParams = [])
   {
     $params = ['project' => $project, 'instance' => $instance, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
@@ -85,12 +85,12 @@ class WorkloadCaptures extends \Google\Service\Resource
    * @param string $instance Required. Cloud SQL instance ID. This does not
    * include the project ID.
    * @param string $workloadId Required. The ID of the workload to replay.
-   * @param SqlWorkloadCapturesStartReplayRequest $postBody
+   * @param WorkloadCapturesStartReplayRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    * @throws \Google\Service\Exception
    */
-  public function startReplay($project, $instance, $workloadId, SqlWorkloadCapturesStartReplayRequest $postBody, $optParams = [])
+  public function startReplay($project, $instance, $workloadId, WorkloadCapturesStartReplayRequest $postBody, $optParams = [])
   {
     $params = ['project' => $project, 'instance' => $instance, 'workloadId' => $workloadId, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
@@ -104,34 +104,33 @@ class WorkloadCaptures extends \Google\Service\Resource
    * instance.
    * @param string $instance Required. Cloud SQL instance ID. This does not
    * include the project ID.
-   * @param SqlWorkloadCapturesStopRequest $postBody
+   * @param WorkloadCapturesStopRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    * @throws \Google\Service\Exception
    */
-  public function stop($project, $instance, SqlWorkloadCapturesStopRequest $postBody, $optParams = [])
+  public function stop($project, $instance, WorkloadCapturesStopRequest $postBody, $optParams = [])
   {
     $params = ['project' => $project, 'instance' => $instance, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('stop', [$params], Operation::class);
   }
   /**
-   * Stops executing a captured workload on the separate Cloud SQL instance.
+   * Stops an active workload replay on the target Cloud SQL replay instance.
    * (workloadCaptures.stopReplay)
    *
    * @param string $project Required. Project ID of the project that contains the
-   * instance.
-   * @param string $instance Required. Cloud SQL instance ID. This does not
-   * include the project ID.
-   * @param string $workloadId Required. The ID of the workload to replay.
-   * @param SqlWorkloadCapturesStopReplayRequest $postBody
+   * target replay instance.
+   * @param string $instance Required. Cloud SQL instance ID of the target replay
+   * instance. This does not include the project ID.
+   * @param WorkloadCapturesStopReplayRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    * @throws \Google\Service\Exception
    */
-  public function stopReplay($project, $instance, $workloadId, SqlWorkloadCapturesStopReplayRequest $postBody, $optParams = [])
+  public function stopReplay($project, $instance, WorkloadCapturesStopReplayRequest $postBody, $optParams = [])
   {
-    $params = ['project' => $project, 'instance' => $instance, 'workloadId' => $workloadId, 'postBody' => $postBody];
+    $params = ['project' => $project, 'instance' => $instance, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('stopReplay', [$params], Operation::class);
   }

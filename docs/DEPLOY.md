@@ -44,7 +44,7 @@ Because the main domain document root is public_html, Laravel app files are depl
 
 ### PHP in cPanel
 
-- Use PHP 8.4.
+- Use PHP 8.4.27 or later in the 8.4 branch to include fixes for CVE-2026-109618 and CVE-2026-109619; use the latest available security release.
 - Enable required extensions:
     - pdo_mysql
     - mysqli

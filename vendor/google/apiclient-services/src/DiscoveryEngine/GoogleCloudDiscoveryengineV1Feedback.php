@@ -40,6 +40,10 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
    */
   public const FEEDBACK_SOURCE_GOOGLE_AGENTSPACE_MOBILE = 'GOOGLE_AGENTSPACE_MOBILE';
   /**
+   * Feedback source is Google AgentSpace Desktop app.
+   */
+  public const FEEDBACK_SOURCE_GOOGLE_AGENTSPACE_DESKTOP = 'GOOGLE_AGENTSPACE_DESKTOP';
+  /**
    * Unspecified feedback type.
    */
   public const FEEDBACK_TYPE_FEEDBACK_TYPE_UNSPECIFIED = 'FEEDBACK_TYPE_UNSPECIFIED';
@@ -53,8 +57,7 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
   public const FEEDBACK_TYPE_DISLIKE = 'DISLIKE';
   protected $collection_key = 'reasons';
   /**
-   * Optional. The additional user comment of the feedback if user gives a thumb
-   * down.
+   * Optional. The additional user comment of the feedback.
    *
    * @var string
    */
@@ -81,9 +84,7 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
    */
   public $feedbackSource;
   /**
-   * Required. Indicate whether the user gives a positive or negative feedback.
-   * If the user gives a negative feedback, there might be more feedback
-   * details.
+   * Required. Indicates whether the user gives a positive or negative feedback.
    *
    * @var string
    */
@@ -94,16 +95,17 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
    * @var string
    */
   public $llmModelVersion;
+  protected $modelArmorDisputeInfoType = GoogleCloudDiscoveryengineV1FeedbackModelArmorDisputeInfo::class;
+  protected $modelArmorDisputeInfoDataType = '';
   /**
-   * Optional. The reason if user gives a thumb down.
+   * Optional. The reasons why the user gives feedback.
    *
    * @var string[]
    */
   public $reasons;
 
   /**
-   * Optional. The additional user comment of the feedback if user gives a thumb
-   * down.
+   * Optional. The additional user comment of the feedback.
    *
    * @param string $comment
    */
@@ -171,7 +173,8 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
    * GOOGLE_CONSOLE, GOOGLE_WIDGET, GOOGLE_WEBAPP.
    *
    * Accepted values: FEEDBACK_SOURCE_UNSPECIFIED, GOOGLE_CONSOLE,
-   * GOOGLE_WIDGET, GOOGLE_WEBAPP, GOOGLE_AGENTSPACE_MOBILE
+   * GOOGLE_WIDGET, GOOGLE_WEBAPP, GOOGLE_AGENTSPACE_MOBILE,
+   * GOOGLE_AGENTSPACE_DESKTOP
    *
    * @param self::FEEDBACK_SOURCE_* $feedbackSource
    */
@@ -187,9 +190,7 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
     return $this->feedbackSource;
   }
   /**
-   * Required. Indicate whether the user gives a positive or negative feedback.
-   * If the user gives a negative feedback, there might be more feedback
-   * details.
+   * Required. Indicates whether the user gives a positive or negative feedback.
    *
    * Accepted values: FEEDBACK_TYPE_UNSPECIFIED, LIKE, DISLIKE
    *
@@ -223,7 +224,24 @@ class GoogleCloudDiscoveryengineV1Feedback extends \Google\Collection
     return $this->llmModelVersion;
   }
   /**
-   * Optional. The reason if user gives a thumb down.
+   * Optional. Optional Model Armor false-positive dispute metadata attached to
+   * feedback.
+   *
+   * @param GoogleCloudDiscoveryengineV1FeedbackModelArmorDisputeInfo $modelArmorDisputeInfo
+   */
+  public function setModelArmorDisputeInfo(GoogleCloudDiscoveryengineV1FeedbackModelArmorDisputeInfo $modelArmorDisputeInfo)
+  {
+    $this->modelArmorDisputeInfo = $modelArmorDisputeInfo;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1FeedbackModelArmorDisputeInfo
+   */
+  public function getModelArmorDisputeInfo()
+  {
+    return $this->modelArmorDisputeInfo;
+  }
+  /**
+   * Optional. The reasons why the user gives feedback.
    *
    * @param string[] $reasons
    */

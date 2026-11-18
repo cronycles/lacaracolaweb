@@ -608,6 +608,16 @@ class Dataform extends \Google\Service
                   'required' => true,
                 ],
               ],
+            ],'createLongRunning' => [
+              'path' => 'v1/{+parent}/compilationResults:createLongRunning',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'get' => [
               'path' => 'v1/{+name}',
               'httpMethod' => 'GET',
@@ -934,6 +944,20 @@ class Dataform extends \Google\Service
               ],
             ],'create' => [
               'path' => 'v1/{+parent}/workspaces',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'workspaceId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'createLongRunning' => [
+              'path' => 'v1/{+parent}/workspaces:createLongRunning',
               'httpMethod' => 'POST',
               'parameters' => [
                 'parent' => [

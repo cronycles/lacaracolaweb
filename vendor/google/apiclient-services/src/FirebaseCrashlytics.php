@@ -42,6 +42,7 @@ class FirebaseCrashlytics extends \Google\Service
   const FIREBASE =
       "https://www.googleapis.com/auth/firebase";
 
+  public $projects_apps;
   public $projects_apps_events;
   public $projects_apps_issues;
   public $projects_apps_issues_notes;
@@ -66,6 +67,50 @@ class FirebaseCrashlytics extends \Google\Service
     $this->version = 'v1alpha';
     $this->serviceName = 'firebasecrashlytics';
 
+    $this->projects_apps = new FirebaseCrashlytics\Resource\ProjectsApps(
+        $this,
+        $this->serviceName,
+        'apps',
+        [
+          'methods' => [
+            'generateAlertPolicy' => [
+              'path' => 'v1alpha/{+name}:generateAlertPolicy',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'getProfilingManagerConfig' => [
+              'path' => 'v1alpha/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'updateProfilingManagerConfig' => [
+              'path' => 'v1alpha/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
     $this->projects_apps_events = new FirebaseCrashlytics\Resource\ProjectsAppsEvents(
         $this,
         $this->serviceName,
@@ -163,6 +208,10 @@ class FirebaseCrashlytics extends \Google\Service
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
+                ],
+                'filterExpression' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
                 'pageSize' => [
                   'location' => 'query',
@@ -352,7 +401,15 @@ class FirebaseCrashlytics extends \Google\Service
                   'type' => 'string',
                   'repeated' => true,
                 ],
+                'filterExpression' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
                 'granularity' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'metricsMode' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],
@@ -361,6 +418,10 @@ class FirebaseCrashlytics extends \Google\Service
                   'type' => 'integer',
                 ],
                 'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'view' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],
@@ -373,6 +434,10 @@ class FirebaseCrashlytics extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'view' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],

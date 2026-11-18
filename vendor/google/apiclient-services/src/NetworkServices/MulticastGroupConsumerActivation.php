@@ -47,7 +47,7 @@ class MulticastGroupConsumerActivation extends \Google\Model
    */
   public $description;
   /**
-   * Optional. Labels as key-value pairs
+   * Optional. Labels as key-value pairs.
    *
    * @var string[]
    */
@@ -63,19 +63,9 @@ class MulticastGroupConsumerActivation extends \Google\Model
    */
   public $multicastConsumerAssociation;
   /**
-   * Optional. The resource name of the multicast group created by the admin in
-   * the same zone as this multicast group consumer activation. Use the
-   * following format: // `projects/locations/multicastGroups`. This field is
-   * deprecated. Use multicast_group_range_activation instead.
-   *
-   * @deprecated
-   * @var string
-   */
-  public $multicastGroup;
-  /**
    * Required. The resource name of the multicast group range activation created
    * by the admin in the same zone as this multicast group consumer activation.
-   * Use the following format: //
+   * Use the following format:
    * `projects/locations/multicastGroupRangeActivations`.
    *
    * @var string
@@ -102,9 +92,9 @@ class MulticastGroupConsumerActivation extends \Google\Model
   /**
    * Output only. [Output only] The Google-generated UUID for the resource. This
    * value is unique across all multicast group consumer activation resources.
-   * If a group consumer activation is deleted and another with the same name is
-   * created, the new group consumer activation is assigned a different
-   * unique_id.
+   * If a multicast group consumer activation is deleted and another with the
+   * same name is created, the new multicast group consumer activation is
+   * assigned a different unique_id.
    *
    * @var string
    */
@@ -152,7 +142,7 @@ class MulticastGroupConsumerActivation extends \Google\Model
     return $this->description;
   }
   /**
-   * Optional. Labels as key-value pairs
+   * Optional. Labels as key-value pairs.
    *
    * @param string[] $labels
    */
@@ -204,30 +194,9 @@ class MulticastGroupConsumerActivation extends \Google\Model
     return $this->multicastConsumerAssociation;
   }
   /**
-   * Optional. The resource name of the multicast group created by the admin in
-   * the same zone as this multicast group consumer activation. Use the
-   * following format: // `projects/locations/multicastGroups`. This field is
-   * deprecated. Use multicast_group_range_activation instead.
-   *
-   * @deprecated
-   * @param string $multicastGroup
-   */
-  public function setMulticastGroup($multicastGroup)
-  {
-    $this->multicastGroup = $multicastGroup;
-  }
-  /**
-   * @deprecated
-   * @return string
-   */
-  public function getMulticastGroup()
-  {
-    return $this->multicastGroup;
-  }
-  /**
    * Required. The resource name of the multicast group range activation created
    * by the admin in the same zone as this multicast group consumer activation.
-   * Use the following format: //
+   * Use the following format:
    * `projects/locations/multicastGroupRangeActivations`.
    *
    * @param string $multicastGroupRangeActivation
@@ -301,9 +270,9 @@ class MulticastGroupConsumerActivation extends \Google\Model
   /**
    * Output only. [Output only] The Google-generated UUID for the resource. This
    * value is unique across all multicast group consumer activation resources.
-   * If a group consumer activation is deleted and another with the same name is
-   * created, the new group consumer activation is assigned a different
-   * unique_id.
+   * If a multicast group consumer activation is deleted and another with the
+   * same name is created, the new multicast group consumer activation is
+   * assigned a different unique_id.
    *
    * @param string $uniqueId
    */

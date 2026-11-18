@@ -44,6 +44,10 @@ class SettingsController extends Controller
         return view('admin.settings', [
             'bookingMode' => Setting::get('booking_mode', 'form'),
             'bookingExternalUrl' => Setting::get('booking_external_url', ''),
+            'phpRuntime' => [
+                'version' => PHP_VERSION,
+                'sapi' => PHP_SAPI,
+            ],
             'calendarProviders' => $this->calendarProviders(),
             'calendarExportUrl' => route('calendar.export.tokenized', ['token' => config('apartment.calendar.export_token')]),
             'pricingSettings' => $this->pricingSettings(),

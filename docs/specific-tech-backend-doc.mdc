@@ -69,6 +69,7 @@ Data model: [Specific Data Model](./specific-data-model.md).
 - Recipient resolution excludes missing or invalid addresses and active suppressions, normalizes and deduplicates case-insensitively, and keeps one delivery row per address.
 - `SendNewsletterDelivery` sends one `NewsletterMail` per delivery, records success/failure, and retries failed jobs without resending successful rows.
 - Public unsubscribe URLs are signed. Stored people are opted out idempotently; manual addresses remain in `newsletter_suppressions` until an administrator reactivates them.
+- `/admin/impostazioni` displays the current web request's PHP version and SAPI to `host_owner` and `super_admin`; these values may differ from CLI/cron PHP.
 
 ## Critical operational endpoints
 - Public quote endpoint: `POST /{locale}/{availability-slug}/quote`

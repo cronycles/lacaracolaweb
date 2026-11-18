@@ -44,7 +44,7 @@ class RedisStore extends TaggableStore implements CanFlushLocks, LockProvider
     /**
      * The name of the connection that should be used for locks.
      *
-     * @var string
+     * @var string|null
      */
     protected $lockConnection;
 
@@ -96,7 +96,7 @@ class RedisStore extends TaggableStore implements CanFlushLocks, LockProvider
      */
     public function many(array $keys)
     {
-        if (count($keys) === 0) {
+        if ($keys === []) {
             return [];
         }
 
@@ -115,6 +115,53 @@ class RedisStore extends TaggableStore implements CanFlushLocks, LockProvider
 
         foreach ($values as $index => $value) {
             $results[$keys[$index]] = ! is_null($value) ? $this->connectionAwareUnserialize($value, $connection) : null;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Retrieve multiple items using a pipeline of individual reads.
+     *
+     * @param  array  $keys
+     * @return array
+     *
+     * @internal
+     */
+    public function manyViaPipeline(array $keys)
+    {
+        if (count($keys) < 2) {
+            return $keys === [] ? [] : $this->manyAlias($keys);
+        }
+
+        $connection = $this->connection();
+
+        if ($connection->isCluster() ||
+            ! ($connection instanceof PhpRedisConnection || $connection instanceof PredisConnection)) {
+            return $this->manyAlias($keys);
+        }
+
+        // A single endpoint can enforce cluster slots even when the client is not cluster-aware...
+        $prefixedKeys = array_map(fn ($key) => $this->prefix.$key, $keys);
+
+        $values = $connection instanceof PhpRedisConnection
+            ? $connection->getManyViaPipeline($prefixedKeys)
+            : $connection->pipeline(function ($pipeline) use ($prefixedKeys) {
+                foreach ($prefixedKeys as $key) {
+                    $pipeline->get($key);
+                }
+            });
+
+        if ($values === false) {
+            return $this->manyAlias($keys);
+        }
+
+        $results = [];
+
+        foreach ($values as $index => $value) {
+            $results[$keys[$index]] = is_null($value) || $value === false
+                ? null
+                : $this->connectionAwareUnserialize($value, $connection);
         }
 
         return $results;
@@ -367,13 +414,20 @@ class RedisStore extends TaggableStore implements CanFlushLocks, LockProvider
 
         $prefix = $connectionPrefix.$this->getPrefix();
 
-        return (new LazyCollection(function () use ($connection, $chunkSize, $prefix, $defaultCursorValue) {
+        // PhpRedis adds the connection prefix to the pattern itself when "SCAN_PREFIX" is enabled...
+        $match = $connection instanceof PhpRedisConnection &&
+            defined('Redis::SCAN_PREFIX') &&
+            $connection->client()->getOption(\Redis::OPT_SCAN) === \Redis::SCAN_PREFIX
+                ? $this->getPrefix().'tag:*:entries'
+                : $prefix.'tag:*:entries';
+
+        return (new LazyCollection(function () use ($connection, $chunkSize, $match, $defaultCursorValue) {
             $cursor = $defaultCursorValue;
 
             do {
                 $scanResult = $connection->scan(
                     $cursor,
-                    ['match' => $prefix.'tag:*:entries', 'count' => $chunkSize]
+                    ['match' => $match, 'count' => $chunkSize]
                 );
 
                 if (! is_array($scanResult)) {
@@ -395,7 +449,7 @@ class RedisStore extends TaggableStore implements CanFlushLocks, LockProvider
                 foreach ($tagsChunk as $tag) {
                     yield $tag;
                 }
-            } while (((string) $cursor) !== $defaultCursorValue);
+            } while (((string) $cursor) !== ((string) $defaultCursorValue));
         }))->map(fn (string $tagKey) => Str::match('/^'.preg_quote($prefix, '/').'tag:(.*):entries$/', $tagKey));
     }
 

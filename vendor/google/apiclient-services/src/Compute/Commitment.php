@@ -45,6 +45,10 @@ class Commitment extends \Google\Collection
   public const TYPE_COMPUTE_OPTIMIZED_C3D = 'COMPUTE_OPTIMIZED_C3D';
   public const TYPE_COMPUTE_OPTIMIZED_H3 = 'COMPUTE_OPTIMIZED_H3';
   public const TYPE_COMPUTE_OPTIMIZED_H4D = 'COMPUTE_OPTIMIZED_H4D';
+  /**
+   * CUD bucket for COMPUTE_OPTIMIZED_H4D_3TB machines.
+   */
+  public const TYPE_COMPUTE_OPTIMIZED_H4D_3TB = 'COMPUTE_OPTIMIZED_H4D_3TB';
   public const TYPE_GENERAL_PURPOSE = 'GENERAL_PURPOSE';
   public const TYPE_GENERAL_PURPOSE_C4 = 'GENERAL_PURPOSE_C4';
   public const TYPE_GENERAL_PURPOSE_C4A = 'GENERAL_PURPOSE_C4A';
@@ -62,6 +66,14 @@ class Commitment extends \Google\Collection
   public const TYPE_MEMORY_OPTIMIZED = 'MEMORY_OPTIMIZED';
   public const TYPE_MEMORY_OPTIMIZED_M3 = 'MEMORY_OPTIMIZED_M3';
   public const TYPE_MEMORY_OPTIMIZED_M4 = 'MEMORY_OPTIMIZED_M4';
+  /**
+   * CUD bucket for M4N machines with less than 6TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_M4N = 'MEMORY_OPTIMIZED_M4N';
+  /**
+   * CUD bucket for M4N machines with 6TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_M4N_6TB = 'MEMORY_OPTIMIZED_M4N_6TB';
   public const TYPE_MEMORY_OPTIMIZED_M4_6TB = 'MEMORY_OPTIMIZED_M4_6TB';
   /**
    * CUD bucket for X4 machine with 1440 vCPUs and 24TB of memory.
@@ -91,6 +103,26 @@ class Commitment extends \Google\Collection
    */
   public const TYPE_MEMORY_OPTIMIZED_X4_960_16T = 'MEMORY_OPTIMIZED_X4_960_16T';
   /**
+   * CUD bucket for X5 machine with 1376 vCPUs and 24TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_X5_1376_24T = 'MEMORY_OPTIMIZED_X5_1376_24T';
+  /**
+   * CUD bucket for X5 machine with 1376 vCPUs and 32TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_X5_1376_32T = 'MEMORY_OPTIMIZED_X5_1376_32T';
+  /**
+   * CUD bucket for X5 machine with 2064 vCPUs and 48TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_X5_2064_48T = 'MEMORY_OPTIMIZED_X5_2064_48T';
+  /**
+   * CUD bucket for X5 machine with 688 vCPUs and 12TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_X5_688_12T = 'MEMORY_OPTIMIZED_X5_688_12T';
+  /**
+   * CUD bucket for X5 machine with 688 vCPUs and 16TB of memory.
+   */
+  public const TYPE_MEMORY_OPTIMIZED_X5_688_16T = 'MEMORY_OPTIMIZED_X5_688_16T';
+  /**
    * CUD bucket for C4N (dual Diorite) machines.
    */
   public const TYPE_NETWORK_OPTIMIZED_C4N = 'NETWORK_OPTIMIZED_C4N';
@@ -119,6 +151,10 @@ class Commitment extends \Google\Collection
    * CUD bucket for Z4DS machines.
    */
   public const TYPE_STORAGE_OPTIMIZED_Z4DS = 'STORAGE_OPTIMIZED_Z4DS';
+  /**
+   * CUD bucket for Z4M (bare metal) machines.
+   */
+  public const TYPE_STORAGE_OPTIMIZED_Z4M = 'STORAGE_OPTIMIZED_Z4M';
   /**
    * Note for internal users: When adding a new enum Type for v1, make sure to
    * also add it in the comment for the `optional Type type` definition. This
@@ -291,9 +327,9 @@ class Commitment extends \Google\Collection
    * GRAPHICS_OPTIMIZED_G4,GRAPHICS_OPTIMIZED_G4_VGPU,MEMORY_OPTIMIZED,
    * MEMORY_OPTIMIZED_M3,MEMORY_OPTIMIZED_X4,
    * STORAGE_OPTIMIZED_Z3,STORAGE_OPTIMIZED_Z4DS,
-   * STORAGE_OPTIMIZED_Z4DH,STORAGE_OPTIMIZED_Z4D4T. For example, type
-   * MEMORY_OPTIMIZED specifies a commitment that applies only to eligible
-   * resources of memory optimized M1 and M2 machine series. Type
+   * STORAGE_OPTIMIZED_Z4DH,STORAGE_OPTIMIZED_Z4D4T,STORAGE_OPTIMIZED_Z4M. For
+   * example, type MEMORY_OPTIMIZED specifies a commitment that applies only to
+   * eligible resources of memory optimized M1 and M2 machine series. Type
    * GENERAL_PURPOSE specifies a commitment that applies only to eligible
    * resources of general purpose N1 machine series.
    *
@@ -734,9 +770,9 @@ class Commitment extends \Google\Collection
    * GRAPHICS_OPTIMIZED_G4,GRAPHICS_OPTIMIZED_G4_VGPU,MEMORY_OPTIMIZED,
    * MEMORY_OPTIMIZED_M3,MEMORY_OPTIMIZED_X4,
    * STORAGE_OPTIMIZED_Z3,STORAGE_OPTIMIZED_Z4DS,
-   * STORAGE_OPTIMIZED_Z4DH,STORAGE_OPTIMIZED_Z4D4T. For example, type
-   * MEMORY_OPTIMIZED specifies a commitment that applies only to eligible
-   * resources of memory optimized M1 and M2 machine series. Type
+   * STORAGE_OPTIMIZED_Z4DH,STORAGE_OPTIMIZED_Z4D4T,STORAGE_OPTIMIZED_Z4M. For
+   * example, type MEMORY_OPTIMIZED specifies a commitment that applies only to
+   * eligible resources of memory optimized M1 and M2 machine series. Type
    * GENERAL_PURPOSE specifies a commitment that applies only to eligible
    * resources of general purpose N1 machine series.
    *
@@ -744,20 +780,24 @@ class Commitment extends \Google\Collection
    * ACCELERATOR_OPTIMIZED_A3_MEGA, ACCELERATOR_OPTIMIZED_A3_ULTRA,
    * ACCELERATOR_OPTIMIZED_A4, COMPUTE_OPTIMIZED, COMPUTE_OPTIMIZED_C2D,
    * COMPUTE_OPTIMIZED_C3, COMPUTE_OPTIMIZED_C3D, COMPUTE_OPTIMIZED_H3,
-   * COMPUTE_OPTIMIZED_H4D, GENERAL_PURPOSE, GENERAL_PURPOSE_C4,
-   * GENERAL_PURPOSE_C4A, GENERAL_PURPOSE_C4D, GENERAL_PURPOSE_E2,
-   * GENERAL_PURPOSE_N2, GENERAL_PURPOSE_N2D, GENERAL_PURPOSE_N4,
-   * GENERAL_PURPOSE_N4A, GENERAL_PURPOSE_N4D, GENERAL_PURPOSE_T2D,
-   * GRAPHICS_OPTIMIZED, GRAPHICS_OPTIMIZED_G4, GRAPHICS_OPTIMIZED_G4_VGPU,
-   * MEMORY_OPTIMIZED, MEMORY_OPTIMIZED_M3, MEMORY_OPTIMIZED_M4,
+   * COMPUTE_OPTIMIZED_H4D, COMPUTE_OPTIMIZED_H4D_3TB, GENERAL_PURPOSE,
+   * GENERAL_PURPOSE_C4, GENERAL_PURPOSE_C4A, GENERAL_PURPOSE_C4D,
+   * GENERAL_PURPOSE_E2, GENERAL_PURPOSE_N2, GENERAL_PURPOSE_N2D,
+   * GENERAL_PURPOSE_N4, GENERAL_PURPOSE_N4A, GENERAL_PURPOSE_N4D,
+   * GENERAL_PURPOSE_T2D, GRAPHICS_OPTIMIZED, GRAPHICS_OPTIMIZED_G4,
+   * GRAPHICS_OPTIMIZED_G4_VGPU, MEMORY_OPTIMIZED, MEMORY_OPTIMIZED_M3,
+   * MEMORY_OPTIMIZED_M4, MEMORY_OPTIMIZED_M4N, MEMORY_OPTIMIZED_M4N_6TB,
    * MEMORY_OPTIMIZED_M4_6TB, MEMORY_OPTIMIZED_X4_1440_24T,
    * MEMORY_OPTIMIZED_X4_16TB, MEMORY_OPTIMIZED_X4_1920_32T,
    * MEMORY_OPTIMIZED_X4_24TB, MEMORY_OPTIMIZED_X4_32TB,
    * MEMORY_OPTIMIZED_X4_480_6T, MEMORY_OPTIMIZED_X4_480_8T,
    * MEMORY_OPTIMIZED_X4_960_12T, MEMORY_OPTIMIZED_X4_960_16T,
-   * NETWORK_OPTIMIZED_C4N, NETWORK_OPTIMIZED_U4C, NETWORK_OPTIMIZED_U4P,
-   * NETWORK_OPTIMIZED_U4S, STORAGE_OPTIMIZED_Z3, STORAGE_OPTIMIZED_Z4D4T,
-   * STORAGE_OPTIMIZED_Z4DH, STORAGE_OPTIMIZED_Z4DS, TYPE_UNSPECIFIED
+   * MEMORY_OPTIMIZED_X5_1376_24T, MEMORY_OPTIMIZED_X5_1376_32T,
+   * MEMORY_OPTIMIZED_X5_2064_48T, MEMORY_OPTIMIZED_X5_688_12T,
+   * MEMORY_OPTIMIZED_X5_688_16T, NETWORK_OPTIMIZED_C4N, NETWORK_OPTIMIZED_U4C,
+   * NETWORK_OPTIMIZED_U4P, NETWORK_OPTIMIZED_U4S, STORAGE_OPTIMIZED_Z3,
+   * STORAGE_OPTIMIZED_Z4D4T, STORAGE_OPTIMIZED_Z4DH, STORAGE_OPTIMIZED_Z4DS,
+   * STORAGE_OPTIMIZED_Z4M, TYPE_UNSPECIFIED
    *
    * @param self::TYPE_* $type
    */

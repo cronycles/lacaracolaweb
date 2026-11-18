@@ -42,8 +42,8 @@ class ExtensionBinding extends \Google\Collection
   public $etag;
   /**
    * Optional. Determines the behavior of the extension binding when the call to
-   * the extension fails or times out. Default value is `FALSE`. When set to
-   * `TRUE`, failures of the extension are silently ignored.
+   * the extension fails or times out. Default value is `false`. When set to
+   * `true`, failures of the extension are silently ignored.
    *
    * @var bool
    */
@@ -68,25 +68,26 @@ class ExtensionBinding extends \Google\Collection
    */
   public $name;
   /**
-   * Optional. Priority of the extension binding. Lower numbers indicate higher
-   * priority. Priority of extension bindings are used to determine the order in
-   * which extension bindings are applied to a request.
+   * Optional. This field is not supported.
    *
    * @var int
    */
   public $priority;
   /**
    * Required. The name of the extension that this binding should attach to
-   * target resources. Format: For Google-provided extensions, specify the
-   * service endpoint (see [Model Armor
-   * integration](https://docs.cloud.google.com/model-armor/integrations))
+   * target resources. Format: * For Google-provided extensions, specify the
+   * service endpoint, for example `modelarmor.us-central1.rep.googleapis.com`.
    *
    * @var string
    */
   public $producerExtension;
   /**
    * Optional. Additional metadata that should be passed to the attached
-   * extension with each request.
+   * extension with each request. This field is subject to the following
+   * limitations: * The total size of the metadata must be less than 1 KiB. *
+   * The total number of keys must be less than 16. * The length of each key
+   * must be less than 64 characters. * The length of each value must be less
+   * than 1024 characters.
    *
    * @var string[]
    */
@@ -152,8 +153,8 @@ class ExtensionBinding extends \Google\Collection
   }
   /**
    * Optional. Determines the behavior of the extension binding when the call to
-   * the extension fails or times out. Default value is `FALSE`. When set to
-   * `TRUE`, failures of the extension are silently ignored.
+   * the extension fails or times out. Default value is `false`. When set to
+   * `true`, failures of the extension are silently ignored.
    *
    * @param bool $failOpen
    */
@@ -188,9 +189,11 @@ class ExtensionBinding extends \Google\Collection
     return $this->labels;
   }
   /**
-   * Optional. A list of match conditions to match against the incoming request.
-   * The extension will be invoked if at least one condition matches the
-   * request, or if no match conditions are specified. Limited to 5 conditions.
+   * Optional. A list of match conditions to evaluate against the incoming
+   * request. The extension is invoked if the request matches at least one
+   * condition, or if no match conditions are specified. A request matches a
+   * condition only if it matches every field that is set in that condition.
+   * Limited to 5 conditions.
    *
    * @param ExtensionBindingMatchCondition[] $matchConditions
    */
@@ -224,9 +227,7 @@ class ExtensionBinding extends \Google\Collection
     return $this->name;
   }
   /**
-   * Optional. Priority of the extension binding. Lower numbers indicate higher
-   * priority. Priority of extension bindings are used to determine the order in
-   * which extension bindings are applied to a request.
+   * Optional. This field is not supported.
    *
    * @param int $priority
    */
@@ -243,9 +244,8 @@ class ExtensionBinding extends \Google\Collection
   }
   /**
    * Required. The name of the extension that this binding should attach to
-   * target resources. Format: For Google-provided extensions, specify the
-   * service endpoint (see [Model Armor
-   * integration](https://docs.cloud.google.com/model-armor/integrations))
+   * target resources. Format: * For Google-provided extensions, specify the
+   * service endpoint, for example `modelarmor.us-central1.rep.googleapis.com`.
    *
    * @param string $producerExtension
    */
@@ -262,7 +262,11 @@ class ExtensionBinding extends \Google\Collection
   }
   /**
    * Optional. Additional metadata that should be passed to the attached
-   * extension with each request.
+   * extension with each request. This field is subject to the following
+   * limitations: * The total size of the metadata must be less than 1 KiB. *
+   * The total number of keys must be less than 16. * The length of each key
+   * must be less than 64 characters. * The length of each value must be less
+   * than 1024 characters.
    *
    * @param string[] $producerMetadata
    */
@@ -279,8 +283,7 @@ class ExtensionBinding extends \Google\Collection
   }
   /**
    * Required. Specifies a target to which this `ExtensionBinding` should be
-   * attached. The target can be either a single resource or a scope of
-   * resources.
+   * attached.
    *
    * @param ExtensionBindingTarget $target
    */

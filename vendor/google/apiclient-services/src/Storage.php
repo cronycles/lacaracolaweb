@@ -53,7 +53,6 @@ class Storage extends \Google\Service
   public $anywhereCaches;
   public $bucketAccessControls;
   public $buckets;
-  public $channels;
   public $defaultObjectAccessControls;
   public $folders;
   public $managedFolders;
@@ -145,21 +144,6 @@ class Storage extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-              ],
-            ],'pause' => [
-              'path' => 'b/{bucket}/anywhereCaches/{anywhereCacheId}/pause',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'bucket' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'anywhereCacheId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ],
               ],
             ],'resume' => [
@@ -626,20 +610,6 @@ class Storage extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],
-          ]
-        ]
-    );
-    $this->channels = new Storage\Resource\Channels(
-        $this,
-        $this->serviceName,
-        'channels',
-        [
-          'methods' => [
-            'stop' => [
-              'path' => 'channels/stop',
-              'httpMethod' => 'POST',
-              'parameters' => [],
             ],
           ]
         ]
@@ -2057,6 +2027,34 @@ class Storage extends \Google\Service
                   'type' => 'string',
                 ],
                 'projection' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'userProject' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'viewFullContext' => [
+              'path' => 'b/{bucket}/o/{object}/viewFullContext',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'bucket' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'object' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'contextKey' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'generation' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

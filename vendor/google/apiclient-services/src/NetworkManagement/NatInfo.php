@@ -81,7 +81,7 @@ class NatInfo extends \Google\Model
   public $natGatewayName;
   /**
    * URI of the VPC network where NAT translation takes place. Format:
-   * `projects/{project_id}/global/networks/{network_id}`
+   * `projects/{project}/global/networks/{network}`
    *
    * @var string
    */
@@ -144,13 +144,14 @@ class NatInfo extends \Google\Model
   public $protocol;
   /**
    * URI of the Cloud Router. Only valid when type is CLOUD_NAT. Format:
-   * `projects/{project_id}/regions/{region}/routers/{router_id}`
+   * `projects/{project}/regions/{region}/routers/{router}`
    *
    * @var string
    */
   public $routerUri;
   /**
-   * The number of the NAT rule that was matched.
+   * The number of the NAT rule that was matched. Only valid when `type` is
+   * CLOUD_NAT.
    *
    * @var int
    */
@@ -199,7 +200,7 @@ class NatInfo extends \Google\Model
   }
   /**
    * URI of the VPC network where NAT translation takes place. Format:
-   * `projects/{project_id}/global/networks/{network_id}`
+   * `projects/{project}/global/networks/{network}`
    *
    * @param string $networkUri
    */
@@ -362,7 +363,7 @@ class NatInfo extends \Google\Model
   }
   /**
    * URI of the Cloud Router. Only valid when type is CLOUD_NAT. Format:
-   * `projects/{project_id}/regions/{region}/routers/{router_id}`
+   * `projects/{project}/regions/{region}/routers/{router}`
    *
    * @param string $routerUri
    */
@@ -378,7 +379,8 @@ class NatInfo extends \Google\Model
     return $this->routerUri;
   }
   /**
-   * The number of the NAT rule that was matched.
+   * The number of the NAT rule that was matched. Only valid when `type` is
+   * CLOUD_NAT.
    *
    * @param int $ruleNumber
    */

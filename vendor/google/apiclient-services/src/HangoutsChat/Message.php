@@ -89,6 +89,8 @@ class Message extends \Google\Collection
   public $deleteTime;
   protected $deletionMetadataType = DeletionMetadata::class;
   protected $deletionMetadataDataType = '';
+  protected $elementsType = Elements::class;
+  protected $elementsDataType = '';
   protected $emojiReactionSummariesType = EmojiReactionSummary::class;
   protected $emojiReactionSummariesDataType = 'array';
   /**
@@ -128,7 +130,10 @@ class Message extends \Google\Collection
   public $lastUpdateTime;
   /**
    * Optional. Specifies how the server interprets the message `text` field
-   * content.
+   * content when creating a message or updating the `text` field of a message.
+   * When calling `UpdateMessage`, set `markup_syntax` and `text` on the
+   * `Message` resource and include `text` (not `markup_syntax`) in
+   * `update_mask`.
    *
    * @var string
    */
@@ -427,6 +432,32 @@ class Message extends \Google\Collection
     return $this->deletionMetadata;
   }
   /**
+   * Optional. Additional message components, including inline `citations`
+   * (where each citation is associated with a specific portion of the message
+   * text) and `cited_sources` (which are general references used to generate
+   * the response and are not directly linked to specific segments of the text).
+   * On input, provide `elements` when creating or updating a message. On
+   * output, both `citations` and `cited_sources` are populated when reading a
+   * message that contains them. Callers can read structured citation metadata
+   * from `elements`, while `formatted_text` also includes inline citation tags
+   * or source links depending on `markup_syntax`. These differ from
+   * `annotations`, which are output-only and offer supplementary information
+   * tied to message fragments or the entire message text.
+   *
+   * @param Elements $elements
+   */
+  public function setElements(Elements $elements)
+  {
+    $this->elements = $elements;
+  }
+  /**
+   * @return Elements
+   */
+  public function getElements()
+  {
+    return $this->elements;
+  }
+  /**
    * Output only. The list of emoji reaction summaries on the message.
    *
    * @param EmojiReactionSummary[] $emojiReactionSummaries
@@ -509,7 +540,10 @@ class Message extends \Google\Collection
   }
   /**
    * Optional. Specifies how the server interprets the message `text` field
-   * content.
+   * content when creating a message or updating the `text` field of a message.
+   * When calling `UpdateMessage`, set `markup_syntax` and `text` on the
+   * `Message` resource and include `text` (not `markup_syntax`) in
+   * `update_mask`.
    *
    * Accepted values: MARKUP_SYNTAX_UNSPECIFIED, MARKUP_SYNTAX_CHAT,
    * MARKUP_SYNTAX_MARKDOWN

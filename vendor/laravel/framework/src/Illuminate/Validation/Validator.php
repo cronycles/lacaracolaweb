@@ -43,7 +43,7 @@ class Validator implements ValidatorContract
     /**
      * The Presence Verifier implementation.
      *
-     * @var \Illuminate\Validation\PresenceVerifierInterface
+     * @var \Illuminate\Validation\PresenceVerifierInterface|null
      */
     protected $presenceVerifier;
 
@@ -57,7 +57,7 @@ class Validator implements ValidatorContract
     /**
      * Attributes that should be excluded from the validated data.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $excludeAttributes = [];
 
@@ -102,6 +102,13 @@ class Validator implements ValidatorContract
      * @var array
      */
     protected $implicitAttributes = [];
+
+    /**
+     * The cached sets of expanded wildcard attributes indexed by type and name.
+     *
+     * @var array|null
+     */
+    protected $implicitAttributeKeys;
 
     /**
      * The callback that should be used to format the attribute.
@@ -313,6 +320,13 @@ class Validator implements ValidatorContract
      * @var string|null
      */
     protected static $placeholderHash;
+
+    /**
+     * Indicates if DNS lookups performed by validation rules should be faked to always succeed.
+     *
+     * @var bool
+     */
+    protected static $fakeDnsLookups = false;
 
     /**
      * The exception to throw upon failure.
@@ -564,11 +578,16 @@ class Validator implements ValidatorContract
      */
     protected function shouldBeExcluded($attribute)
     {
-        foreach ($this->excludeAttributes as $excludeAttribute) {
-            if ($attribute === $excludeAttribute ||
-                Str::startsWith($attribute, $excludeAttribute.'.')) {
+        $prefix = '';
+
+        foreach (explode('.', $attribute) as $segment) {
+            $prefix .= $segment;
+
+            if (isset($this->excludeAttributes[$prefix])) {
                 return true;
             }
+
+            $prefix .= '.';
         }
 
         return false;
@@ -595,7 +614,9 @@ class Validator implements ValidatorContract
      */
     public function validate()
     {
-        throw_if($this->fails(), $this->exception, $this);
+        if ($this->fails()) {
+            throw is_string($this->exception) ? new $this->exception($this) : $this->exception;
+        }
 
         return $this->validated();
     }
@@ -622,8 +643,10 @@ class Validator implements ValidatorContract
     /**
      * Get a validated input container for the validated input.
      *
-     * @param  array|null  $keys
-     * @return \Illuminate\Support\ValidatedInput|array
+     * @param  array<int, string>|null  $keys
+     * @return ($keys is array ? array<string, mixed> : \Illuminate\Support\ValidatedInput)
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function safe(?array $keys = null)
     {
@@ -645,11 +668,15 @@ class Validator implements ValidatorContract
             $this->passes();
         }
 
-        throw_if($this->messages->isNotEmpty(), $this->exception, $this);
+        if ($this->messages->isNotEmpty()) {
+            throw is_string($this->exception) ? new $this->exception($this) : $this->exception;
+        }
 
         $results = [];
 
         $missingValue = new stdClass;
+
+        $parentKeys = $this->excludeUnvalidatedArrayKeys ? $this->parentRuleKeys() : [];
 
         foreach ($this->getRules() as $key => $rules) {
             $value = data_get($this->getData(), $key, $missingValue);
@@ -657,7 +684,7 @@ class Validator implements ValidatorContract
             if ($this->excludeUnvalidatedArrayKeys &&
                 (in_array('array', $rules) || in_array('list', $rules)) &&
                 $value !== null &&
-                ! empty(preg_grep('/^'.preg_quote($key, '/').'\.+/', array_keys($this->getRules())))) {
+                isset($parentKeys[$key])) {
                 continue;
             }
 
@@ -667,6 +694,26 @@ class Validator implements ValidatorContract
         }
 
         return $this->replacePlaceholders($results);
+    }
+
+    /**
+     * Get the rule keys that have nested rules beneath them.
+     *
+     * @return array<string, true>
+     */
+    protected function parentRuleKeys()
+    {
+        $parentKeys = [];
+
+        foreach (array_keys($this->getRules()) as $key) {
+            while (str_contains($key, '.')) {
+                $key = Str::beforeLast($key, '.');
+
+                $parentKeys[$key] = true;
+            }
+        }
+
+        return $parentKeys;
     }
 
     /**
@@ -749,7 +796,7 @@ class Validator implements ValidatorContract
      */
     protected function getExplicitKeys($attribute)
     {
-        $pattern = str_replace('\*', '([^\.]+)', preg_quote($this->getPrimaryAttribute($attribute), '/'));
+        $pattern = str_replace('\*', '([^\.]*)', preg_quote($this->getPrimaryAttribute($attribute), '/'));
 
         if (preg_match('/^'.$pattern.'/', $attribute, $keys)) {
             array_shift($keys);
@@ -771,7 +818,15 @@ class Validator implements ValidatorContract
     protected function getPrimaryAttribute($attribute)
     {
         foreach ($this->implicitAttributes as $unparsed => $parsed) {
-            if (in_array($attribute, $parsed, true)) {
+            if (! isset($this->implicitAttributeKeys[$unparsed])) {
+                $this->implicitAttributeKeys[$unparsed] = [];
+
+                foreach ($parsed as $expanded) {
+                    $this->implicitAttributeKeys[$unparsed][gettype($expanded)][$expanded] = true;
+                }
+            }
+
+            if (isset($this->implicitAttributeKeys[$unparsed][gettype($attribute)][$attribute])) {
                 return $unparsed;
             }
         }
@@ -1028,9 +1083,7 @@ class Validator implements ValidatorContract
      */
     protected function excludeAttribute(string $attribute)
     {
-        $this->excludeAttributes[] = $attribute;
-
-        $this->excludeAttributes = array_unique($this->excludeAttributes);
+        $this->excludeAttributes[$attribute] = $attribute;
     }
 
     /**
@@ -1314,6 +1367,8 @@ class Validator implements ValidatorContract
         $this->implicitAttributes = array_merge(
             $this->implicitAttributes, $response->implicitAttributes
         );
+
+        $this->implicitAttributeKeys = null;
     }
 
     /**
@@ -1332,6 +1387,8 @@ class Validator implements ValidatorContract
             $response = (new ValidationRuleParser($this->data))->explode([$key => $rules]);
 
             $this->implicitAttributes = array_merge($response->implicitAttributes, $this->implicitAttributes);
+
+            $this->implicitAttributeKeys = null;
 
             foreach ($response->rules as $ruleKey => $ruleValue) {
                 if ($callback($payload, $this->dataForSometimesIteration($ruleKey, ! str_ends_with($key, '.*')))) {
@@ -1647,7 +1704,7 @@ class Validator implements ValidatorContract
     /**
      * Ensure exponents are within range using the given callback.
      *
-     * @param  callable(int $scale, string $attribute, mixed $value)  $callback
+     * @param  callable(int, string, mixed): mixed  $callback
      * @return $this
      */
     public function ensureExponentWithinAllowedRangeUsing($callback)
@@ -1744,6 +1801,17 @@ class Validator implements ValidatorContract
     }
 
     /**
+     * Fake the DNS lookups performed by validation rules so they always succeed.
+     *
+     * @param  bool  $value
+     * @return void
+     */
+    public static function fakeDnsLookups($value = true)
+    {
+        static::$fakeDnsLookups = $value;
+    }
+
+    /**
      * Flush the validator's global state.
      *
      * @return void
@@ -1751,6 +1819,7 @@ class Validator implements ValidatorContract
     public static function flushState()
     {
         static::$placeholderHash = null;
+        static::$fakeDnsLookups = false;
     }
 
     /**

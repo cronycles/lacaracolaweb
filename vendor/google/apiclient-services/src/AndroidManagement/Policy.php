@@ -544,6 +544,8 @@ class Policy extends \Google\Collection
   protected $deviceOwnerLockScreenInfoDataType = '';
   protected $deviceRadioStateType = DeviceRadioState::class;
   protected $deviceRadioStateDataType = '';
+  protected $deviceWidePoliciesType = DeviceWidePolicies::class;
+  protected $deviceWidePoliciesDataType = '';
   protected $displaySettingsType = DisplaySettings::class;
   protected $displaySettingsDataType = '';
   /**
@@ -650,7 +652,9 @@ class Policy extends \Google\Collection
    */
   public $microphoneAccess;
   /**
-   * The minimum allowed Android API level.
+   * The minimum allowed Android API level. A NonComplianceDetail with
+   * OS_NOT_PERMITTED is reported if the Android API level of the device is
+   * lower than this value.
    *
    * @var int
    */
@@ -869,6 +873,8 @@ class Policy extends \Google\Collection
    * @var bool
    */
   public $tetheringConfigDisabled;
+  protected $unifiedUpdatePolicyType = UnifiedUpdatePolicy::class;
+  protected $unifiedUpdatePolicyDataType = '';
   /**
    * Whether user uninstallation of applications is disabled. This prevents apps
    * from being uninstalled, even those removed using applications
@@ -1005,7 +1011,8 @@ class Policy extends \Google\Collection
     return $this->adjustVolumeDisabled;
   }
   /**
-   * Advanced security settings. In most cases, setting these is not needed.
+   * Optional. Advanced security settings. In most cases, setting these is not
+   * needed.
    *
    * @param AdvancedSecurityOverrides $advancedSecurityOverrides
    */
@@ -1457,7 +1464,7 @@ class Policy extends \Google\Collection
     return $this->crossDevicePolicies;
   }
   /**
-   * Cross-profile policies applied on the device.
+   * Optional. Cross-profile policies applied on the device.
    *
    * @param CrossProfilePolicies $crossProfilePolicies
    */
@@ -1550,8 +1557,8 @@ class Policy extends \Google\Collection
     return $this->defaultPermissionPolicy;
   }
   /**
-   * Covers controls for device connectivity such as Wi-Fi, USB data access,
-   * keyboard/mouse connections, and more.
+   * Optional. Covers controls for device connectivity such as Wi-Fi, USB data
+   * access, keyboard/mouse connections, and more.
    *
    * @param DeviceConnectivityManagement $deviceConnectivityManagement
    */
@@ -1567,7 +1574,7 @@ class Policy extends \Google\Collection
     return $this->deviceConnectivityManagement;
   }
   /**
-   * The device owner information to be shown on the lock screen.
+   * Optional. The device owner information to be shown on the lock screen.
    *
    * @param UserFacingMessage $deviceOwnerLockScreenInfo
    */
@@ -1598,6 +1605,22 @@ class Policy extends \Google\Collection
   public function getDeviceRadioState()
   {
     return $this->deviceRadioState;
+  }
+  /**
+   * Optional. Policies controlling the device on company-owned devices.
+   *
+   * @param DeviceWidePolicies $deviceWidePolicies
+   */
+  public function setDeviceWidePolicies(DeviceWidePolicies $deviceWidePolicies)
+  {
+    $this->deviceWidePolicies = $deviceWidePolicies;
+  }
+  /**
+   * @return DeviceWidePolicies
+   */
+  public function getDeviceWidePolicies()
+  {
+    return $this->deviceWidePolicies;
   }
   /**
    * Optional. Controls for the display settings.
@@ -1813,9 +1836,9 @@ class Policy extends \Google\Collection
     return $this->kioskCustomLauncherEnabled;
   }
   /**
-   * Settings controlling the behavior of a device in kiosk mode. To enable
-   * kiosk mode, set kioskCustomLauncherEnabled to true or specify an app in the
-   * policy with installType KIOSK.
+   * Optional. Settings controlling the behavior of a device in kiosk mode. To
+   * enable kiosk mode, set kioskCustomLauncherEnabled to true or specify an app
+   * in the policy with the KIOSK role.
    *
    * @param KioskCustomization $kioskCustomization
    */
@@ -1906,7 +1929,9 @@ class Policy extends \Google\Collection
     return $this->microphoneAccess;
   }
   /**
-   * The minimum allowed Android API level.
+   * The minimum allowed Android API level. A NonComplianceDetail with
+   * OS_NOT_PERMITTED is reported if the Android API level of the device is
+   * lower than this value.
    *
    * @param int $minimumApiLevel
    */
@@ -2097,9 +2122,9 @@ class Policy extends \Google\Collection
     return $this->outgoingCallsDisabled;
   }
   /**
-   * Password requirement policies. Different policies can be set for work
-   * profile or fully managed devices by setting the password_scope field in the
-   * policy.
+   * Optional. Password requirement policies. Different policies can be set for
+   * work profile or fully managed devices by setting the password_scope field
+   * in the policy.
    *
    * @param PasswordRequirements[] $passwordPolicies
    */
@@ -2582,7 +2607,9 @@ class Policy extends \Google\Collection
    * Mainline updates) are automatically downloaded and require a device reboot
    * to be installed. Refer to the mainline section in Manage system updates
    * (https://developer.android.com/work/dpc/system-updates#mainline) for
-   * further details.
+   * further details.If this policy is set, it takes precedence over
+   * unifiedUpdatePolicy for OEM OS updates. For more information, see
+   * unifiedUpdatePolicy.
    *
    * @param SystemUpdate $systemUpdate
    */
@@ -2616,6 +2643,29 @@ class Policy extends \Google\Collection
   public function getTetheringConfigDisabled()
   {
     return $this->tetheringConfigDisabled;
+  }
+  /**
+   * Optional. The Unified Update Control policy, for controlling updates of
+   * software components on the device. Supported only on company-owned
+   * devices.The targets OS_UPDATE_WITH_API_LEVEL_CHANGE and
+   * OS_UPDATE_WITHOUT_API_LEVEL_CHANGE are supported only on devices where the
+   * OEM has integrated with Unified Update Controls, and are ignored otherwise.
+   * If systemUpdate is set, then that policy takes precedence and the targets
+   * OS_UPDATE_WITH_API_LEVEL_CHANGE and OS_UPDATE_WITHOUT_API_LEVEL_CHANGE are
+   * ignored here.
+   *
+   * @param UnifiedUpdatePolicy $unifiedUpdatePolicy
+   */
+  public function setUnifiedUpdatePolicy(UnifiedUpdatePolicy $unifiedUpdatePolicy)
+  {
+    $this->unifiedUpdatePolicy = $unifiedUpdatePolicy;
+  }
+  /**
+   * @return UnifiedUpdatePolicy
+   */
+  public function getUnifiedUpdatePolicy()
+  {
+    return $this->unifiedUpdatePolicy;
   }
   /**
    * Whether user uninstallation of applications is disabled. This prevents apps
@@ -2657,7 +2707,7 @@ class Policy extends \Google\Collection
     return $this->unmuteMicrophoneDisabled;
   }
   /**
-   * Configuration of device activity logging.
+   * Optional. Configuration of device activity logging.
    *
    * @param UsageLog $usageLog
    */

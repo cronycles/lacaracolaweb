@@ -43,9 +43,21 @@ class BackupPlanAssociation extends \Google\Collection
    * The resource is being updated.
    */
   public const STATE_UPDATING = 'UPDATING';
+  /**
+   * The resource has been created but backups are paused.
+   */
+  public const STATE_PAUSED = 'PAUSED';
   protected $collection_key = 'rulesConfigInfo';
   protected $alloydbClusterBackupPlanAssociationPropertiesType = AlloyDBClusterBackupPlanAssociationProperties::class;
   protected $alloydbClusterBackupPlanAssociationPropertiesDataType = '';
+  /**
+   * Output only. The resource name of the `AutoProtectionPolicyBinding` that
+   * manages this association, if any. Format: `projects/{project}/locations/{lo
+   * cation}/autoProtectionPolicies/{policy}/bindings/{binding}`.
+   *
+   * @var string
+   */
+  public $autoProtectionPolicyBinding;
   /**
    * Required. Resource name of backup plan which needs to be applied on
    * workload. Format:
@@ -95,6 +107,8 @@ class BackupPlanAssociation extends \Google\Collection
    * @var string
    */
   public $name;
+  protected $netappVolumeBackupPlanAssociationPropertiesType = NetAppVolumeBackupPlanAssociationProperties::class;
+  protected $netappVolumeBackupPlanAssociationPropertiesDataType = '';
   /**
    * Required. Immutable. Resource name of workload on which the backup plan is
    * applied. The format can either be the resource name (e.g., "projects/my-
@@ -142,6 +156,24 @@ class BackupPlanAssociation extends \Google\Collection
   public function getAlloydbClusterBackupPlanAssociationProperties()
   {
     return $this->alloydbClusterBackupPlanAssociationProperties;
+  }
+  /**
+   * Output only. The resource name of the `AutoProtectionPolicyBinding` that
+   * manages this association, if any. Format: `projects/{project}/locations/{lo
+   * cation}/autoProtectionPolicies/{policy}/bindings/{binding}`.
+   *
+   * @param string $autoProtectionPolicyBinding
+   */
+  public function setAutoProtectionPolicyBinding($autoProtectionPolicyBinding)
+  {
+    $this->autoProtectionPolicyBinding = $autoProtectionPolicyBinding;
+  }
+  /**
+   * @return string
+   */
+  public function getAutoProtectionPolicyBinding()
+  {
+    return $this->autoProtectionPolicyBinding;
   }
   /**
    * Required. Resource name of backup plan which needs to be applied on
@@ -281,6 +313,22 @@ class BackupPlanAssociation extends \Google\Collection
     return $this->name;
   }
   /**
+   * Output only. NetApp volume backup plan association properties.
+   *
+   * @param NetAppVolumeBackupPlanAssociationProperties $netappVolumeBackupPlanAssociationProperties
+   */
+  public function setNetappVolumeBackupPlanAssociationProperties(NetAppVolumeBackupPlanAssociationProperties $netappVolumeBackupPlanAssociationProperties)
+  {
+    $this->netappVolumeBackupPlanAssociationProperties = $netappVolumeBackupPlanAssociationProperties;
+  }
+  /**
+   * @return NetAppVolumeBackupPlanAssociationProperties
+   */
+  public function getNetappVolumeBackupPlanAssociationProperties()
+  {
+    return $this->netappVolumeBackupPlanAssociationProperties;
+  }
+  /**
    * Required. Immutable. Resource name of workload on which the backup plan is
    * applied. The format can either be the resource name (e.g., "projects/my-
    * project/zones/us-central1-a/instances/my-instance") or the full resource
@@ -337,7 +385,7 @@ class BackupPlanAssociation extends \Google\Collection
    * Output only. The BackupPlanAssociation resource state.
    *
    * Accepted values: STATE_UNSPECIFIED, CREATING, ACTIVE, DELETING, INACTIVE,
-   * UPDATING
+   * UPDATING, PAUSED
    *
    * @param self::STATE_* $state
    */
